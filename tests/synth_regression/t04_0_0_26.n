@@ -1,0 +1,21 @@
+// VERILOG_OUTPUT: a.v
+
+// see if member reference in inline function works.
+
+int Kernel.m1 = 128;
+
+def Kernel.f1() {
+  int *p = m1;
+  *p = 0xffffffff;
+}
+
+def Kernel.main() {
+  f1();
+  int *p = m1;
+  assert(*p == 0xffffffff);
+}
+
+main();
+
+compile();
+write_hdl("a.v");

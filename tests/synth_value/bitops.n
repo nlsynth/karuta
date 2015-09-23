@@ -1,0 +1,17 @@
+// VERILOG_OUTPUT: a.v 
+def Kernel.main() {
+  int x = 0xaaaa;
+  assert(x[1:1] == 1);
+  assert(x[0:0] == 0);
+  assert(x[15:1] == 0x5555);
+
+  int #1 p = 1;
+  int #2 c;
+  c = p :: p;
+  assert(c == 3);
+}
+
+main();
+
+compile();
+write_hdl("a.v");

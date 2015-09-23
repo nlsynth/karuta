@@ -1,0 +1,461 @@
+// -*- C++ -*-
+%{
+#include "sym.h"
+#include "fe/builder.h"
+#include "fe/emitter.h"
+#include "fe/expr.h"
+#include "fe/nodecode.h"
+#include "fe/stmt.h"
+#include "fe/var_decl.h"
+#include "dfg/imported_resource.h"
+
+extern int yylex();
+extern void yyerror(const char *msg);
+
+%}
+%union {
+  class ArrayInitializer *array;
+  class Expr *expr;
+  class Stmt *stmt;
+  class VarDecl *var_decl;
+  class VarDeclSet *var_decl_set;
+  class NstBlock *block;
+  const char *str;
+  sym_t sym;
+  uint64_t num;
+  const class NumberWidth *width;
+  class import_param *import_param;
+  class import_params *import_params;
+}
+
+%type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
+%type <num> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
+%type <var_decl> MODIFIED_VAR VAR_DECL
+%type <var_decl_set> VAR_DECL_STMT
+%type <array> ARRAY_INITIALIZER ARRAY_ELM_LIST
+%type <block> BLOCK IF_STMT FOR_STMT
+%type <block> WHILE_STMT DO_WHILE_STMT SWITCH_STMT
+%type <stmt> IF_COND_PART IF_WITH_ELSE FOR_COND_PART
+%type <var_decl_set> ARG_DECL ARG_DECL_LIST
+%type <var_decl> RETURN_TYPE
+%type <var_decl_set> RETURN_SPEC RETURN_TYPE_LIST
+%type <stmt> ENUM_DECL ENUM_ITEM_LIST
+%type <stmt> STRUCT_DECL STRUCT_ELEMENT_LIST
+%type <str> STR
+%type <sym> SYM TYPE_NAME
+%type <num> NUM ARRAY_ELM
+%type <num> K_ASSIGN K_LG_COMPARE K_EQ_COMPARE K_BIT_CONCAT
+%type <num> K_ADD_SUB K_INC_DEC K_SHIFT
+%type <num> K_LOGIC_AND K_LOGIC_OR
+%type <width> WIDTH_SPEC
+%type <import_param> IMPORT_PARAM IMPORT_PARAM_HEAD
+%type <import_params> IMPORT_PARAM_LIST
+
+%token K_DEF K_ENUM K_IMPORT K_STRUCT
+%token K_ASSIGN K_SHIFT
+%token K_INT K_BOOL K_STRING K_OBJECT K_THREAD K_CHANNEL
+%token K_ADD_SUB K_LG_COMPARE K_EQ_COMPARE
+%token K_INC_DEC K_CONST
+%token K_IF K_ELSE K_RETURN K_GOTO K_FOR K_SPAWN
+%token K_WHILE K_DO K_CONTINUE
+%token K_SWITCH K_CASE K_DEFAULT K_BREAK
+
+%token NUM
+%token SYM
+%token STR
+
+/* precedence definitions */
+%left K_IF
+%left ','
+%right K_ASSIGN
+%right '?' ':'
+%left K_LOGIC_OR
+%left K_LOGIC_AND
+%left K_BIT_CONCAT
+%left '|'
+%left '^'
+%left '&'
+%left K_EQ_COMPARE
+%left K_LG_COMPARE
+%left K_SHIFT
+%left K_ADD_SUB
+%left '*'
+%right '!' '~' SIGN K_INC_DEC ADDRESS
+%left '.' '[' ']'
+
+%%
+input : {
+} | input FUNC_DECL {
+} | input STMT {
+}
+
+IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
+  $$ = dfg::build_str_import_param($1, $4);
+} | IMPORT_PARAM_HEAD ',' STR {
+  dfg::import_param_add_str($1, $3);
+  $$ = $1;
+}
+
+IMPORT_PARAM : SYM K_ASSIGN STR {
+  $$ = dfg::build_str_import_param($1, $3);
+} | IMPORT_PARAM_HEAD ')' {
+  $$ = $1;
+}
+
+IMPORT_PARAM_LIST : IMPORT_PARAM {
+  $$ = dfg::build_import_params(NULL, $1);
+} | IMPORT_PARAM_LIST ',' IMPORT_PARAM {
+  $$ = dfg::build_import_params($1, $3);
+}
+
+IMPORT_SPEC : {
+} | '[' IMPORT_PARAM_LIST ']' {
+  Emitter::SetImportedResource($2);
+}
+
+RETURN_TYPE : TYPE_NAME WIDTH_SPEC {
+  $$ = Builder::ReturnType($1, $2);
+}
+
+RETURN_TYPE_LIST : RETURN_TYPE {
+ $$ = Builder::ReturnDeclList(NULL, $1);
+} | RETURN_TYPE_LIST ',' RETURN_TYPE {
+ $$ = Builder::ReturnDeclList($1, $3);
+}
+
+RETURN_SPEC : {
+  $$ = Builder::ReturnDeclList(NULL, NULL);
+} | '(' RETURN_TYPE_LIST ')' {
+  $$ = $2;
+}
+
+FUNC_DECL : FUNC_DECL_HEAD IMPORT_SPEC '{' STMT_LIST '}' {
+  Emitter::EndFunction();
+}
+
+FUNC_DECL_HEAD : FUNC_DECL_NAME ARG_DECL ')' RETURN_SPEC {
+  Emitter::SetCurrentFunctionArgs($2);
+  Emitter::SetCurrentFunctionReturns($4);
+}
+
+FUNC_DECL_NAME : K_DEF VAR '(' {
+  Emitter::BeginFunction($2);
+}
+
+STMT_LIST : {
+} | STMT_LIST STMT {
+}
+
+MODIFIED_VAR : VAR {
+  $$ = Builder::ModifiedVar($1, false, NULL);
+} | '*' VAR {
+  $$ = Builder::ModifiedVar($2, true, NULL);
+} | '*' SYM VAR {
+  $$ = Builder::ModifiedVar($3, true, $2);
+}
+
+VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
+  $$ = Builder::BuildVarDecl($1, $2, $3);
+} | K_ENUM TYPE_NAME MODIFIED_VAR {
+//  $$ = NULL; // NstBuilder::BuildVarDecl($2, NULL, $3);
+} | ENUM_DECL MODIFIED_VAR {
+}
+
+WIDTH_SPEC : {
+  $$ = NumberWidth::MakeInt(false, 32, 0);
+} | '#' NUM {
+  $$ = NumberWidth::MakeInt(false, $2, 0);
+} | '#' NUM ':' NUM {
+  $$ = NumberWidth::MakeInt(false, $2, $4);
+} | '#' '#' {
+  $$ = NumberWidth::Null();
+}
+
+ARG_DECL : {
+  /* no arguments */
+  $$ = NULL; // NstBuilder::ArgDeclList(NULL, NULL);
+} | ARG_DECL_LIST {
+  $$ = $1;
+}
+
+ARG_DECL_LIST : VAR_DECL {
+  $$ = Builder::ArgDeclList(NULL, $1);
+} | ARG_DECL_LIST ',' VAR_DECL {
+  $$ = Builder::ArgDeclList($1, $3);
+} | ARG_DECL_LIST ',' MODIFIED_VAR {
+  /* un-typed argument */
+  //  NstStmt *stmt = NstBuilder::BuildVarDecl(NULL, NULL, $3);
+  $$ = NULL; // NstBuilder::ArgDeclList($1, stmt);
+}
+
+ARRAY_SPEC : '[' ']' {
+  $$ = 0;
+} | '[' NUM ']' {
+  $$ = $2;
+}
+
+EMPTY_OR_ARRAY_SPEC : {
+  $$ = -1;
+} | ARRAY_SPEC {
+  $$ = $1;
+}
+
+ARRAY_ELM : NUM {
+  $$ = $1;
+}
+
+ARRAY_ELM_LIST : ARRAY_ELM {
+  ArrayInitializer *array = new ArrayInitializer;
+  array->num_.push_back($1);
+  $$ = array;
+} | ARRAY_ELM_LIST ',' ARRAY_ELM {
+  $1->num_.push_back($3);
+  $$ = $1;
+}
+
+ARRAY_INITIALIZER : '{' ARRAY_ELM_LIST '}' {
+  $$ = $2;
+}
+
+VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
+  Builder::SetArrayLength($1, $2);
+  $$ = Builder::VarDeclList(NULL, $1);
+} | VAR_DECL K_ASSIGN EXPR {
+  $1->initial_val = $3;
+  $$ = Builder::VarDeclList(NULL, $1);
+} | VAR_DECL ARRAY_SPEC K_ASSIGN ARRAY_INITIALIZER {
+  Builder::SetArrayLength($1, $2);
+  Builder::SetArrayInitializer($1, $4);
+  $$ = Builder::VarDeclList(NULL, $1);
+} | VAR_DECL_STMT ',' MODIFIED_VAR {
+  sym_t type = Builder::TypeNameFromVarDeclSet($1);
+  $$ = Builder::VarDeclList($1, Builder::BuildVarDecl(type, NULL, $3));
+} | VAR_DECL_STMT ',' MODIFIED_VAR K_ASSIGN EXPR {
+  $$ = Builder::VarDeclList($1, $3);
+}
+
+TYPE_NAME : K_INT {
+  $$ = sym_int;
+} | K_BOOL {
+  $$ = sym_bool;
+} | K_OBJECT {
+  $$ = sym_object;
+} | K_STRING {
+  $$ = sym_string;
+}
+
+
+LABEL : SYM ':' {
+}
+
+STMT : ';' {
+  /* empty stmt */
+} | EXPR ';' {
+  Emitter::EmitExprStmt($1);
+} | ENUM_DECL ';' {
+} | STRUCT_DECL ';' {
+} | K_GOTO FUNCALL ';' {
+  // NstEmitter::EmitTransition($2);
+} | K_GOTO SYM ';' {
+  // NstEmitter::EmitGotoStmt($2);
+} | K_RETURN EXPR ';' {
+  Emitter::EmitReturnStmt($2);
+} | K_RETURN ';' {
+  Emitter::EmitReturnStmt(NULL);
+} | BLOCK {
+} | IF_STMT {
+} | FOR_STMT {
+} | WHILE_STMT {
+} | DO_WHILE_STMT {
+} | SWITCH_STMT {
+} | VAR_DECL_STMT ';' {
+  Emitter::EmitVarDeclStmtSet($1);
+} | LABEL
+  | K_IMPORT STR ';' {
+  Emitter::EmitImportStmt($2);
+} | K_SPAWN FUNCALL ';' {
+  Emitter::EmitSpawnStmt($2);
+} | THREAD_DECL_STMT ';' {
+} | CHANNEL_DECL_STMT ';' {
+}
+
+THREAD_DECL_STMT : K_THREAD VAR K_ASSIGN FUNCALL {
+  Emitter::EmitThreadDeclStmt($2, $4);
+}
+
+CHANNEL_DECL_STMT : K_CHANNEL VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
+  Emitter::EmitChannelDeclStmt($2, $4, $5);
+}
+
+IF_COND_PART : K_IF '(' EXPR ')' {
+  $$ = Emitter::EmitIfStmt($3);
+  Emitter::EmitLabel($$->label_t_);
+}
+
+IF_WITH_ELSE : IF_COND_PART BLOCK K_ELSE {
+  $$ = $1;
+  Emitter::EmitGoto($1->label_join_);
+  Emitter::EmitLabel($1->label_f_);
+}
+
+IF_STMT : IF_COND_PART BLOCK {
+  $$ = NULL;
+  Emitter::EmitLabel($1->label_f_);
+  Emitter::EmitLabel($1->label_join_);
+} | IF_WITH_ELSE BLOCK {
+  $$ = NULL;
+  Emitter::EmitLabel($1->label_join_);
+} | IF_WITH_ELSE IF_STMT {
+  $$ = NULL;
+  Emitter::EmitLabel($1->label_join_);
+}
+
+FOR_HEAD : K_FOR '(' EXPR ';' {
+  Emitter::BeginBlock();
+  Emitter::EmitExprStmt($3);
+}
+
+FOR_COND_PART : FOR_HEAD EXPR {
+  $$ = Emitter::EmitForStmt($2);
+  Emitter::EmitLabel($$->label_t_);
+}
+
+FOR_STMT : FOR_COND_PART ';' EXPR ')' BLOCK {
+  // join:
+  // cond_expr
+  // if (cond_expr)
+  //  t:
+  //  block
+  //  repeat_expr
+  // goto join:
+  //  f:
+  Emitter::EmitExprStmt($3);
+  Emitter::EmitGoto($1->label_join_);
+  Emitter::EmitLabel($1->label_f_);
+  Emitter::EndBlock();
+}
+
+WHILE_STMT : K_WHILE '(' EXPR ')' BLOCK {
+  $$ = NULL;
+}
+
+DO_WHILE_STMT : K_DO BLOCK K_WHILE '(' EXPR ')' {
+  $$ = NULL;
+}
+
+SWITCH_STMT : K_SWITCH '(' EXPR ')' CASES_LIST {
+}
+
+CASES_LIST : CASE {
+} | CASES_LIST CASE {
+}
+
+CASE : K_DEFAULT {
+}
+
+BLOCK : BLOCK_HEAD STMT_LIST '}' {
+  Emitter::EndBlock();
+}
+
+BLOCK_HEAD : '{' {
+  /* open new bindings */
+  Emitter::BeginBlock();
+}
+
+ENUM_DECL : K_ENUM VAR '{' ENUM_ITEM_LIST '}' {
+  // NstEmitter::EmitEnumTypeDecl($2, $4);
+}
+
+ENUM_ITEM_LIST : SYM {
+  $$ = NULL; // NstBuilder::EnumItemList(NULL, $1);
+} | ENUM_ITEM_LIST ',' SYM {
+  $$ = NULL; // NstBuilder::EnumItemList($1, $3);
+}
+
+STRUCT_DECL : STRUCT_DECL_HEAD '{' STRUCT_ELEMENT_LIST '}' {
+}
+
+STRUCT_DECL_HEAD : K_STRUCT '{' {
+}
+
+STRUCT_ELEMENT_LIST : VAR_DECL_STMT ';' {
+} | STRUCT_ELEMENT_LIST VAR_DECL_STMT ';' {
+}
+
+EXPR : VAR {
+  $$ = $1;
+} | '(' EXPR ')' {
+  $$ = $2;
+} | EXPR '[' EXPR ']' {
+  $$ = Builder::ArrayRefExpr($1, $3);
+} | EXPR '[' EXPR ':' EXPR ']' {
+  $$ = Builder::BitRangeRefExpr($1, $3, $5);
+} | EXPR ',' EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_COMMA);
+} | FUNCALL {
+  $$ = $1;
+} | '!' EXPR {
+  $$ = Builder::LogicInvertExpr($2);
+} | '~' EXPR {
+  $$ = Builder::BitInvertExpr($2);
+} | '*' EXPR {
+  $$ = Builder::RefExpr($2);
+} | EXPR K_ADD_SUB EXPR {
+  $$ = Builder::BinopExpr($1, $3, $2);
+} | EXPR '*' EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_MUL);
+} | EXPR K_SHIFT EXPR {
+  $$ = Builder::BinopExpr($1, $3, $2);
+} | EXPR K_ASSIGN EXPR {
+  $$ = Builder::BinopExpr($1, $3, $2);
+} | EXPR K_LG_COMPARE EXPR {
+  $$ = Builder::BinopExpr($1, $3, $2);
+} | EXPR K_EQ_COMPARE EXPR {
+  $$ = Builder::BinopExpr($1, $3, $2);
+} | EXPR K_BIT_CONCAT EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_CONCAT);
+} | EXPR '&' EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_AND);
+} | EXPR '|' EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_OR);
+} | EXPR '^' EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_XOR);
+} | EXPR K_LOGIC_OR EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_LOR);
+} | EXPR K_LOGIC_AND EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_LAND);
+} | EXPR K_INC_DEC {
+  $$ = Builder::IncDecExpr($1, $2, true);
+} | K_INC_DEC EXPR {
+  $$ = Builder::IncDecExpr($2, $1, false);
+} | K_ADD_SUB EXPR %prec SIGN {
+  $$ = Builder::SignedExpr($1, $2);
+} | EXPR '?' EXPR ':' EXPR {
+  $$ = Builder::TriTerm($1, $3, $5);
+} | STR {
+  $$ = Builder::StrExpr($1);
+} | NUM {
+  $$ = Builder::NumExpr($1);
+}
+
+VAR : SYM {
+  $$ = Builder::SymExpr($1);
+} | VAR '.' SYM {
+  $$ = Builder::ElmRefExpr($1, $3);
+}
+
+FUNCALL_HEAD : VAR '(' {
+  $$ = $1;
+}
+
+FUNCALL :  FUNCALL_HEAD ARG_LIST ')' {
+  $$ = Builder::FuncallExpr($1, $2);
+}
+
+ARG_LIST : {
+  $$ = NULL;
+} | EXPR {
+  $$ = $1;
+}
+
+%%

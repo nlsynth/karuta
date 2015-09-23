@@ -1,0 +1,24 @@
+// VERILOG_OUTPUT: a.v
+def Kernel.f(int x) (int) {
+  return x + 1;
+}
+def Kernel.ex()
+ [ resource = "a", verilog="resource.v", file="copy", module="hello" ]
+{
+}
+
+def Kernel.main()
+{
+ int *p;
+ *p = 0;
+ ex();
+ *p = f(*p);
+ ex();
+}
+
+
+
+//main();
+//Kernel.set_dump("/tmp/a");
+Kernel.compile();
+Kernel.write_hdl("a.v");

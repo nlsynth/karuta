@@ -1,0 +1,20 @@
+#! /bin/sh
+
+# Neon light compiler frontend wrapper to invoke the binary before
+# installation. This is different from lib/nli{.in}.
+
+
+NLI_BASE_DIR=`dirname $0`
+NLI_DIR=${NLI_BASE_DIR}/lib
+
+export NLI_DIR
+
+if test "${GDB+set}" = set; then
+  WRAPPER="$GDB --args"
+fi
+
+if test "${VALGRIND+set}" = set; then
+  WRAPPER="valgrind --leak-check=full --show-reachable=yes"
+fi
+
+$WRAPPER ${NLI_BASE_DIR}/nli-bin $@

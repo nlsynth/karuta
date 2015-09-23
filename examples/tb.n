@@ -1,0 +1,27 @@
+/* sample code
+  this modules adds +10 to data in address 0 */
+
+print("hello");
+
+
+def Kernel.main() {
+  int *a = 0;
+  *a = *a + 10;
+}
+
+
+
+/* test it */
+int *p = 0;
+*p = 10;
+Kernel.main();
+if (*p == 20) {
+  print("maybe ok");
+}
+
+/* output */
+setDump("/tmp/a");
+Kernel.compile();
+Kernel.writeHdl("/tmp/a.html");
+Kernel.writeHdl("/tmp/a.cpp");
+Kernel.writeHdl("a.v");

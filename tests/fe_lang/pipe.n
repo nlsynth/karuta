@@ -1,0 +1,6 @@
+//
+channel Kernel.c = int;
+*c = 1;
+*c = 10;
+assert(*c == 1);
+assert(*c == 10);

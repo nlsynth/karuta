@@ -1,0 +1,314 @@
+#! /usr/bin/python
+
+# Copyright Yusuke Tabata 2007-2010
+
+
+import os
+import re
+import sys
+import tempfile
+
+print "Running tests"
+os.putenv("NLI_DIR", "../lib/")
+nli_binary="../nli-bin"
+verilog_compiler="iverilog"
+test_tb_top="test_tb.v"
+
+# see file QA to see category.
+default_tests = ["fe_error/misc.n",
+                 "fe_error/tbd.n",
+                 "fe_error/infinite_loop.n",
+                 "fe_error/parse_error.n",
+                 "fe_value/basic.n", "fe_obj/this_obj.n", "fe_value/numeric.n",
+                 "fe_value/false.n", "fe_value/array.n", "fe_lang/for.n",
+                 "fe_lang/funcall.n", "fe_lang/if.n",
+                 "fe_misc/errors.n", "fe_obj/object.n", "fe_misc/tb.n",
+                 "fe_misc/hello.n", "fe_misc/parser.n", "fe_lang/load.n",
+                 "fe_misc/misc.n", "fe_lang/import_file.n",
+                 "fe_lang/decl.n", "fe_lang/scope.n", "fe_lang/pipe.n",
+                 "synth_misc/null.n", "synth_value/false.n",
+                 "synth_value/basic.n",
+                 "synth_value/bitops.n", "synth_value/shift.n",
+                 "synth_value/array_ro.n", "synth_value/array_rw.n",
+                 "synth_lang/mem.n", "synth_lang/cond.n", "synth_lang/member.n",
+                 "synth_lang/import_resource.n", "synth_lang/return.n",
+                 "synth_lang/pipe.n",
+                 "synth_obj/sub_obj_call.n",
+                 #"synth_lang/funcall.n",
+                 #"synth_lang/no_member_decl.n",
+                 "synth_regression/t04_0_0_26.n",
+                 "synth_regression/t04_0_0_30.n",
+                 "synth_regression/t04_0_0_30_1.n",
+                 "synth_regression/t04_0_0_30_2.n",
+                 "synth_regression/t04_0_0_33.n",
+                 "synth_regression/t04_0_0_33_1.n",
+                 "synth_regression/t04_0_0_33_2.n",
+                 "synth_regression/t04_0_0_33_3.n",
+                 "synth_regression/t04_0_0_33_4.n",
+                 "synth_regression/t04_0_0_33_5.n",
+                 "synth_regression/t04_0_0_33_6.n",
+                 "synth_regression/t04_0_0_34_1.n",
+                 "synth_regression/t04_0_0_34_2.n",
+                 "synth_regression/t04_0_0_35_1.n",
+                 "synth_regression/t04_0_1_0_0.n",
+                 "synth_regression/t04_0_1_1_0.n",
+#                 "t91_funcall_width_infer.n",
+#                 "t91_string.n",
+#                 "type_inf.n",
+                 ]
+tmp_prefix = "/tmp"
+
+class TestSummary():
+    def __init__(self):
+        self.total_failures = 0
+        self.total_unexpected_aborts = 0
+        self.num_tests = 0
+        self.num_vl_tests = 0
+        self.num_aborts = 0
+        self.num_verilog_compile_errors = 0
+        self.failed_tests = []
+        self.aborted_tests = []
+
+    def PrintSummary(self):
+        print("Number of verilog tests:%d" % self.num_vl_tests)
+        print("Number of tests:%d" % self.num_tests)
+        print("Number of aborted tests:%d" % self.num_aborts)
+        print("Number of unexpectedly aborted tests:%d" %
+              self.total_unexpected_aborts)
+        print("Number of verilog compile failures:%d" %
+              self.num_verilog_compile_errors)
+        print("Total unexpected Failures:%d" % self.total_failures)
+        if self.failed_tests:
+            print(self.failed_tests)
+        if self.aborted_tests:
+            print("aborted tests:" + str(self.aborted_tests))
+
+    def AddResult(self, test_name, num_fails, ign_fail,
+                  done_stat, exp_abort, exp_fails):
+        if num_fails != exp_fails and (not ign_fail):
+            print "Unexpected fails %d (exp%d)" % (num_fails, exp_fails)
+            self.total_failures += num_fails
+            self.failed_tests.append(test_name)
+        if not done_stat and not exp_abort:
+            print "Unexpected abort"
+            self.total_unexpected_aborts += 1
+            self.aborted_tests.append(test_name)
+        self.num_tests += 1
+
+    def AddVerilogResult(self, test_name, num_fails, ign_fail, exp_fails):
+        self.num_vl_tests += 1
+        if num_fails != exp_fails and (not ign_fail):
+            print "unexpected failure in vlfile"
+            self.total_failures += num_fails
+            self.failed_tests.append(test_name)
+
+    def AddVerilogCompileFailure(self, test_name):
+        self.num_verilog_compile_errors += 1
+        self.failed_tests.append(test_name)
+
+    def AddAbort(self, rv):
+        self.num_aborts += 1;
+
+
+class NLITest():
+    def __init__(self, source_fn):
+        self.source_fn = source_fn
+
+    def CheckLog(self, fn):
+        num_fails = 0
+        done_stat = 0
+        ifh = open(fn, "r")
+        for line in ifh:
+            if re.search("ASSERTION FAILURE", line):
+                num_fails = num_fails + 1
+            if re.search("ASSERTION UNDEFINED", line):
+                num_fails = num_fails + 1
+            if re.search("NLI DONE", line):
+                done_stat = 1
+        return {"num_fails":num_fails,
+                "done_stat":done_stat}
+
+    def ReadExpects(self, fn):
+        exp_info = {"exp_fails":0,
+                    "vl_exp_fails":0,
+                    "nli_ignore_errors":0,
+                    "exp_abort":0}
+        ifh = open(fn, "r")
+        for line in ifh:
+            m = re.search("NLI_EXPECTED_ERRORS: (\d+)", line)
+            if m:
+                exp_info["exp_fails"] = int(m.group(1))
+            m = re.search("VERILOG_EXPECTED_ERRORS: (\d+)", line)
+            if m:
+                exp_info["vl_exp_fails"] = int(m.group(1))
+            m = re.search("VERILOG_OUTPUT: (\S+)", line)
+            if m:
+                exp_info["verilog"] = m.group(1)
+            m = re.search("NLI_IGNORE_ERRORS:", line)
+            if m:
+                exp_info["nli_ignore_errors"] = 1
+            m = re.search("NLI_TIMEOUT: (\d+)", line)
+            if m:
+                exp_info["nli_timeout"] = int(m.group(1))
+            m = re.search("NLI_EXPECT_ABORT:", line)
+            if m:
+                exp_info["exp_abort"] = 1
+            m = re.search("NLI_SPLIT_TEST: (\S+)", line)
+            if m:
+                exp_info["split_info"] = m.group(1)
+        return exp_info
+
+    def GetVerilogCompileCommand(self, fn, test_bin_fn):
+        ifh = open(fn, "r")
+        has_mem_if = False
+        for line in ifh:
+            m = re.search("EXTERNAL_RAM", line)
+            if m:
+                has_mem_if = True
+        cmd = (verilog_compiler + " -o " + test_bin_fn + " " +
+               fn + " " + test_tb_top + " -I../lib")
+        if has_mem_if:
+            cmd += " -D NLI_RAM"
+        return cmd
+
+    def CheckVerilog(self, fn, summary, exp_info):
+        test_bin_fn = tempfile.mktemp()
+        test_log_fn = tempfile.mktemp()
+        cmd = self.GetVerilogCompileCommand(fn, test_bin_fn)
+        print "  testing " + fn + "(" + cmd + ")"
+        os.system(cmd)
+        if not os.path.isfile(test_bin_fn):
+            summary.AddVerilogCompileFailure(self.source_fn)
+            return
+        test_cmd = test_bin_fn + ">" + test_log_fn
+        print ("  running verilog executable " + test_bin_fn +
+               "(" + test_cmd + ")")
+        os.system(test_cmd)
+        res = self.CheckLog(test_log_fn)
+        num_fails = res["num_fails"]
+        exp_fails = exp_info["vl_exp_fails"]
+        summary.AddVerilogResult(self.source_fn, num_fails,
+                                 exp_info["nli_ignore_errors"],
+                                 exp_fails)
+        try:
+            os.unlink(test_bin_fn)
+            os.unlink(test_log_fn)
+        except:
+            pass
+
+    def GetNliCommand(self, tf, exp_info, use_zfe):
+        vanilla = "--vanilla"
+        if "verilog" in exp_info:
+            # verilog tests requires imported modules.
+            vanilla = ""
+        timeout = "1000"
+        if "nli_timeout" in exp_info:
+            timeout = str(exp_info["nli_timeout"])
+        cmd = "NLI_DIR=../lib "
+        cmd += nli_binary + " " + self.source_fn + " " + vanilla
+        if use_zfe:
+            cmd += " -z "
+        cmd += " --root " + tmp_prefix
+        cmd += " --timeout " + timeout + " "
+        cmd += " --print_exit_status "
+        cmd += " > " + tf
+        return cmd
+
+    def RunTest(self, summary, use_zfe):
+        exp_info = self.ReadExpects(self.source_fn)
+        tf = tempfile.mktemp()
+        cmd = self.GetNliCommand(tf, exp_info, use_zfe)
+        if "verilog" in exp_info:
+            try:
+                os.unlink(tmp_prefix + "/" + exp_info["verilog"])
+            except:
+                pass
+        print "executing test " + self.source_fn
+        if "split_info" in exp_info:
+            print " split: " + str(exp_info["split_info"])
+        print " command line=" + cmd
+        rv = os.system(cmd)
+        if rv:
+            summary.AddAbort(rv)
+        if rv == 0 and "verilog" in exp_info:
+            self.CheckVerilog(tmp_prefix + "/" + exp_info["verilog"],
+                              summary, exp_info)
+        res = self.CheckLog(tf)
+        num_fails = res["num_fails"]
+        done_stat = res["done_stat"]
+        exp_fails = exp_info["exp_fails"]
+        exp_abort = exp_info["exp_abort"]
+        summary.AddResult(self.source_fn,
+                          num_fails,
+                          exp_info["nli_ignore_errors"],
+                          done_stat, exp_abort, exp_fails)
+        os.unlink(tf)
+
+
+class TestManager:
+    def __init__(self, sources, use_zfe):
+        self.sources = sources
+        self.use_zfe = use_zfe
+
+    def IsCompoundTest(self, source):
+        ifh = open(source, "r")
+        for line in ifh:
+            if re.search("NLI_COMPOUND_TEST", line):
+                return True
+        return False
+
+    def SplitTest(self, source):
+        files = []
+        ifh = open(source, "r")
+        of = tempfile.mktemp()
+        ofh = open(of, "w")
+        ln = 0
+        lnstr = ""
+        for line in ifh:
+            ln = ln + 1
+            lnstr = "\n// NLI_SPLIT_TEST: " + source + ":" + str(ln) + "\n"
+            if re.search("NLI_NEXT_TEST", line):
+                files.append(of)
+                ofh.write(lnstr)
+                ofh.close()
+                of = tempfile.mktemp()
+                ofh = open(of, "w")
+            else:
+                ofh.write(line)
+        files.append(of)
+        ofh.write(lnstr)
+        ofh.close()
+        return files
+
+    def Run(self):
+        summary = TestSummary()
+        for source in self.sources:
+            if self.IsCompoundTest(source):
+                tests = self.SplitTest(source)
+                print (" Split into " + str(len(tests)) + "compound tests" +
+                       " from " + source)
+                for fract in tests:
+                    t = NLITest(fract)
+                    t.RunTest(summary, self.use_zfe)
+                    os.unlink(fract)
+            else:
+                t = NLITest(source)
+                t.RunTest(summary, self.use_zfe)
+        summary.PrintSummary()
+
+test_sources = []
+use_zfe = False
+
+if len(sys.argv) > 1:
+    args = sys.argv[1:]
+    for arg in args:
+        if arg == "-z":
+            use_zfe = True
+            continue
+        test_sources.append(arg)
+
+if not test_sources:
+    test_sources = default_tests
+
+tm = TestManager(test_sources, use_zfe)
+tm.Run()

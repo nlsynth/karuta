@@ -1,0 +1,14 @@
+import "mt.n";
+
+MT = Global.MT;
+
+MT_test = MT.clone();
+
+def MT_test.main() {
+  initializeGenerator();
+  assert(MT[623] == 1796872496);
+}
+
+//MT_test.main();
+MT_test.compile();
+MT_test.write_hdl("/tmp/mt.v");

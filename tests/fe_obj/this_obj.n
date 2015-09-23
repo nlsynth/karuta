@@ -1,0 +1,19 @@
+// test current object
+
+object X;
+X = Kernel.clone();
+
+def Kernel.func() (bool) {
+  return false;
+}
+
+def X.func() (bool) {
+  return true;
+}
+
+def X.main() {
+  assert(func());
+}
+
+X.main();
+

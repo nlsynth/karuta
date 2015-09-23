@@ -1,0 +1,51 @@
+Language Reference Manual
+
+*** Width spec
+ uint #32 x;
+
+*** Address space
+ int *a y;
+ accesses int a[];
+
+*** Built in methods
+
+* Object
+ * Kernel
+  * Module
+
+Object.clone
+Object.dump
+Object.setDump
+Object.assert
+Object.Kernel
+
+Kernel.abort
+Kernel.compile
+Kernel.exit
+Kernel.print
+Kernel.writeHdl
+Kernel.bool
+Kernel.Object
+Kernel.Module 
+
+*.$compiled_module
+*.$dump_file_name
+
+*** Run time environment
+32bit or 64bit address bus.
+
+*** Built in types
+int
+uint
+num
+
+*** Names
+prefix '__' is reserved for implementation
+
+*** Expressions
+[l:r] range should be constant.
+
+*** Statements
+if statement can take number as its condition.
+
+*** Imported resource

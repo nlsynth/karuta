@@ -1,0 +1,40 @@
+// NLI_COMPOUND_TEST
+
+// do nothing
+
+// NLI_NEXT_TEST
+
+
+// import failure.
+import "non-exist";
+
+// NLI_NEXT_TEST
+
+print("hello world");
+
+// NLI_NEXT_TEST
+
+true = false;
+
+// NLI_NEXT_TEST
+
+main();
+
+// NLI_NEXT_TEST
+exit();
+
+// NLI_NEXT_TEST
+return;
+
+// NLI_NEXT_TEST
+// too many elements.
+int Kernel.x[4] = {1,2,3,4,5};
+
+// NLI_NEXT_TEST
+// compile without main()
+compile();
+
+// NLI_NEXT_TEST
+// bad type assignment.
+int Kernel.x = 0;
+Kernel.x = Kernel.clone();

@@ -1,0 +1,20 @@
+// VERILOG_OUTPUT: a.v
+
+// regression test in bb conditions.
+
+def main() {
+  int x = 0;
+  int i;
+  for (i = 0; i < 10; ++i) {
+    x = x + 1;
+    if (x > 5) {
+      x -= 5;
+    }
+  }
+  assert(x == 5);
+}
+
+main();
+
+compile();
+write_hdl("a.v");

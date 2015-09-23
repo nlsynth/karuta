@@ -1,0 +1,8 @@
+def Kernel.main() {
+  x = 10;
+}
+
+Kernel.compile();
+write_hdl("a.html");
+write_hdl("a.v");
+write_hdl("a.cpp");

@@ -1,0 +1,7 @@
+
+def f2(int ## x) (int) {
+  assert(widthof(x) == 4);
+  return x + 1;
+}
+
+assert(f2(10) == 11);

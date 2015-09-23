@@ -1,0 +1,17 @@
+// VERILOG_OUTPUT: a.v
+
+// regression in wire insn optimizer.
+
+int Kernel.MT[1024] = {0};
+
+def main() {
+  int i;
+  for (i = 1; i < 624; ++i) {
+    int prev = MT[i - 1];
+    int #64 cur;
+    cur = prev ^ (prev >> 30);
+  }
+}
+
+compile();
+write_hdl("a.v");

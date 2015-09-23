@@ -1,0 +1,2 @@
+// NLI_EXPECTED_ERRORS: 1
+assert(false);

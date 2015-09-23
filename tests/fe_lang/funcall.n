@@ -1,0 +1,26 @@
+def f1(int x, int #16 y) {
+  assert(x == 10);
+  assert(y == 20);
+  assert(widthof(x) == 32);
+  assert(widthof(y) == 16);
+}
+
+f1(10, 20);
+
+/* it once failed, since array referene didn't set correct width information */
+def f3(int x) {
+}
+
+int a[10] = {0};
+f3(a[0]);
+
+/**/
+int i;
+
+def f(int p, int q) {
+  assert(p == q);
+}
+
+i = 1;
+
+f(a[i], a[i+1]);

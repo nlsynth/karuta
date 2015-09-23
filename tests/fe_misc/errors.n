@@ -1,0 +1,11 @@
+// unimplemented functionalities
+// NLI_IGNORE_ERRORS:
+def f(int x) (int) {
+  if (x == 0) {
+    return false;
+  } else {
+    return 1;
+  }
+}
+print(f(0));
+print(f(1));

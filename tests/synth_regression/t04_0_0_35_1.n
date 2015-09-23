@@ -1,0 +1,20 @@
+// VERILOG_OUTPUT: a.v
+
+// infinite loop.
+
+int Kernel.MT[1024] = {0};
+
+def main() {
+  int i;
+  for (i = 1; i < 10; ++i) {
+    int prev = 0;
+    int #64 cur;
+    cur = prev ^ (prev >> 30);
+    MT[i] = cur[31:0];
+  }
+  assert(i == 10);
+}
+
+enable_wire_insn();
+compile();
+write_hdl("a.v");

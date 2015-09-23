@@ -1,0 +1,4 @@
+bool Kernel.x = false;
+
+assert(Kernel.x == false);
+assert(x == false);

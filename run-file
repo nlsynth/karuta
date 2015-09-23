@@ -1,0 +1,74 @@
+#! /usr/bin/python
+
+# utility to run commands required to run compiled verilog.
+# example.
+# $ run-file /tmp/a.n /tmp/a.v
+
+import os
+import re
+import sys
+
+args = sys.argv[1:]
+
+nfile = ""
+vfile = "/tmp/a.v"
+ccfile = ""
+aout = "/tmp/a.out"
+tbfile = "tests/test_tb.v"
+voptions = ["-Ilib/"]
+nli_cmd = "./nli"
+iverilog_cmd = "iverilog"
+zfe = False
+
+for arg in sys.argv:
+  if re.search("\.n$", arg):
+    print "nfile=" + arg
+    nfile = arg
+  if re.search("\.v$", arg):
+    print "vfile=" + arg
+    vfile = arg
+  if re.search("\.cc$", arg) or re.search("\.cpp$", arg):
+    print "ccfile=" + arg
+    ccfile = arg
+  if arg == "-m":
+    voptions.append("-DNLI_RAM")
+  if arg == "-l":
+    voptions.append("-DLONG_SIM")
+  if arg == "-d":
+    voptions.append("-DNLI_DEBUG")
+  if arg == "-z":
+    zfe = True
+
+def run_command(args):
+  cmd = " ".join(args)
+  print "executing :" + cmd
+  res = os.system(cmd)
+  if res:
+    print "stop" + str(res)
+    exit()
+
+# run nli
+if nfile:
+  cmd = [nli_cmd, nfile]
+  if zfe:
+    cmd.append("-z")
+  run_command(cmd)
+else:
+  print "skipping nli"
+
+# run c output
+if ccfile:
+  cmd = ["g++", ccfile, "-I.", "-o", aout]
+  run_command(cmd)
+  cmd = [aout]
+  run_command(cmd)
+  exit()
+
+# run iverilog
+voption = " ".join(voptions)
+cmd = [iverilog_cmd, vfile, tbfile, voption]
+run_command(cmd)
+
+# run output
+cmd = ["./a.out"]
+run_command(cmd)

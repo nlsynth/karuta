@@ -1,0 +1,9 @@
+def Kernel.main() {
+  int x;
+  print("start");
+  for (x = 0; x < 10; x = x + 1) {
+    print(x);
+  }
+}
+
+main();

@@ -1,0 +1,10 @@
+/* string operation */
+
+p = "x";
+
+assert("x" == "x");
+assert("x" != "y");
+assert(p == "x");
+assert("x" == p);
+
+assert(p + "y" == "xy");

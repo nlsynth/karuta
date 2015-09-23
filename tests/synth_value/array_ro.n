@@ -1,0 +1,12 @@
+// VERILOG_OUTPUT: a.v 
+int Kernel.x[] = {1,2,3,4};
+
+def Kernel.main() {
+  assert(x[1] == 2);
+  assert(x[3] == 0);
+}
+
+x[3] = 0;
+
+compile();
+write_hdl("a.v");

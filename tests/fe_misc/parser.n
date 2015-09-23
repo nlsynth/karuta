@@ -1,0 +1,14 @@
+// tests the parser
+
+// comment
+
+/**/
+/*comment*/
+/*
+*/
+int x;
+x = 2147483648;
+assert(65536 * 32768 == x);
+
+//x = 4294967296;
+//print(x);

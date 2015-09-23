@@ -1,0 +1,34 @@
+// NLI_COMPOUND_TEST
+// NLI_EXPECT_ABORT:
+// TODO(yusuke): decide whether this should be an error or warning.
+def f() {
+  label:
+  label:
+}
+
+// NLI_NEXT_TEST
+def f(int x) (int) {
+  if (x == 0) {
+    return 1;
+  }
+}
+// NLI_NEXT_TEST
+// NLI_EXPECT_ABORT:
+int x;
+x = false;
+
+// NLI_NEXT_TEST
+// should output useful message.
+// NLI_EXPECT_ABORT:
+def f() (int) {
+  return 10;
+  return false;
+}
+f();
+// NLI_NEXT_TEST
+// should be type error.
+def f() (int) {
+  return false;
+  return 10;
+}
+f();

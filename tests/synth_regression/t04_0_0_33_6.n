@@ -1,0 +1,17 @@
+// VERILOG_OUTPUT: a.v
+
+def main() {
+  int k = 0;
+  int i;
+  for (i = 0; i < 4; ++i) {
+    int j;
+    for (j = 0; j < 4; ++j) {
+      ++k;
+    }
+  }
+//  assert(k == 16);
+}
+
+
+compile();
+write_hdl("a.v");

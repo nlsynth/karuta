@@ -1,0 +1,18 @@
+// VERILOG_OUTPUT: a.v
+
+def main() {
+  int x = 6;
+  int y = 0;
+  if (x > 5) {
+    x = 10;
+  } else {
+    y = 6;
+  }
+  assert(x == 10);
+  assert(y == 0);
+}
+
+main();
+
+compile();
+write_hdl("a.v");

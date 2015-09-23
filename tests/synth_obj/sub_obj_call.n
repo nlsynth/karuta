@@ -1,0 +1,18 @@
+// VERILOG_OUTPUT: a.v
+object Kernel.X = Kernel.clone();
+
+def X.f() {
+  print(1);
+}
+
+def X.g() {
+  print(2);
+}
+
+def main() {
+  X.f();
+  X.g();
+}
+
+compile();
+writeHdl("a.v");

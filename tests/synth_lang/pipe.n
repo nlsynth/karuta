@@ -1,0 +1,17 @@
+// VERILOG_OUTPUT: a.v
+def Kernel.x() {
+ *c = 10;
+ assert(*d == 10);
+}
+def Kernel.y() {
+ *d = *c;
+}
+
+channel Kernel.c = int;
+channel Kernel.d = int;
+thread Kernel.f = x();
+thread Kernel.g = y();
+
+run();
+compile();
+writeHdl("a.v");

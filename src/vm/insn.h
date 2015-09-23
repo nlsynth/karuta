@@ -1,0 +1,54 @@
+// -*- C++ -*-
+#ifndef _vm_insn_h_
+#define _vm_insn_h_
+
+#include "nli.h"
+
+#include "vm/opcode.h"
+
+class DumpStream;
+
+namespace fe {
+class Expr;
+class Stmt;
+}  // namespace fe
+
+namespace vm {
+
+class Register;
+class Method;
+
+class Insn {
+public:
+  Insn();
+  void Dump() const;
+  void Dump(DumpStream &ds) const;
+
+  enum OpCode op_;
+  vector<Register*> dst_regs_;
+  vector<Register*> src_regs_;
+  Register *obj_reg_;
+  Method *method_;
+  int jump_target_;
+  // Extra information from the parse tree.
+  sym_t label_;
+  fe::Expr *insn_expr_;
+  fe::Stmt *insn_stmt_;
+};
+
+class InsnType {
+public:
+  // (int or enum), (int or enum) -> bool
+  static bool IsComparison(int op);
+  // int, int -> int
+  static bool IsNumCalculation(int op);
+};
+
+class InsnOpUtils {
+public:
+  static const string &Str(Insn *insn);
+};
+
+}  // namespace vm
+
+#endif  // _vm_insn_h_

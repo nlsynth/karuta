@@ -1,0 +1,3 @@
+import "t01_hello.n";
+
+print("imported");

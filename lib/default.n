@@ -1,0 +1,102 @@
+// default script
+print("default.n loaded");
+
+// launched
+bool Kernel.__use_ssa = true;
+bool Kernel.__use_register_share = true;
+bool Kernel.__use_wire_insn = true;
+bool Kernel.__use_opt_resource_alloc = true;
+
+def Kernel.enable_resource_alloc() {
+  __use_opt_resource_alloc = true;
+}
+
+def Kernel.enable_wire_insn() {
+  __use_wire_insn = true;
+}
+
+def Kernel.disable_wire_insn() {
+  __use_wire_insn = false;
+}
+
+def Kernel.enable_ssa() {
+  __use_ssa = true;
+}
+
+def Kernel.disable_ssa() {
+  __use_ssa = false;
+}
+
+bool Kernel.__use_register_share = true;
+
+def Kernel.disable_register_share() {
+  __use_register_share = false;
+}
+
+def Kernel.compile() {
+  // clean up for compilation
+  __compile("opt_unreachable_state_elimination");
+  __compile("opt_pure_temp_variable_elimination");
+  // final pass for debug.
+  __compile("opt_constant_insn_elimination");
+  __compile("opt_clean_graph_weak");
+  // real optimization passes
+  if (__use_ssa) {
+    __compile("opt_basic_block_shrink");
+    __compile("opt_ssa");
+    __compile("opt_ssa_assorted");
+    __compile("opt_ssa_cleanup");
+  }
+  __compile("opt_constant_branch_elimination");
+  if (__use_register_share) {
+    __compile("opt_register_share");
+  }
+  __compile("opt_basic_block_shrink");
+  // clean up for above optimzataion passes
+  __compile("opt_constant_insn_elimination");
+  __compile("opt_constant_branch_elimination");
+  __compile("opt_unreachable_state_elimination");
+  __compile("opt_clean_graph");
+  __compile("opt_interface");
+  if (__use_wire_insn) {
+    if (__use_opt_resource_alloc) {
+      __compile("opt_resource_alloc");
+    } else {
+      __compile("opt_wire_insn");
+    }
+  }
+  // final pass
+  __compile("opt_synth");
+}
+
+def Kernel.__print(int v)
+  [
+    resource = "print",
+    verilog="nli_print.v",
+    file="copy",
+    module="print"
+  ] {
+  printf("print=%d", v);
+}
+
+def Kernel.__assert(bool a)
+  [
+    resource = "assert",
+    verilog="nli_assert.v",
+    file="copy",
+    module="assert"
+  ] {
+  if (!a) {
+    print("assertion failed");
+  }
+}
+
+def Kernel.__exit()
+  [
+    resource = "exit",
+    verilog="nli_exit.v",
+    file="copy",
+    module="exit"
+  ] {
+  exit();
+}

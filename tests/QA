@@ -1,0 +1,23 @@
+Quality Assurance strategy
+
+* N Interpreter standard tests.
+ fe_lang/ language features
+ fe_misc/ others
+ fe_obj/ object systems
+ fe_value/ value and calculation
+ fe_error/ errorneous inputs
+* N Compiler standard tests. (run in interpreter and verilog)
+ synth_lang/ language features
+ synth_misc/ others
+ synth_regression/ regression tests from previous versions
+ synth_value/ value and calculation
+* N regression tests
+ synth_regression/
+* t09?: broken by spec changes.
+
+Error handling classes.
+ (a) Should stop execution. (default)
+  (a-1) Parse error.
+  (a-2) Type check error.
+  (a-3) Run time error.
+ (b) Should emit run time warning.

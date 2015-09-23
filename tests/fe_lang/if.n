@@ -1,0 +1,12 @@
+def Kernel.f(int x) {
+  print("arg=", x);
+  if (x > 10) {
+    print("x>10");
+  }
+}
+
+def Kernel.main() {
+  print("here");
+  f(10);
+}
+main();

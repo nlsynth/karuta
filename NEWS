@@ -1,0 +1,83 @@
+0.1.8 WIP
+2015/09/06 0.1.7
+ Prepare to introduce hierarchical objects.
+2015/07/19 0.1.6
+ Reorganized and cleaned up compiler/vm interface.
+2015/05/18 0.1.5
+ Reorganized directory structure. Update to c++11.
+2015/01/10 0.1.4
+ implement inter thread channel. removed C frontend.
+2014/12/07 0.1.3
+ implement write channel.
+2014/06/23 0.1.2
+ removal of old N front end.
+2014/06/19 0.1.1
+ bug fixes of the compiler and optimizer.
+2014/05/13 0.1.0
+ introduced byte code based interpreter.
+2012/04/14 0.0.37
+ allocate more resources for speed up.
+2012/01/22 0.0.36
+ fix a bug in wire insn phase. turn it on as default.
+2012/01/04 0.0.35
+ fixed unstable compile result bug
+2011/08/07 0.0.34
+ working ssa conversion
+2011/02/19 0.0.33
+ experimental ssa conversion
+2010/10/11 0.0.32
+ code clean up
+2010/06/27 0.0.31
+ fix bug in block shrink optimizer
+2010/05/25 0.0.30
+ fix bb optimizer and register share optimizer
+2010/05/24 0.0.29
+ many infra structure update in optimizer.
+2010/05/04 0.0.28
+ fixed some verilog output bugs.
+2010/04/20 0.0.27
+ fixed some verilog output bugs.
+2010/04/05 0.0.26
+ fixed miscomputation bugs.
+2010/02/22 0.0.25
+ mt.n can now outputs C++ code. also fixed some bugs.
+2010/01/14 0.0.24
+ mt.n worked somehow by bug fixes.
+2009/10/18 0.0.23
+ Changed output language from C to C++
+ Bug fixes
+2009/07/26 0.0.22
+ Added internal RAM array
+2009/04/24 0.0.21
+ テストの追加とデバッグ
+2009/03/29 0.0.20
+ ROM配列の追加
+2009/03/01 0.0.19
+ テストの追加とデバッグ
+2009/02/01 0.0.18
+ テストの追加とデバッグ
+2008/05/27 0.0.17
+ テストの追加とデバッグ
+ assertとexitを拡張moduleとして実装
+2008/02/17 0.0.16
+ ビット幅の指定の初期的な対応
+2008/01/10 0.0.15
+ メソッドが存在しないときに無限ループになるのを修正
+2007/09/24 0.0.14
+ Verilogモジュールインポートの初期的な実装
+2007/09/17 0.0.13
+ neon言語のメソッド呼び出しを合成可能にした
+2007/08/27 0.0.12
+ neon言語(仮称)のメソッド定義等を実装
+2007/06/30 0.0.11
+ neon言語(仮称)のフロントエンドからコンパイルができるようにした
+2007/04/02 0.0.9
+ 雑多なリファクタリング
+2007/03/23 0.0.8
+ ==演算子のバグ修正
+ リソースの型の追加
+2007/02/12 0.0.7
+ 関数のinline展開をサポート
+ 返り値のサポート
+2006/10/15 0.0.6
+ 初リリース

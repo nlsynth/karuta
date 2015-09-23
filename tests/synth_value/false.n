@@ -1,0 +1,8 @@
+// VERILOG_OUTPUT: a.v
+// VERILOG_EXPECTED_ERRORS: 1
+def Kernel.main() {
+  assert(false);
+}
+
+compile();
+write_hdl("a.v");

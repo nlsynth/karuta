@@ -1,0 +1,21 @@
+//
+int Kernel.x = 3;
+object Kernel.Hoge = Kernel.clone();
+assert(Kernel.x == 3);
+assert(Hoge.x == 3);
+
+Hoge.x = 2;
+assert(Kernel.x == 3);
+assert(Hoge.x == 2);
+
+
+def Kernel.f() (int) {
+  return 1;
+}
+assert(Kernel.f() == 1);
+object MyObj = Kernel.clone();
+def MyObj.f() (int) {
+  return 2;
+}
+assert(Kernel.f() == 1);
+assert(MyObj.f() == 2);

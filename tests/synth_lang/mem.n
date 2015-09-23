@@ -1,0 +1,10 @@
+// VERILOG_OUTPUT: a.v
+
+def Kernel.main() {
+    int *x = 0;
+    *x = 100;
+    assert(*x == 100);
+}
+
+compile();
+write_hdl("a.v");

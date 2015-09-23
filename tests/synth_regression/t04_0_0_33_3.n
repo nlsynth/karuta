@@ -1,0 +1,24 @@
+// VERILOG_OUTPUT: a.v
+
+// regression test in bb conditions merge.
+
+def generateNumbers() {
+  int i;
+  for (i = 0; i < 10; ++i) {
+    int next_idx = i + 1;
+    if (next_idx > 5) {
+      next_idx = 0;
+    }
+  }
+  assert(i == 10);
+}
+
+def main() {
+  // wrapping this function caused the fault.
+  generateNumbers();
+}
+
+main();
+
+compile();
+write_hdl("a.v");

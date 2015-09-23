@@ -1,0 +1,6 @@
+/**/
+int Global.x = 10;
+import "imported_file.n";
+
+assert(Global.x == 0);
+assert(Env.is_main());

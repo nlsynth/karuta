@@ -1,0 +1,13 @@
+int x = 9;
+int Kernel.x = 10;
+
+def Kernel.main() {
+  assert(x == 10);
+  int x = 11;
+  assert(x == 11);
+}
+
+main();
+
+assert(x == 9);
+assert(Kernel.x == 10);

@@ -1,0 +1,5 @@
+// NLI_TIMEOUT: 100
+// NLI_EXPECT_ABORT:
+
+while (true) {
+}

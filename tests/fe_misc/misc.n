@@ -1,0 +1,11 @@
+/* this caused an error. it cleared label information for "for"
+   when new function is defined.
+   */
+int i;
+for (i = 0; i < 10; ++i) {
+}
+
+def f(int p, int q) {
+  print(p);
+  print(q);
+}

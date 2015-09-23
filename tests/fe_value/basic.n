@@ -1,0 +1,55 @@
+/* tests basic operations */
+
+/* basic bool operations */
+assert(true);
+assert(!false);
+assert(!!1);
+assert(!0);
+assert(2>1);
+assert(1<2);
+assert(1==1);
+assert(!(1!=1));
+assert(true==true);
+assert(false==false);
+assert(true!=false);
+print("done");
+
+int x = 10;
+assert(x == 10);
+assert(x != 0);
+assert(x >= 10);
+assert(x >= 9);
+assert(x <= 10);
+assert(x <= 11);
+print("done");
+
+assert(true && true);
+assert(true || true);
+
+assert((0x11  &  0x10) == 0x10);
+assert((0x11  |  0x10) == 0x11);
+assert((0x111 ^  0x10) == 0x101);
+x = ~0;
+assert(x == 0xffffffff);
+
+x = 10;
+x ++;
+assert(x == 11);
+x --;
+assert(x == 10);
+
+x = 1, 2;
+assert(x == 1);
+
+bool p;
+p = (false, false, true);
+assert(p);
+p = (true, true, false);
+assert(!p);
+
+x = 10;
+assert(x == 10);
+x += 1;
+assert(x == 11);
+x -= 1;
+assert(x == 10);
