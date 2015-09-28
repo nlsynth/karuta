@@ -20,8 +20,8 @@ using namespace dfg;
 namespace writer {
 
 class ModuleTemplate;
-class Writer;
 class VLStateEncoder;
+class Writer;
 
 class VLState {
 public:

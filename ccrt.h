@@ -41,6 +41,7 @@ public:
     addr %= len_;
     image_[addr] = data;
   }
+
 protected:
   int len_;
   uint64_t *image_;
@@ -111,6 +112,7 @@ private:
   }
 };
 
+// Base class for every module.
 class NliCCRTBase {
 protected:
   void SRAMWrite(uint32_t addr, int data, NliArrayBase *array) {
@@ -140,6 +142,8 @@ protected:
   }
 
   virtual void DumpState() {}
+
+  bool finish_;
 
 private:
   NliSparseMemory main_memory_;

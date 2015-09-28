@@ -2,7 +2,7 @@
 Author: Yusuke TABATA (tabata.yusuke@gmail.com)
 
 ## What's this?
-This interpreter/compiler takes PhyloScript language (N language was a tentative name) as input and outputs sequential cirtuits in Verilog language.
+This interpreter/compiler takes Neon Light Script language as input and outputs sequential cirtuits in Verilog language.
 As of now, the interpreter/compiler has too many bugs and unimplemented
 features. In addition to implementation/documentation quality, many important
 features are not documented and liable to change.
@@ -41,7 +41,7 @@ Glossary:
 * src/
     * Command and common utilities.
 * src/compiler
-    * PhyloScript to bytecode.
+    * Neon Light Script to bytecode.
 * src/dfg
     * Data flow graph.
 * src/fe

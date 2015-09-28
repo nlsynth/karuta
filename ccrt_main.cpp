@@ -1,4 +1,4 @@
-//
+// This part is copied from nli/ccrt_main.cpp
 deque<uint64_t> NliChannel::data_;
 
 int main(int argc, char **argv) {
@@ -12,11 +12,13 @@ int main(int argc, char **argv) {
   Mod_main m;
   m.reset();
   int cycles = 0;
-  while (!m.dispatcher()) {
+  m.PrepareState();
+  while (!m.Dispatch()) {
     ++cycles;
     if (dbg) {
       m.DumpState();
     }
+    m.PrepareState();
   }
   printf("%d cycles\n", cycles);
   return 0;

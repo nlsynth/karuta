@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 SUBDIRS = lib docs tests examples
 CCRT_FILES = ccrt.h ccrt_main.cpp
-EXTRA_DIST = $(CCRT_FILES) nli run-file README.md
+EXTRA_DIST = $(CCRT_FILES) nli run-file README.md .gitignore
 AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
 ACLOCAL_AMFLAGS = -I m4
 
@@ -97,7 +97,8 @@ writer_SOURCES = \
  src/writer/cc_writer.cpp src/writer/cc_writer.h \
  src/writer/cc_class.cpp src/writer/cc_class.h \
  src/writer/cc_graph.cpp src/writer/cc_graph.h \
- src/writer/cc_module.cpp src/writer/cc_module.h
+ src/writer/cc_module.cpp src/writer/cc_module.h \
+ src/writer/cc_state.cpp src/writer/cc_state.h
 
 nli_bin_SOURCES = \
  src/main.cpp \

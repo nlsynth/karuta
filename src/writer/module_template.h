@@ -12,10 +12,13 @@ namespace writer {
 class ModuleTemplate {
 public:
   enum TemplatePoint {
+    // Some of them are language dependent.
     RESET_STATE,
     SUB_STATE_REGS,
     SUB_MODULE_CONTROL_WIRES,
     SUB_MODULE_INSTANCES,
+    STATE_SWITCH,
+    STATE_DUMPER,
   };
 
   ostream &GetStream(enum TemplatePoint point);

@@ -1,0 +1,7 @@
+*~
+*.gz
+*.la
+*.o
+*.deps/
+Makefile
+.dirstamp

@@ -3,13 +3,18 @@
 #include "dfg/dfg.h"
 #include "writer/cc_class.h"
 #include "writer/cc_graph.h"
+#include "writer/module_template.h"
 
 namespace writer {
 
 CCModule::CCModule(const string &path, DModule *mod, ostream &os)
   : Writer("cc", mod, os), path_("Mod_" + path) {
+  template_.reset(new ModuleTemplate);
 }
 
+CCModule::~CCModule() {
+}
+  
 void CCModule::Output() {
   if (mod_->graph_) {
     for (DResource *r : mod_->graph_->resources_) {
@@ -24,14 +29,20 @@ void CCModule::Output() {
 
 void CCModule::OutputModule() {
   for (DModule *sub_module : mod_->sub_modules_) {
-    string sub_module_name = path_ + "_" +  sub_module->module_name_ + "_inst";
+    string sub_module_name = SubModuleName(sub_module) + "_inst";
     sub_instances_.push_back(sub_module_name);
   }
 
   cw_.reset(new ClassWriter(path_.c_str(), "NliCCRTBase"));
+
+  std::unique_ptr<CCGraph> graph_writer;
+  if (mod_->graph_) {
+    graph_writer.reset(new CCGraph(mod_->graph_, cw_.get(), this,
+				   template_.get(), os_));
+    graph_writer->PreProcess();
+  }
+
   OutputChannelInstantiation(mod_);
-  cw_->AddMember("", "bool", "finish");
-  OutputResetHandler(mod_->graph_);
 
   for (DModule *sub_module : mod_->sub_modules_) {
     string sub_module_name = path_ + "_" +  sub_module->module_name_;
@@ -39,56 +50,78 @@ void CCModule::OutputModule() {
   }
 
   if (mod_->graph_) {
-    CCGraph graph_writer(mod_->graph_, cw_.get(), this, os_);
-    graph_writer.OutputGraph();
+    graph_writer->Output();
   }
-  OutputDispatcher(mod_->graph_);
-  OutputStateDumper(mod_->graph_);
+  OutputResetHandler();
+  OutputTaskEntry();
+  OutputPrepareState();
+  OutputDispatcher();
+  OutputStateDumper();
   cw_->Output(os_);
 }
 
-void CCModule::OutputDispatcher(const DGraph *g) {
-  cw_->AddMember("", "bool", "dispatcher()");
+void CCModule::OutputDispatcher() {
+  cw_->AddMember("", "bool", "Dispatch()");
   ostream &os = cw_->os();
-  if (g) {
-    os << "  switch (state) {\n";
-    for (DState *ds : g->states_) {
-      os << "    case " << ds->state_id_ << ":\n";
-      os << "      s_" << ds->state_id_ << "();\n";
-      os << "      break;\n";
-    }
-    os << "  }\n";
-  }
+  os << template_->GetContents(ModuleTemplate::STATE_SWITCH);
   for (vector<string>::iterator it = sub_instances_.begin();
        it != sub_instances_.end(); it++) {
-    os << "  finish |= " << *it << ".dispatcher();\n";
+    os << "  finish_ |= " << *it << ".Dispatch();\n";
   }
-  os << "  return finish;\n";
+  os << "  return finish_;\n";
   cw_->EndMethod();
 }
 
-void CCModule::OutputStateDumper(const DGraph *g) {
+void CCModule::OutputPrepareState() {
+  cw_->AddMember("", "void", "PrepareState()");
+  cw_->os() << "  //\n";
+  cw_->EndMethod();
+}
+
+void CCModule::OutputStateDumper() {
   cw_->AddMember("", "void", "DumpState()");
-  if (g) {
-    cw_->os() << "  // dumper;\n"
-	      << "  printf(\"st=%d\\n\", state);\n";
-  } else {
-    cw_->os() << "  // dumper;\n";
-  }
+  cw_->os() << "  // dumper;\n"
+	    << template_->GetContents(ModuleTemplate::STATE_SWITCH);
   cw_->EndMethod();
 }
 
-void CCModule::OutputResetHandler(const DGraph *g) {
+void CCModule::OutputResetHandler() {
   cw_->AddMember("", "void", "reset()");
   for (vector<string>::iterator it = sub_instances_.begin();
        it != sub_instances_.end(); it++) {
     cw_->os() << "  " << *it << ".reset();\n";
   }
-  if (g) {
-    cw_->os() << "  state = "<< g->initial_state_->state_id_ <<";\n";
-  }
-  cw_->os() << "  finish = false;\n";
+  cw_->os() << template_->GetContents(ModuleTemplate::RESET_STATE);
+  cw_->os() << "  finish_ = false;\n";
   cw_->EndMethod();
+}
+
+void CCModule::OutputTaskEntry() {
+  if (mod_->module_type_ == DModule::MODULE_TASK) {
+    cw_->AddMember("", "bool", TaskEntryFunctionName(mod_) + "_Ready()");
+    ostream &os = cw_->os();
+    os << "  return false;\n";
+    cw_->EndMethod();
+  }
+  if (mod_->module_type_ == DModule::MODULE_CONTAINER) {
+    for (DModule *sub_module : mod_->sub_modules_) {
+      string entry_func = TaskEntryFunctionName(sub_module) + "_Ready()";
+      cw_->AddMember("", "bool", entry_func);
+      ostream &os = cw_->os();
+      os << "  return " << SubModuleName(sub_module) << "_inst."
+	 << entry_func << ";\n";
+      cw_->EndMethod();
+    }
+  }
+}
+
+string CCModule::TaskEntryFunctionName(DModule *mod) {
+  return "Task_" + mod->parent_mod_->module_name_ + "_" +
+    mod->module_name_;
+}
+
+string CCModule::SubModuleName(DModule *mod) {
+  return path_ + "_" + mod->module_name_;
 }
 
 void CCModule::OutputArrayDecl(const string &name, const DArray *array) {

@@ -15,42 +15,23 @@ using namespace dfg;
 namespace writer {
 
 class ClassWriter;
+class ModuleTemplate;
 class Writer;
 
 class CCGraph {
 public:
   CCGraph(DGraph *graph, ClassWriter *cw, Writer *writer,
-	  ostream &os);
+	  ModuleTemplate *tmpl, ostream &os);
 
-  void OutputGraph();
+  void PreProcess();
+  void Output();
 
 private:
-  void OutputArrayDecl(const string &name, const DArray *array);
-  void OutputArrayInstantiation(const DGraph *g);
-  void OutputStateDumper(const DGraph *g);
-  void OutputResetHandler(const DGraph *g);
-  void OutputRegisters(const DGraph *g);
-  void OutputState(const DGraph *g, const DState *st);
-  // insn output
-  void OutputInsnList(const DState *st, ostream &os);
-  void OutputInsn(const DInsn *insn, ostream &os);
-  void OutputBitSelInsn(const DInsn *insn, ostream &os);
-  void OutputBitConcatInsn(const DInsn *insn, ostream &os);
-  void OutputImportedInsn(const DInsn *insn, ostream &os);
-  void OutputSRAMInsn(const DInsn *insn, ostream &os);
-  void OutputBinOp(const DInsn *insn, ostream &os);
-  void OutputUniOp(const DInsn *insn, ostream &os);
-  void OutputAssign(const DInsn *insn, ostream &os);
-  void OutputBranch(const DInsn *insn, ostream &os);
-  void OutputSelectorInsn(const DInsn *insn, ostream &os);
-  void OutputChannelWriteInsn(const DInsn *insn, ostream &os);
-  void OutputChannelReadInsn(const DInsn *insn, ostream &os);
-  string RegisterName(const DRegister *reg);
-  void OutputImportedInsn(const DRegister *reg, ostream &os);
-
-  bool IsTerminal(const DState *st) const;
+  void OutputArrayInstantiation();
+  void OutputRegisters();
 
   DGraph *graph_;
+  ModuleTemplate *tmpl_;
   ostream &os_;
   ClassWriter *cw_;
   Writer *writer_;

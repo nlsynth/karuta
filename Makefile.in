@@ -181,7 +181,8 @@ am__objects_7 = src/writer/nli_bin-writer.$(OBJEXT) \
 	src/writer/nli_bin-cc_writer.$(OBJEXT) \
 	src/writer/nli_bin-cc_class.$(OBJEXT) \
 	src/writer/nli_bin-cc_graph.$(OBJEXT) \
-	src/writer/nli_bin-cc_module.$(OBJEXT)
+	src/writer/nli_bin-cc_module.$(OBJEXT) \
+	src/writer/nli_bin-cc_state.$(OBJEXT)
 am_nli_bin_OBJECTS = src/nli_bin-main.$(OBJEXT) \
 	src/nli_bin-nli.$(OBJEXT) src/nli_bin-initializer.$(OBJEXT) \
 	src/nli_bin-numeric.$(OBJEXT) \
@@ -495,7 +496,7 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 SUBDIRS = lib docs tests examples
 CCRT_FILES = ccrt.h ccrt_main.cpp
-EXTRA_DIST = $(CCRT_FILES) nli run-file README.md
+EXTRA_DIST = $(CCRT_FILES) nli run-file README.md .gitignore
 AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
 ACLOCAL_AMFLAGS = -I m4
 pkgdata_DATA = $(CCRT_FILES)
@@ -587,7 +588,8 @@ writer_SOURCES = \
  src/writer/cc_writer.cpp src/writer/cc_writer.h \
  src/writer/cc_class.cpp src/writer/cc_class.h \
  src/writer/cc_graph.cpp src/writer/cc_graph.h \
- src/writer/cc_module.cpp src/writer/cc_module.h
+ src/writer/cc_module.cpp src/writer/cc_module.h \
+ src/writer/cc_state.cpp src/writer/cc_state.h
 
 nli_bin_SOURCES = \
  src/main.cpp \
@@ -933,6 +935,8 @@ src/writer/nli_bin-cc_graph.$(OBJEXT): src/writer/$(am__dirstamp) \
 	src/writer/$(DEPDIR)/$(am__dirstamp)
 src/writer/nli_bin-cc_module.$(OBJEXT): src/writer/$(am__dirstamp) \
 	src/writer/$(DEPDIR)/$(am__dirstamp)
+src/writer/nli_bin-cc_state.$(OBJEXT): src/writer/$(am__dirstamp) \
+	src/writer/$(DEPDIR)/$(am__dirstamp)
 
 nli-bin$(EXEEXT): $(nli_bin_OBJECTS) $(nli_bin_DEPENDENCIES) $(EXTRA_nli_bin_DEPENDENCIES) 
 	@rm -f nli-bin$(EXEEXT)
@@ -1028,6 +1032,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_class.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_graph.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_module.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_state.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-module_template.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_channel.Po@am__quote@
@@ -2223,6 +2228,20 @@ src/writer/nli_bin-cc_module.obj: src/writer/cc_module.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_module.cpp' object='src/writer/nli_bin-cc_module.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_module.obj `if test -f 'src/writer/cc_module.cpp'; then $(CYGPATH_W) 'src/writer/cc_module.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_module.cpp'; fi`
+
+src/writer/nli_bin-cc_state.o: src/writer/cc_state.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_state.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo -c -o src/writer/nli_bin-cc_state.o `test -f 'src/writer/cc_state.cpp' || echo '$(srcdir)/'`src/writer/cc_state.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo src/writer/$(DEPDIR)/nli_bin-cc_state.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_state.cpp' object='src/writer/nli_bin-cc_state.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_state.o `test -f 'src/writer/cc_state.cpp' || echo '$(srcdir)/'`src/writer/cc_state.cpp
+
+src/writer/nli_bin-cc_state.obj: src/writer/cc_state.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_state.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo -c -o src/writer/nli_bin-cc_state.obj `if test -f 'src/writer/cc_state.cpp'; then $(CYGPATH_W) 'src/writer/cc_state.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_state.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo src/writer/$(DEPDIR)/nli_bin-cc_state.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_state.cpp' object='src/writer/nli_bin-cc_state.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_state.obj `if test -f 'src/writer/cc_state.cpp'; then $(CYGPATH_W) 'src/writer/cc_state.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_state.cpp'; fi`
 
 .ypp.cpp:
 	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h `echo $@ | $(am__yacc_c2h)` y.output $*.output -- $(YACCCOMPILE)

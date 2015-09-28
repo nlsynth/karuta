@@ -235,7 +235,7 @@ void VLModule::OutputVLModule(const string &path_name) {
     graph_writer->PreProcess();
   }
   PreProcessModule(path_name);
-  
+
   OutputModuleHead(path_name);
 
   os_ << template_->GetContents(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);

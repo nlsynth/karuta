@@ -31,7 +31,7 @@ class VLModule : public Writer {
 public:
   VLModule(DModule *mod, const string &path_name, VLChannelWriter *ch,
 	   ostream &os);
-  ~VLModule();
+  virtual ~VLModule();
 
   void Output(vector<string> *copy_files);
 

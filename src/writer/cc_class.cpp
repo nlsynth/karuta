@@ -26,7 +26,7 @@ void ClassWriter::Output(ostream &os) const {
   }
   for (const MemberInfo &mi : members_) {
     if (!mi.initializer.empty()) {
-      if (first_initializer) {
+      if (first_initializer && parent_name_.empty()) {
 	os << "  : ";
       } else {
 	os << ", ";
