@@ -29,7 +29,7 @@ private:
   void OutputArrayDecl(const string &name, const DArray *array);
   void OutputChannelInstantiation(const DModule *dm);
   void OutputDispatcher();
-  void OutputPrepareState();
+  void OutputPostState();
   void OutputStateDumper();
   void OutputResetHandler();
   void OutputTaskEntry();

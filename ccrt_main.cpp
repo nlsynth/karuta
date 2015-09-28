@@ -12,13 +12,12 @@ int main(int argc, char **argv) {
   Mod_main m;
   m.reset();
   int cycles = 0;
-  m.PrepareState();
   while (!m.Dispatch()) {
+    m.PostState();
     ++cycles;
     if (dbg) {
       m.DumpState();
     }
-    m.PrepareState();
   }
   printf("%d cycles\n", cycles);
   return 0;

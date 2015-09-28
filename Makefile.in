@@ -171,6 +171,7 @@ am__objects_6 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-thread_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-vm.$(OBJEXT)
 am__objects_7 = src/writer/nli_bin-writer.$(OBJEXT) \
+	src/writer/nli_bin-writer_util.$(OBJEXT) \
 	src/writer/nli_bin-module_template.$(OBJEXT) \
 	src/writer/nli_bin-vl_writer.$(OBJEXT) \
 	src/writer/nli_bin-vl_module.$(OBJEXT) \
@@ -578,6 +579,7 @@ vm_SOURCES = \
 
 writer_SOURCES = \
  src/writer/writer.cpp src/writer/writer.h \
+ src/writer/writer_util.cpp src/writer/writer_util.h \
  src/writer/module_template.cpp src/writer/module_template.h \
  src/writer/vl_writer.cpp src/writer/vl_writer.h \
  src/writer/vl_module.cpp src/writer/vl_module.h \
@@ -912,6 +914,8 @@ src/writer/$(DEPDIR)/$(am__dirstamp):
 	@: > src/writer/$(DEPDIR)/$(am__dirstamp)
 src/writer/nli_bin-writer.$(OBJEXT): src/writer/$(am__dirstamp) \
 	src/writer/$(DEPDIR)/$(am__dirstamp)
+src/writer/nli_bin-writer_util.$(OBJEXT): src/writer/$(am__dirstamp) \
+	src/writer/$(DEPDIR)/$(am__dirstamp)
 src/writer/nli_bin-module_template.$(OBJEXT):  \
 	src/writer/$(am__dirstamp) \
 	src/writer/$(DEPDIR)/$(am__dirstamp)
@@ -1042,6 +1046,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-writer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-writer_util.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -2074,6 +2079,20 @@ src/writer/nli_bin-writer.obj: src/writer/writer.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/writer.cpp' object='src/writer/nli_bin-writer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-writer.obj `if test -f 'src/writer/writer.cpp'; then $(CYGPATH_W) 'src/writer/writer.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/writer.cpp'; fi`
+
+src/writer/nli_bin-writer_util.o: src/writer/writer_util.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-writer_util.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo -c -o src/writer/nli_bin-writer_util.o `test -f 'src/writer/writer_util.cpp' || echo '$(srcdir)/'`src/writer/writer_util.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo src/writer/$(DEPDIR)/nli_bin-writer_util.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/writer_util.cpp' object='src/writer/nli_bin-writer_util.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-writer_util.o `test -f 'src/writer/writer_util.cpp' || echo '$(srcdir)/'`src/writer/writer_util.cpp
+
+src/writer/nli_bin-writer_util.obj: src/writer/writer_util.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-writer_util.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo -c -o src/writer/nli_bin-writer_util.obj `if test -f 'src/writer/writer_util.cpp'; then $(CYGPATH_W) 'src/writer/writer_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/writer_util.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo src/writer/$(DEPDIR)/nli_bin-writer_util.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/writer_util.cpp' object='src/writer/nli_bin-writer_util.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-writer_util.obj `if test -f 'src/writer/writer_util.cpp'; then $(CYGPATH_W) 'src/writer/writer_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/writer_util.cpp'; fi`
 
 src/writer/nli_bin-module_template.o: src/writer/module_template.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-module_template.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-module_template.Tpo -c -o src/writer/nli_bin-module_template.o `test -f 'src/writer/module_template.cpp' || echo '$(srcdir)/'`src/writer/module_template.cpp

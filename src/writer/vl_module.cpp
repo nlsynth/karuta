@@ -12,6 +12,7 @@
 #include "writer/vl_channel.h"
 #include "writer/vl_graph.h"
 #include "writer/vl_util.h"
+#include "writer/writer_util.h"
 
 namespace writer {
 
@@ -147,7 +148,8 @@ void VLModule::OutputModuleHead(const string &path_name) {
 
 void VLModule::OutputArray(const string &name, DArray *array) {
   int length = array->num_.size();
-  os_ << "// array model " << ArrayDescription(name, array) << "\n";
+  os_ << "// Array model "
+      << WriterUtil::ArrayDescription(name, array) << "\n";
   os_ << "module " << name << "(clk, rst, ";
   if (array->may_write_) {
     os_ << "addr_i, rdata_o, wdata_i, write_en_i";

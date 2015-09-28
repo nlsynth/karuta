@@ -15,6 +15,7 @@
 #include "writer/vl_state.h"
 #include "writer/vl_util.h"
 #include "writer/writer.h"
+#include "writer/writer_util.h"
 
 namespace writer {
 
@@ -451,8 +452,8 @@ void VLGraph::OutputResourcesAll() {
 }
 
 void VLGraph::OutputBitSelInsnWire(const DInsn *insn) {
-  Writer::BitSelOperands opr;
-  Writer::DecodeBitSelInsn(insn, &opr);
+  WriterUtil::BitSelOperands opr;
+  WriterUtil::DecodeBitSelInsn(insn, &opr);
   os_ << "  assign ";
   VLState::OutputInsnOutputWireName(insn, 0, os_);
   os_ << "[" << opr.selected_width - 1 << ":0] = ";

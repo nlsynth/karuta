@@ -87,6 +87,7 @@ vm_SOURCES = \
 
 writer_SOURCES = \
  src/writer/writer.cpp src/writer/writer.h \
+ src/writer/writer_util.cpp src/writer/writer_util.h \
  src/writer/module_template.cpp src/writer/module_template.h \
  src/writer/vl_writer.cpp src/writer/vl_writer.h \
  src/writer/vl_module.cpp src/writer/vl_module.h \

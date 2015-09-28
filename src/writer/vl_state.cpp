@@ -14,6 +14,7 @@
 #include "writer/vl_channel.h"
 #include "writer/vl_util.h"
 #include "writer/writer.h"
+#include "writer/writer_util.h"
 
 namespace writer {
 
@@ -38,9 +39,7 @@ void VLState::Output() {
 
 void VLState::PreProcess(ModuleTemplate *tmpl) {
   for (DInsn *insn : st_->insns_) {
-    sym_t type = insn->resource_->opr_->type_;
-    if (type == sym_sub_module_call || type == sym_write_channel ||
-	type == sym_read_channel) {
+    if (WriterUtil::IsMultiCycleInsn(insn)) {
       ostream &ss = tmpl->GetStream(ModuleTemplate::SUB_STATE_REGS);
       ss << "  reg [1:0] " << SubStateRegName(insn) << ";\n";
       ostream &sr = tmpl->GetStream(ModuleTemplate::RESET_STATE);
@@ -246,9 +245,7 @@ void VLState::OutputTransition(DGraph *g, DState *st) {
 void VLState::CollectSubState(string *state_guard, string *initializer) {
   vector<string> regs;
   for (DInsn *insn : st_->insns_) {
-    sym_t type = insn->resource_->opr_->type_;
-    if (type == sym_sub_module_call || type == sym_write_channel ||
-	type == sym_read_channel) {
+    if (WriterUtil::IsMultiCycleInsn(insn)) {
       regs.push_back(SubStateRegName(insn));
     }
   }
@@ -313,7 +310,7 @@ void VLState::OutputSubModuleCall(const DInsn *insn) {
 }
 
 string VLState::SubStateRegName(const DInsn *insn) {
-  char buf[10];
+  char buf[16];
   sprintf(buf, "st_%d", insn->insn_id_);
   return string(buf);
 }

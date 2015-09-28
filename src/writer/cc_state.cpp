@@ -3,6 +3,7 @@
 #include "dfg/dfg.h"
 #include "writer/cc_class.h"
 #include "writer/module_template.h"
+#include "writer/writer_util.h"
 
 static sym_t sym_print, sym_assert;
 
@@ -34,6 +35,13 @@ void CCState::Output() {
     os_ << "  finish_ = true;\n";
   }
   cw_->EndMethod();
+
+  for (const DInsn *insn : state_->insns_) {
+    if (WriterUtil::IsMultiCycleInsn(insn)) {
+      string st_name = SubStateRegName(insn);
+      cw_->AddMember("", "int", st_name);
+    }
+  }
 }
 
 string CCState::RegisterName(const DRegister *reg) {
@@ -135,8 +143,8 @@ void CCState::OutputSRAMInsn(const DInsn *insn) {
 }
 
 void CCState::OutputBitSelInsn(const DInsn *insn) {
-  Writer::BitSelOperands opr;
-  Writer::DecodeBitSelInsn(insn, &opr);
+  WriterUtil::BitSelOperands opr;
+  WriterUtil::DecodeBitSelInsn(insn, &opr);
   os_ << "  " << RegisterName(*(insn->outputs_.begin()))
       << " = BitSelect(" << RegisterName(*(insn->inputs_.begin())) << ", "
       << opr.src_msb_pos << ", " << opr.src_lsb_pos << ");\n";
@@ -258,13 +266,19 @@ void CCState::OutputInsn(const DInsn *insn) {
     OutputChannelWriteInsn(insn);
   } else if (type == sym_read_channel) {
     OutputChannelReadInsn(insn);
-  } else if (type == sym_task_entry) {
-    // TBD
   } else if (type == sym_sub_module_call) {
-    // TBD
+    OutputSubModuleCallInsn(insn);
+  } else if (type == sym_task_entry) {
+    // Do nothing.
   } else {
     writer_->ICE("unknown insn", type);
   }
+}
+
+void CCState::OutputSubModuleCallInsn(const DInsn *insn) {
+  string st_name = SubStateRegName(insn);
+  os_ << "  if (" << st_name << " == 0) {\n"
+      << "  }\n";
 }
 
 bool CCState::IsTerminal() const {
@@ -277,6 +291,12 @@ bool CCState::IsTerminal() const {
     return true;
   }
   return false;
+}
+
+string CCState::SubStateRegName(const DInsn *insn) {
+  char buf[16];
+  sprintf(buf, "st_%d_", insn->insn_id_);
+  return string(buf);
 }
 
 }  // namespace writer

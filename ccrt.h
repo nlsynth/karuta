@@ -14,6 +14,8 @@
 
 using namespace std;
 
+const int kIdleState = -1;
+
 class NliArrayBase {
 public:
   virtual ~NliArrayBase() {

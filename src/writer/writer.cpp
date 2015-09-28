@@ -37,31 +37,8 @@ void Writer::ICE(const char *msg, const sym_t sym) {
   exit(1);
 }
 
-void Writer::DecodeBitSelInsn(const DInsn *insn,
-			      BitSelOperands *opr) {
-  vector<DRegister *>::const_iterator it = insn->inputs_.begin();
-  opr->src_reg = *it;
-  it++;
-  opr->src_msb_pos = (*it)->num_;
-  it++;
-  opr->src_lsb_pos = (*it)->num_;
-  opr->selected_width = opr->src_msb_pos - opr->src_lsb_pos + 1;
-}
-
 string Writer::OutputSignature() {
   return Env::GetVersion();
-}
-
-string Writer::ArrayDescription(const string &name,
-				const DArray *array) {
-  string ram_or_rom = "rom";
-  if (array->may_write_) {
-    ram_or_rom = "ram";
-  }
-  ostringstream os;
-  os << name << " length="
-     << array->num_.size() << " (" << ram_or_rom << ")";
-  return string(os.str());
 }
 
 }  // namespace writer

@@ -22,25 +22,40 @@ void CCGraph::PreProcess() {
        << "      s_" << ds->state_id_ << "();\n"
        << "      break;\n";
   }
+  ss << "    case kIdleState:\n"
+     << "      break;\n";
   ss << "  }\n";
 
   ostream &sr = tmpl_->GetStream(ModuleTemplate::RESET_STATE);
   sr << "  state = ";
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
-    cw_->AddMember("", "int", "kIdleState", "-1");
     sr << "kIdleState";
   } else {
     sr << graph_->initial_state_->state_id_;
   }
   sr << ";\n";
+  if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
+    sr << "  task_req_ = false;\n";
+  }
 
   ostream &sd = tmpl_->GetStream(ModuleTemplate::STATE_DUMPER);
   sd << "  printf(\"st=%d\\n\", state);\n";
+
+  if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
+    ostream &ps = tmpl_->GetStream(ModuleTemplate::POST_STATE);
+    ps << "  if (task_req_ && state == kIdleState) {\n"
+       << "    task_req_ = false;\n"
+       << "    state = " << graph_->initial_state_->state_id_ << ";\n"
+       << "  }\n";
+  }
 }
 
 void CCGraph::Output() {
   // state variable
   cw_->AddMember("", "int", "state");
+  if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
+    cw_->AddMember("", "bool", "task_req_");
+  }
   OutputRegisters();
   OutputArrayInstantiation();
   // function body

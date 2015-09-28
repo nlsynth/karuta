@@ -54,7 +54,7 @@ void CCModule::OutputModule() {
   }
   OutputResetHandler();
   OutputTaskEntry();
-  OutputPrepareState();
+  OutputPostState();
   OutputDispatcher();
   OutputStateDumper();
   cw_->Output(os_);
@@ -72,16 +72,17 @@ void CCModule::OutputDispatcher() {
   cw_->EndMethod();
 }
 
-void CCModule::OutputPrepareState() {
-  cw_->AddMember("", "void", "PrepareState()");
-  cw_->os() << "  //\n";
+void CCModule::OutputPostState() {
+  cw_->AddMember("", "void", "PostState()");
+  cw_->os() << "  //\n"
+	    << template_->GetContents(ModuleTemplate::POST_STATE);
   cw_->EndMethod();
 }
 
 void CCModule::OutputStateDumper() {
   cw_->AddMember("", "void", "DumpState()");
   cw_->os() << "  // dumper;\n"
-	    << template_->GetContents(ModuleTemplate::STATE_SWITCH);
+	    << template_->GetContents(ModuleTemplate::STATE_DUMPER);
   cw_->EndMethod();
 }
 
@@ -102,6 +103,10 @@ void CCModule::OutputTaskEntry() {
     ostream &os = cw_->os();
     os << "  return false;\n";
     cw_->EndMethod();
+
+    cw_->AddMember("", "void", TaskEntryFunctionName(mod_) + "_En()");
+    os << "  task_req_ = true;\n";
+    cw_->EndMethod();
   }
   if (mod_->module_type_ == DModule::MODULE_CONTAINER) {
     for (DModule *sub_module : mod_->sub_modules_) {
@@ -110,6 +115,12 @@ void CCModule::OutputTaskEntry() {
       ostream &os = cw_->os();
       os << "  return " << SubModuleName(sub_module) << "_inst."
 	 << entry_func << ";\n";
+      cw_->EndMethod();
+
+      string req_func = TaskEntryFunctionName(sub_module) + "_En()";
+      cw_->AddMember("", "void", req_func);
+      os << "  return " << SubModuleName(sub_module) << "_inst."
+	 << req_func << ";\n";
       cw_->EndMethod();
     }
   }

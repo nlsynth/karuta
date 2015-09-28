@@ -19,6 +19,7 @@ public:
     SUB_MODULE_INSTANCES,
     STATE_SWITCH,
     STATE_DUMPER,
+    POST_STATE,
   };
 
   ostream &GetStream(enum TemplatePoint point);

@@ -37,10 +37,12 @@ private:
   void OutputSelectorInsn(const DInsn *insn);
   void OutputChannelWriteInsn(const DInsn *insn);
   void OutputChannelReadInsn(const DInsn *insn);
+  void OutputSubModuleCallInsn(const DInsn *insn);
   string RegisterName(const DRegister *reg);
   void OutputImportedInsn(const DRegister *reg);
 
   bool IsTerminal() const;
+  string SubStateRegName(const DInsn *insn);
 
   DState *state_;
   ModuleTemplate *tmpl_;
