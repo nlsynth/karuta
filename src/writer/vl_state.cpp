@@ -13,14 +13,14 @@
 #include "writer/module_template.h"
 #include "writer/vl_channel.h"
 #include "writer/vl_util.h"
-#include "writer/writer.h"
+#include "writer/vl_writer.h"
 #include "writer/writer_util.h"
 
 namespace writer {
 
 VLState::VLState(DState *st, DGraph *g, VLStateEncoder *e,
-		 Writer *writer, ostream &os)
-  : st_(st), graph_(g), state_encoder_(e), writer_(writer), os_(os) {
+		 ostream &os)
+  : st_(st), graph_(g), state_encoder_(e), os_(os) {
 }
 
 VLState::~VLState() {
@@ -186,7 +186,7 @@ void VLState::OutputInsn(const DInsn *insn) {
   } else if (type == sym_task_entry) {
     CHECK(graph_->owner_module_->module_type_ == DModule::MODULE_TASK);
   } else {
-    writer_->ICE("unknown type of insn", type);
+    VLWriter::ICE("unknown type of insn", type);
   }
 }
 

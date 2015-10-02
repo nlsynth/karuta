@@ -15,10 +15,11 @@ using namespace dfg;
 
 namespace writer {
 
+class CCWriter;
 class ClassWriter;
 class ModuleTemplate;
 
-class CCModule : public Writer {
+class CCModule {
 public:
   CCModule(const string &path, DModule *mod, ostream &os);
   virtual ~CCModule();
@@ -38,6 +39,9 @@ private:
   string TaskEntryFunctionName(DModule *mod);
   string SubModuleName(DModule *mod);
 
+  DModule *mod_;
+  ostream &os_;
+  CCWriter *writer_;
   std::unique_ptr<ClassWriter> cw_;
   string path_;
   vector<string> sub_instances_;

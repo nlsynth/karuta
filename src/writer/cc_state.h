@@ -17,11 +17,10 @@ namespace writer {
 
 class ClassWriter;
 class ModuleTemplate;
-class Writer;
 
 class CCState {
 public:
-  CCState(const DState *state, ClassWriter *cw, Writer *writer);
+  CCState(const DState *state, ClassWriter *cw);
 
   void PreProcess(ModuleTemplate *tmpl);
 
@@ -51,7 +50,6 @@ private:
   const DState *state_;
   ClassWriter *cw_;
   ostream &os_;
-  Writer *writer_;
 
   vector<string> sub_instances_;
 };

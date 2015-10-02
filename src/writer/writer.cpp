@@ -25,12 +25,12 @@ bool Writer::WriteModule(DModule *mod, const char *fn) {
   }
 }
 
-Writer::Writer(const string &name, DModule *mod, ostream &os)
-  : mod_(mod), os_(os), lang_(name) {
+Writer::Writer(DModule *mod, ostream &os)
+  : mod_(mod), os_(os) {
 }
 
-void Writer::ICE(const char *msg, const sym_t sym) {
-  cout << "ICE:(" << lang_ << ")" << msg << "\n";
+void Writer::CommonICE(const char *lang, const char *msg, const sym_t sym) {
+  cout << "ICE:(" << lang << ")" << msg << "\n";
   if (sym) {
     cout << sym_cstr(sym) << "\n";
   }

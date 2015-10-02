@@ -30,7 +30,7 @@ class Writer;
 class VLGraph {
 public:
   VLGraph(DGraph *graph, const string &path_name,
-	  Writer *writer, ModuleTemplate *tmpl, ostream &os);
+	  ModuleTemplate *tmpl, ostream &os);
   ~VLGraph();
 
   void Output();

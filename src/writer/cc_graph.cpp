@@ -4,14 +4,15 @@
 #include "stl_util.h"
 #include "writer/cc_class.h"
 #include "writer/cc_state.h"
+#include "writer/cc_writer.h"
 #include "writer/module_template.h"
 #include "writer/writer.h"
 
 namespace writer {
 
-CCGraph::CCGraph(DGraph *graph, ClassWriter *cw, Writer *writer,
+CCGraph::CCGraph(DGraph *graph, ClassWriter *cw,
 		 ModuleTemplate *tmpl, ostream &os)
-  : graph_(graph), tmpl_(tmpl), os_(os), cw_(cw), writer_(writer) {
+  : graph_(graph), tmpl_(tmpl), os_(os), cw_(cw) {
 }
  
 CCGraph::~CCGraph() {
@@ -20,7 +21,7 @@ CCGraph::~CCGraph() {
 
 void CCGraph::PreProcess() {
   for (DState *ds : graph_->states_) {
-    state_writers_[ds] = new CCState(ds, cw_, writer_);
+    state_writers_[ds] = new CCState(ds, cw_);
     state_writers_[ds]->PreProcess(tmpl_);
   }
 

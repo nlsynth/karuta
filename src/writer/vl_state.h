@@ -21,12 +21,11 @@ namespace writer {
 
 class ModuleTemplate;
 class VLStateEncoder;
-class Writer;
 
 class VLState {
 public:
   VLState(DState *st, DGraph *g, VLStateEncoder *e,
-	  Writer *writer, ostream &os);
+	  ostream &os);
   ~VLState();
 
   void Output();
@@ -55,7 +54,6 @@ private:
   DState *st_;
   DGraph *graph_;
   VLStateEncoder *state_encoder_;
-  Writer *writer_;
   ostream &os_;
 };
 

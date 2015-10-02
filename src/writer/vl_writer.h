@@ -17,6 +17,8 @@ public:
 
   static bool WriteModule(DModule *mod, const char *fn);
 
+  static void ICE(const char *msg, const sym_t sym = NULL);
+
 private:
   void OutputSubModules(DModule *mod, const string &path_name,
 			vector<string> *files, ostream &os);

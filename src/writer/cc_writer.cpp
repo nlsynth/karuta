@@ -14,7 +14,11 @@
 
 namespace writer {
 
-CCWriter::CCWriter(DModule *mod, ostream &os) : Writer("cc", mod, os) {
+CCWriter::CCWriter(DModule *mod, ostream &os) : Writer(mod, os) {
+}
+
+void CCWriter::ICE(const char *msg, const sym_t sym) {
+  CommonICE("cc", msg, sym);
 }
 
 void CCWriter::Output() {

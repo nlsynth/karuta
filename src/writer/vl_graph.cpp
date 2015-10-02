@@ -14,15 +14,14 @@
 #include "writer/vl_channel.h"
 #include "writer/vl_state.h"
 #include "writer/vl_util.h"
-#include "writer/writer.h"
+#include "writer/vl_writer.h"
 #include "writer/writer_util.h"
 
 namespace writer {
 
 VLGraph::VLGraph(DGraph *graph, const string& path_name,
-		 Writer *writer, ModuleTemplate *tmpl, ostream &os)
-  : writer_(writer), os_(os), path_name_(path_name),
-    graph_(graph), tmpl_(tmpl) {
+		 ModuleTemplate *tmpl, ostream &os)
+  : os_(os), path_name_(path_name), graph_(graph), tmpl_(tmpl) {
   CHECK(graph_);
   state_encoder_.reset(new VLStateEncoder(graph_));
 }
@@ -46,7 +45,7 @@ void VLGraph::Output() {
 
 void VLGraph::PreProcess() {
   for (DState *st : graph_->states_) {
-    VLState state_writer(st, graph_, state_encoder_.get(), writer_, os_);
+    VLState state_writer(st, graph_, state_encoder_.get(), os_);
     state_writer.PreProcess(tmpl_);
   }
 }
@@ -139,7 +138,7 @@ void VLGraph::OutputFSM() {
       << "      case (cur_st)\n";
   OutputTaskEntryState();
   for (DState *st : graph_->states_) {
-    VLState state_writer(st, graph_, state_encoder_.get(), writer_, os_);
+    VLState state_writer(st, graph_, state_encoder_.get(), os_);
     state_writer.Output();
   }
   os_ << "      endcase\n"
@@ -319,7 +318,7 @@ void VLGraph::OutputBinopSharedResource(DResource *r) {
   } else if (type == sym_ne) {
     os_ << "!=";
   } else {
-    writer_->ICE("unknown operator");
+    VLWriter::ICE("unknown operator");
   }
   os_ << " ";
   OutputResourceName(r, os_);
@@ -503,7 +502,7 @@ void VLGraph::OutputUnsharedResourceInsnWire(DInsn *insn) {
     } else if (type == sym_bit_xor) {
       os_ << "^";
     } else {
-      writer_->ICE("unknown non-share resource");
+      VLWriter::ICE("unknown non-share resource");
     }
     VLState::OutputRegisterName(*insn->inputs_.rbegin(), os_);
   }
@@ -536,7 +535,7 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
     } else if (type == sym_logic_inv) {
       os_ << "!";
     } else {
-      writer_->ICE("unknown uniop to make wire");
+      VLWriter::ICE("unknown uniop to make wire");
     }
     VLState::OutputRegisterName(*insn->inputs_.begin(), os_);
     os_ << ";\n";

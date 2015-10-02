@@ -21,12 +21,13 @@ namespace writer {
 class CCState;
 class CCModule;
 class ClassWriter;
+class CCWriter;
 class ModuleTemplate;
 class Writer;
 
 class CCGraph {
 public:
-  CCGraph(DGraph *graph, ClassWriter *cw, Writer *writer,
+  CCGraph(DGraph *graph, ClassWriter *cw,
 	  ModuleTemplate *tmpl, ostream &os);
   ~CCGraph();
 
@@ -41,7 +42,6 @@ private:
   ModuleTemplate *tmpl_;
   ostream &os_;
   ClassWriter *cw_;
-  Writer *writer_;
 
   vector<string> sub_instances_;
   map<DState *, CCState *> state_writers_;

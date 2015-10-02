@@ -28,10 +28,10 @@ class VLChannelWriter;
 class VLGraph;
 class VLIOSet;
 
-class VLModule : public Writer {
+class VLModule {
 public:
-  VLModule(DModule *mod, const string &path_name, VLChannelWriter *ch,
-	   ostream &os);
+  VLModule(DModule *mod, const string &path_name,
+	   VLChannelWriter *ch, ostream &os);
   virtual ~VLModule();
 
   void Output(vector<string> *copy_files);
@@ -51,7 +51,10 @@ private:
   const string path_name_;
   std::unique_ptr<VLIOSet> pins_;
   std::unique_ptr<ModuleTemplate> template_;
+  Writer *writer_;
   VLChannelWriter *ch_;
+  DModule *mod_;
+  ostream &os_;
 };
 
 }  // namespace writer

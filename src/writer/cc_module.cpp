@@ -8,7 +8,7 @@
 namespace writer {
 
 CCModule::CCModule(const string &path, DModule *mod, ostream &os)
-  : Writer("cc", mod, os), path_("Mod_" + path) {
+  : mod_(mod), os_(os), path_("Mod_" + path) {
   template_.reset(new ModuleTemplate);
 }
 
@@ -37,7 +37,7 @@ void CCModule::OutputModule() {
 
   std::unique_ptr<CCGraph> graph_writer;
   if (mod_->graph_) {
-    graph_writer.reset(new CCGraph(mod_->graph_, cw_.get(), this,
+    graph_writer.reset(new CCGraph(mod_->graph_, cw_.get(),
 				   template_.get(), os_));
     graph_writer->PreProcess();
   }

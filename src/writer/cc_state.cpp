@@ -2,6 +2,7 @@
 
 #include "dfg/dfg.h"
 #include "writer/cc_class.h"
+#include "writer/cc_writer.h"
 #include "writer/module_template.h"
 #include "writer/writer_util.h"
 
@@ -9,8 +10,8 @@ static sym_t sym_print, sym_assert;
 
 namespace writer {
 
-CCState::CCState(const DState *state, ClassWriter *cw, Writer *writer)
-  : state_(state), cw_(cw), os_(cw->os()), writer_(writer) {
+CCState::CCState(const DState *state, ClassWriter *cw)
+  : state_(state), cw_(cw), os_(cw->os()) {
   sym_print = sym_lookup("print");
   sym_assert = sym_lookup("assert");
 }
@@ -92,7 +93,7 @@ void CCState::OutputBinOp(const DInsn *insn) {
   } else if (type == sym_bit_xor) {
     os_ << "^";
   } else {
-    writer_->ICE("unknown binop", type);
+    CCWriter::ICE("unknown binop", type);
   }
   os_ << " " << RegisterName(*(insn->inputs_.rbegin())) << ";\n";
 }
@@ -186,7 +187,7 @@ void CCState::OutputImportedInsn(const DInsn *insn) {
     const DRegister *reg = *(insn->inputs_.begin());
     os_ << "  Assert(" << RegisterName(reg) << ");\n";
   } else {
-    writer_->ICE("imported insn", sym_lookup(insn->resource_->name_.c_str()));
+    CCWriter::ICE("imported insn", sym_lookup(insn->resource_->name_.c_str()));
   }
 }
 
@@ -287,7 +288,7 @@ void CCState::OutputInsn(const DInsn *insn) {
   } else if (type == sym_task_entry) {
     // Do nothing.
   } else {
-    writer_->ICE("unknown insn", type);
+    CCWriter::ICE("unknown insn", type);
   }
 }
 

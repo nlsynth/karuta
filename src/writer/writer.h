@@ -17,19 +17,17 @@ namespace writer {
 
 class Writer {
 public:
-  Writer(const string &name, DModule *mod, ostream &os);
+  Writer(DModule *mod, ostream &os);
 
   static bool WriteModule(DModule *mod, const char *fn);
 
-  void ICE(const char *msg, const sym_t sym = NULL);
+  static void CommonICE(const char *lang, const char *msg,
+			const sym_t sym = NULL);
 
 protected:
   string OutputSignature();
   DModule *mod_;
   ostream &os_;
-
-private:
-  const string lang_;
 };
 
 }  // namespace writer

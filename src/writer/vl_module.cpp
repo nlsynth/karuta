@@ -23,7 +23,7 @@ namespace writer {
 
 VLModule::VLModule(DModule *mod, const string& path_name,
 		   VLChannelWriter *ch, ostream &os)
-  : Writer("vl", mod, os), path_name_(path_name), ch_(ch) {
+  : path_name_(path_name), ch_(ch), mod_(mod), os_(os) {
   template_.reset(new ModuleTemplate);
 }
 
@@ -232,7 +232,7 @@ void VLModule::PreProcessSubModuleWires(const DModule *dm) {
 void VLModule::OutputVLModule(const string &path_name) {
   std::unique_ptr<VLGraph> graph_writer;
   if (mod_->graph_) {
-    graph_writer.reset(new VLGraph(mod_->graph_, path_name, this,
+    graph_writer.reset(new VLGraph(mod_->graph_, path_name,
 				   template_.get(), os_));
     graph_writer->PreProcess();
   }
