@@ -3,15 +3,13 @@
 #define _writer_writer_h_
 
 #include <iostream>
+
 #include "nli.h"
 
 using std::ostream;
 
 namespace dfg {
-class DArray;
-class DInsn;
 class DModule;
-class DRegister;
 }  // namespace dfg
 using namespace dfg;
 

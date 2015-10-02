@@ -9,6 +9,7 @@
 using std::map;
 
 namespace dfg {
+class DArray;
 class DGraph;
 class DInsn;
 class DModule;

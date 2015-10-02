@@ -8,18 +8,22 @@ namespace dfg {
 class DGraph;
 class DInsn;
 class DModule;
+class DRegister;
 class DState;
 }  // namespace dfg
 using namespace dfg;
 
 namespace writer {
+
 class ClassWriter;
 class ModuleTemplate;
 class Writer;
 
 class CCState {
 public:
-  CCState(DState *state, ClassWriter *cw, Writer *writer);
+  CCState(const DState *state, ClassWriter *cw, Writer *writer);
+
+  void PreProcess(ModuleTemplate *tmpl);
 
   void Output();
 
@@ -44,8 +48,7 @@ private:
   bool IsTerminal() const;
   string SubStateRegName(const DInsn *insn);
 
-  DState *state_;
-  ModuleTemplate *tmpl_;
+  const DState *state_;
   ClassWriter *cw_;
   ostream &os_;
   Writer *writer_;

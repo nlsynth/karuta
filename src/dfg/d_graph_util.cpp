@@ -217,11 +217,10 @@ void DGraphUtil::KillIntermediateResource(DGraph *graph) {
   //
   set<DState *> reachable;
   DStateUtil::CollectReachable(graph, graph->initial_state_, &reachable);
-  set<DState *>::iterator it;
-  for (it = reachable.begin(); it != reachable.end(); it++) {
-    DStateUtil::EraseInsnByResource(*it, entry);
-    DStateUtil::EraseInsnByResource(*it, funcall);
-    DStateUtil::EraseInsnByResource(*it, transition);
+  for (DState *st : reachable) {
+    DStateUtil::EraseInsnByResource(st, entry);
+    DStateUtil::EraseInsnByResource(st, funcall);
+    DStateUtil::EraseInsnByResource(st, transition);
   }
 }
 
@@ -406,7 +405,7 @@ DState *DStateUtil::GetNextState(DGraph *graph, DState *st) {
 
 void DStateUtil::SetNextState(DGraph *graph, DState *st, DState *to) {
   DResource *br =
- DGraphUtil::FindResource(graph, sym_branch, true);
+    DGraphUtil::FindResource(graph, sym_branch, true);
   DInsn *insn = DStateUtil::FindInsnByResource(st, br);
   if (!insn) {
     insn = DGraphUtil::InsnNew(graph, br);

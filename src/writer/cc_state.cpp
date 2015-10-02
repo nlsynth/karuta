@@ -9,10 +9,19 @@ static sym_t sym_print, sym_assert;
 
 namespace writer {
 
-CCState::CCState(DState *state, ClassWriter *cw, Writer *writer)
+CCState::CCState(const DState *state, ClassWriter *cw, Writer *writer)
   : state_(state), cw_(cw), os_(cw->os()), writer_(writer) {
   sym_print = sym_lookup("print");
   sym_assert = sym_lookup("assert");
+}
+
+void CCState::PreProcess(ModuleTemplate *tmpl) {
+  ostream &sr = tmpl->GetStream(ModuleTemplate::RESET_STATE);
+  for (const DInsn *insn : state_->insns_) {
+    if (WriterUtil::IsMultiCycleInsn(insn)) {
+      sr << "  " << SubStateRegName(insn) << " = 0;\n";
+    }
+  }
 }
 
 void CCState::Output() {
@@ -207,9 +216,9 @@ void CCState::OutputChannelReadInsn(const DInsn *insn) {
 }
 
 void CCState::OutputInsnList() {
-  // TODO(yusuke): reorder by wire dependency
   list<DInsn *> insns = state_->insns_;
   set<DRegister *> wires;
+  // TODO(yusuke): reorder by wire dependency
   do {
     list<DInsn *> insns_to_be_later;
     for (DInsn *insn : insns) {
@@ -236,6 +245,13 @@ void CCState::OutputInsnList() {
     CHECK(insns_to_be_later.size() < insns.size());
     insns = insns_to_be_later;
   } while (insns.size() > 0);
+
+  // Branch comes at the last.
+  for (DInsn *insn : insns) {
+    if (insn->resource_->opr_->type_ == sym_branch) {
+      OutputBranch(insn);
+    }
+  }
 }
 
 void CCState::OutputInsn(const DInsn *insn) {
@@ -250,8 +266,6 @@ void CCState::OutputInsn(const DInsn *insn) {
     OutputUniOp(insn);
   } else if (type == sym_assign) {
     OutputAssign(insn);
-  } else if (type == sym_branch) {
-    OutputBranch(insn);
   } else if (type == sym_sram_if) {
     OutputSRAMInsn(insn);
   } else if (type == sym_bit_sel) {
@@ -268,6 +282,8 @@ void CCState::OutputInsn(const DInsn *insn) {
     OutputChannelReadInsn(insn);
   } else if (type == sym_sub_module_call) {
     OutputSubModuleCallInsn(insn);
+  } else if (type == sym_branch) {
+    // Do nothing.
   } else if (type == sym_task_entry) {
     // Do nothing.
   } else {
@@ -276,8 +292,13 @@ void CCState::OutputInsn(const DInsn *insn) {
 }
 
 void CCState::OutputSubModuleCallInsn(const DInsn *insn) {
+  string task_prefix =
+    "Task_" + insn->resource_->name_ + "_" + insn->func_name_;
   string st_name = SubStateRegName(insn);
   os_ << "  if (" << st_name << " == 0) {\n"
+      << "    //if (" << task_prefix << "_Ready()) {\n"
+      << "    //  " << task_prefix << "_En();\n"
+      << "    //}\n"
       << "  }\n";
 }
 

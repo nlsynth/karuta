@@ -5,6 +5,7 @@
 #include "writer/writer.h"
 
 namespace dfg {
+class DArray;
 class DGraph;
 class DInsn;
 class DModule;

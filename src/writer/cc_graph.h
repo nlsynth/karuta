@@ -4,6 +4,10 @@
 
 #include "writer/writer.h"
 
+#include <map>
+
+using std::map;
+
 namespace dfg {
 class DGraph;
 class DInsn;
@@ -14,6 +18,8 @@ using namespace dfg;
 
 namespace writer {
 
+class CCState;
+class CCModule;
 class ClassWriter;
 class ModuleTemplate;
 class Writer;
@@ -22,6 +28,7 @@ class CCGraph {
 public:
   CCGraph(DGraph *graph, ClassWriter *cw, Writer *writer,
 	  ModuleTemplate *tmpl, ostream &os);
+  ~CCGraph();
 
   void PreProcess();
   void Output();
@@ -37,6 +44,7 @@ private:
   Writer *writer_;
 
   vector<string> sub_instances_;
+  map<DState *, CCState *> state_writers_;
 };
   
 }  // namespace writer

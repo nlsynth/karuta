@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _vlwriter_h_included_
-#define _vlwriter_h_included_
+#ifndef _writer_vl_writer_h_
+#define _writer_vl_writer_h_
 
 #include "writer.h"
 
@@ -24,4 +24,4 @@ private:
 
 }  // namespace writer
 
-#endif
+#endif  // _writer_vl_writer_h_

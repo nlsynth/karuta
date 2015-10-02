@@ -1,6 +1,7 @@
 #include "writer/cc_graph.h"
 
 #include "dfg/dfg.h"
+#include "stl_util.h"
 #include "writer/cc_class.h"
 #include "writer/cc_state.h"
 #include "writer/module_template.h"
@@ -12,8 +13,17 @@ CCGraph::CCGraph(DGraph *graph, ClassWriter *cw, Writer *writer,
 		 ModuleTemplate *tmpl, ostream &os)
   : graph_(graph), tmpl_(tmpl), os_(os), cw_(cw), writer_(writer) {
 }
+ 
+CCGraph::~CCGraph() {
+  STLDeleteSecondElements(&state_writers_);
+}
 
 void CCGraph::PreProcess() {
+  for (DState *ds : graph_->states_) {
+    state_writers_[ds] = new CCState(ds, cw_, writer_);
+    state_writers_[ds]->PreProcess(tmpl_);
+  }
+
   ostream &ss =
     tmpl_->GetStream(ModuleTemplate::STATE_SWITCH);
   ss << "  switch (state) {\n";
@@ -58,10 +68,9 @@ void CCGraph::Output() {
   }
   OutputRegisters();
   OutputArrayInstantiation();
-  // function body
+
   for (DState *st : graph_->states_) {
-    CCState state_writer(st, cw_, writer_);
-    state_writer.Output();
+    state_writers_[st]->Output();
   }
 }
 

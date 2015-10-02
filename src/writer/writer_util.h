@@ -4,6 +4,13 @@
 
 #include "writer/writer.h"
 
+namespace dfg {
+class DArray;
+class DInsn;
+class DRegister;
+}  // namespace dfg
+using namespace dfg;
+
 namespace writer {
 
 class WriterUtil {
