@@ -10,8 +10,9 @@ static sym_t sym_print, sym_assert;
 
 namespace writer {
 
-CCState::CCState(const DState *state, ClassWriter *cw)
-  : state_(state), cw_(cw), os_(cw->os()) {
+CCState::CCState(const DState *state, const DGraph *graph, ClassWriter *cw)
+  : state_(state), graph_(graph), cw_(cw), os_(cw->os()),
+    is_multi_cycle_(false) {
   sym_print = sym_lookup("print");
   sym_assert = sym_lookup("assert");
 }
@@ -20,7 +21,9 @@ void CCState::PreProcess(ModuleTemplate *tmpl) {
   ostream &sr = tmpl->GetStream(ModuleTemplate::RESET_STATE);
   for (const DInsn *insn : state_->insns_) {
     if (WriterUtil::IsMultiCycleInsn(insn)) {
+      multi_cycle_insns_.push_back(insn);
       sr << "  " << SubStateRegName(insn) << " = 0;\n";
+      is_multi_cycle_ = true;
     }
   }
 }
@@ -40,17 +43,18 @@ void CCState::Output() {
   for (const DRegister *reg : wires) {
     os_ << "  uint64_t " << RegisterName(reg) << ";\n";
   }
+  if (is_multi_cycle_) {
+    OutputMutliCycleCheck();
+  }
   OutputInsnList();
   if (IsTerminal()) {
     os_ << "  finish_ = true;\n";
   }
   cw_->EndMethod();
 
-  for (const DInsn *insn : state_->insns_) {
-    if (WriterUtil::IsMultiCycleInsn(insn)) {
-      string st_name = SubStateRegName(insn);
-      cw_->AddMember("", "int", st_name);
-    }
+  for (const DInsn *insn : multi_cycle_insns_) {
+    string st_name = SubStateRegName(insn);
+    cw_->AddMember("", "int", st_name);
   }
 }
 
@@ -117,16 +121,26 @@ void CCState::OutputUniOp(const DInsn *insn) {
 }
 
 void CCState::OutputBranch(const DInsn *insn) {
+  string guard = "true";
+  if (is_multi_cycle_) {
+    guard = "finish_state";
+  }
+  os_ << "  if (" << guard << ") {\n";
+  for (const DInsn *insn : multi_cycle_insns_) {
+    os_ << "    " << SubStateRegName(insn) << " = 0;\n";
+  }
+
   vector<DRegister *>::const_iterator it;
   vector<DState *>::const_iterator jt;
   for (it = insn->inputs_.begin(), jt = insn->targets_.begin();
        it != insn->inputs_.end();
        it ++, jt ++) {
-    os_ << "  if (" << RegisterName(*it)
+    os_ << "    if (" << RegisterName(*it)
 	<< ") state = " << ((*jt)->state_id_) << ";\n"
-	<< "  else\n";
+	<< "    else\n";
   }
-  os_ << "  state = " << (*jt)->state_id_ << ";\n";
+  os_ << "    state = " << (*jt)->state_id_ << ";\n"
+      << "  }\n";
 }
 
 void CCState::OutputSRAMInsn(const DInsn *insn) {
@@ -191,6 +205,22 @@ void CCState::OutputImportedInsn(const DInsn *insn) {
   }
 }
 
+void CCState::OutputMutliCycleCheck() {
+  os_ << "  bool finish_state = false;\n"
+      << "  if (";
+  bool is_first = true;
+  for (const DInsn *insn : multi_cycle_insns_) {
+    if (!is_first) {
+      os_ << " && ";
+    }
+    is_first = false;
+    os_ << SubStateRegName(insn) << " == 3";
+  }
+  os_ << ") {\n"
+      << "    finish_state = true;\n"
+      << "  }\n";
+}
+
 void CCState::OutputSelectorInsn(const DInsn *insn) {
   os_ << "  " << RegisterName(*(insn->outputs_.begin()));
   vector<DRegister *>::const_iterator it = insn->inputs_.begin();
@@ -248,7 +278,7 @@ void CCState::OutputInsnList() {
   } while (insns.size() > 0);
 
   // Branch comes at the last.
-  for (DInsn *insn : insns) {
+  for (DInsn *insn : state_->insns_) {
     if (insn->resource_->opr_->type_ == sym_branch) {
       OutputBranch(insn);
     }
@@ -294,12 +324,14 @@ void CCState::OutputInsn(const DInsn *insn) {
 
 void CCState::OutputSubModuleCallInsn(const DInsn *insn) {
   string task_prefix =
-    "Task_" + insn->resource_->name_ + "_" + insn->func_name_;
+    insn->resource_->name_ + "_inst.Task_" +
+    insn->resource_->name_ + "_" + insn->func_name_;
   string st_name = SubStateRegName(insn);
   os_ << "  if (" << st_name << " == 0) {\n"
-      << "    //if (" << task_prefix << "_Ready()) {\n"
-      << "    //  " << task_prefix << "_En();\n"
-      << "    //}\n"
+      << "    if (" << task_prefix << "_Ready()) {\n"
+      << "      " << task_prefix << "_En();\n"
+      << "      " << st_name << " = 3;\n"
+      << "    }\n"
       << "  }\n";
 }
 

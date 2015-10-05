@@ -20,7 +20,7 @@ class ModuleTemplate;
 
 class CCState {
 public:
-  CCState(const DState *state, ClassWriter *cw);
+  CCState(const DState *state, const DGraph *graph, ClassWriter *cw);
 
   void PreProcess(ModuleTemplate *tmpl);
 
@@ -43,15 +43,18 @@ private:
   void OutputSubModuleCallInsn(const DInsn *insn);
   string RegisterName(const DRegister *reg);
   void OutputImportedInsn(const DRegister *reg);
+  void OutputMutliCycleCheck();
 
   bool IsTerminal() const;
   string SubStateRegName(const DInsn *insn);
 
   const DState *state_;
+  const DGraph *graph_;
   ClassWriter *cw_;
   ostream &os_;
 
-  vector<string> sub_instances_;
+  bool is_multi_cycle_;
+  vector<const DInsn *> multi_cycle_insns_;
 };
 
 }  // namespace writer

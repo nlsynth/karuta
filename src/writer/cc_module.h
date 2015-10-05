@@ -15,7 +15,6 @@ using namespace dfg;
 
 namespace writer {
 
-class CCWriter;
 class ClassWriter;
 class ModuleTemplate;
 
@@ -41,7 +40,6 @@ private:
 
   DModule *mod_;
   ostream &os_;
-  CCWriter *writer_;
   std::unique_ptr<ClassWriter> cw_;
   string path_;
   vector<string> sub_instances_;

@@ -51,7 +51,6 @@ private:
   const string path_name_;
   std::unique_ptr<VLIOSet> pins_;
   std::unique_ptr<ModuleTemplate> template_;
-  Writer *writer_;
   VLChannelWriter *ch_;
   DModule *mod_;
   ostream &os_;

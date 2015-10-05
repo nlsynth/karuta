@@ -45,8 +45,8 @@ void CCModule::OutputModule() {
   OutputChannelInstantiation(mod_);
 
   for (DModule *sub_module : mod_->sub_modules_) {
-    string sub_module_name = path_ + "_" +  sub_module->module_name_;
-    cw_->AddMember("", sub_module_name, sub_module_name + "_inst");
+    string sub_module_class = path_ + "_" + sub_module->module_name_;
+    cw_->AddMember("", sub_module_class, sub_module->module_name_ + "_inst");
   }
 
   if (mod_->graph_) {
@@ -101,7 +101,7 @@ void CCModule::OutputTaskEntry() {
   if (mod_->module_type_ == DModule::MODULE_TASK) {
     cw_->AddMember("", "bool", TaskEntryFunctionName(mod_) + "_Ready()");
     ostream &os = cw_->os();
-    os << "  return false;\n";
+    os << "  return (state == kIdleState);\n";
     cw_->EndMethod();
 
     cw_->AddMember("", "void", TaskEntryFunctionName(mod_) + "_En()");
@@ -132,7 +132,7 @@ string CCModule::TaskEntryFunctionName(DModule *mod) {
 }
 
 string CCModule::SubModuleName(DModule *mod) {
-  return path_ + "_" + mod->module_name_;
+  return mod->module_name_;
 }
 
 void CCModule::OutputArrayDecl(const string &name, const DArray *array) {

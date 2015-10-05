@@ -26,7 +26,7 @@ VLWriter::VLWriter(DModule *mod, ostream &os) : Writer(mod, os) {
 void VLWriter::ICE(const char *msg, const sym_t sym) {
   CommonICE("vl", msg, sym);
 }
-  
+
 void VLWriter::Output() {
   os_ << "// " << OutputSignature() << "\n";
   std::ostringstream ss;

@@ -74,7 +74,6 @@ private:
 
   static const DRegister *GetNthInput(const DInsn *insn, int nth);
 
-  Writer *writer_;
   ostream &os_;
   const string path_name_;
   DGraph *graph_;
