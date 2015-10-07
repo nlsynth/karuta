@@ -64,9 +64,8 @@ void CCModule::OutputDispatcher() {
   cw_->AddMember("", "bool", "Dispatch()");
   ostream &os = cw_->os();
   os << template_->GetContents(ModuleTemplate::STATE_SWITCH);
-  for (vector<string>::iterator it = sub_instances_.begin();
-       it != sub_instances_.end(); it++) {
-    os << "  finish_ |= " << *it << ".Dispatch();\n";
+  for (const string &inst : sub_instances_) {
+    os << "  finish_ |= " << inst << ".Dispatch();\n";
   }
   os << "  return finish_;\n";
   cw_->EndMethod();
@@ -76,6 +75,9 @@ void CCModule::OutputPostState() {
   cw_->AddMember("", "void", "PostState()");
   cw_->os() << "  //\n"
 	    << template_->GetContents(ModuleTemplate::POST_STATE);
+  for (const string &inst : sub_instances_) {
+    cw_->os() << "  " << inst << ".PostState();\n";
+  }
   cw_->EndMethod();
 }
 
@@ -83,14 +85,16 @@ void CCModule::OutputStateDumper() {
   cw_->AddMember("", "void", "DumpState()");
   cw_->os() << "  // dumper;\n"
 	    << template_->GetContents(ModuleTemplate::STATE_DUMPER);
+  for (const string &inst : sub_instances_) {
+    cw_->os() << "  " << inst << ".DumpState();\n";
+  }
   cw_->EndMethod();
 }
 
 void CCModule::OutputResetHandler() {
   cw_->AddMember("", "void", "reset()");
-  for (vector<string>::iterator it = sub_instances_.begin();
-       it != sub_instances_.end(); it++) {
-    cw_->os() << "  " << *it << ".reset();\n";
+  for (const string &inst : sub_instances_) {
+    cw_->os() << "  " << inst << ".reset();\n";
   }
   cw_->os() << template_->GetContents(ModuleTemplate::RESET_STATE);
   cw_->os() << "  finish_ = false;\n";

@@ -64,6 +64,10 @@ void ClassWriter::EndMethod() {
   ss_.str("");
 }
 
+const string&ClassWriter::ClassName() const{
+  return class_name_;
+}
+
 ostringstream &ClassWriter::os() {
   return ss_;
 }

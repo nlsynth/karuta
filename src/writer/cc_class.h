@@ -18,15 +18,18 @@ class ClassWriter {
 public:
   ClassWriter(const char *name, const char *parent_name,
 	      const char *parent_initializer = "");
-  void Output(ostream &os) const;
 
+  void Output(ostream &os) const;
   void AddMember(const string &modifier,
 		 const string &type, const string &decl,
 		 const string &initializer = "");
   void EndMethod();
+  const string &ClassName() const;
 
   ostringstream& os();
+
 private:
+
   string class_name_;
   string parent_name_;
   string parent_initializer_;

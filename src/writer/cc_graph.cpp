@@ -49,7 +49,7 @@ void CCGraph::PreProcess() {
   }
 
   ostream &sd = tmpl_->GetStream(ModuleTemplate::STATE_DUMPER);
-  sd << "  printf(\"st=%d\\n\", state);\n";
+  sd << "  printf(\"" << cw_->ClassName() << " st=%d\\n\", state);\n";
 
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
     ostream &ps = tmpl_->GetStream(ModuleTemplate::POST_STATE);
