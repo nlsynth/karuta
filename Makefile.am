@@ -1,9 +1,13 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
-SUBDIRS = lib docs tests examples
-CCRT_FILES = ccrt.h ccrt_main.cpp
-EXTRA_DIST = $(CCRT_FILES) nli run-file README.md .gitignore
-AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
 ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
+
+SUBDIRS = lib docs tests
+CCRT_FILES = ccrt.h ccrt_main.cpp
+EXAMPLES_FILES= \
+ examples/hello.n examples/tb.n examples/tb_top.v examples/md5.n \
+ examples/mt.n examples/mt_test.n examples/mt.cpp
+EXTRA_DIST = $(CCRT_FILES) $(EXAMPLES_FILES) nli run-file README.md .gitignore
 
 pkgdata_DATA = $(CCRT_FILES)
 
