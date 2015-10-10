@@ -1,6 +1,6 @@
 // -*- c++ -*-
-#ifndef _sym_h_included_
-#define _sym_h_included_
+#ifndef _sym_h_
+#define _sym_h_
 
 typedef class sym *sym_t;
 void sym_table_init();
@@ -41,4 +41,4 @@ extern sym_t sym_sram_if, sym_bit_sel, sym_imported, sym_sub_module_call;
 extern sym_t sym_task_entry;
 extern sym_t sym_array_ref, sym_phi, sym_selector;
 
-#endif
+#endif  // _sym_h_

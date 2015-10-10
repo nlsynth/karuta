@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _interface_h_included_
-#define _interface_h_included_
+#ifndef _synth_interface_h_
+#define _synth_interface_h_
 
 #include <map>
 
@@ -37,4 +37,4 @@ private:
 
 }  // namespace synth
 
-#endif
+#endif  // _synth_interface_h_

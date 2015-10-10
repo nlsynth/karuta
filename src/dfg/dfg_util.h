@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _dfg_util_h_included_
-#define _dfg_util_h_included_
+#ifndef _dfg_util_h_
+#define _dfg_util_h_
 
 #include "dfg/dfg.h"
 
@@ -49,4 +49,4 @@ void DGraphWalker<T>::Traverse(DGraph *graph) {
 
 }  // namespace dfg
 
-#endif // _dfg_util_h_included_
+#endif  // _dfg_util_h_

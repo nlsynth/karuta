@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _messages_h_included_
-#define _messages_h_included_
+#ifndef _messages_h_
+#define _messages_h_
 
 #include <sstream>
 
@@ -32,4 +32,4 @@ private:
   Type type_;
 };
 
-#endif
+#endif  // _messages_h_

@@ -1,6 +1,7 @@
 *~
 *.gz
 *.la
+*.lo
 *.o
 *.deps/
 Makefile

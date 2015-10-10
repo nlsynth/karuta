@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _initializer_h_included_
-#define _initializer_h_included_
+#ifndef _initializer_h_
+#define _initializer_h_
 
 class SIEntry {
 public:
@@ -26,4 +26,4 @@ public:
   static void RunFinalizers();
 };
 
-#endif
+#endif  // _initializer_h_

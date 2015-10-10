@@ -27,4 +27,4 @@ void STLDeleteValues(T *t) {
   STLEraseValues(t->begin(), t->end());
 }
 
-#endif  //_stl_util_h_
+#endif  // _stl_util_h_

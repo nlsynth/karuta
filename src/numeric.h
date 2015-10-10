@@ -72,4 +72,4 @@ public:
   static uint64_t GetInt(const Number &x);
 };
 
-#endif
+#endif  // _numeric_h_

@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // Common definition for all nli components.
-#ifndef _nli_h_included_
-#define _nli_h_included_
+#ifndef _nli_h_
+#define _nli_h_
 
 #include <iostream>
 #include <memory>
@@ -46,4 +46,4 @@ public:
 			  const char *content);
 };
 
-#endif
+#endif  // _nli_h_

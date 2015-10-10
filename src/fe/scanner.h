@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _fe_scanner_h_included_
-#define _fe_scanner_h_included_
+#ifndef _fe_scanner_h_
+#define _fe_scanner_h_
 
 #include "nli.h"
 
