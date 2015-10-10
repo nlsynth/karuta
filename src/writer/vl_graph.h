@@ -41,6 +41,7 @@ private:
   void OutputRegisters();
   void OutputTaskReadySignal();
   void OutputTaskEntryState();
+  void OutputTaskEntryArgs();
   void DeclareStateVariable();
   void OutputResourcesAll();
   void OutputInsnWiresAll();

@@ -6,6 +6,7 @@
 
 namespace dfg {
 class DGraph;
+class DInsn;
 class DResource;
 class DState;
 class DModule;
@@ -45,11 +46,10 @@ public:
   int GetStateWidth();
   int GetEncodedState(DState *st);
   int GetTaskEntryState();
+  string StateNameWithoutQuote(const DState *st);
   string StateName(const DState *st);
-  void OutputStateNameWithoutQuote(const DState *st, ostream &os);
-  void OutputStateName(const DState *st, ostream &os);
-  void OutputTaskEntryStateName(ostream &os);
-  void OutputTaskEntryStateNameWithoutQuote(ostream &os);
+  string TaskEntryStateName();
+  string TaskEntryStateNameWithoutQuote();
 
 private:
   int state_width_;
@@ -59,6 +59,8 @@ private:
 class VLUtil {
 public:
   static string TaskControlPinName(const DModule *dm);
+  static string TaskControlPinNameFromInsn(const DGraph *graph,
+					   const DInsn *insn);
   
   static bool IsExternalRAM(const DResource *r);
   static bool IsInternalMEM(const DResource *r);

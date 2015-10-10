@@ -6,6 +6,7 @@
 
 namespace dfg {
 class DArray;
+class DGraph;
 class DInsn;
 class DRegister;
 }  // namespace dfg
@@ -25,6 +26,7 @@ public:
 			       BitSelOperands *opr);
   static string ArrayDescription(const string &name, const DArray *array);
   static bool IsMultiCycleInsn(const DInsn *insn);
+  static DInsn *FindTaskEntryInsn(DGraph *graph);
 };
 
 }  // namespace writer

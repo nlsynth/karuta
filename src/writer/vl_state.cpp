@@ -27,8 +27,8 @@ VLState::~VLState() {
 }
 
 void VLState::Output() {
-  os_ << "        ";
-  state_encoder_->OutputStateName(st_, os_);
+  os_ << "        "
+      << state_encoder_->StateName(st_);
   os_ << ": begin\n";
   for (DInsn *insn : st_->insns_) {
     OutputInsn(insn);
@@ -48,25 +48,22 @@ void VLState::PreProcess(ModuleTemplate *tmpl) {
   }
 }
 
-void VLState::OutputRegisterName(const DRegister *reg, ostream &os) {
-  string s;
-  RegisterName(reg, &s);
-  os << s;
-}
-
-void VLState::RegisterName(const DRegister *reg, string *s) {
+string VLState::RegisterName(const DRegister *reg) {
   if (reg->reg_type_ == DRegister::REG_NORMAL ||
       reg->reg_type_ == DRegister::REG_WIRE) {
-    *s = reg->reg_name_;
-  } else if (reg->reg_type_ == DRegister::REG_CONST) {
+    return reg->reg_name_;
+  } else {
+    CHECK(reg->reg_type_ == DRegister::REG_CONST);
     char buf[64];
     sprintf(buf, "%d'd%lu", reg->data_type_->size_ , reg->num_);
-    *s = string(buf);
+    return string(buf);
   }
 }
 
-void VLState::OutputInsnOutputWireName(const DInsn *insn, int n, ostream &os) {
-  os << "o_insn_" << insn->insn_id_ << "_" << n;
+string VLState::InsnOutputWireName(const DInsn *insn, int n) {
+  char buf[32];
+  sprintf(buf, "o_insn_%d_%d", insn->insn_id_, n);
+  return string(buf);
 }
 
 void VLState::OutputInsnWireToRegisterAssign(const DInsn *insn) {
@@ -78,8 +75,8 @@ void VLState::OutputInsnWireToRegisterAssign(const DInsn *insn) {
       continue;
     }
     os_ << "          " << dst_reg->reg_name_
-	<< " <= ";
-    OutputInsnOutputWireName(insn, nth, os_);
+	<< " <= "
+	<< InsnOutputWireName(insn, nth);
     os_ << ";\n";
   }
 }
@@ -87,9 +84,9 @@ void VLState::OutputInsnWireToRegisterAssign(const DInsn *insn) {
 void VLState::OutputAssignInsn(const DInsn *insn) {
   DRegister *src = *(insn->inputs_.begin());
   DRegister *dst = *(insn->outputs_.begin());
-  os_ << "          "<< dst->reg_name_ <<" <= ";
-  OutputRegisterName(src, os_);
-  os_ << ";\n";
+  os_ << "          "<< dst->reg_name_ <<" <= "
+      << RegisterName(src)
+      << ";\n";
 }
 
 void VLState::OutputSRAMInsn(const DInsn *insn) {
@@ -194,7 +191,7 @@ void VLState::OutputTransition(DGraph *g, DState *st) {
   if (st_ == graph_->last_state_ &&
       graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
     os_ << "          cur_st <= ";
-    state_encoder_->OutputTaskEntryStateName(os_);
+    os_ << state_encoder_->TaskEntryStateName();
     os_ <<";\n";
     return;
   }
@@ -217,16 +214,16 @@ void VLState::OutputTransition(DGraph *g, DState *st) {
     for (it = br_insn->inputs_.begin(), jt = br_insn->targets_.begin();
 	 it != br_insn->inputs_.end();
 	 it ++, jt++) {
-      os_ << "          if (";
-      OutputRegisterName(*it, os_);
+      os_ << "          if ("
+	  << RegisterName(*it);
       os_ << ") begin\n";
-      os_ << "            cur_st <= ";
-      state_encoder_->OutputStateName((*jt), os_);
+      os_ << "            cur_st <= "
+	  << state_encoder_->StateName((*jt));
       os_ <<";\n";
       os_ << "          end else\n";
     }
-    os_ << "          cur_st <= ";
-    state_encoder_->OutputStateName((*jt), os_);
+    os_ << "          cur_st <= "
+	<< state_encoder_->StateName((*jt));
     os_ <<";\n";
   } else {
     // no branch resource
@@ -297,7 +294,7 @@ void VLState::OutputChannelWriteInsn(const DInsn *insn) {
 }
 
 void VLState::OutputSubModuleCall(const DInsn *insn) {
-  string pin_base = insn->resource_->name_ + "_" + insn->func_name_;
+  string pin_base = VLUtil::TaskControlPinNameFromInsn(graph_, insn);
   os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
       << "            if (" << pin_base << "_rdy) begin\n"
       << "              " << SubStateRegName(insn) << " <= 3;\n"

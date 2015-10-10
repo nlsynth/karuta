@@ -70,13 +70,13 @@ void VLGraph::DeclareStateVariable() {
   int w = state_encoder_->GetStateWidth();
   os_ << " // declare state begin\n";
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
-    os_ << " `define ";
-    state_encoder_->OutputTaskEntryStateNameWithoutQuote(os_);
-    os_ << " " << state_encoder_->GetTaskEntryState() <<"\n";
+    os_ << " `define "
+	<< state_encoder_->TaskEntryStateNameWithoutQuote()
+	<< " " << state_encoder_->GetTaskEntryState() <<"\n";
   }
   for (DState *st : graph_->states_) {
-    os_ << " `define ";
-    state_encoder_->OutputStateNameWithoutQuote(st, os_);
+    os_ << " `define "
+	<< state_encoder_->StateNameWithoutQuote(st);
     os_ << " " << state_encoder_->GetEncodedState(st) <<"\n";
   }
 
@@ -111,7 +111,7 @@ void VLGraph::SetEnabledStateSet(DResource *res, const string &dst_signal) {
       }
       chan_states +=
 	string("(cur_st == `") +
-	state_encoder_->StateName(st) + ")";
+	state_encoder_->StateNameWithoutQuote(st) + ")";
     }
   }
   if (!chan_states.empty()) {
@@ -124,9 +124,9 @@ void VLGraph::OutputFSM() {
       << "    if (rst) begin\n"
       << "      cur_st <= ";
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
-    state_encoder_->OutputTaskEntryStateName(os_);
+    os_ << state_encoder_->TaskEntryStateName();
   } else {
-    state_encoder_->OutputStateName(graph_->initial_state_, os_);
+    os_ << state_encoder_->StateName(graph_->initial_state_);
   }
   os_ << ";\n";
   OutputInitialVals();
@@ -155,8 +155,7 @@ void VLGraph::OutputDebugDisplay() {
       continue;
     }
     ++num_normal_regs;
-    string name;
-    VLState::RegisterName(reg, &name);
+    string name = VLState::RegisterName(reg);
     fmt += string(" ") + name + " =%d";
     values += string(" ,") + name;
   }
@@ -213,28 +212,38 @@ void VLGraph::OutputTaskReadySignal() {
     os_ << "  // Task ready signal.\n";
     string pin_base = VLUtil::TaskControlPinName(graph_->owner_module_);
     os_ << "  assign " << pin_base << "_rdy = (cur_st == ";
-    state_encoder_->OutputTaskEntryStateName(os_);
+    os_ << state_encoder_->TaskEntryStateName();
     os_ << ");\n";
   }
 }
 
-void VLGraph::OutputTaskEntryState(){
+void VLGraph::OutputTaskEntryState() {
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
-    os_ << "        ";
-    state_encoder_->OutputTaskEntryStateName(os_);
-    os_ << ":begin\n"
+    os_ << "        "
+	<< state_encoder_->TaskEntryStateName()
+	<< ":begin\n"
 	<< "          if (";
     string pin_base = VLUtil::TaskControlPinName(graph_->owner_module_);
     os_ << pin_base << "_en) begin\n"
-	<< "            cur_st <= ";
-    state_encoder_->OutputStateName(graph_->initial_state_, os_);
+	<< "            cur_st <= "
+	<< state_encoder_->StateName(graph_->initial_state_);
     os_ << ";\n"
 	<< "          end else begin\n"
-	<< "            cur_st <= ";
-    state_encoder_->OutputTaskEntryStateName(os_);
-    os_ << ";\n";
+	<< "            cur_st <= "
+	<< state_encoder_->TaskEntryStateName()
+	<< ";\n";
+    OutputTaskEntryArgs();
     os_ << "          end\n";
     os_ << "        end\n";
+  }
+}
+
+void VLGraph::OutputTaskEntryArgs() {
+  string pin_base = VLUtil::TaskControlPinName(graph_->owner_module_);
+  DInsn *insn = WriterUtil::FindTaskEntryInsn(graph_);
+  for (DRegister *reg : insn->inputs_) {
+    os_ << "            " << reg->reg_name_ << " <= "
+	<< (pin_base + "_" + reg->reg_name_) << ";\n";
   }
 }
 
@@ -267,25 +276,24 @@ void VLGraph::OutputBinopSharedResource(DResource *r) {
   }
   list<DState *>::iterator it;
   int nr = 0;
-  for (it = graph_->states_.begin(); it != graph_->states_.end(); it++) {
-    DInsn *insn = DStateUtil::FindInsnByResource(*it, r);
+  for (DState *state : graph_->states_) {
+    DInsn *insn = DStateUtil::FindInsnByResource(state, r);
     if (!insn) {
       continue;
     }
-    DState *state = (*it);
     DRegister *src0, *src1;
     src0 = *(insn->inputs_.begin());
     src1 = *(insn->inputs_.rbegin());
     CHECK(src0 != NULL && src1 != NULL) << insn->insn_id_ << "\n";
-    ss[0] << "(cur_st == ";
-    state_encoder_->OutputStateName(state, ss[0]);
-    ss[0] << ") ? ";
-    ss[1] << "(cur_st == ";
-    state_encoder_->OutputStateName(state, ss[1]);
-    ss[1] << ") ? ";
-    VLState::OutputRegisterName(src0, ss[0]);
-    VLState::OutputRegisterName(src1, ss[1]);
+    ss[0] << "(cur_st == "
+	  << state_encoder_->StateName(state)
+	  << ") ? ";
+    ss[0] << VLState::RegisterName(src0);
     ss[0] << " : (";
+    ss[1] << "(cur_st == "
+	  << state_encoder_->StateName(state);
+    ss[1] << ") ? ";
+    ss[1] << VLState::RegisterName(src1);
     ss[1] << " : (";
     ++nr;
   }
@@ -367,11 +375,11 @@ void VLGraph::OutputImportedOpInputPin(DResource *r,
     if (!insn) {
       continue ;
     }
-    os_ << "(cur_st == ";
-    state_encoder_->OutputStateName(st, os_);
+    os_ << "(cur_st == "
+	<< state_encoder_->StateName(st);
     os_ << ") ? ";
     const DRegister *input = GetNthInput(insn, nth_input);
-    VLState::OutputRegisterName(input, os_);
+    os_ << VLState::RegisterName(input);
     os_ << " : (";
     nr ++;
   }
@@ -396,8 +404,8 @@ void VLGraph::OutputImportedOp(DResource *r) {
     if (nr > 0) {
       os_ << " | ";
     }
-    os_ << "(cur_st == ";
-    state_encoder_->OutputStateName(st, os_);
+    os_ << "(cur_st == "
+	<< state_encoder_->StateName(st);
     os_ << ")";
     nr ++;
   }
@@ -453,16 +461,16 @@ void VLGraph::OutputResourcesAll() {
 void VLGraph::OutputBitSelInsnWire(const DInsn *insn) {
   WriterUtil::BitSelOperands opr;
   WriterUtil::DecodeBitSelInsn(insn, &opr);
-  os_ << "  assign ";
-  VLState::OutputInsnOutputWireName(insn, 0, os_);
-  os_ << "[" << opr.selected_width - 1 << ":0] = ";
-  VLState::OutputRegisterName(opr.src_reg, os_);
+  os_ << "  assign " <<
+    VLState::InsnOutputWireName(insn, 0);
+  os_ << "[" << opr.selected_width - 1 << ":0] = "
+      << VLState::RegisterName(opr.src_reg);
   os_ << "[" << opr.src_msb_pos << ":" << opr.src_lsb_pos << "];\n";
 }
 
 void VLGraph::OutputBitConcatInsnWire(const DInsn *insn) {
-  os_ << "  assign ";
-  VLState::OutputInsnOutputWireName(insn, 0, os_);
+  os_ << "  assign "
+      << VLState::InsnOutputWireName(insn, 0);
   os_ << " = {";
   bool initial = true;
   for (vector<DRegister *>::const_iterator it = insn->inputs_.begin();
@@ -470,7 +478,7 @@ void VLGraph::OutputBitConcatInsnWire(const DInsn *insn) {
     if (!initial) {
       os_ << ", ";
     }
-    VLState::OutputRegisterName(*it, os_);
+    os_ << VLState::RegisterName(*it);
     initial = false;
   }
   os_ << "};\n";
@@ -479,20 +487,20 @@ void VLGraph::OutputBitConcatInsnWire(const DInsn *insn) {
 void VLGraph::OutputUnsharedResourceInsnWire(DInsn *insn) {
   sym_t type = insn->resource_->opr_->type_;
   // binary, not share resource
-  os_ << "  assign ";
-  VLState::OutputInsnOutputWireName(insn, 0, os_);
+  os_ << "  assign "
+      << VLState::InsnOutputWireName(insn, 0);
   os_ << " = ";
   if (type == sym_selector) {
-    VLState::OutputRegisterName(*insn->inputs_.rbegin(), os_);
+    os_ << VLState::RegisterName(*insn->inputs_.rbegin());
     os_ << " ? ";
     vector<DRegister *>::reverse_iterator it = insn->inputs_.rbegin();
     ++it;
-    VLState::OutputRegisterName(*it, os_);
+    os_ << VLState::RegisterName(*it);
     os_ << " : ";
     ++it;
-    VLState::OutputRegisterName(*it, os_);
+    os_ << VLState::RegisterName(*it);
   } else {
-    VLState::OutputRegisterName(*insn->inputs_.begin(), os_);
+    os_ << VLState::RegisterName(*insn->inputs_.begin());
     if (type == sym_eq) {
       os_ << "==";
     } else if (type == sym_bit_and || type == sym_logic_and) {
@@ -504,7 +512,7 @@ void VLGraph::OutputUnsharedResourceInsnWire(DInsn *insn) {
     } else {
       VLWriter::ICE("unknown non-share resource");
     }
-    VLState::OutputRegisterName(*insn->inputs_.rbegin(), os_);
+    os_ << VLState::RegisterName(*insn->inputs_.rbegin());
   }
   os_ << ";\n";
 }
@@ -521,14 +529,14 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
        it != insn->outputs_.end(); it++, n++) {
     DRegister *reg = *it;
     OutputWireType(reg->data_type_);
-    VLState::OutputInsnOutputWireName(insn, n, os_);
+    os_ << VLState::InsnOutputWireName(insn, n);
     os_ << "; // id:" << insn->insn_id_ << "\n";
   }
   if (VLUtil::IsResourceUnshareUniOp(insn->resource_)) {
     // unary
     // sym_or_reduce, output here
-    os_ << "  assign ";
-    VLState::OutputInsnOutputWireName(insn, 0, os_);
+    os_ << "  assign "
+	<< VLState::InsnOutputWireName(insn, 0);
     os_ << " = ";
     if (type == sym_or_reduce) {
       os_ << "|";
@@ -537,13 +545,13 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
     } else {
       VLWriter::ICE("unknown uniop to make wire");
     }
-    VLState::OutputRegisterName(*insn->inputs_.begin(), os_);
-    os_ << ";\n";
+    os_ << VLState::RegisterName(*insn->inputs_.begin())
+	<< ";\n";
   }
   if (VLUtil::IsResourceShareBinOp(insn->resource_)) {
     // binary, shared resource
-    os_ << "  assign ";
-    VLState::OutputInsnOutputWireName(insn, 0, os_);
+    os_ << "  assign "
+	<< VLState::InsnOutputWireName(insn, 0);
     os_ << " = ";
     OutputResourceName(insn->resource_, os_);
     os_ << "_d0;\n";
@@ -558,13 +566,13 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
     OutputBitConcatInsnWire(insn);
   }
   if (type == sym_read_channel) {
-    os_ << "  assign ";
-    VLState::OutputInsnOutputWireName(insn, 0, os_);
+    os_ << "  assign "
+	<< VLState::InsnOutputWireName(insn, 0);
     os_ << " = channel_" << insn->resource_->name_ << "_data;\n";
   }
   if (type == sym_sram_if) {
-    os_ << "  assign ";
-    VLState::OutputInsnOutputWireName(insn, 0, os_);
+    os_ << "  assign "
+	<< VLState::InsnOutputWireName(insn, 0);
     os_ << " = ";
     if (VLUtil::IsInternalMEM(insn->resource_)) {
       os_ << insn->resource_->name_ << "_rdata";
@@ -601,10 +609,10 @@ void VLGraph::OutputInsnResultWire(DInsn *insn) {
        it != insn->outputs_.end(); ++it, ++n) {
     DRegister *reg = *it;
     if (reg->reg_type_ == DRegister::REG_WIRE) {
-      os_ << "   assign ";
-      VLState::OutputRegisterName(reg, os_);
-      os_ << " = ";
-      VLState::OutputInsnOutputWireName(insn, n, os_);
+      os_ << "   assign "
+	  << VLState::RegisterName(reg);
+      os_ << " = "
+	  << VLState::InsnOutputWireName(insn, n);
       os_ << ";\n";
     }
   }

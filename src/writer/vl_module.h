@@ -38,14 +38,15 @@ public:
 
 private:
   void PreProcessModule(const string &path_name);
-  void PreProcessSubModuleWires(const DModule *dm);
-  void PreProcessSubModuleControl(const DModule *dm, ostream &os);
+  void PreProcessSubModuleControl(const DModule *dm, bool has_graph,
+				  ostream &os);
 
   void OutputVLModule(const string &name);
   void OutputExternalStuff(vector<string> *copy_files);
   void OutputModuleHead(const string &path);
   void OutputArray(const string &name, DArray *array);
-  void CollectPinDecls(const DModule *dm);
+  void CollectPinDecls();
+  void CollectTaskPins(DModule *dm);
   void OutputRAM(const DArray *array);
 
   const string path_name_;

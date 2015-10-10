@@ -21,6 +21,7 @@ public:
   static void Init(bool on, const std::set<std::string> &modules);
   static std::ostream &GetStream(LogSeverity sev);
   static void Finalize(LogSeverity sev, const char *fn, int line);
+
 private:
   static std::stringstream os_;
   static bool is_enabled_;
@@ -32,7 +33,8 @@ public:
   LogFinalizer(LogSeverity sev, const char *fn, int line);
   ~LogFinalizer();
 
-  void operator&(std::ostream&none) {}
+  void operator&(std::ostream &none) {}
+
 private:
   LogSeverity sev_;
   const char *fn_;

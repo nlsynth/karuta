@@ -58,31 +58,43 @@ void VLModule::OutputExternalStuff(vector<string> *copy_files) {
   }
 }
 
-void VLModule::CollectPinDecls(const DModule *dm) {
-  if (dm->module_type_ == DModule::MODULE_CONTAINER) {
-    for (DModule *sub_module : mod_->sub_modules_) {
-      string pin_base = VLUtil::TaskControlPinName(sub_module);
-      pins_->AddPin(pin_base + "_en", VLIOSet::INPUT_WIRE, 0, "");
-      pins_->AddPin(pin_base + "_rdy", VLIOSet::OUTPUT_WIRE, 0, "");
+void VLModule::CollectTaskPins(DModule *dm) {
+  if (dm->module_type_ != DModule::MODULE_TASK) {
+    return;
+  }
+  string pin_base = VLUtil::TaskControlPinName(dm);
+  pins_->AddPin(pin_base + "_en", VLIOSet::INPUT_WIRE, 0, "");
+  pins_->AddPin(pin_base + "_rdy", VLIOSet::OUTPUT_WIRE, 0, "");
+  if (dm->graph_) {
+    DInsn *insn = WriterUtil::FindTaskEntryInsn(dm->graph_);
+    CHECK(insn);
+    for (DRegister *reg : insn->inputs_) {
+      pins_->AddPin(pin_base + "_" + reg->reg_name_, VLIOSet::INPUT_WIRE,
+		    reg->data_type_->size_, "");
     }
   }
-  if (dm->module_type_ == DModule::MODULE_TASK) {
-    string pin_base = VLUtil::TaskControlPinName(dm);
-    pins_->AddPin(pin_base + "_en", VLIOSet::INPUT, 0, "");
-    pins_->AddPin(pin_base + "_rdy", VLIOSet::OUTPUT_WIRE, 0, "");
+}
+
+void VLModule::CollectPinDecls() {
+  if (mod_->module_type_ == DModule::MODULE_CONTAINER) {
+    for (DModule *sub_module : mod_->sub_modules_) {
+      CollectTaskPins(sub_module);
+    }
   }
-  if (!dm->graph_) {
+  CollectTaskPins(mod_);
+
+  if (!mod_->graph_) {
     return;
   }
   bool has_external_ram = false;
-  for (auto *r : dm->graph_->resources_) {
+  for (auto *r : mod_->graph_->resources_) {
     if (VLUtil::IsExternalRAM(r)) {
       has_external_ram = true;
     }
   }
 
-  for (size_t i = 0; i < dm->channels_.size(); ++i) {
-    DChannel *chan = dm->channels_[i];
+  for (size_t i = 0; i < mod_->channels_.size(); ++i) {
+    DChannel *chan = mod_->channels_[i];
     string c = "Channel " + chan->name_;
     if (chan->writer_ == mod_) {
       CHECK(chan->reader_ != mod_);
@@ -116,17 +128,11 @@ void VLModule::PreProcessModule(const string &path_name) {
     os << "  " << sub_module_name << " " << sub_module_name
        << "_inst(.clk(clk), .rst(rst)";
     if (sub_module->module_type_ == DModule::MODULE_TASK) {
-      PreProcessSubModuleControl(sub_module, os);
-      if (has_graph) {
-	PreProcessSubModuleWires(sub_module);
-      }
+      PreProcessSubModuleControl(sub_module, has_graph, os);
     }
     if (sub_module->module_type_ == DModule::MODULE_CONTAINER) {
       for (DModule *sub_sub_module : sub_module->sub_modules_) {
-	PreProcessSubModuleControl(sub_sub_module, os);
-	if (has_graph) {
-	  PreProcessSubModuleWires(sub_sub_module);
-	}
+	PreProcessSubModuleControl(sub_sub_module, has_graph, os);
       }
     }
     VLChannelWriter::MayOutputChannelConnections(mod_, sub_module, os);
@@ -138,7 +144,7 @@ void VLModule::OutputModuleHead(const string &path_name) {
   pins_.reset(new VLIOSet);
   pins_->AddPin("clk", VLIOSet::INPUT, 0, "");
   pins_->AddPin("rst", VLIOSet::INPUT, 0, "");
-  CollectPinDecls(mod_);
+  CollectPinDecls();
   os_ << "\nmodule " << path_name << "(";
   pins_->Output(true, os_);
   os_ << ");\n";
@@ -162,8 +168,8 @@ void VLModule::OutputArray(const string &name, DArray *array) {
   os_ << "  input [" << (array->address_width - 1) << ":0] addr_i;\n"
       << "  output [" << (array->data_width - 1) << ":0] rdata_o;\n";
   if (array->may_write_) {
-    os_ << "  input ["<< (array->data_width - 1) << ":0] wdata_i;\n";
-    os_ << "  input write_en_i;\n";
+    os_ << "  input ["<< (array->data_width - 1) << ":0] wdata_i;\n"
+	<< "  input write_en_i;\n";
   }
   os_ << "  reg [" << (array->data_width - 1) << ":0] rdata_o;\n\n";
 
@@ -172,8 +178,8 @@ void VLModule::OutputArray(const string &name, DArray *array) {
     OutputRAM(array);
   } else {
     // ROM
-    os_ << "  always @(addr_i) begin\n";
-    os_ << "    case(addr_i)\n";
+    os_ << "  always @(addr_i) begin\n"
+	<< "    case(addr_i)\n";
     for (int i = 0; i < (1 << array->address_width); ++i) {
       os_ << "      " << i << ": rdata_o = ";
       if (i < length) {
@@ -215,18 +221,19 @@ void VLModule::OutputRAM(const DArray *array) {
       << "  end\n";
 }
 
-void VLModule::PreProcessSubModuleControl(const DModule *dm, ostream &os) {
+void VLModule::PreProcessSubModuleControl(const DModule *dm, bool has_graph,
+					  ostream &os) {
   string pin_base = VLUtil::TaskControlPinName(dm);
   os << ", ." << pin_base << "_en(" << pin_base << "_en)"
      << ", ." << pin_base << "_rdy(" << pin_base << "_rdy)";
-}
 
-void VLModule::PreProcessSubModuleWires(const DModule *dm) {
-  string pin_base = VLUtil::TaskControlPinName(dm);
-  ostream &sw =
-    template_->GetStream(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);
-  sw << "  reg " << pin_base << "_en;\n"
-     << "  wire " << pin_base << "_rdy;\n";
+  if (has_graph) {
+    string pin_base = VLUtil::TaskControlPinName(dm);
+    ostream &sw =
+      template_->GetStream(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);
+    sw << "  reg " << pin_base << "_en;\n"
+       << "  wire " << pin_base << "_rdy;\n";
+  }
 }
 
 void VLModule::OutputVLModule(const string &path_name) {

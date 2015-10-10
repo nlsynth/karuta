@@ -33,4 +33,10 @@ bool WriterUtil::IsMultiCycleInsn(const DInsn *insn) {
 	  type == sym_read_channel);
 }
 
+DInsn *WriterUtil::FindTaskEntryInsn(DGraph *graph) {
+  DResource *task_entry =
+    DGraphUtil::FindResource(graph, sym_task_entry, false);
+  return DStateUtil::FindInsnByResource(graph->initial_state_, task_entry);
+}
+
 }  // namespace writer

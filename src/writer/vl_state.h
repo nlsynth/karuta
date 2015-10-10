@@ -32,9 +32,8 @@ public:
   void PreProcess(ModuleTemplate *tmpl);
 
   // primitive output
-  static void OutputInsnOutputWireName(const DInsn *insn, int n, ostream &os);
-  static void OutputRegisterName(const DRegister *reg, ostream &os);
-  static void RegisterName(const DRegister *reg, string *s);
+  static string InsnOutputWireName(const DInsn *insn, int n);
+  static string RegisterName(const DRegister *reg);
 
 private:
   void OutputInsn(const DInsn *insn);

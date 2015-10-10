@@ -91,35 +91,52 @@ int VLStateEncoder::GetTaskEntryState() {
   return task_entry_state_;
 }
 
-string VLStateEncoder::StateName(const DState *st) {
+string VLStateEncoder::StateNameWithoutQuote(const DState *st) {
   char buf[10];
   sprintf(buf, "S_%d", st->state_id_);
   return string(buf);
 }
 
-void VLStateEncoder::OutputStateNameWithoutQuote(const DState *st,
-						 ostream &os) {
-  os << StateName(st);
+string VLStateEncoder::StateName(const DState *st) {
+  return "`" + StateNameWithoutQuote(st);
 }
 
-void VLStateEncoder::OutputStateName(const DState *st, ostream &os) {
-  os << "`";
-  OutputStateNameWithoutQuote(st, os);
+string VLStateEncoder::TaskEntryStateName() {
+  return "`" +  TaskEntryStateNameWithoutQuote();
 }
 
-void VLStateEncoder::OutputTaskEntryStateName(ostream &os) {
-  os << "`";
-  OutputTaskEntryStateNameWithoutQuote(os);
-}
-
-void VLStateEncoder::OutputTaskEntryStateNameWithoutQuote(ostream &os) {
+string VLStateEncoder::TaskEntryStateNameWithoutQuote() {
   char buf[10];
   sprintf(buf, "S_%d", task_entry_state_);
-  os << buf;
+  return string(buf);
 }
   
 string VLUtil::TaskControlPinName(const DModule *dm) {
   return dm->parent_mod_->module_name_ + "_" + dm->module_name_;
+}
+
+string VLUtil::TaskControlPinNameFromInsn(const DGraph *graph,
+					  const DInsn *insn) {
+  DModule *callee_mod = nullptr;
+  for (DModule *mod : graph->owner_module_->sub_modules_) {
+    if (mod->module_name_ == insn->resource_->name_) {
+      callee_mod = mod;
+    }
+  }
+  CHECK(callee_mod);
+  if (callee_mod->module_type_ == DModule::MODULE_TASK) {
+    return TaskControlPinName(callee_mod);
+  } else {  // DMODULE_CONTAINER
+    DModule *sub_module = nullptr;
+    for (DModule *mod : callee_mod->sub_modules_) {
+      cout << mod->module_name_;
+      if (mod->module_name_ == insn->func_name_) {
+	sub_module = mod;
+      }
+    }
+    CHECK(sub_module);
+    return TaskControlPinName(sub_module);
+  }
 }
 
 bool VLUtil::IsExternalRAM(const DResource *r) {
