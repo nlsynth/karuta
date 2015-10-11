@@ -1,4 +1,4 @@
-AC_INIT([nli], [0.1.8], [tabata.yusuke@gmail.com])
+AC_INIT([nli], [0.1.9], [tabata.yusuke@gmail.com])
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([foreign])
