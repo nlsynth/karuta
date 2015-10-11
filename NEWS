@@ -1,4 +1,5 @@
-0.1.8 WIP
+2015/10/12 0.1.8
+ Introduce member object method call.
 2015/09/06 0.1.7
  Prepare to introduce hierarchical objects.
 2015/07/19 0.1.6
