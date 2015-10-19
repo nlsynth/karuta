@@ -7,6 +7,7 @@
 class DumpStream {
 public:
   DumpStream(ostream &os);
+
   void push_indent();
   void pop_indent();
   void indent();

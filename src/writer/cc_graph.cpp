@@ -10,8 +10,8 @@
 namespace writer {
 
 CCGraph::CCGraph(DGraph *graph, ClassWriter *cw,
-		 ModuleTemplate *tmpl, ostream &os)
-  : graph_(graph), tmpl_(tmpl), os_(os), cw_(cw) {
+		 ModuleTemplate *tmpl)
+  : graph_(graph), tmpl_(tmpl), cw_(cw) {
 }
  
 CCGraph::~CCGraph() {

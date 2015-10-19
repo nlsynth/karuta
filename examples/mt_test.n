@@ -11,4 +11,4 @@ def MT_test.main() {
 
 //MT_test.main();
 MT_test.compile();
-MT_test.write_hdl("/tmp/mt.v");
+MT_test.writeHdl("/tmp/mt.v");

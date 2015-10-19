@@ -38,7 +38,7 @@ public:
 
 private:
   void PreProcessModule(const string &path_name);
-  void PreProcessSubModuleControl(const DModule *dm, bool has_graph,
+  void PreProcessSubModuleControl(const DModule *sub_mod, bool has_graph,
 				  ostream &os);
 
   void OutputVLModule(const string &name);

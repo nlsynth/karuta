@@ -38,7 +38,7 @@ void CCModule::OutputModule() {
   std::unique_ptr<CCGraph> graph_writer;
   if (mod_->graph_) {
     graph_writer.reset(new CCGraph(mod_->graph_, cw_.get(),
-				   template_.get(), os_));
+				   template_.get()));
     graph_writer->PreProcess();
   }
 

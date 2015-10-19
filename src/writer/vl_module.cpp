@@ -221,18 +221,34 @@ void VLModule::OutputRAM(const DArray *array) {
       << "  end\n";
 }
 
-void VLModule::PreProcessSubModuleControl(const DModule *dm, bool has_graph,
+void VLModule::PreProcessSubModuleControl(const DModule *sub_mod,
+					  bool has_graph,
 					  ostream &os) {
-  string pin_base = VLUtil::TaskControlPinName(dm);
+  string pin_base = VLUtil::TaskControlPinName(sub_mod);
   os << ", ." << pin_base << "_en(" << pin_base << "_en)"
      << ", ." << pin_base << "_rdy(" << pin_base << "_rdy)";
 
   if (has_graph) {
-    string pin_base = VLUtil::TaskControlPinName(dm);
+    string pin_base = VLUtil::TaskControlPinName(sub_mod);
     ostream &sw =
       template_->GetStream(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);
     sw << "  reg " << pin_base << "_en;\n"
        << "  wire " << pin_base << "_rdy;\n";
+  }
+
+  if (sub_mod->graph_) {
+    DInsn *insn = WriterUtil::FindTaskEntryInsn(sub_mod->graph_);
+    for (DRegister *reg : insn->inputs_) {
+      string reg_name = pin_base + "_" + reg->reg_name_;
+      os << ", ." << reg_name << "(" << reg_name << ")";
+
+      if (has_graph) {
+	ostream &sw =
+	  template_->GetStream(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);
+	sw << VLUtil::RegType(reg->data_type_)
+	   << reg_name << ";\n";
+      }
+    }
   }
 }
 

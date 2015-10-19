@@ -63,8 +63,6 @@ private:
   void OutputArrayRefResource(DResource *r);
   void OutputBitSelInsnWire(const DInsn *insn);
   void OutputBitConcatInsnWire(const DInsn *insn);
-  void OutputRegType(const DType *type);
-  void OutputWireType(const DType *type);
 
   void OutputDebugDisplay();
   void OutputInitialVals();

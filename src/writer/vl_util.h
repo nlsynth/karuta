@@ -9,6 +9,7 @@ class DGraph;
 class DInsn;
 class DResource;
 class DState;
+class DType;
 class DModule;
 }  // namespace dfg
 using namespace dfg;
@@ -58,15 +59,23 @@ private:
 
 class VLUtil {
 public:
+  static DModule *GetTaskModule(const DGraph *graph, const DInsn *insn);
   static string TaskControlPinName(const DModule *dm);
   static string TaskControlPinNameFromInsn(const DGraph *graph,
 					   const DInsn *insn);
+  // "reg [dd:0]"
+  static string RegType(const DType *type);
+  // "wire [dd:0]"
+  static string WireType(const DType *type);
   
   static bool IsExternalRAM(const DResource *r);
   static bool IsInternalMEM(const DResource *r);
   static bool IsResourceUnshareUniOp(const DResource *r);
   static bool IsResourceUnshareBinOp(const DResource *r);
   static bool IsResourceShareBinOp(const DResource *r);
+
+private:
+  static string WidthType(const DType *type);
 };
 
 }  // namespace writer

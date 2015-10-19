@@ -117,6 +117,11 @@ string VLUtil::TaskControlPinName(const DModule *dm) {
 
 string VLUtil::TaskControlPinNameFromInsn(const DGraph *graph,
 					  const DInsn *insn) {
+  DModule *task_module = GetTaskModule(graph, insn);
+  return TaskControlPinName(task_module);
+}
+
+DModule *VLUtil::GetTaskModule(const DGraph *graph, const DInsn *insn) {
   DModule *callee_mod = nullptr;
   for (DModule *mod : graph->owner_module_->sub_modules_) {
     if (mod->module_name_ == insn->resource_->name_) {
@@ -124,18 +129,35 @@ string VLUtil::TaskControlPinNameFromInsn(const DGraph *graph,
     }
   }
   CHECK(callee_mod);
+  DModule *task_module = nullptr;
   if (callee_mod->module_type_ == DModule::MODULE_TASK) {
-    return TaskControlPinName(callee_mod);
+    task_module = callee_mod;
   } else {  // DMODULE_CONTAINER
-    DModule *sub_module = nullptr;
     for (DModule *mod : callee_mod->sub_modules_) {
-      cout << mod->module_name_;
       if (mod->module_name_ == insn->func_name_) {
-	sub_module = mod;
+	task_module = mod;
       }
     }
-    CHECK(sub_module);
-    return TaskControlPinName(sub_module);
+    CHECK(task_module);
+  }
+  return task_module;
+}
+
+string VLUtil::RegType(const DType *type) {
+  return "  reg" + WidthType(type);
+}
+
+string VLUtil::WireType(const DType *type) {
+  return "  wire" + WidthType(type);
+}
+
+string VLUtil::WidthType(const DType *type) {
+  if (type->type_ == DType::ENUM) {
+    return string(" ");
+  } else {
+    char buf[20];
+    sprintf(buf, " [%d:0] ", type->size_ - 1);
+    return string(buf);
   }
 }
 

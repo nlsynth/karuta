@@ -5,7 +5,7 @@ Author: Yusuke TABATA (tabata.yusuke@gmail.com)
 TL;DR:
     Experimental high level synthesis (HLS) from prototype based object oriented script language to RTL (Verilog) which might become useful for FPGA development...
 
-This software Neon Light (Compiler) takes Neon Light Script language as an input and outputs cirtuits in Verilog language.
+This software Neon Light (Compiler) takes Neon Light Script language as an input and outputs cirtuits in Verilog RTL.
 As of now, this software has too many bugs and unimplemented features. In addition to implementation/documentation quality, many important features are not documented and liable to change.
 
 This software package is under development to explore efficient logic circuit design methodology.

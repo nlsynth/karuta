@@ -177,31 +177,15 @@ void VLGraph::OutputInitialVals() {
   }
 }
 
-void VLGraph::OutputRegType(const DType *type) {
-  if (type->type_ == DType::ENUM) {
-    os_ << "  reg ";
-  } else {
-    os_ << "  reg [" << (type->size_ - 1) << ":0] ";
-  }
-}
-
-void VLGraph::OutputWireType(const DType *type) {
-  if (type->type_ == DType::ENUM) {
-    os_ << "  wire ";
-  } else {
-    os_ << "  wire [" << (type->size_ - 1) << ":0] ";
-  }
-}
-
 void VLGraph::OutputRegisters() {
   for (DRegister *reg : graph_->registers_) {
     if (reg->reg_type_ == DRegister::REG_NORMAL) {
-      OutputRegType(reg->data_type_);
-      os_ << " "<< reg->reg_name_ <<";\n";
+      os_ << VLUtil::RegType(reg->data_type_);
+      os_ << " " << reg->reg_name_ <<";\n";
     }
     if (reg->reg_type_ == DRegister::REG_WIRE) {
-      OutputWireType(reg->data_type_);
-      os_ << " "<< reg->reg_name_ <<";\n";
+      os_ << VLUtil::WireType(reg->data_type_);
+      os_ << " " << reg->reg_name_ <<";\n";
     }
   }
   os_ << "\n";
@@ -226,13 +210,13 @@ void VLGraph::OutputTaskEntryState() {
     string pin_base = VLUtil::TaskControlPinName(graph_->owner_module_);
     os_ << pin_base << "_en) begin\n"
 	<< "            cur_st <= "
-	<< state_encoder_->StateName(graph_->initial_state_);
-    os_ << ";\n"
-	<< "          end else begin\n"
+	<< state_encoder_->StateName(graph_->initial_state_)
+	<< ";\n";
+    OutputTaskEntryArgs();
+    os_ << "          end else begin\n"
 	<< "            cur_st <= "
 	<< state_encoder_->TaskEntryStateName()
 	<< ";\n";
-    OutputTaskEntryArgs();
     os_ << "          end\n";
     os_ << "        end\n";
   }
@@ -252,14 +236,14 @@ void VLGraph::OutputBinopWire(DResource *r) {
   int i;
   for (it = r->output_types_.begin(), i = 0;
        it != r->output_types_.end(); it++, i++) {
-    OutputWireType(*it);
+    os_ << VLUtil::WireType(*it);
     OutputResourceName(r, os_);
     os_ << "_d" << i << ";\n";
   }
 
   for (it = r->input_types_.begin(), i = 0;
        it != r->input_types_.end(); it++, i++) {
-    OutputWireType(*it);
+    os_ << VLUtil::WireType(*it);
     OutputResourceName(r, os_);
     os_ << "_s"<< i <<";\n";
   }
@@ -528,7 +512,7 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
   for (n = 0, it = insn->outputs_.begin();
        it != insn->outputs_.end(); it++, n++) {
     DRegister *reg = *it;
-    OutputWireType(reg->data_type_);
+    os_ << VLUtil::WireType(reg->data_type_);
     os_ << VLState::InsnOutputWireName(insn, n);
     os_ << "; // id:" << insn->insn_id_ << "\n";
   }

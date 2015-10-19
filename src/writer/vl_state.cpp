@@ -298,12 +298,28 @@ void VLState::OutputSubModuleCall(const DInsn *insn) {
   os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
       << "            if (" << pin_base << "_rdy) begin\n"
       << "              " << SubStateRegName(insn) << " <= 3;\n"
-      << "              " << pin_base << "_en <= 1;\n"
-      << "            end\n"
+      << "              " << pin_base << "_en <= 1;\n";
+  OutputSubModuleArgs(insn);
+  os_ << "            end\n"
       << "          end ";
   os_ << "else if (" << SubStateRegName(insn) << " == 3) begin\n"
       << "            " << pin_base << "_en <= 0;\n"
       << "          end\n";
+}
+
+void VLState::OutputSubModuleArgs(const DInsn *insn) {
+  DModule *mod = VLUtil::GetTaskModule(graph_, insn);
+  DInsn *entry_insn = WriterUtil::FindTaskEntryInsn(mod->graph_);
+  CHECK(entry_insn);
+  int nth = 0;
+  for (DRegister *dst_reg : entry_insn->inputs_) {
+    os_ << "              "
+	<< VLUtil::TaskControlPinNameFromInsn(graph_, insn)
+	<< "_" << dst_reg->reg_name_ << " <= ";
+    DRegister *src_reg = insn->inputs_[nth];
+    os_ << RegisterName(src_reg) << ";\n";
+    ++nth;
+  }
 }
 
 string VLState::SubStateRegName(const DInsn *insn) {

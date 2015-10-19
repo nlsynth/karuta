@@ -6,8 +6,8 @@
 
 namespace dfg {
 
-struct import_param;
-struct import_params;
+class import_param;
+class import_params;
 
 class Importer {
 public:

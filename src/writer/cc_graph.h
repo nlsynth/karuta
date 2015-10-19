@@ -26,7 +26,7 @@ class ModuleTemplate;
 class CCGraph {
 public:
   CCGraph(DGraph *graph, ClassWriter *cw,
-	  ModuleTemplate *tmpl, ostream &os);
+	  ModuleTemplate *tmpl);
   ~CCGraph();
 
   void PreProcess();
@@ -38,7 +38,6 @@ private:
 
   DGraph *graph_;
   ModuleTemplate *tmpl_;
-  ostream &os_;
   ClassWriter *cw_;
 
   map<DState *, CCState *> state_writers_;

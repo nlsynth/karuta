@@ -19,6 +19,10 @@ using std::ostringstream;
 using std::string;
 using std::vector;
 
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+ TypeName(const TypeName&) = delete; \
+ void operator=(const TypeName&) = delete
+
 class Env {
 public:
   static string GetVersion();

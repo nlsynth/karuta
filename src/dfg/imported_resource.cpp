@@ -14,21 +14,23 @@ namespace dfg {
 
 static Pool<ImportedResource> imported_resource_pool;
 
-struct import_param {
+class import_param {
+public:
   sym_t key;
   vector <string> values;
   sym_t nthSym(int nth);
 };
 
-struct import_params {
+class import_params {
+public:
   ~import_params();
   vector<import_param *> param_list;
 };
 
 sym_t import_param::nthSym(int nth) {
-  for (vector<string>::iterator it = values.begin(); it != values.end(); it++) {
+  for (string &s : values) {
     if (nth == 0) {
-      return sym_lookup((*it).c_str());
+      return sym_lookup(s.c_str());
     }
     nth --;
   }
