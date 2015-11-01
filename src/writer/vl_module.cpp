@@ -69,13 +69,15 @@ void VLModule::CollectTaskPins(DModule *dm) {
     DInsn *entry_insn = WriterUtil::FindTaskEntryInsn(dm->graph_);
     CHECK(entry_insn);
     for (DRegister *reg : entry_insn->inputs_) {
-      pins_->AddPin(pin_base + "_" + reg->reg_name_ + "_i", VLIOSet::INPUT_WIRE,
+      pins_->AddPin(VLUtil::TaskReturnValuePinName(pin_base, reg, "_i"),
+		    VLIOSet::INPUT_WIRE,
 		    reg->data_type_->size_, "");
     }
     DInsn *finish_insn = WriterUtil::FindTaskFinishInsn(dm->graph_);
     CHECK(finish_insn);
     for (DRegister *reg : finish_insn->inputs_) {
-      pins_->AddPin(pin_base + "_" + reg->reg_name_ + "_o", VLIOSet::OUTPUT,
+      pins_->AddPin(VLUtil::TaskReturnValuePinName(pin_base, reg, "_o"),
+		    VLIOSet::OUTPUT,
      		    reg->data_type_->size_, "");
     }
   }
@@ -246,7 +248,7 @@ void VLModule::PreProcessSubModuleControl(const DModule *sub_mod,
   if (sub_mod->graph_) {
     DInsn *entry_insn = WriterUtil::FindTaskEntryInsn(sub_mod->graph_);
     for (DRegister *reg : entry_insn->inputs_) {
-      string reg_name = pin_base + "_" + reg->reg_name_ + "_i";
+      string reg_name = VLUtil::TaskReturnValuePinName(pin_base, reg, "_i");
       os << ", ." << reg_name << "(" << reg_name << ")";
 
       if (has_graph) {
@@ -258,7 +260,7 @@ void VLModule::PreProcessSubModuleControl(const DModule *sub_mod,
     }
     DInsn *finish_insn = WriterUtil::FindTaskFinishInsn(sub_mod->graph_);
     for (DRegister *reg : finish_insn->inputs_) {
-      string reg_name = pin_base + "_" + reg->reg_name_ + "_o";
+      string reg_name = VLUtil::TaskReturnValuePinName(pin_base, reg, "_o");
       os << ", ." << reg_name << "(" << reg_name << ")";
       ostream &sw =
 	template_->GetStream(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);

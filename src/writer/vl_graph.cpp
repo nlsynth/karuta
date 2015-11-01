@@ -227,7 +227,7 @@ void VLGraph::OutputTaskEntryArgs() {
   DInsn *insn = WriterUtil::FindTaskEntryInsn(graph_);
   for (DRegister *reg : insn->inputs_) {
     os_ << "            " << reg->reg_name_ << " <= "
-	<< (pin_base + "_" + reg->reg_name_ + "_i") << ";\n";
+	<< VLUtil::TaskReturnValuePinName(pin_base, reg, "_i") << ";\n";
   }
 }
 

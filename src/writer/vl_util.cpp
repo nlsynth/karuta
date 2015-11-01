@@ -143,6 +143,13 @@ DModule *VLUtil::GetCalleeTaskModule(const DGraph *graph, const DInsn *insn) {
   return task_module;
 }
 
+string VLUtil::TaskReturnValuePinName(const string &pin_base,
+				      const DRegister *reg,
+				      const string &dir) {
+  return pin_base + "_" + reg->reg_name_ + dir;
+}
+
+
 string VLUtil::RegType(const DType *type) {
   return "  reg" + WidthType(type);
 }

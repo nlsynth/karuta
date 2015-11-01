@@ -7,6 +7,7 @@
 namespace dfg {
 class DGraph;
 class DInsn;
+class DRegister;
 class DResource;
 class DState;
 class DType;
@@ -64,6 +65,9 @@ public:
   static string TaskControlPinName(const DModule *dm);
   static string TaskControlPinNameFromCallerInsn(const DGraph *graph,
 						 const DInsn *insn);
+  static string TaskReturnValuePinName(const string &pin_base,
+				       const DRegister *reg,
+				       const string &dir);
   // "reg [dd:0]"
   static string RegType(const DType *type);
   // "wire [dd:0]"
