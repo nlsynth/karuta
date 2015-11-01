@@ -47,19 +47,21 @@ bool MethodSynth::Synth() {
   current_zinsn_index_ = -1;
   method_ = value->method_;
 
-  vm::Method *method = value->method_;
-  if (!method->parse_tree_) {
-    SynthNativeMethod(method);
+  if (!method_->parse_tree_) {
+    SynthNativeMethod(method_);
     return true;
   }
   compiler::Compiler::CompileMethod(vm_, obj_,
-				    method->parse_tree_,
-				    method);
+				    method_->parse_tree_,
+				    method_);
 
-  EmitEntryInsn(method);
-  for (size_t i = 0; i < method->insns_.size(); ++i) {
+  EmitEntryInsn(method_);
+  for (size_t i = 0; i < method_->insns_.size(); ++i) {
     current_zinsn_index_ = i;
-    SynthInsn(method->insns_[i]);
+    SynthInsn(method_->insns_[i]);
+  }
+  if (is_task_root_) {
+    EmitTaskFinishInsn();
   }
 
   ResolveJumps();
@@ -459,16 +461,40 @@ DInsn *MethodSynth::EmitEntryInsn(vm::Method *method) {
       entry_insn->inputs_.push_back(reg);
     }
   }
-  fe::VarDeclSet *rets = method->parse_tree_->returns_;
-  if (rets) {
-    for (size_t i = 0; i < rets->decls.size(); ++i) {
-      vm::Register *zreg = method->method_regs_[i + num_args];
-      entry_insn->outputs_.push_back(FindLocalVarRegister(zreg));
+  // Task root uses task_finish insn instead.
+  if (!is_task_root_) {
+    fe::VarDeclSet *rets = method->parse_tree_->returns_;
+    if (rets) {
+      for (size_t i = 0; i < rets->decls.size(); ++i) {
+	vm::Register *zreg = method->method_regs_[i + num_args];
+	entry_insn->outputs_.push_back(FindLocalVarRegister(zreg));
+      }
     }
   }
 
   entry_state->insns_.push_back(entry_insn);
   return entry_insn;
+}
+
+void MethodSynth::EmitTaskFinishInsn() {
+  DState *finish_state = AllocState();
+  finish_state->text_annotation_ = "finish";
+  DInsn *finish_insn =
+    DGraphUtil::InsnNew(graph_, resource_->TaskFinishResource());
+  CHECK(is_task_root_);
+  int num_args = 0;
+  fe::VarDeclSet *args = method_->parse_tree_->args_;
+  if (args) {
+    num_args = args->decls.size();
+  }
+  fe::VarDeclSet *rets = method_->parse_tree_->returns_;
+  if (rets) {
+    for (size_t i = 0; i < rets->decls.size(); ++i) {
+      vm::Register *zreg = method_->method_regs_[i + num_args];
+      finish_insn->inputs_.push_back(FindLocalVarRegister(zreg));
+    }
+  }
+  finish_state->insns_.push_back(finish_insn);
 }
 
 void MethodSynth::EmitOneAssign(vm::Register *lhs, vm::Register *rhs) {

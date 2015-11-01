@@ -59,10 +59,11 @@ private:
 
 class VLUtil {
 public:
-  static DModule *GetTaskModule(const DGraph *graph, const DInsn *insn);
+  static DModule *GetCalleeTaskModule(const DGraph *graph, const DInsn *insn);
+  // ParentModName_ThisTaskModName.
   static string TaskControlPinName(const DModule *dm);
-  static string TaskControlPinNameFromInsn(const DGraph *graph,
-					   const DInsn *insn);
+  static string TaskControlPinNameFromCallerInsn(const DGraph *graph,
+						 const DInsn *insn);
   // "reg [dd:0]"
   static string RegType(const DType *type);
   // "wire [dd:0]"

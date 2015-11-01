@@ -111,6 +111,7 @@ private:
   void SynthChannelWrite(vm::Insn *insn);
 
   DInsn *EmitEntryInsn(vm::Method *method);
+  void EmitTaskFinishInsn();
   void EmitOneAssign(vm::Register *lhs, vm::Register *rhs);
   void RequestFunction(vm::Object *callee_obj, sym_t name);
   void InitializeArrayResource(DResource *res, vm::Insn *insn,

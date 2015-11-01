@@ -115,13 +115,13 @@ string VLUtil::TaskControlPinName(const DModule *dm) {
   return dm->parent_mod_->module_name_ + "_" + dm->module_name_;
 }
 
-string VLUtil::TaskControlPinNameFromInsn(const DGraph *graph,
-					  const DInsn *insn) {
-  DModule *task_module = GetTaskModule(graph, insn);
+string VLUtil::TaskControlPinNameFromCallerInsn(const DGraph *graph,
+						const DInsn *insn) {
+  DModule *task_module = GetCalleeTaskModule(graph, insn);
   return TaskControlPinName(task_module);
 }
 
-DModule *VLUtil::GetTaskModule(const DGraph *graph, const DInsn *insn) {
+DModule *VLUtil::GetCalleeTaskModule(const DGraph *graph, const DInsn *insn) {
   DModule *callee_mod = nullptr;
   for (DModule *mod : graph->owner_module_->sub_modules_) {
     if (mod->module_name_ == insn->resource_->name_) {

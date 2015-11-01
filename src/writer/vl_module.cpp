@@ -66,11 +66,17 @@ void VLModule::CollectTaskPins(DModule *dm) {
   pins_->AddPin(pin_base + "_en", VLIOSet::INPUT_WIRE, 0, "");
   pins_->AddPin(pin_base + "_rdy", VLIOSet::OUTPUT_WIRE, 0, "");
   if (dm->graph_) {
-    DInsn *insn = WriterUtil::FindTaskEntryInsn(dm->graph_);
-    CHECK(insn);
-    for (DRegister *reg : insn->inputs_) {
-      pins_->AddPin(pin_base + "_" + reg->reg_name_, VLIOSet::INPUT_WIRE,
+    DInsn *entry_insn = WriterUtil::FindTaskEntryInsn(dm->graph_);
+    CHECK(entry_insn);
+    for (DRegister *reg : entry_insn->inputs_) {
+      pins_->AddPin(pin_base + "_" + reg->reg_name_ + "_i", VLIOSet::INPUT_WIRE,
 		    reg->data_type_->size_, "");
+    }
+    DInsn *finish_insn = WriterUtil::FindTaskFinishInsn(dm->graph_);
+    CHECK(finish_insn);
+    for (DRegister *reg : finish_insn->inputs_) {
+      pins_->AddPin(pin_base + "_" + reg->reg_name_ + "_o", VLIOSet::OUTPUT,
+     		    reg->data_type_->size_, "");
     }
   }
 }
@@ -236,10 +242,11 @@ void VLModule::PreProcessSubModuleControl(const DModule *sub_mod,
        << "  wire " << pin_base << "_rdy;\n";
   }
 
+  // Args and return values.
   if (sub_mod->graph_) {
-    DInsn *insn = WriterUtil::FindTaskEntryInsn(sub_mod->graph_);
-    for (DRegister *reg : insn->inputs_) {
-      string reg_name = pin_base + "_" + reg->reg_name_;
+    DInsn *entry_insn = WriterUtil::FindTaskEntryInsn(sub_mod->graph_);
+    for (DRegister *reg : entry_insn->inputs_) {
+      string reg_name = pin_base + "_" + reg->reg_name_ + "_i";
       os << ", ." << reg_name << "(" << reg_name << ")";
 
       if (has_graph) {
@@ -248,6 +255,14 @@ void VLModule::PreProcessSubModuleControl(const DModule *sub_mod,
 	sw << VLUtil::RegType(reg->data_type_)
 	   << reg_name << ";\n";
       }
+    }
+    DInsn *finish_insn = WriterUtil::FindTaskFinishInsn(sub_mod->graph_);
+    for (DRegister *reg : finish_insn->inputs_) {
+      string reg_name = pin_base + "_" + reg->reg_name_ + "_o";
+      os << ", ." << reg_name << "(" << reg_name << ")";
+      ostream &sw =
+	template_->GetStream(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);
+      sw << VLUtil::WireType(reg->data_type_) << " " << reg_name << ";\n";
     }
   }
 }

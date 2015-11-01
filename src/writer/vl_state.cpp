@@ -178,6 +178,8 @@ void VLState::OutputInsn(const DInsn *insn) {
     // do nothing
   } else if (type == sym_imported) {
     // do nothing
+  } else if (type == sym_task_finish) {
+    // do nothing
   } else if (type == sym_sub_module_call) {
     OutputSubModuleCall(insn);
   } else if (type == sym_task_entry) {
@@ -294,7 +296,7 @@ void VLState::OutputChannelWriteInsn(const DInsn *insn) {
 }
 
 void VLState::OutputSubModuleCall(const DInsn *insn) {
-  string pin_base = VLUtil::TaskControlPinNameFromInsn(graph_, insn);
+  string pin_base = VLUtil::TaskControlPinNameFromCallerInsn(graph_, insn);
   os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
       << "            if (" << pin_base << "_rdy) begin\n"
       << "              " << SubStateRegName(insn) << " <= 3;\n"
@@ -308,14 +310,14 @@ void VLState::OutputSubModuleCall(const DInsn *insn) {
 }
 
 void VLState::OutputSubModuleArgs(const DInsn *insn) {
-  DModule *mod = VLUtil::GetTaskModule(graph_, insn);
+  DModule *mod = VLUtil::GetCalleeTaskModule(graph_, insn);
   DInsn *entry_insn = WriterUtil::FindTaskEntryInsn(mod->graph_);
   CHECK(entry_insn);
   int nth = 0;
   for (DRegister *dst_reg : entry_insn->inputs_) {
     os_ << "              "
-	<< VLUtil::TaskControlPinNameFromInsn(graph_, insn)
-	<< "_" << dst_reg->reg_name_ << " <= ";
+	<< VLUtil::TaskControlPinNameFromCallerInsn(graph_, insn)
+	<< "_" << dst_reg->reg_name_ << "_i <= ";
     DRegister *src_reg = insn->inputs_[nth];
     os_ << RegisterName(src_reg) << ";\n";
     ++nth;

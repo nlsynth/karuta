@@ -16,6 +16,7 @@ ResourceSet::ResourceSet(DGraph *graph) : graph_(graph) {
     DGraphUtil::FindResource(graph_, sym_lookup("function_entry"), true);
   mem_if_ = NULL;
   task_entry_ = NULL;
+  task_finish_ = NULL;
 }
 
 DResource *ResourceSet::AssignResource() {
@@ -44,6 +45,13 @@ DResource *ResourceSet::FunctionEntryResource(bool is_task_root) {
     return task_entry_;
   }
   return function_entry_;
+}
+
+DResource *ResourceSet::TaskFinishResource() {
+  if (task_finish_ == nullptr) {
+    task_finish_ = DGraphUtil::AllocResource(graph_, sym_task_finish);
+  }
+  return task_finish_;
 }
 
 DResource *ResourceSet::GetOpResource(vm::OpCode op, DType *type) {

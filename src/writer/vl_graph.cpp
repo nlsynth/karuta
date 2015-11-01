@@ -205,7 +205,7 @@ void VLGraph::OutputTaskEntryState() {
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
     os_ << "        "
 	<< state_encoder_->TaskEntryStateName()
-	<< ":begin\n"
+	<< ":begin  // task entry\n"
 	<< "          if (";
     string pin_base = VLUtil::TaskControlPinName(graph_->owner_module_);
     os_ << pin_base << "_en) begin\n"
@@ -227,7 +227,7 @@ void VLGraph::OutputTaskEntryArgs() {
   DInsn *insn = WriterUtil::FindTaskEntryInsn(graph_);
   for (DRegister *reg : insn->inputs_) {
     os_ << "            " << reg->reg_name_ << " <= "
-	<< (pin_base + "_" + reg->reg_name_) << ";\n";
+	<< (pin_base + "_" + reg->reg_name_ + "_i") << ";\n";
   }
 }
 

@@ -39,6 +39,7 @@ public:
   DResource *BranchResource();
   DResource *FuncallResource();
   DResource *FunctionEntryResource(bool is_task_root);
+  DResource *TaskFinishResource();
 
   DResource *GetOpResource(vm::OpCode op, DType *type);
   DResource *GetImportedResource(ImportedResource *resource);
@@ -59,6 +60,7 @@ private:
   DResource *funcall_;
   DResource *function_entry_;
   DResource *task_entry_;
+  DResource *task_finish_;
   DResource *mem_if_;
 
   class ResourceEntry {

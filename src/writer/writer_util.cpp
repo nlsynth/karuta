@@ -39,4 +39,10 @@ DInsn *WriterUtil::FindTaskEntryInsn(DGraph *graph) {
   return DStateUtil::FindInsnByResource(graph->initial_state_, task_entry);
 }
 
+DInsn *WriterUtil::FindTaskFinishInsn(DGraph *graph) {
+  DResource *task_finish =
+    DGraphUtil::FindResource(graph, sym_task_finish, false);
+  return DStateUtil::FindInsnByResource(graph->last_state_, task_finish);
+}
+
 }  // namespace writer

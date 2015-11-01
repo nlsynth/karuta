@@ -27,6 +27,7 @@ public:
   static string ArrayDescription(const string &name, const DArray *array);
   static bool IsMultiCycleInsn(const DInsn *insn);
   static DInsn *FindTaskEntryInsn(DGraph *graph);
+  static DInsn *FindTaskFinishInsn(DGraph *graph);
 };
 
 }  // namespace writer
