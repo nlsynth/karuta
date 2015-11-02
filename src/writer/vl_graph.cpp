@@ -36,9 +36,9 @@ void VLGraph::Output() {
   OutputResourcesAll();
   OutputInsnWiresAll();
   OutputInsnResultWiresAll();
-  os_ << " // sub state regs begin\n";
+  os_ << "  // sub state regs begin\n";
   os_ << tmpl_->GetContents(ModuleTemplate::SUB_STATE_REGS);
-  os_ << " // sub state regs end\n";
+  os_ << "  // sub state regs end\n";
   OutputFSM();
   OutputImportedModuleInstancesAll();
 }
@@ -68,7 +68,7 @@ void VLGraph::OutputResourceName(const DResource *res, ostream &os) {
 void VLGraph::DeclareStateVariable() {
   // calc minimal width
   int w = state_encoder_->GetStateWidth();
-  os_ << " // declare state begin\n";
+  os_ << "  // declare state begin\n";
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
     os_ << " `define "
 	<< state_encoder_->TaskEntryStateNameWithoutQuote()
@@ -82,7 +82,7 @@ void VLGraph::DeclareStateVariable() {
 
   os_ << "\n"
       << "  reg [" << w << ":0] cur_st;\n"
-      << " // declare state end\n\n";
+      << "  // declare state end\n\n";
 }
 
 void VLGraph::OutputStateOutput() {
@@ -225,9 +225,10 @@ void VLGraph::OutputTaskEntryState() {
 void VLGraph::OutputTaskEntryArgs() {
   string pin_base = VLUtil::TaskControlPinName(graph_->owner_module_);
   DInsn *insn = WriterUtil::FindTaskEntryInsn(graph_);
-  for (DRegister *reg : insn->inputs_) {
+  for (size_t nth_arg = 0; nth_arg < insn->inputs_.size(); ++nth_arg) {
+    DRegister *reg = insn->inputs_[nth_arg];
     os_ << "            " << reg->reg_name_ << " <= "
-	<< VLUtil::TaskReturnValuePinName(pin_base, reg, "_i") << ";\n";
+	<< VLUtil::TaskParamPinName(pin_base, nth_arg, "_i") << ";\n";
   }
 }
 

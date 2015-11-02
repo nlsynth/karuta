@@ -46,7 +46,7 @@ private:
   void OutputModuleHead(const string &path);
   void OutputArray(const string &name, DArray *array);
   void CollectPinDecls();
-  void CollectTaskPins(DModule *dm);
+  void CollectTaskPins(DModule *dm, bool in_container);
   void OutputRAM(const DArray *array);
 
   const string path_name_;
