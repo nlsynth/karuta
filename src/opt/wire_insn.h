@@ -21,7 +21,7 @@ class DataFlowCollector;
 
 // Basic class to wire instructions in a cycle.
 // Performs conservative wiring and no additional resource allocation.
-// Currently, ResourceAlloc(opt_resource_alloc.cpp) inherits this class
+// Currently, ResourceAlloc(resource_alloc.cpp) inherits this class
 // and does more aggresive optimization.
 class WireInsn : public OptimizationPhase {
 public:

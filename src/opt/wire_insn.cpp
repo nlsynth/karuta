@@ -89,12 +89,9 @@ int BranchMover::GetConditionDefStateIndex() {
   int def_st_idx = -1;
   for (size_t idx = 0; idx < bb_->states.size(); ++idx) {
     DState *cur_st = bb_->states[idx];
-    for (list<DInsn *>::iterator it = cur_st->insns_.begin();
-	 it != cur_st->insns_.end(); ++it) {
-      DInsn *insn = *it;
-      for (vector<DRegister *>::iterator jt = insn->outputs_.begin();
-	   jt != insn->outputs_.end(); ++jt) {
-	if (*jt == cond_reg_) {
+    for (DInsn *insn : cur_st->insns_) {
+      for (DRegister *reg : insn->outputs_) {
+	if (reg == cond_reg_) {
 	  def_st_idx = idx;
 	}
       }
@@ -106,9 +103,7 @@ int BranchMover::GetConditionDefStateIndex() {
 void BranchMover::FindSourceWire() {
   for (size_t idx = 0; idx < bb_->states.size(); ++idx) {
     DState *cur_st = bb_->states[idx];
-    for (list<DInsn *>::iterator it = cur_st->insns_.begin();
-	 it != cur_st->insns_.end(); ++it) {
-      DInsn *insn = *it;
+    for (DInsn *insn : cur_st->insns_) {
       if (insn->resource_ == assign_res_ &&
 	  (*insn->outputs_.begin()) == cond_reg_) {
 	source_wire_ = *(insn->inputs_.begin());
@@ -167,15 +162,13 @@ bool WireInsn::Perform(const char *phase, DGraph *graph, const char *note) {
   OptimizeContext *ctx = graph->owner_module_->GetOptimizeContext();
   ctx->DumpIntermediateGraph(graph, &an, "pre_wire_insn");
 
-  for (set<BasicBlock *>::iterator it = bset_->bbs_.begin();
-       it != bset_->bbs_.end(); ++it) {
-    BuildDependency(*it);
+  for (BasicBlock *bb : bset_->bbs_) {
+    BuildDependency(bb);
   }
   ModifyGraph();
   InjectWireToRegisterAssignments();
-  for (set<BasicBlock *>::iterator it = bset_->bbs_.begin();
-       it != bset_->bbs_.end(); ++it) {
-    ScanBBToMoveBranchInsn(*it);
+  for (BasicBlock *bb : bset_->bbs_) {
+    ScanBBToMoveBranchInsn(bb);
   }
 
   GraphOptimizeStat::PerformPhaseByName("opt_unreachable_state_elimination",
@@ -189,15 +182,11 @@ void WireInsn::CollectReachingRegisters() {
   CollectUsedRegsForBB();
   // collect active_defs: defs which reach some bb.
   set<DefInfo *> active_defs;
-  for (set<BasicBlock *>::iterator it = bset_->bbs_.begin();
-       it != bset_->bbs_.end(); ++it) {
-    BasicBlock *bb = *it;
+  for (BasicBlock *bb : bset_->bbs_) {
     set<DefInfo *> reach_defs;
     dfc_->GetReachDefs(bb, &reach_defs);
     set<DRegister *> &regs_in_bb = used_regs_for_bb_[bb];
-    for (set<DefInfo *>::iterator it = reach_defs.begin();
-	 it != reach_defs.end(); ++it) {
-      DefInfo *di = *it;
+    for (DefInfo *di : reach_defs) {
       if (regs_in_bb.find(di->output_reg) != regs_in_bb.end()) {
 	active_defs.insert(di);
       }
@@ -205,13 +194,9 @@ void WireInsn::CollectReachingRegisters() {
   }
 
   // find active outputs of each defining insn.
-  for (set<DefInfo *>::iterator it = active_defs.begin();
-       it != active_defs.end(); ++it) {
-    DefInfo *di = *it;
+  for (DefInfo *di : active_defs) {
     PerInsn *pi = GetPerInsn(di->insn);
-    for (vector<DRegister *>::iterator jt = di->insn->outputs_.begin();
-	 jt != di->insn->outputs_.end(); jt++) {
-      DRegister *output = *jt;
+    for (DRegister *output : di->insn->outputs_) {
       // TODO(yusuke): should be reach && used.
       // now this just checks only the reachability.
       if (output == di->output_reg) {
@@ -237,9 +222,7 @@ void WireInsn::TraverseRegisterToCollectUse(DGraph *graph, DState *state,
 }
 
 void WireInsn::ModifyGraph() {
-  for (set<BasicBlock *>::iterator it = bset_->bbs_.begin();
-       it != bset_->bbs_.end(); ++it) {
-    BasicBlock *bb = *it;
+  for (BasicBlock *bb : bset_->bbs_) {
     SplitInsnOutputBB(bb);
     ScanBBToMoveInsn(bb);
   }
@@ -249,33 +232,27 @@ void WireInsn::BuildDependency(BasicBlock *bb) {
   map<DRegister *, DInsn *> last_def_insn;
   map<DRegister *, DInsn *> last_read_insn;
   int nth_state = 0;
-  for (vector<DState *>::iterator it = bb->states.begin();
+  for (auto it = bb->states.begin();
        it != bb->states.end(); it++, nth_state++) {
     DState *st = *it;
-    for (list<DInsn *>::iterator jt = st->insns_.begin();
-	 jt != st->insns_.end(); jt++) {
-      DInsn *insn = *jt;
+    for (DInsn *insn : st->insns_) {
       PerInsn *pi = GetPerInsn(insn);
       pi->nth_state = nth_state;
       // WRITE -> READ dependency.
-      for (vector<DRegister *>::iterator kt = insn->inputs_.begin();
-	   kt != insn->inputs_.end(); kt++) {
-	BuildRWDependencyPair(insn, *kt, last_def_insn);
+      for (DRegister *reg : insn->inputs_) {
+	BuildRWDependencyPair(insn, reg, last_def_insn);
       }
       // READ -> WRITE dependency.
-      for (vector<DRegister *>::iterator kt = insn->outputs_.begin();
-	   kt != insn->outputs_.end(); kt++) {
-	BuildRWDependencyPair(insn, *kt, last_read_insn);
+      for (DRegister *reg : insn->outputs_) {
+	BuildRWDependencyPair(insn, reg, last_read_insn);
       }
       // update last write
-      for (vector<DRegister *>::iterator kt = insn->outputs_.begin();
-	   kt != insn->outputs_.end(); kt++) {
-	last_def_insn[*kt] = insn;
+      for (DRegister *reg : insn->outputs_) {
+	last_def_insn[reg] = insn;
       }
       // update last read
-      for (vector<DRegister *>::iterator kt = insn->inputs_.begin();
-	   kt != insn->inputs_.end(); kt++) {
-	last_read_insn[*kt] = insn;
+      for (DRegister *reg : insn->inputs_) {
+	last_read_insn[reg] = insn;
       }
     }
   }
@@ -303,13 +280,9 @@ void WireInsn::InjectWireToRegisterAssignments() {
 
 void WireInsn::TraverseState(DGraph *graph, DState *state) {
   vector<DInsn *> new_assign_insn;
-  for (list<DInsn *>::iterator it = state->insns_.begin();
-       it != state->insns_.end(); ++it) {
-    DInsn *insn = *it;
+  for (DInsn *insn : state->insns_) {
     PerInsn *pi = GetPerInsn(insn);
-    for (vector<DRegister *>::iterator jt = insn->outputs_.begin();
-	 jt != insn->outputs_.end(); ++jt) {
-      DRegister *maybe_wire = *jt;
+    for (DRegister *maybe_wire : insn->outputs_) {
       DRegister *orig_reg = pi->wire_to_register_[maybe_wire];
       if (orig_reg) {
 	const bool used_later = IsUsedLaterInThisBB(insn, orig_reg);
@@ -325,9 +298,8 @@ void WireInsn::TraverseState(DGraph *graph, DState *state) {
       }
     }
   }
-  for (vector<DInsn *>::iterator it = new_assign_insn.begin();
-       it != new_assign_insn.end(); ++it) {
-    state->insns_.push_back(*it);
+  for (DInsn *insn : new_assign_insn) {
+    state->insns_.push_back(insn);
   }
 }
 
@@ -338,8 +310,8 @@ bool WireInsn::IsUsedLaterInThisBB(DInsn *insn, DRegister *output) {
     return false;
   }
   set<DInsn *> &users = it->second;
-  for (set<DInsn *>::iterator jt = users.begin(); jt != users.end(); ++jt) {
-    PerInsn *user_pi = GetPerInsn(*jt);
+  for (DInsn *insn : users) {
+    PerInsn *user_pi = GetPerInsn(insn);
     if (user_pi->nth_state > pi->nth_state) {
       return true;
     }
@@ -348,12 +320,8 @@ bool WireInsn::IsUsedLaterInThisBB(DInsn *insn, DRegister *output) {
 }
 
 void WireInsn::SplitInsnOutputBB(BasicBlock *bb) {
-  for (vector<DState *>::iterator it = bb->states.begin();
-       it != bb->states.end(); it++) {
-    DState *st = *it;
-    for (list<DInsn *>::iterator jt = st->insns_.begin();
-	 jt != st->insns_.end(); jt++) {
-      DInsn *insn = *jt;
+  for (DState *st : bb->states) {
+    for (DInsn *insn : st->insns_) {
       if (IsIsolatedInsn(insn)) {
 	// ignore multi cycles insns like memory ops.
 	continue;
@@ -369,14 +337,13 @@ void WireInsn::SplitInsnOutputBB(BasicBlock *bb) {
 }
 
 void WireInsn::SplitInsnOutput(DInsn *insn) {
-  for (vector<DRegister *>::iterator it = insn->outputs_.begin();
-       it != insn->outputs_.end(); ++it) {
+  for (auto it = insn->outputs_.begin(); it != insn->outputs_.end(); ++it) {
     DRegister *reg = *it;
     if (reg->reg_type_ != DRegister::REG_NORMAL) {
       continue;
     }
     DRegister *wire_reg = DGraphUtil::AllocWireReg(graph_, reg->data_type_);
-    AddWireToRegMapping(insn, wire_reg, *it);
+    AddWireToRegMapping(insn, wire_reg, reg);
     *it = wire_reg;
   }
 }
@@ -392,16 +359,13 @@ void WireInsn::ScanBBToMoveInsn(BasicBlock *bb) {
       if (IsIsolatedState(src_st)) {
 	continue;
       }
-      for (list<DInsn *>::iterator it = src_st->insns_.begin();
-	   it != src_st->insns_.end(); ++it) {
-	DInsn *insn = *it;
+      for (DInsn *insn : src_st->insns_) {
 	if (CanMoveInsn(insn, bb, target)) {
 	  movable_insns.push_back(insn);
 	}
       }
-      for (vector<DInsn *>::iterator it = movable_insns.begin();
-	   it != movable_insns.end(); ++it) {
-	MoveInsn(*it, bb, target);
+      for (DInsn *insn : movable_insns) {
+	MoveInsn(insn, bb, target);
       }
     }
   }
@@ -441,9 +405,7 @@ bool WireInsn::CanMoveInsn(DInsn *insn, BasicBlock *bb, int target_pos) {
 }
 
 bool WireInsn::CanUseResourceInState(DState *st, DResource *resource) {
-  for (list<DInsn *>::iterator it = st->insns_.begin();
-       it != st->insns_.end(); ++it) {
-    DInsn *target_insn = *it;
+  for (DInsn *target_insn : st->insns_) {
     if (resource->opr_->is_exclusive_ &&
 	resource == target_insn->resource_) {
       return false;
@@ -457,9 +419,7 @@ bool WireInsn::CanAllocateResourceInState(DState *st, DResource *resource) {
 }
 
 bool WireInsn::IsIsolatedState(DState *st) {
-  for (list<DInsn *>::iterator it = st->insns_.begin();
-       it != st->insns_.end(); ++it) {
-    DInsn *insn = *it;
+  for (DInsn *insn : st->insns_) {
     if (IsIsolatedInsn(insn)) {
       return true;
     }
@@ -468,9 +428,9 @@ bool WireInsn::IsIsolatedState(DState *st) {
 }
 
 bool WireInsn::IsIsolatedInsn(DInsn *insn) {
-  if (insn->resource_ == memory_res_ ||
-      insn->resource_ == sram_res_ ||
-      insn->resource_ == read_channel_res_) {
+  if (DInsnUtil::IsMultiCycle(insn) ||
+      insn->resource_ == memory_res_ ||
+      insn->resource_ == sram_res_) {
     return true;
   }
   return false;
@@ -526,7 +486,7 @@ void WireInsn::AddWireToRegMapping(DInsn *insn, DRegister *wire, DRegister *reg)
 
 WireInsn::PerInsn *WireInsn::GetPerInsn(DInsn *insn) {
   PerInsn *pi;
-  map<DInsn *, PerInsn *>::iterator it = per_insn_map_.find(insn);
+  auto it = per_insn_map_.find(insn);
   if (it == per_insn_map_.end()) {
     pi = new PerInsn;
     per_insn_map_.insert(std::make_pair(insn, pi));
