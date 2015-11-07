@@ -296,10 +296,24 @@ void VLState::OutputChannelWriteInsn(const DInsn *insn) {
 }
 
 void VLState::OutputTaskFinish(const DInsn *insn) {
+  string pin_base = VLUtil::TaskControlPinName(graph_->owner_module_);
+  for (size_t nth_rv = 0; nth_rv < insn->inputs_.size(); ++nth_rv) {
+    os_ << "          "
+	<< VLUtil::TaskParamPinName(pin_base, nth_rv, "_o")
+	<< " <= " << RegisterName(insn->inputs_[nth_rv]) << ";\n";
+  }
 }
 
 void VLState::OutputSubModuleCall(const DInsn *insn) {
   string pin_base = VLUtil::TaskControlPinNameFromCallerInsn(graph_, insn);
+  if (insn->outputs_.size() > 0) {
+    os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
+	<< "            if (" << pin_base << "_rdy) begin\n"
+	<< "              " << SubStateRegName(insn) << " <= 3;\n"
+	<< "            end\n"
+	<< "          end\n";
+    return;
+  }
   os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
       << "            if (" << pin_base << "_rdy) begin\n"
       << "              " << SubStateRegName(insn) << " <= 3;\n"

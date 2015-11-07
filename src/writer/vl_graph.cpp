@@ -566,6 +566,16 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
     }
     os_ << ";\n";
   }
+  if (type == sym_sub_module_call && insn->outputs_.size() > 0) {
+    for (size_t nth = 0; nth < insn->outputs_.size(); ++nth) {
+      string pin_base = VLUtil::TaskControlPinNameFromCallerInsn(graph_, insn);
+      os_ << "  assign "
+	  << VLState::InsnOutputWireName(insn, nth)
+	  << " = "
+	  << VLUtil::TaskParamPinName(pin_base, nth, "_o")
+	  << ";\n";
+    }
+  }
 }
 
 void VLGraph::OutputInsnWiresAll() {

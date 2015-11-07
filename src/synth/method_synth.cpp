@@ -516,12 +516,15 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   if (insn->obj_reg_) {
     callee_obj = member_reg_to_obj_map_[insn->obj_reg_];
   }
+  bool is_sub_module_call;
   if (insn->obj_reg_ && callee_obj != obj_) {
     sym_t orig_name = orig_name_map_[insn->obj_reg_];
     res = resource_->GetSubModuleCallResource(callee_obj, func_name,
 					      orig_name);
+    is_sub_module_call = true;
   } else {
     res = resource_->FuncallResource();
+    is_sub_module_call = false;
   }
   DInsn *d_insn = DGraphUtil::InsnNew(graph_, res);
   d_insn->func_name_ = sym_cstr(func_name);
@@ -529,13 +532,25 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
     DRegister *reg = FindLocalVarRegister(insn->src_regs_[i]);
     d_insn->inputs_.push_back(reg);
   }
-  vm::Insn *done_insn = method_->insns_[current_zinsn_index_ + 1];
-  for (size_t i = 0; i < done_insn->dst_regs_.size(); ++i) {
-    DRegister *reg = FindLocalVarRegister(done_insn->dst_regs_[i]);
-    d_insn->outputs_.push_back(reg);
-  }
   RequestFunction(callee_obj, insn->label_);
   state->insns_.push_back(d_insn);
+
+  vm::Insn *done_insn = method_->insns_[current_zinsn_index_ + 1];
+  if (done_insn->dst_regs_.size() > 0) {
+    if (is_sub_module_call) {
+      // Allocate new state to receive return values.
+      state = AllocState();
+      d_insn = DGraphUtil::InsnNew(graph_, res);
+      d_insn->func_name_ = sym_cstr(func_name);
+    }
+    for (size_t i = 0; i < done_insn->dst_regs_.size(); ++i) {
+      DRegister *reg = FindLocalVarRegister(done_insn->dst_regs_[i]);
+      d_insn->outputs_.push_back(reg);
+    }
+    if (is_sub_module_call) {
+      state->insns_.push_back(d_insn);
+    }
+  }
 }
 
 void MethodSynth::SynthIf(vm::Insn *insn) {
