@@ -40,7 +40,8 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         os.unlink(tf)
 
     def do_POST(self):
-        self.cgi_info = "nli_wrapper.py", ""
+        # DIR, PATH
+        self.cgi_info = "", "nli_wrapper.py"
         self.run_cgi()
 
 if __name__ == '__main__':

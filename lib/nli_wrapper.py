@@ -10,7 +10,7 @@ form = cgi.FieldStorage()
 if 's' in form:
     src = form['s'].value
 else:
-    src = """print("Hello World\n");"""
+    src = """print("Hello World!");"""
 
 version = os.getenv("NLI_VERSION")
 
