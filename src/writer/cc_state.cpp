@@ -20,7 +20,7 @@ CCState::CCState(const DState *state, const DGraph *graph, ClassWriter *cw)
 void CCState::PreProcess(ModuleTemplate *tmpl) {
   ostream &sr = tmpl->GetStream(ModuleTemplate::RESET_STATE);
   for (const DInsn *insn : state_->insns_) {
-    if (WriterUtil::IsMultiCycleInsn(insn)) {
+    if (DInsnUtil::IsMultiCycle(insn)) {
       multi_cycle_insns_.push_back(insn);
       sr << "  " << SubStateRegName(insn) << " = 0;\n";
       is_multi_cycle_ = true;

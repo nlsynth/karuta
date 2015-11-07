@@ -25,7 +25,6 @@ public:
   static void DecodeBitSelInsn(const DInsn *insn,
 			       BitSelOperands *opr);
   static string ArrayDescription(const string &name, const DArray *array);
-  static bool IsMultiCycleInsn(const DInsn *insn);
   static DInsn *FindTaskEntryInsn(DGraph *graph);
   static DInsn *FindTaskFinishInsn(DGraph *graph);
 };

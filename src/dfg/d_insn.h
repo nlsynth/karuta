@@ -35,6 +35,7 @@ public:
 class DInsnUtil {
 public:
   static bool HasSideEffect(DInsn *insn);
+  static bool IsMultiCycle(const DInsn *insn);
 };
 
 }  // namespace dfg

@@ -39,7 +39,7 @@ void VLState::Output() {
 
 void VLState::PreProcess(ModuleTemplate *tmpl) {
   for (DInsn *insn : st_->insns_) {
-    if (WriterUtil::IsMultiCycleInsn(insn)) {
+    if (DInsnUtil::IsMultiCycle(insn)) {
       ostream &ss = tmpl->GetStream(ModuleTemplate::SUB_STATE_REGS);
       ss << "  reg [1:0] " << SubStateRegName(insn) << ";\n";
       ostream &sr = tmpl->GetStream(ModuleTemplate::RESET_STATE);
@@ -244,7 +244,7 @@ void VLState::OutputTransition(DGraph *g, DState *st) {
 void VLState::CollectSubState(string *state_guard, string *initializer) {
   vector<string> regs;
   for (DInsn *insn : st_->insns_) {
-    if (WriterUtil::IsMultiCycleInsn(insn)) {
+    if (DInsnUtil::IsMultiCycle(insn)) {
       regs.push_back(SubStateRegName(insn));
     }
   }

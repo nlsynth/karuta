@@ -27,12 +27,6 @@ string WriterUtil::ArrayDescription(const string &name,
   return string(os.str());
 }
 
-bool WriterUtil::IsMultiCycleInsn(const DInsn *insn) {
-  sym_t type = insn->resource_->opr_->type_;
-  return (type == sym_sub_module_call || type == sym_write_channel ||
-	  type == sym_read_channel);
-}
-
 DInsn *WriterUtil::FindTaskEntryInsn(DGraph *graph) {
   DResource *task_entry =
     DGraphUtil::FindResource(graph, sym_task_entry, false);
