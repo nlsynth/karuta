@@ -104,7 +104,11 @@ Now some computation is defined within object 'Kernel', so Neon Light Compiler c
     * Compiled fron Neon Light Script and can be executed or synthesized
 
 -- COPYING
-See COPYING file. Feel free to change to other licenses.
+
+See COPYING file. Feel free to ask me to change to other licenses, if it is inconvenient for you.
+
+NOTE: The license of course doesn't apply to the outputs of Neon Light Compiler executables. It's up to the author of input source code.
+
 
 -- format this document
 
