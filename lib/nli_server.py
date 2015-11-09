@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# HTTP server for nli
+# HTTP server for Neon Light (This assumes Python2 for now)
 
 import CGIHTTPServer
 import BaseHTTPServer
@@ -33,7 +33,7 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.end_headers()
         tf = tempfile.mktemp()
-        os.system("./nli_wrapper.py > " + tf)
+        os.system("./nli_wrapper.py get > " + tf)
         rf = open(tf, 'r')
         for line in rf:
             self.wfile.write(line)
@@ -47,7 +47,11 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 if __name__ == '__main__':
     os.environ["NLI_VERSION"] = scrape_version()
     os.environ["NLI_BINARY"] = nli_interpreter
-    print os.getenv("NLI_VERSION")
+    # Make sure this set only in the POST handler.
+    if "REQUEST_METHOD" in os.environ:
+        del os.environ["REQUEST_METHOD"]
+
+    print(os.getenv("NLI_VERSION"))
     HandlerClass = NliServerHandler
     ServerClass = BaseHTTPServer.HTTPServer
     BaseHTTPServer.test(HandlerClass, ServerClass)
