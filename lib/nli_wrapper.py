@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# This file can be either
+# This file can be invoked either
 #  (1) import-ed from nli_server and serve GET method.
 #  (2) executed from POST handler in nli_server.
 
@@ -8,6 +8,16 @@ import cgi
 import os
 import sys
 import tempfile
+
+def GetExampleSource(qs):
+    tmpl = (qs.get('e', ['']))[0]
+    if tmpl == 's':
+        return '''def main() {}
+compile();
+'''
+    else:
+        return 'print("Hello World!");'
+
 
 def RunNLI(ofh, src):
     bin = os.getenv('NLI_BINARY')
@@ -17,7 +27,7 @@ def RunNLI(ofh, src):
     srcfh.write(src)
     srcfh.close()
 
-    cmd = bin + ' --vanilla ' + srcf + ' > output'
+    cmd = bin + ' ' + srcf + ' > output'
     os.system(cmd)
     os.unlink(srcf)
 
@@ -36,13 +46,7 @@ def Render(ofh, is_post, qs):
     if 's' in form:
         src = form['s'].value
     else:
-        tmpl = qs.get('e', [''])
-        if tmpl[0] == 's':
-            src = '''def main() {}
-compile();
-'''
-        else:
-            src = 'print("Hello World!");'
+        src = GetExampleSource(qs)
 
     version = os.getenv('NLI_VERSION')
 
