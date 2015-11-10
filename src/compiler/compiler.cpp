@@ -967,6 +967,7 @@ vm::Register *Compiler::CompileMultiValueFuncall(fe::Expr *funcall,
     EmitInsn(done_insn);
     return NULL;
   } else {
+    // This can be a dummy value, if the callee return void.
     vm::Register *reg = AllocRegister();
     reg->type_.value_type_ = vm::Value::NUM;
     done_insn->dst_regs_.push_back(reg);

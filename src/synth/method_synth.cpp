@@ -535,6 +535,18 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   RequestFunction(callee_obj, insn->label_);
   state->insns_.push_back(d_insn);
 
+  SynthFuncallOutput(state, d_insn, res, callee_obj, is_sub_module_call);
+}
+
+void MethodSynth::SynthFuncallOutput(DState *state, DInsn *d_insn,
+				     DResource *res,
+				     vm::Object *callee_obj,
+				     bool is_sub_module_call) {
+  vm::Insn *call_insn = method_->insns_[current_zinsn_index_];
+  sym_t func_name = call_insn->label_;
+  vm::Value *value = callee_obj->LookupValue(func_name, false);
+  CHECK(value->type_ ==vm::Value::METHOD);
+  // TODO(yusuke): Use the actual number of return values.
   vm::Insn *done_insn = method_->insns_[current_zinsn_index_ + 1];
   if (done_insn->dst_regs_.size() > 0) {
     if (is_sub_module_call) {

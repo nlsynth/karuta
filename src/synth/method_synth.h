@@ -94,6 +94,8 @@ private:
 
   void SynthNum(vm::Insn *insn);
   void SynthFuncall(vm::Insn *insn);
+  void SynthFuncallOutput(DState *state, DInsn *insn, DResource *res,
+			  vm::Object *callee_obj, bool is_sub_module_call);
   void SynthIf(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);
   void SynthPreIncDec(vm::Insn *insn);
