@@ -8,16 +8,19 @@ import os
 import shutil
 import sys
 import urllib
+import urlparse
 import tempfile
 
-tmpdir = "/tmp"
-nli_version = "nli-0.0.0-unknown"
-nli_interpreter = "../nli"
+import nli_wrapper
+
+tmpdir = '/tmp'
+nli_version = 'nli-0.0.0-unknown'
+nli_interpreter = '../nli'
 
 
 def scrape_version():
     tf = tempfile.mktemp()
-    if os.system(nli_interpreter + " --version | head -n 1 > " + tf):
+    if os.system(nli_interpreter + ' --version | head -n 1 > ' + tf):
         return nli_version
     rf = open(tf, 'r')
     nli_version = rf.readline()
@@ -30,10 +33,15 @@ def scrape_version():
 class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
-        self.send_header("Content-type", "text/html")
+        self.send_header('Content-type', 'text/html')
         self.end_headers()
+
+        qs = urlparse.parse_qs(urlparse.urlparse(self.path).query)
         tf = tempfile.mktemp()
-        os.system("./nli_wrapper.py get > " + tf)
+        tfh = open(tf, 'w')
+        nli_wrapper.Render(tfh, False, qs)
+        tfh.close()
+
         rf = open(tf, 'r')
         for line in rf:
             self.wfile.write(line)
@@ -41,17 +49,13 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 
     def do_POST(self):
         # DIR, PATH
-        self.cgi_info = "", "nli_wrapper.py"
+        self.cgi_info = '', 'nli_wrapper.py'
         self.run_cgi()
 
 if __name__ == '__main__':
-    os.environ["NLI_VERSION"] = scrape_version()
-    os.environ["NLI_BINARY"] = nli_interpreter
-    # Make sure this set only in the POST handler.
-    if "REQUEST_METHOD" in os.environ:
-        del os.environ["REQUEST_METHOD"]
-
-    print(os.getenv("NLI_VERSION"))
+    os.environ['NLI_VERSION'] = scrape_version()
+    os.environ['NLI_BINARY'] = nli_interpreter
+    print(os.getenv('NLI_VERSION'))
     HandlerClass = NliServerHandler
     ServerClass = BaseHTTPServer.HTTPServer
     BaseHTTPServer.test(HandlerClass, ServerClass)

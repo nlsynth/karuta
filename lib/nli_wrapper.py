@@ -1,30 +1,34 @@
 #! /usr/bin/python
 
+# This file can be either
+#  (1) import-ed from nli_server and serve GET method.
+#  (2) executed from POST handler in nli_server.
+
 import cgi
 import os
 import sys
 import tempfile
 
-def RunNLI(src):
-    bin = os.getenv("NLI_BINARY")
+def RunNLI(ofh, src):
+    bin = os.getenv('NLI_BINARY')
 
-    tf = tempfile.mktemp()
-    ofh = open(tf, 'w')
-    ofh.write(src)
-    ofh.close()
+    srcf = tempfile.mktemp()
+    srcfh = open(srcf, 'w')
+    srcfh.write(src)
+    srcfh.close()
 
-    cmd = bin + " --vanilla " + tf + " > output"
+    cmd = bin + ' --vanilla ' + srcf + ' > output'
     os.system(cmd)
-    os.unlink(tf)
+    os.unlink(srcf)
 
-    print "OUTPUT:<br>"
-    ifh = open("output", "r")
+    ofh.write('OUTPUT:<br>\n')
+    ifh = open('output', 'r')
     for line in ifh:
-        line = line.replace("\n", "<br>")
-        print line
+        line = line.replace('\n', '<br>')
+        ofh.write(line + '\n')
 
 
-def Render(is_post):
+def Render(ofh, is_post, qs):
     if is_post:
         form = cgi.FieldStorage()
     else:
@@ -32,29 +36,46 @@ def Render(is_post):
     if 's' in form:
         src = form['s'].value
     else:
-        src = """print("Hello World!");"""
+        tmpl = qs.get('e', [''])
+        if tmpl[0] == 's':
+            src = '''def main() {}
+compile();
+'''
+        else:
+            src = 'print("Hello World!");'
 
-    version = os.getenv("NLI_VERSION")
+    version = os.getenv('NLI_VERSION')
 
-    print \
-"""<html>%s<form id=\"nli\" method=\"POST\" action=\"\">
-<textarea name=\"s\" cols=100 rows=10>
+    ofh.write(
+'''<html><body>%s<br>\n''' % version)
+
+    ofh.write(
+'''<form id="src" method="POST" action="">
+<textarea name="s" cols=100 rows=10>
 %s
 </textarea>
-<input type=\"submit\" value=\"run\">
+<input type="submit" value="run">
 </form>
-""" % (version, src)
+''' % src)
+
+    ofh.write(
+'''<form id="example" method="GET" action="">
+<select name="e">
+<option value="h">hello world</option>
+<option value="s">synth</option>
+</select>
+<input type="submit" value="update">
+</form>
+''')
 
     if is_post:
-        RunNLI(src)
-    print "</html>"
+        RunNLI(ofh, src)
+    ofh.write('</body></html>')
 
-    sys.stdout.flush()
+    ofh.flush()
 
 
-if len(sys.argv) > 1 and sys.argv[1] == "get":
-    Render(False)
-else:
+if __name__ == '__main__':
     # For POST method.
     print "Content-type: text/html\n\n"
-    Render(True)
+    Render(sys.stdout, True, {})
