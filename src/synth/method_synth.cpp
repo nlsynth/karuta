@@ -546,16 +546,19 @@ void MethodSynth::SynthFuncallOutput(DState *state, DInsn *d_insn,
   sym_t func_name = call_insn->label_;
   vm::Value *value = callee_obj->LookupValue(func_name, false);
   CHECK(value->type_ ==vm::Value::METHOD);
-  // TODO(yusuke): Use the actual number of return values.
   vm::Insn *done_insn = method_->insns_[current_zinsn_index_ + 1];
-  if (done_insn->dst_regs_.size() > 0) {
+  // Required number of outputs.
+  int num_outputs = std::min(value->method_->GetNumReturnRegisters(),
+			     (int)done_insn->dst_regs_.size());
+
+  if (num_outputs > 0) {
     if (is_sub_module_call) {
       // Allocate new state to receive return values.
       state = AllocState();
       d_insn = DGraphUtil::InsnNew(graph_, res);
       d_insn->func_name_ = sym_cstr(func_name);
     }
-    for (size_t i = 0; i < done_insn->dst_regs_.size(); ++i) {
+    for (int i = 0; i < num_outputs; ++i) {
       DRegister *reg = FindLocalVarRegister(done_insn->dst_regs_[i]);
       d_insn->outputs_.push_back(reg);
     }
