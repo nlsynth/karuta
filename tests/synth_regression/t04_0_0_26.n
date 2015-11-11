@@ -18,4 +18,4 @@ def Kernel.main() {
 main();
 
 compile();
-write_hdl("a.v");
+writeHdl("a.v");

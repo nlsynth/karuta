@@ -13,7 +13,7 @@ def main() {
 }
 
 compile();
-write_hdl("a.v");
+writeHdl("a.v");
 
 // main should run later not to write ram.
 main();

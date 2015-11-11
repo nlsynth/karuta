@@ -17,4 +17,4 @@ def main() {
 
 enable_wire_insn();
 compile();
-write_hdl("a.v");
+writeHdl("a.v");

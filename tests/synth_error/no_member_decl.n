@@ -3,6 +3,6 @@ def Kernel.main() {
 }
 
 Kernel.compile();
-write_hdl("a.html");
-write_hdl("a.v");
-write_hdl("a.cpp");
+writeHdl("a.html");
+writeHdl("a.v");
+writeHdl("a.cpp");

@@ -9,4 +9,4 @@ def Kernel.main() {
 x[3] = 0;
 
 compile();
-write_hdl("a.v");
+writeHdl("a.v");

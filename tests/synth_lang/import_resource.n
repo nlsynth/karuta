@@ -19,6 +19,6 @@ def Kernel.main()
 
 
 //main();
-//Kernel.set_dump("/tmp/a");
+//Kernel.setDump("/tmp/a");
 Kernel.compile();
-Kernel.write_hdl("a.v");
+Kernel.writeHdl("a.v");
