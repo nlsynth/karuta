@@ -12,7 +12,11 @@
 
 namespace writer {
 
-bool Writer::WriteModule(DModule *mod, const char *fn) {
+bool Writer::WriteModule(DModule *mod, const string &raw_fn) {
+  string fn;
+  CHECK(Env::GetOutputPath(raw_fn.c_str(), &fn))
+    << "Failed to get output file path: " << raw_fn;
+
   if (Util::IsHtmlFileName(fn)) {
     dfg::DFGDumpContext *ddc = dfg::DFGDump::Start(fn);
     dfg::DFGDump::DumpModule(ddc, mod, NULL);

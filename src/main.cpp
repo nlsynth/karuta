@@ -274,7 +274,7 @@ void Main::main(int argc, char **argv) {
     timeout = 0;
   }
   if (args.GetFlagValue("root", &arg)) {
-    Env::SetOutputRootPath(arg.c_str());
+    Env::SetOutputRootPath(arg);
   }
 
   if (timeout) {

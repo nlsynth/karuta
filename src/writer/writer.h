@@ -19,7 +19,7 @@ class Writer {
 public:
   Writer(DModule *mod, ostream &os);
 
-  static bool WriteModule(DModule *mod, const char *fn);
+  static bool WriteModule(DModule *mod, const string &raw_fn);
 
   static void CommonICE(const char *lang, const char *msg,
 			const sym_t sym = NULL);

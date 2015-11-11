@@ -7,7 +7,7 @@
 using std::set;
 
 const char *Env::nli_dir_;
-const char *Env::output_root_;
+string Env::output_root_;
 bool Env::sandbox_mode_;
 
 string Env::GetVersion() {
@@ -46,22 +46,23 @@ string Util::GetDirName(const char *fn) {
   return string(fn, pos);
 }
 
-bool Util::IsHtmlFileName(const char* fn) {
-  int len = strlen(fn);
-  if (len > 5 && !strcmp(&fn[len-5], ".html")) {
+bool Util::IsHtmlFileName(const string &fn) {
+  const char *s = fn.c_str();
+  int len = fn.size();
+  if (len > 5 && !strcmp(&s[len-5], ".html")) {
     return true;
   }
   return false;
 }
 
-bool Util::IsCCFileName(const char* fn) {
+bool Util::IsCCFileName(const string &fn) {
   static set<string> suffixes;
   if (suffixes.size() == 0) {
     suffixes.insert("cc");
     suffixes.insert("cpp");
     suffixes.insert("cxx");
   }
-  const char *p = strrchr(fn, '.');
+  const char *p = strrchr(fn.c_str(), '.');
   if (!p) {
     return false;
   }
@@ -134,7 +135,7 @@ void Env::SearchPathList(const char *fn,
 }
 
 bool Env::GetOutputPath(const char *fn, string *path) {
-  if (!output_root_) {
+  if (output_root_.empty()) {
     *path = string(fn);
     return true;
   }
@@ -150,7 +151,7 @@ bool Env::GetOutputPath(const char *fn, string *path) {
   return true;
 }
 
-void Env::SetOutputRootPath(const char *path) {
+void Env::SetOutputRootPath(const string &path) {
   output_root_ = path;
   sandbox_mode_ = true;
 }

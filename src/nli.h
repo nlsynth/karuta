@@ -31,11 +31,11 @@ public:
   static void SearchPathList(const char *fn,
 			     vector<string> *paths);
 
-  static void SetOutputRootPath(const char *fn);
+  static void SetOutputRootPath(const string &fn);
 
 private:
   static const char *nli_dir_;
-  static const char *output_root_;
+  static string output_root_;
   static bool sandbox_mode_;
 };
 
@@ -43,8 +43,8 @@ class Util {
 public:
   static string GetBaseName(const char *fn);
   static string GetDirName(const char *fn);
-  static bool IsHtmlFileName(const char* fn);
-  static bool IsCCFileName(const char* fn);
+  static bool IsHtmlFileName(const string &fn);
+  static bool IsCCFileName(const string &fn);
   static bool CopyFile(const char *fn, ostream &os);
   static bool RewriteFile(const char *fn, const char *tag,
 			  const char *content);

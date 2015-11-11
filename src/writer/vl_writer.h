@@ -15,7 +15,7 @@ public:
   VLWriter(DModule *mod, ostream &os);
   void Output();
 
-  static bool WriteModule(DModule *mod, const char *fn);
+  static bool WriteModule(DModule *mod, const string &fn);
 
   static void ICE(const char *msg, const sym_t sym = NULL);
 

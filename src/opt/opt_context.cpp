@@ -36,7 +36,7 @@ void OptimizeContext::DoBeginPhase() {
   sprintf(idx, "%d", index_);
   ++index_;
   string fn = dump_fn_ + "." + idx + "." + current_phase_ + ".html";
-  ddc_ = dfg::DFGDump::Start(fn.c_str());
+  ddc_ = dfg::DFGDump::Start(fn);
   dump_fn_list_.push_back(fn);
 }
 
@@ -84,9 +84,7 @@ void OptimizeContext::DoDumpIndex(ostream &ofs) {
 void OptimizeContext::OverwriteFileIndex() {
   string index;
   CreateFileIndex(&index);
-  for (list<string>::iterator it = dump_fn_list_.begin();
-       it != dump_fn_list_.end(); it++) {
-    const string &fn = *it;
+  for (string &fn : dump_fn_list_) {
     // <!-- NLI_HTML_BODY -->
     Util::RewriteFile(fn.c_str(), "<!-- NLI_HTML_BODY -->",
 		      index.c_str());

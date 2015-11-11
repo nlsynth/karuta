@@ -256,15 +256,11 @@ void DFGDumpContext::DumpGraph(DGraph *g, DGraphAnnotation *a) {
   os << "</table>";
 }
 
-DFGDumpContext *DFGDump::Start(const char *fn) {
+DFGDumpContext *DFGDump::Start(const string &fn) {
   cout << "output html file name=(" << (fn) << ")\n";
-  DFGDumpContext *ddc;
-  if (fn) {
-    ostream *ofs = new std::ofstream(fn);
-    ddc = new DFGDumpContext(*ofs, true);
-  } else {
-    ddc = new DFGDumpContext(std::cout, false);
-  }
+  ostream *ofs = new std::ofstream(fn);
+  DFGDumpContext *ddc = new DFGDumpContext(*ofs, true);
+
   ddc->os << "<html>\n<head>"
 	  << "<title>Neon Light State Machine</title>\n"
 	  << " <style type=\"text/css\">\n"

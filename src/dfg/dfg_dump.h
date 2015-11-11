@@ -13,7 +13,7 @@ class DModule;
 
 class DFGDump {
 public:
-  static DFGDumpContext *Start(const char *fn);
+  static DFGDumpContext *Start(const string &fn);
   static void AddNote(DFGDumpContext *dc, const char *note);
   static void DumpModule(DFGDumpContext *dc, DModule *mod,
 			 DGraphAnnotation *a);

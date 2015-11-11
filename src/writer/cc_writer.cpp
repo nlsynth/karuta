@@ -41,21 +41,20 @@ void CCWriter::OutputMain() {
   Util::CopyFile("ccrt_main.cpp", os_);
 }
 
-bool CCWriter::WriteModule(DModule *mod, const char *fn) {
+bool CCWriter::WriteModule(DModule *mod, const string &fn) {
   std::unique_ptr<CCWriter> cw;
   std::unique_ptr<std::ofstream> fos;
-  if (!fn) {
-    cw.reset(new CCWriter(mod, cout));
-  } else {
-    cout << "output file name=" << fn << "\n";
-    fos.reset(new std::ofstream(fn));
-    if (fos->fail()) {
-      std::unique_ptr<Message> n(Message::CreateMessage(Message::USER));
-      n->os() << "failed to open " << fn;
-      return false;
-    }
-    cw.reset(new CCWriter(mod, *(fos.get())));
+
+  std::unique_ptr<Message> m(Message::CreateMessage(Message::INFO));
+  m->os() << "output file name=" << fn;
+  fos.reset(new std::ofstream(fn));
+  if (fos->fail()) {
+    std::unique_ptr<Message> n(Message::CreateMessage(Message::USER));
+    n->os() << "failed to open " << fn;
+    return false;
   }
+  cw.reset(new CCWriter(mod, *(fos.get())));
+
   cw->Output();
   return true;
 }

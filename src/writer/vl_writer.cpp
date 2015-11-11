@@ -55,25 +55,22 @@ void VLWriter::OutputSubModules(DModule *dm, const string &path_name,
   mod.Output(files);
 }
 
-bool VLWriter::WriteModule(DModule *mod, const char *fn) {
+bool VLWriter::WriteModule(DModule *mod, const string &fn) {
   std::unique_ptr<VLWriter> vw;
   std::ostringstream ss;
   vw.reset(new VLWriter(mod, ss));
   vw->Output();
 
-  if (!fn) {
-    cout << ss.str();
-  } else {
-    std::unique_ptr<Message> m(Message::CreateMessage(Message::INFO));
-    m->os() << "output file name=" << fn;
-    std::unique_ptr<std::ofstream> fos(new std::ofstream(fn));
-    if (fos->fail()) {
-      std::unique_ptr<Message> n(Message::CreateMessage(Message::USER));
-      n->os() << "failed to open " << fn;
-      return false;
-    }
-    *fos << ss.str();
+  std::unique_ptr<Message> m(Message::CreateMessage(Message::INFO));
+  m->os() << "output file name=" << fn;
+  std::unique_ptr<std::ofstream> fos(new std::ofstream(fn));
+  if (fos->fail()) {
+    std::unique_ptr<Message> n(Message::CreateMessage(Message::USER));
+    n->os() << "failed to open " << fn;
+    return false;
   }
+  *fos << ss.str();
+
   return true;
 }
 

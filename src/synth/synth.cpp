@@ -91,11 +91,8 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
   vm::Value *value =
     obj->LookupValue(sym_lookup(kCompiledModule), false);
   CHECK(value);
-  string path;
-  CHECK(Env::GetOutputPath(fn.c_str(), &path))
-    << "Failed to create get output file path: " << fn;
   writer::Writer::WriteModule(vm::DModuleWrapper::GetDModule(value->object_),
-			      path.c_str());
+			      fn);
 }
 
 }  // namespace synth
