@@ -8,10 +8,12 @@ using std::set;
 
 const char *Env::nli_dir_;
 string Env::output_root_;
+string Env::output_marker_;
 bool Env::sandbox_mode_;
 
-string Env::GetVersion() {
-  return VERSION;
+const string &Env::GetVersion() {
+  static string v(VERSION);
+  return v;
 }
 
 const char *Env::GetNliDir() {
@@ -147,11 +149,19 @@ bool Env::GetOutputPath(const char *fn, string *path) {
       return false;
     }
   }
-  *path = std::string(output_root_) + std::string("/") + std::string(fn);
+  *path = output_root_ + string("/") + fn;
   return true;
+}
+
+const string &Env::GetOutputMarker() {
+  return output_marker_;
 }
 
 void Env::SetOutputRootPath(const string &path) {
   output_root_ = path;
   sandbox_mode_ = true;
+}
+
+void Env::SetOutputMarker(const string &marker) {
+  output_marker_ = marker;
 }

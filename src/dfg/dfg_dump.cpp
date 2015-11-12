@@ -27,6 +27,7 @@ private:
   void DumpStateRow(DState *st, bool even);
   void DumpInsnsAll(DState *st, DResource *r);
   void DumpInsn(DInsn *insn);
+  void DumpResource(DResource *r, ostream &os);
 
   const DGraph *graph_;
   const DGraphAnnotation *annotation_;
@@ -139,39 +140,6 @@ void DFGDumpContext::DumpRegistersAll() {
   os << "</table>";
 }
 
-static void dump_resource(DResource *r,
-			  ostream &os) {
-  os << sym_cstr(r->opr_->type_) << ":" << r->resource_id_;
-  if (!r->name_.empty()) {
-    os << "<br>(" << r->name_ << ")";
-  }
-  vector<DType *>::iterator it;
-  if (r->input_types_.size()) {
-    os << "<br>inputs:";
-    for (it = r->input_types_.begin(); it != r->input_types_.end(); it++) {
-      os << "<br>";
-      DumpType(*it, os);
-    }
-  }
-  if (r->output_types_.size()) {
-    os << "<br>outputs:";
-    for (it = r->output_types_.begin(); it != r->output_types_.end(); it++) {
-      os << "<br>";
-      DumpType(*it, os);
-    }
-  }
-  if (r->annotation_) {
-    os << "<br>";
-    r->annotation_->Output(os);
-  }
-  if (!r->opr_->is_exclusive_) {
-    os << "<br>shared";
-  }
-  if (r->array_) {
-    os << "<br>{...}";
-  }
-}
-
 void DFGDumpContext::DumpInsnsAll(DState *st, DResource *r) {
   int nr = DStateUtil::GetNrInsnsByResource(st, r);
   if (nr > 1) {
@@ -243,7 +211,7 @@ void DFGDumpContext::DumpGraph(DGraph *g, DGraphAnnotation *a) {
   os << " <tr><th></th>\n";
   for (DResource *res : g->resources_) {
     os << "<th>";
-    dump_resource(res, os);
+    DumpResource(res, os);
     os << "</th>";
   }
   os << " <th>annotation</th>"
@@ -254,6 +222,39 @@ void DFGDumpContext::DumpGraph(DGraph *g, DGraphAnnotation *a) {
     even = !even;
   }
   os << "</table>";
+}
+
+void DFGDumpContext::DumpResource(DResource *r,
+				  ostream &os) {
+  os << sym_cstr(r->opr_->type_) << ":" << r->resource_id_;
+  if (!r->name_.empty()) {
+    os << "<br>(" << r->name_ << ")";
+  }
+  vector<DType *>::iterator it;
+  if (r->input_types_.size()) {
+    os << "<br>inputs:";
+    for (it = r->input_types_.begin(); it != r->input_types_.end(); it++) {
+      os << "<br>";
+      DumpType(*it, os);
+    }
+  }
+  if (r->output_types_.size()) {
+    os << "<br>outputs:";
+    for (it = r->output_types_.begin(); it != r->output_types_.end(); it++) {
+      os << "<br>";
+      DumpType(*it, os);
+    }
+  }
+  if (r->annotation_) {
+    os << "<br>";
+    r->annotation_->Output(os);
+  }
+  if (!r->opr_->is_exclusive_) {
+    os << "<br>shared";
+  }
+  if (r->array_) {
+    os << "<br>{...}";
+  }
 }
 
 DFGDumpContext *DFGDump::Start(const string &fn) {

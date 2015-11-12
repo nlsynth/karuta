@@ -83,6 +83,7 @@ void Main::PrintUsage() {
        << "   -O[optimize level]\n"
        << "   --print_exit_status\n"
        << "   --root [path]\n"
+       << "   --output_marker [marker]\n"
        << "   --timeout [ms]\n"
        << "   --vanilla\n"
        << "   --version\n";
@@ -204,7 +205,7 @@ void ArgParser::ParseLogModules(const char *s) {
 }
 
 bool ArgParser::StripFlagName(const char *arg, string *name, string *value) {
-  while (*arg && *arg == '-') {
+  while (*arg == '-') {
     ++arg;
   }
   int i;
@@ -243,6 +244,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterBoolFlag("print_exit_status", NULL);
   parser->RegisterValueFlag("timeout", NULL);
   parser->RegisterValueFlag("root", NULL);
+  parser->RegisterValueFlag("output_marker", NULL);
   parser->RegisterBoolFlag("n", NULL);
   parser->RegisterBoolFlag("z", NULL);
   if (!parser->Parse(argc, argv)) {
@@ -275,6 +277,9 @@ void Main::main(int argc, char **argv) {
   }
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
+  }
+  if (args.GetFlagValue("output_marker", &arg)) {
+    Env::SetOutputMarker(arg);
   }
 
   if (timeout) {

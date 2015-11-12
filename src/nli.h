@@ -25,17 +25,20 @@ using std::vector;
 
 class Env {
 public:
-  static string GetVersion();
+  static const string &GetVersion();
   static const char *GetNliDir();
   static bool GetOutputPath(const char *fn, string *path);
+  static const string &GetOutputMarker();
   static void SearchPathList(const char *fn,
 			     vector<string> *paths);
 
   static void SetOutputRootPath(const string &fn);
+  static void SetOutputMarker(const string &marker);
 
 private:
   static const char *nli_dir_;
   static string output_root_;
+  static string output_marker_;
   static bool sandbox_mode_;
 };
 

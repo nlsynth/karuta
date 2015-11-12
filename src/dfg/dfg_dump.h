@@ -20,6 +20,7 @@ public:
   static void DumpGraph(DFGDumpContext *dc, DGraph *graph,
 			DGraphAnnotation *a);
   static void End(DFGDumpContext *ctx);
+
 private:
   static void DumpModuleRec(const string &path, DFGDumpContext *dc,
 			    DModule *mod, DGraphAnnotation *a);

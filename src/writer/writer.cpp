@@ -17,16 +17,24 @@ bool Writer::WriteModule(DModule *mod, const string &raw_fn) {
   CHECK(Env::GetOutputPath(raw_fn.c_str(), &fn))
     << "Failed to get output file path: " << raw_fn;
 
+  bool success = true;
+
   if (Util::IsHtmlFileName(fn)) {
     dfg::DFGDumpContext *ddc = dfg::DFGDump::Start(fn);
     dfg::DFGDump::DumpModule(ddc, mod, NULL);
     dfg::DFGDump::End(ddc);
-    return true;
   } else if (Util::IsCCFileName(fn)) {
-    return CCWriter::WriteModule(mod, fn);
+    success = CCWriter::WriteModule(mod, fn);
   } else {
-    return VLWriter::WriteModule(mod, fn);
+    success = VLWriter::WriteModule(mod, fn);
   }
+  if (success) {
+    const string &marker = Env::GetOutputMarker();
+    if (!marker.empty()) {
+      cout << marker << raw_fn << "\n";
+    }
+  }
+  return success;
 }
 
 Writer::Writer(DModule *mod, ostream &os)
