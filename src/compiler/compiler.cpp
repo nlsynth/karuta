@@ -408,8 +408,8 @@ void Compiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
     insn->label_ = var_expr->sym_;
     insn->obj_reg_ = obj_reg;
     insn->src_regs_.push_back(initial_val);
-    insn->dst_regs_.push_back(insn->src_regs_[0]);
     insn->src_regs_.push_back(obj_reg);
+    insn->dst_regs_.push_back(insn->src_regs_[0]);
     EmitInsn(insn);
   }
 }
@@ -765,8 +765,8 @@ vm::Register *Compiler::CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
   insn->obj_reg_ = obj_reg;
 
   insn->src_regs_.push_back(rhs_reg);
-  insn->dst_regs_.push_back(insn->src_regs_[0]);
   insn->src_regs_.push_back(obj_reg);
+  insn->dst_regs_.push_back(insn->src_regs_[0]);
   EmitInsn(insn);
   return insn->dst_regs_[0];
 }

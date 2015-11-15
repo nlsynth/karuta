@@ -32,7 +32,6 @@ MethodSynth::MethodSynth(vm::VM *vm,
     resource_(resource), graph_(graph) {
 }
 
-
 MethodSynth::~MethodSynth() {
 }
 

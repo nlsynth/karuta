@@ -16,6 +16,7 @@ ThreadSynth::ThreadSynth(vm::VM *vm, vm::Object *obj, DModule *module,
 }
 
 ThreadSynth::~ThreadSynth() {
+  STLDeleteSecondElements(&function_map_);
 }
 
 bool ThreadSynth::Synth() {

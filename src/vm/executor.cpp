@@ -553,10 +553,10 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
   } else {
     // OP_MEMBER_WRITE
     CHECK(insn->src_regs_.size() == 2);
-    // src: obj, value
+    CHECK(insn->src_regs_[0]->id_ == insn->dst_regs_[0]->id_);
+    // src: value, obj
     Value &src = frame->reg_values_[insn->src_regs_[0]->id_];
     *member = src;
-    frame->reg_values_[insn->dst_regs_[0]->id_] = src;
   }
 }
 
