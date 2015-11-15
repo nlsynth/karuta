@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 
 # This file can be invoked either
 #  (1) import-ed from nli_server and serve GET method.
@@ -8,35 +8,62 @@ import cgi
 import os
 import sys
 import tempfile
+import time
+
 
 def GetExampleSource(qs):
     tmpl = (qs.get('e', ['']))[0]
     if tmpl == 's':
-        return '''def main() {}
+        return '''def main() {
+}
+
 compile();
 '''
     else:
         return 'print("Hello World!");'
 
+def GetRunID():
+    return 'run-' + str(time.time()) + '-' + str(os.getpid())
+
+def GetMarker(runid):
+    return 'marker:' + runid + ':'
+
+def CopyOutput(ifh, marker, runid, ofh):
+    for line in ifh:
+        if line.find(marker) == 0:
+            line = line[len(marker):-1]
+            line = ('<a href="/o/' + runid + '/' + line + '">' +
+                    line + '</a><br>')
+        line = line.replace('\n', '<br>')
+        ofh.write(line + '\n')
 
 def RunNLI(ofh, src):
     bin = os.getenv('NLI_BINARY')
+    workdir = os.getenv('NLI_TEMP')
+    runid = GetRunID()
+    rundir = workdir + '/' + runid
+    os.mkdir(rundir)
 
     srcf = tempfile.mktemp()
     srcfh = open(srcf, 'w')
     srcfh.write(src)
     srcfh.close()
 
-    cmd = bin + ' ' + srcf + ' > output'
+    marker = GetMarker(runid)
+
+    output = rundir + '/output'
+
+    cmd = (bin + ' --root=' + rundir + ' ' +
+           '--output_marker=' + marker + ' ' +
+           '--timeout=3 ' +
+           srcf +
+           ' > ' + output)
     os.system(cmd)
     os.unlink(srcf)
 
     ofh.write('OUTPUT:<br>\n')
-    ifh = open('output', 'r')
-    for line in ifh:
-        line = line.replace('\n', '<br>')
-        ofh.write(line + '\n')
-
+    ifh = open(output, 'r')
+    CopyOutput(ifh, marker, runid, ofh)
 
 def Render(ofh, is_post, qs):
     if is_post:

@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 
 # HTTP server for Neon Light (This assumes Python2 for now)
 
@@ -32,6 +32,8 @@ def scrape_version():
 
 class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
     def do_GET(self):
+        if self.path.startswith('/o/'):
+            return self.ServeOutput()
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
@@ -52,9 +54,23 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         self.cgi_info = '', 'nli_wrapper.py'
         self.run_cgi()
 
+    def ServeOutput(self):
+        p = self.path[3:]
+        fn = tmpdir + '/' + p
+        self.send_response(200)
+        if fn[-5:] == '.html':
+            self.send_header('Content-type', 'text/html')
+        else:
+            self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+
+        for line in open(fn, 'r'):
+            self.wfile.write(line)
+
 if __name__ == '__main__':
     os.environ['NLI_VERSION'] = scrape_version()
     os.environ['NLI_BINARY'] = nli_interpreter
+    os.environ['NLI_TEMP'] = tmpdir
     print(os.getenv('NLI_VERSION'))
     HandlerClass = NliServerHandler
     ServerClass = BaseHTTPServer.HTTPServer
