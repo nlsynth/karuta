@@ -31,6 +31,7 @@ MemberObject::MemberObject(vm::Object *vm_obj)
 
 MemberObject::~MemberObject() {
   STLDeleteSecondElements(&entry_methods_);
+  delete obj_synth_;
 }
 
 MemberObjectEntryMethod *MemberObject::GetMethod(sym_t name) {
