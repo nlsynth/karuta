@@ -192,7 +192,6 @@ void FE::Run(bool vanilla, const vector<string>& files) {
   NodePool::Release();
 }
 
-// static
 vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 			    vm::VM *vm) {
   Method *parse_tree = ReadFile(file);
@@ -222,8 +221,7 @@ void FE::RunFile(const string &file, vm::VM *vm) {
   vm->Run();
 }
 
-// static
-Method* FE::ReadFile(const string& file) {
+Method *FE::ReadFile(const string &file) {
   FileImage *im = GetFileImage(file);
   if (!im) {
     return NULL;
