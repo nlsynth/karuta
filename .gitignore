@@ -4,5 +4,12 @@
 *.lo
 *.o
 *.deps/
-Makefile
 .dirstamp
+.libs/
+Makefile
+autom4te.cache/
+config.log
+config.status
+lib/nli
+libtool
+nli-bin
