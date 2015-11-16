@@ -43,6 +43,7 @@ public:
   const fe::Method *parse_tree_;
 
   vector<Insn*> insns_;
+  // Args. Returns. Locals.
   vector<Register*> method_regs_;
   vector<RegisterType> return_types_;
 

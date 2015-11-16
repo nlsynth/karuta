@@ -32,6 +32,7 @@ private:
   static void AnnotateWidth(VM *vm, Object *obj, Method *method);
 
   static void AnnotateCalcWidth(VM *vm, Object *obj, Method *method);
+  static void EnforceValueWidth(VM *vm, Object *obj, Method *method);
   static void PropagateVarWidthAll(VM *vm, Object *obj, Method *method);
   static void PropagateRegWidth(Register *src1, Register *src2, Register *dst);
   static Value::ValueType SymToType(sym_t sym);

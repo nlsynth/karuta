@@ -188,7 +188,7 @@ DRegister *MethodSynth::FindArgRegister(fe::VarDecl *arg_decl) {
   if (arg_decl->type == sym_bool) {
     type = DTypeUtil::GetBoolType();
   } else if (arg_decl->type == sym_int) {
-    type = DTypeUtil::GetIntType(32);
+    type = DTypeUtil::GetIntType(numeric::Width::GetWidth(arg_decl->width));
   } else {
     CHECK(false);
   }

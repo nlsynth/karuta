@@ -209,7 +209,9 @@ void Compiler::SetupDeclSetRegisters(fe::VarDeclSet &vds,
       reg->orig_name_ = decl->name_expr->sym_;
     }
     VarScope *scope = CurrentScope();
-    scope->local_regs_[reg->orig_name_] = reg;
+    if (reg->orig_name_) {
+      scope->local_regs_[reg->orig_name_] = reg;
+    }
     vm::InsnAnnotator::AnnotateByDecl(vm_, decl, reg);
     if (types) {
       types->push_back(reg->type_);
