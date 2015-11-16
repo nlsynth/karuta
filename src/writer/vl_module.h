@@ -36,20 +36,24 @@ public:
 
   void Output(vector<string> *copy_files);
 
+  VLIOSet *GetPins();
+  const string &GetModuleName();
+
 private:
-  void PreProcessModule(const string &path_name);
+  void PreProcessModule();
   void PreProcessSubModuleControl(const DModule *sub_mod, bool has_graph,
 				  ostream &os);
 
-  void OutputVLModule(const string &name);
+  void OutputVLModule();
   void OutputExternalStuff(vector<string> *copy_files);
-  void OutputModuleHead(const string &path);
+  void OutputModuleHead();
   void OutputArray(const string &name, DArray *array);
   void CollectPinDecls();
   void CollectTaskPins(DModule *dm, bool in_container);
   void OutputRAM(const DArray *array);
 
   const string path_name_;
+  const string module_name_;
   std::unique_ptr<VLIOSet> pins_;
   std::unique_ptr<ModuleTemplate> template_;
   VLChannelWriter *ch_;

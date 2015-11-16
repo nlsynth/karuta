@@ -44,8 +44,8 @@ private:
 
 class Util {
 public:
-  static string GetBaseName(const char *fn);
-  static string GetDirName(const char *fn);
+  static string BaseName(const string &fn);
+  static string BaseNameWithoutSuffix(const string &fn);
   static bool IsHtmlFileName(const string &fn);
   static bool IsCCFileName(const string &fn);
   static bool CopyFile(const char *fn, ostream &os);

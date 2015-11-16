@@ -22,9 +22,9 @@ void VLChannelWriter::MaybeOutput(int width, ostream &os) {
   pins.AddPin("rdata_req", VLIOSet::INPUT, 0, "");
   os << "\n//channel width "<< width << "\n";
   os << "module " << ModuleName(width) << "(";
-  pins.Output(true, os);
+  pins.Output(VLIOSet::PIN_NAME, os);
   os <<");\n";
-  pins.Output(false, os);
+  pins.Output(VLIOSet::PIN_TYPE, os);
   os << "  wire [" << width - 1 << ":0] data;\n"
      << "  wire full;\n"
      << "  assign full = rdata_valid;\n"

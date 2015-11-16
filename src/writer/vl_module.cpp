@@ -23,16 +23,26 @@ namespace writer {
 
 VLModule::VLModule(DModule *mod, const string& path_name,
 		   VLChannelWriter *ch, ostream &os)
-  : path_name_(path_name), ch_(ch), mod_(mod), os_(os) {
+  : path_name_(path_name),
+    module_name_(path_name_ + "_" + mod->module_name_),
+    ch_(ch), mod_(mod), os_(os) {
   template_.reset(new ModuleTemplate);
 }
 
 VLModule::~VLModule() {
 }
 
+VLIOSet *VLModule::GetPins() {
+  return pins_.get();
+}
+
+const string &VLModule::GetModuleName() {
+  return module_name_;
+}
+
 void VLModule::Output(vector<string> *copy_files) {
   OutputExternalStuff(copy_files);
-  OutputVLModule(path_name_ + "_" + mod_->module_name_);
+  OutputVLModule();
 }
 
 void VLModule::OutputExternalStuff(vector<string> *copy_files) {
@@ -134,12 +144,12 @@ void VLModule::CollectPinDecls() {
   }
 }
 
-void VLModule::PreProcessModule(const string &path_name) {
+void VLModule::PreProcessModule() {
   bool has_graph = (mod_->module_type_ != DModule::MODULE_CONTAINER);
   ostream &os =
     template_->GetStream(ModuleTemplate::SUB_MODULE_INSTANCES);
   for (DModule *sub_module : mod_->sub_modules_) {
-    string sub_module_name = path_name + "_" +  sub_module->module_name_;
+    string sub_module_name = module_name_ + "_" +  sub_module->module_name_;
     os << "  " << sub_module_name << " " << sub_module_name
        << "_inst(.clk(clk), .rst(rst)";
     if (sub_module->module_type_ == DModule::MODULE_TASK) {
@@ -155,15 +165,15 @@ void VLModule::PreProcessModule(const string &path_name) {
   }
 }
 
-void VLModule::OutputModuleHead(const string &path_name) {
+void VLModule::OutputModuleHead() {
   pins_.reset(new VLIOSet);
   pins_->AddPin("clk", VLIOSet::INPUT, 0, "");
   pins_->AddPin("rst", VLIOSet::INPUT, 0, "");
   CollectPinDecls();
-  os_ << "\nmodule " << path_name << "(";
-  pins_->Output(true, os_);
+  os_ << "\nmodule " << module_name_ << "(";
+  pins_->Output(VLIOSet::PIN_NAME, os_);
   os_ << ");\n";
-  pins_->Output(false, os_);
+  pins_->Output(VLIOSet::PIN_TYPE, os_);
   os_ << "\n";
 }
 
@@ -278,16 +288,16 @@ void VLModule::PreProcessSubModuleControl(const DModule *sub_mod,
   }
 }
 
-void VLModule::OutputVLModule(const string &path_name) {
+void VLModule::OutputVLModule() {
   std::unique_ptr<VLGraph> graph_writer;
   if (mod_->graph_) {
-    graph_writer.reset(new VLGraph(mod_->graph_, path_name,
+    graph_writer.reset(new VLGraph(mod_->graph_, module_name_,
 				   template_.get(), os_));
     graph_writer->PreProcess();
   }
-  PreProcessModule(path_name);
+  PreProcessModule();
 
-  OutputModuleHead(path_name);
+  OutputModuleHead();
 
   os_ << template_->GetContents(ModuleTemplate::SUB_MODULE_CONTROL_WIRES);
 

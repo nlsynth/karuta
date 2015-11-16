@@ -10,9 +10,11 @@ class DModule;
 
 namespace writer {
 
+class VLModule;
+
 class VLWriter : public Writer {
 public:
-  VLWriter(DModule *mod, ostream &os);
+  VLWriter(DModule *mod, const string &name, ostream &os);
   void Output();
 
   static bool WriteModule(DModule *mod, const string &fn);
@@ -20,8 +22,11 @@ public:
   static void ICE(const char *msg, const sym_t sym = NULL);
 
 private:
+  const string &top_module_name_;
+
   void OutputSubModules(DModule *mod, const string &path_name,
 			vector<string> *files, ostream &os);
+  void OutputTopLevelWrapper(VLModule *module_writer, ostream &os);
 };
 
 }  // namespace writer

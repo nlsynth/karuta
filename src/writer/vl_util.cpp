@@ -14,15 +14,21 @@ void VLIOSet::AddPin(const string &name, PinType type, int width,
   pins_.push_back(pin);
 }
 
-void VLIOSet::Output(bool only_names, ostream &os) {
+void VLIOSet::Output(OutputType type, ostream &os) {
   for (size_t i = 0; i < pins_.size(); ++i) {
     Pin &pin = pins_[i];
-    if (only_names) {
+    if (type == PIN_NAME) {
       if (i > 0) {
 	os << ", ";
       }
       os << pin.name_;
+    } else if (type == PIN_CONNECTION) {
+      if (i > 0) {
+	os << ", ";
+      }
+      os << "." << pin.name_ << "(" << pin.name_ << ")";
     } else {
+      // PIN_TYPE, PIN_DIRECTION
       if (i > 0 && !pin.comment_.empty() &&
 	  pins_[i-1].comment_ != pin.comment_) {
 	os << "  // " << pin.comment_ << "\n";
@@ -42,7 +48,7 @@ void VLIOSet::Output(bool only_names, ostream &os) {
   }
 
   bool has_buffer_reg = false;
-  if (!only_names) {
+  if (type == PIN_TYPE) {
     for (size_t i = 0; i < pins_.size(); ++i) {
       Pin &pin = pins_[i];
       if (pin.type_ == VLIOSet::OUTPUT) {

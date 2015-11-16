@@ -26,10 +26,17 @@ public:
     OUTPUT_WIRE,
   };
 
+  enum OutputType {
+    PIN_NAME,
+    PIN_TYPE,
+    PIN_DIRECTION,
+    PIN_CONNECTION,
+  };
+
   void AddPin(const string &name, enum PinType type, int width,
 	      const string &comment);
 
-  void Output(bool only_names, ostream& os);
+  void Output(enum OutputType type, ostream& os);
 
 private:
   struct Pin {

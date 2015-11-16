@@ -17,10 +17,11 @@
 #include "messages.h"
 #include "writer/vl_channel.h"
 #include "writer/vl_module.h"
+#include "writer/vl_util.h"
 
 namespace writer {
 
-VLWriter::VLWriter(DModule *mod, ostream &os) : Writer(mod, os) {
+VLWriter::VLWriter(DModule *mod, const string &name, ostream &os) : Writer(mod, os), top_module_name_(name) {
 }
 
 void VLWriter::ICE(const char *msg, const sym_t sym) {
@@ -53,13 +54,32 @@ void VLWriter::OutputSubModules(DModule *dm, const string &path_name,
   VLChannelWriter ch;
   VLModule mod(dm, path_name, &ch, os);
   mod.Output(files);
+
+  if (!dm->parent_mod_ && mod.GetModuleName() != top_module_name_) {
+    OutputTopLevelWrapper(&mod, os);
+  }
+}
+
+void VLWriter::OutputTopLevelWrapper(VLModule *module_writer,
+				     ostream &os) {
+  os << "\nmodule " << top_module_name_ << "(";
+  VLIOSet *pins = module_writer->GetPins();
+  pins->Output(VLIOSet::PIN_NAME, os);
+  os << ");\n";
+  pins->Output(VLIOSet::PIN_DIRECTION, os);
+  const string &name = module_writer->GetModuleName();
+  os << "  " << name << " " << name << "_inst(";
+  pins->Output(VLIOSet::PIN_CONNECTION, os);
+  os << ");\n"
+     << "endmodule\n";
 }
 
 bool VLWriter::WriteModule(DModule *mod, const string &fn) {
-  std::unique_ptr<VLWriter> vw;
+  string name = Util::BaseNameWithoutSuffix(fn);
   std::ostringstream ss;
-  vw.reset(new VLWriter(mod, ss));
-  vw->Output();
+
+  VLWriter vw(mod, name, ss);
+  vw.Output();
 
   std::unique_ptr<Message> m(Message::CreateMessage(Message::INFO));
   m->os() << "output file name=" << fn;

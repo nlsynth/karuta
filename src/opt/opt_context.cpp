@@ -63,7 +63,7 @@ void OptimizeContext::WriteDumpIndex() {
 
 void OptimizeContext::CreateFileIndex(string *str) {
   for (string &raw_fn : dump_fn_list_) {
-    string fn = Util::GetBaseName(raw_fn.c_str());
+    string fn = Util::BaseName(raw_fn);
     *str += "|<a href=\"" + fn + "\" target=\"fr\">"
       + fn.c_str() + "</a>|<wbr>";
   }
@@ -75,10 +75,10 @@ void OptimizeContext::DoDumpIndex(ostream &ofs) {
   CreateFileIndex(&index);
   ofs << index;
   string initial_page =
-    Util::GetBaseName((*dump_fn_list_.begin()).c_str()).c_str();
-  ofs << "<hr><iframe src=\"" << initial_page;
-  ofs << "\" name=\"fr\" width=100% height=80%>iframe</iframe>";
-  ofs << "</body></html>";
+    Util::BaseName(*dump_fn_list_.begin()).c_str();
+  ofs << "<hr><iframe src=\"" << initial_page
+      << "\" name=\"fr\" width=100% height=80%>iframe</iframe>"
+      << "</body></html>";
 }
 
 void OptimizeContext::OverwriteFileIndex() {

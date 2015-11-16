@@ -30,8 +30,8 @@ const char *Env::GetNliDir() {
   return nli_dir_;
 }
 
-string Util::GetBaseName(const char *fn) {
-  const char *s = strrchr(fn, '/');
+string Util::BaseName(const string &fn) {
+  const char *s = strrchr(fn.c_str(), '/');
   if (s) {
     s++;
     return string(s);
@@ -39,13 +39,14 @@ string Util::GetBaseName(const char *fn) {
   return string(fn);
 }
 
-string Util::GetDirName(const char *fn) {
-  string path(fn);
-  size_t pos = path.rfind("/");
-  if (pos == string::npos) {
-    return string("");
+string Util::BaseNameWithoutSuffix(const string &fn) {
+  string base_name = BaseName(fn);
+  const char *s = strrchr(base_name.c_str(), '.');
+  if (!s) {
+    return base_name;
   }
-  return string(fn, pos);
+  int len = s - base_name.c_str();
+  return string(base_name.c_str(), len);
 }
 
 bool Util::IsHtmlFileName(const string &fn) {
