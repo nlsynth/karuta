@@ -7,7 +7,10 @@
 #include "fe/nodecode.h"
 
 class DumpStream;
-class NumberWidth;
+
+namespace numeric {
+class Width;
+}  // namespace numeric
 
 namespace fe {
 
@@ -26,7 +29,7 @@ public:
   sym_t sym_;
   string str_;
   VarDecl *decl_;
-  const NumberWidth *width_;
+  const numeric::Width *width_;
 
   // IF stmt.
   sym_t label_t_;

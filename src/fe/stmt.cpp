@@ -56,7 +56,7 @@ void Stmt::Dump(DumpStream &ds) {
     ds.os << sym_cstr(sym_) << "\n";
     expr_->Dump(ds);
     ds.indent();
-    NumberWidth::Dump(width_, ds.os);
+    numeric::Width::Dump(width_, ds.os);
     ds.os << "\n";
     ds.pop_indent();
     break;

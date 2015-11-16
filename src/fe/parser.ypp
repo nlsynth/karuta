@@ -23,7 +23,7 @@ extern void yyerror(const char *msg);
   const char *str;
   sym_t sym;
   uint64_t num;
-  const class NumberWidth *width;
+  const class numeric::Width *width;
   class import_param *import_param;
   class import_params *import_params;
 }
@@ -162,13 +162,13 @@ VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
 }
 
 WIDTH_SPEC : {
-  $$ = NumberWidth::MakeInt(false, 32, 0);
+  $$ = numeric::Width::MakeInt(false, 32, 0);
 } | '#' NUM {
-  $$ = NumberWidth::MakeInt(false, $2, 0);
+  $$ = numeric::Width::MakeInt(false, $2, 0);
 } | '#' NUM ':' NUM {
-  $$ = NumberWidth::MakeInt(false, $2, $4);
+  $$ = numeric::Width::MakeInt(false, $2, $4);
 } | '#' '#' {
-  $$ = NumberWidth::Null();
+  $$ = numeric::Width::Null();
 }
 
 ARG_DECL : {

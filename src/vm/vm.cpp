@@ -19,7 +19,7 @@ VM::VM() {
   InstallBoolType();
   Method::InstallNativeRootObjectMethods(this, root_object_);
   InstallObjects();
-  memory_.reset(IntArray::Create(NumberWidth::DefaultInt(), 0));
+  memory_.reset(IntArray::Create(numeric::Width::DefaultInt(), 0));
 }
 
 VM::~VM() {

@@ -216,7 +216,7 @@ union YYSTYPE
   const char *str;
   sym_t sym;
   uint64_t num;
-  const class NumberWidth *width;
+  const class numeric::Width *width;
   class import_param *import_param;
   class import_params *import_params;
 
@@ -1831,7 +1831,7 @@ yyreduce:
   case 29:
 #line 164 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.width) = NumberWidth::MakeInt(false, 32, 0);
+  (yyval.width) = numeric::Width::MakeInt(false, 32, 0);
 }
 #line 1837 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1839,7 +1839,7 @@ yyreduce:
   case 30:
 #line 166 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.width) = NumberWidth::MakeInt(false, (yyvsp[0].num), 0);
+  (yyval.width) = numeric::Width::MakeInt(false, (yyvsp[0].num), 0);
 }
 #line 1845 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1847,7 +1847,7 @@ yyreduce:
   case 31:
 #line 168 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.width) = NumberWidth::MakeInt(false, (yyvsp[-2].num), (yyvsp[0].num));
+  (yyval.width) = numeric::Width::MakeInt(false, (yyvsp[-2].num), (yyvsp[0].num));
 }
 #line 1853 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1855,7 +1855,7 @@ yyreduce:
   case 32:
 #line 170 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.width) = NumberWidth::Null();
+  (yyval.width) = numeric::Width::Null();
 }
 #line 1861 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;

@@ -15,28 +15,28 @@ IntArray::~IntArray() {
 }
 
 struct npage {
-  npage(const NumberWidth *w);
-  Number data[PAGE_SIZE];
+  npage(const numeric::Width *w);
+  numeric::Number data[PAGE_SIZE];
 };
 
 class IntArrayImpl : public IntArray {
 public:
-  IntArrayImpl(const NumberWidth *width, int size);
+  IntArrayImpl(const numeric::Width *width, int size);
   IntArrayImpl(const IntArrayImpl *src);
-  virtual void Write(int addr, const Number &data);
-  virtual Number Read(int addr);
+  virtual void Write(int addr, const numeric::Number &data);
+  virtual numeric::Number Read(int addr);
   virtual long long GetLength() const;
-  virtual const NumberWidth *GetWidth() const;
+  virtual const numeric::Width *GetWidth() const;
 
 private:
   npage *find_page(int addr);
 
   int size_;
-  const NumberWidth *width_;
+  const numeric::Width *width_;
   map<int, npage *> pages_;
 };
 
-npage::npage(const NumberWidth *width) {
+npage::npage(const numeric::Width *width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
     data[i].int_part = 0;
@@ -45,7 +45,7 @@ npage::npage(const NumberWidth *width) {
   }
 }
 
-IntArray *IntArray::Create(const NumberWidth *width, int size) {
+IntArray *IntArray::Create(const numeric::Width *width, int size) {
   return new IntArrayImpl(width, size);
 }
 
@@ -54,7 +54,7 @@ IntArray *IntArray::Copy(const IntArray *src) {
   return new IntArrayImpl(si);
 }
 
-IntArrayImpl::IntArrayImpl(const NumberWidth *width,
+IntArrayImpl::IntArrayImpl(const numeric::Width *width,
 			   int size)
   : size_(size), width_(width) {
 }
@@ -69,13 +69,13 @@ IntArrayImpl::IntArrayImpl(const IntArrayImpl *src) {
   }
 }
 
-void IntArrayImpl::Write(int addr, const Number &data) {
+void IntArrayImpl::Write(int addr, const numeric::Number &data) {
   npage *p = find_page(addr);
   int offset = (addr % PAGE_BYTES);
   p->data[offset] = data;
 }
 
-Number IntArrayImpl::Read(int addr) {
+numeric::Number IntArrayImpl::Read(int addr) {
   npage *p = find_page(addr);
   int offset = (addr % PAGE_BYTES);
   return p->data[offset];
@@ -85,7 +85,7 @@ long long IntArrayImpl::GetLength() const {
   return size_;
 }
 
-const NumberWidth *IntArrayImpl::GetWidth() const {
+const numeric::Width *IntArrayImpl::GetWidth() const {
   return width_;
 }
 

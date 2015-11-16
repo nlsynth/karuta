@@ -1,11 +1,11 @@
 #include "fe/builder.h"
 
-#include "numeric.h"
 #include "fe/nodecode.h"
 #include "fe/common.h"
 #include "fe/expr.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "numeric/numeric.h"
 
 namespace fe {
 
@@ -37,7 +37,7 @@ Expr *Builder::SymExpr(sym_t sym) {
 
 Expr *Builder::NumExpr(uint64_t num) {
   Expr *expr = NewExpr(EXPR_NUM);
-  Numeric::MakeConst(num, 0, &expr->num_);
+  numeric::Numeric::MakeConst(num, 0, &expr->num_);
   return expr;
 }
 
@@ -62,7 +62,7 @@ VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
   return mv;
 }
 
-VarDecl *Builder::BuildVarDecl(sym_t type, const NumberWidth *w,
+VarDecl *Builder::BuildVarDecl(sym_t type, const numeric::Width *w,
 			       VarDecl *var) {
   var->type = type;
   var->width = w;
@@ -144,7 +144,7 @@ VarDeclSet *Builder::ReturnDeclList(VarDeclSet *decls, VarDecl *decl) {
   return ArgDeclList(decls, decl);
 }
 
-VarDecl *Builder::ReturnType(sym_t type_name, const NumberWidth *w) {
+VarDecl *Builder::ReturnType(sym_t type_name, const numeric::Width *w) {
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
   v->type = type_name;

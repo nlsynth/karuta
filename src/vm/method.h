@@ -28,7 +28,7 @@ public:
   void Dump(DumpStream &os);
 
   int GetNumReturnRegisters();
-  const NumberWidth *GetNthArgWidth(int i);
+  const numeric::Width *GetNthArgWidth(int i);
   const char *AlternativeImplementation();
 
   typedef void (*method_func)(Thread *thr, Object *obj,

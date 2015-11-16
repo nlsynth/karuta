@@ -173,7 +173,7 @@ DRegister *MethodSynth::FindLocalVarRegister(vm::Register *zreg) {
   sprintf(name, "r%d_", zreg->id_);
   DType *type;
   if (zreg->type_.value_type_ == vm::Value::NUM) {
-    type = DTypeUtil::GetIntType(NumberWidth::GetWidth(zreg->type_.width_));
+    type = DTypeUtil::GetIntType(numeric::Width::GetWidth(zreg->type_.width_));
   } else {
     CHECK(zreg->type_.value_type_ == vm::Value::ENUM_ITEM);
     type = DTypeUtil::GetBoolType();
@@ -246,7 +246,7 @@ void MethodSynth::SynthNum(vm::Insn *insn) {
   vm::Register *zreg = insn->src_regs_[0];
   CHECK(zreg->type_.value_type_ == vm::Value::NUM);
   local_reg_map_[insn->dst_regs_[0]] =
-    DGraphUtil::FindNum(graph_, Numeric::GetInt(zreg->initial_num_));
+    DGraphUtil::FindNum(graph_, numeric::Numeric::GetInt(zreg->initial_num_));
 }
 
 void MethodSynth::SynthAssign(vm::Insn *insn) {
@@ -291,8 +291,8 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
 
 void MethodSynth::SynthShiftExpr(vm::Insn *insn) {
   CHECK(insn->src_regs_[1]->type_.is_const_);
-  int shift_count = Numeric::GetInt(insn->src_regs_[1]->initial_num_);
-  int src_width = NumberWidth::GetWidth(insn->src_regs_[0]->type_.width_);
+  int shift_count = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_);
+  int src_width = numeric::Width::GetWidth(insn->src_regs_[0]->type_.width_);
   int src_msb, src_lsb;
   int dst_width;
   if (insn->op_ == vm::OP_LSHIFT) {
@@ -335,8 +335,8 @@ void MethodSynth::SynthConcat(vm::Insn *insn) {
 void MethodSynth::SynthBitRange(vm::Insn *insn) {
   DRegister *src = FindLocalVarRegister(insn->src_regs_[0]);
   DRegister *res = FindLocalVarRegister(insn->dst_regs_[0]);
-  int msb = Numeric::GetInt(insn->src_regs_[1]->initial_num_);
-  int lsb = Numeric::GetInt(insn->src_regs_[2]->initial_num_);
+  int msb = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_);
+  int lsb = numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_);
   GenBitSelect(src, msb, lsb, msb - lsb + 1, res);
 }
 
@@ -422,14 +422,14 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
       name = "m_" + name;
       DType *type;
       if (value->type_ == vm::Value::NUM) {
-	type = DTypeUtil::GetIntType(NumberWidth::GetWidth(value->num_.type));
+	type = DTypeUtil::GetIntType(numeric::Width::GetWidth(value->num_.type));
       } else {
 	type = DTypeUtil::GetBoolType();
       }
       reg = DGraphUtil::FindSym(graph_, name, type);
       member_reg_map_[insn->label_] = reg;
       reg->has_initial_ = true;
-      reg->num_ = Numeric::GetInt(value->num_);
+      reg->num_ = numeric::Numeric::GetInt(value->num_);
     }
     DResource *assign = resource_->AssignResource();
     DInsn *d_insn = DGraphUtil::InsnNew(graph_, assign);
@@ -708,9 +708,9 @@ void MethodSynth::InitializeArrayResource(DResource *res, vm::Insn *insn, sym_t 
     // do nothing here.
   }
   array->address_width = bits;
-  array->data_width = NumberWidth::GetWidth(memory->GetWidth());
+  array->data_width = numeric::Width::GetWidth(memory->GetWidth());
   for (int i = 0; i < memory->GetLength(); ++i) {
-    array->num_.push_back(Numeric::GetInt(memory->Read(i)));
+    array->num_.push_back(numeric::Numeric::GetInt(memory->Read(i)));
   }
   res->array_ = array;
 }
@@ -723,7 +723,7 @@ DType *MethodSynth::InsnToCalcDType(vm::Insn *insn) {
     reg = insn->dst_regs_[0];
   }
   if (reg->type_.value_type_ == vm::Value::NUM) {
-    return DTypeUtil::GetIntType(NumberWidth::GetWidth(reg->type_.width_));
+    return DTypeUtil::GetIntType(numeric::Width::GetWidth(reg->type_.width_));
   } else if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     return DTypeUtil::GetBoolType();
   }

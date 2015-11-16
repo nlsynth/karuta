@@ -38,10 +38,12 @@ public:
 
   virtual bool ExecInsn(Method *method, MethodFrame *frame, Insn *insn);
 
-  Object *CreateMemoryObject(const NumberWidth *width, int array_length,
+  Object *CreateMemoryObject(const numeric::Width *width,
+			     int array_length,
 			     fe::ArrayInitializer *array_initializer);
 
-  static IntArray *CreateIntArray(const NumberWidth *width, int array_length,
+  static IntArray *CreateIntArray(const numeric::Width *width,
+				  int array_length,
 				  fe::ArrayInitializer *array_initializer);
 
 protected:
@@ -56,7 +58,7 @@ protected:
   void ExecMemoryRead(MethodFrame *frame, Insn *insn);
   void ExecMemoryWrite(const Method *method, MethodFrame *frame, Insn *insn);
 
-  void MemoryWrite(int addr, const Number &data);
+  void MemoryWrite(int addr, const numeric::Number &data);
 
   Thread *thr_;
 private:
@@ -75,7 +77,7 @@ private:
   void SetupCallee(Object *obj, Method *callee_method,
 		   const vector<Value> &args);
 
-  void MemoryRead(int addr, Number *res);
+  void MemoryRead(int addr, numeric::Number *res);
 
   static void InitializeArray(IntArray *array, fe::ArrayInitializer *array_initializer);
 };

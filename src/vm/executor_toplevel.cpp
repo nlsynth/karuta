@@ -82,7 +82,7 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   Value *value = obj->LookupValue(name, true);
   InsnAnnotator::AnnotateValueType(decl, value);
   if (value->type_ == Value::NUM) {
-    Numeric::MakeConst(0, 0, &value->num_);
+    numeric::Numeric::MakeConst(0, 0, &value->num_);
   }
   if (value->type_ == Value::INT_ARRAY) {
     value->object_ = CreateMemoryObject(decl->width, decl->array_length,
@@ -200,7 +200,7 @@ void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
     CHECK(ArrayWrapper::IsIntArray(array_obj));
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
 
-    const NumberWidth *width = array->GetWidth();
+    const numeric::Width *width = array->GetWidth();
     int dst_id = insn->dst_regs_[0]->id_;
     method->method_regs_[dst_id]->type_.width_ = width;
   }

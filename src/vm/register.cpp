@@ -6,7 +6,7 @@
 namespace vm {
 
 RegisterType::RegisterType(Value::ValueType type, const EnumType *enum_type,
-			   const NumberWidth *width, bool is_const)
+			   const numeric::Width *width, bool is_const)
   : value_type_(type), enum_type_(enum_type), width_(width),
     is_const_(is_const) {
 }
@@ -23,7 +23,7 @@ void RegisterType::Dump(DumpStream &ds) {
   }
   if (width_) {
     ds.os << " #";
-    NumberWidth::Dump(width_, ds.os);
+    numeric::Width::Dump(width_, ds.os);
   }
 }
 

@@ -94,7 +94,7 @@ void InsnAnnotator::AnnotateCalcWidth(VM *vm, Object *obj, Method *method) {
   for (size_t i = 0; i < method->method_regs_.size(); ++i) {
     Register *reg = method->method_regs_[i];
     if (reg->type_.value_type_ == Value::NUM && reg->type_.is_const_) {
-      reg->type_.width_ = NumberWidth::CommonWidth(Numeric::ValueWidth(reg->initial_num_),
+      reg->type_.width_ = numeric::Width::CommonWidth(numeric::Numeric::ValueWidth(reg->initial_num_),
 						   reg->type_.width_);
     }
   }
@@ -112,8 +112,8 @@ void InsnAnnotator::AnnotateCalcWidth(VM *vm, Object *obj, Method *method) {
       if (value->type_ == Value::NUM) {
 	if (insn->op_ == OP_MEMBER_WRITE) {
 	  insn->dst_regs_[0]->type_.width_ =
-	    NumberWidth::CommonWidth(insn->src_regs_[0]->type_.width_,
-				     NumberWidth::DefaultInt());
+	    numeric::Width::CommonWidth(insn->src_regs_[0]->type_.width_,
+					numeric::Width::DefaultInt());
 	} else {
 	  insn->dst_regs_[0]->type_.width_ = value->num_.type;
 	}
@@ -142,16 +142,16 @@ void InsnAnnotator::AnnotateCalcWidth(VM *vm, Object *obj, Method *method) {
     if (insn->op_ == OP_BIT_RANGE) {
       CHECK(insn->src_regs_[1]->type_.value_type_ == Value::NUM);
       CHECK(insn->src_regs_[2]->type_.value_type_ == Value::NUM);
-      int w = Numeric::GetInt(insn->src_regs_[1]->initial_num_) -
-	 Numeric::GetInt(insn->src_regs_[2]->initial_num_) + 1;
-      insn->dst_regs_[0]->type_.width_ = NumberWidth::MakeInt(false, w, 0);
+      int w = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_) -
+	numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_) + 1;
+      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
     }
     if (insn->op_ == OP_CONCAT) {
       CHECK(insn->src_regs_[0]->type_.value_type_ == Value::NUM);
       CHECK(insn->src_regs_[1]->type_.value_type_ == Value::NUM);
-      int w = NumberWidth::GetWidth(insn->src_regs_[0]->type_.width_) +
-	NumberWidth::GetWidth(insn->src_regs_[1]->type_.width_);
-      insn->dst_regs_[0]->type_.width_ = NumberWidth::MakeInt(false, w, 0);
+      int w = numeric::Width::GetWidth(insn->src_regs_[0]->type_.width_) +
+	numeric::Width::GetWidth(insn->src_regs_[1]->type_.width_);
+      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
     }
   }
 }
@@ -200,9 +200,9 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
   if (dst->orig_name_) {
     return;
   }
-  const NumberWidth *width =
-    NumberWidth::CommonWidth(src1->type_.width_, src2->type_.width_);
-  dst->type_.width_ = NumberWidth::CommonWidth(dst->type_.width_, width);
+  const numeric::Width *width =
+    numeric::Width::CommonWidth(src1->type_.width_, src2->type_.width_);
+  dst->type_.width_ = numeric::Width::CommonWidth(dst->type_.width_, width);
 }
 
 void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
@@ -223,7 +223,7 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
   if (decl->width) {
     reg->type_.width_ = decl->width;
   } else {
-    reg->type_.width_ = NumberWidth::DefaultInt();
+    reg->type_.width_ = numeric::Width::DefaultInt();
   }
   CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->type);
 }

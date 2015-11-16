@@ -3,7 +3,8 @@
 #define _vm_value_h_
 
 #include "nli.h"
-#include "numeric.h"
+
+#include "numeric/numeric.h"
 
 namespace dfg {
 class DModule;
@@ -54,7 +55,7 @@ public:
   enum ValueType type_;
   bool is_const_;
 
-  Number num_;
+  numeric::Number num_;
   Method *method_;
   // for ENUM_ITEM
   EnumVal enum_val_;

@@ -36,7 +36,8 @@ Executor::Executor(Thread *thread) : thr_(thread) {
 Executor::~Executor() {
 }
 
-Object *Executor::CreateMemoryObject(const NumberWidth *width, int array_length,
+Object *Executor::CreateMemoryObject(const numeric::Width *width,
+				     int array_length,
 				     fe::ArrayInitializer *array_initializer) {
   Object *obj = ArrayWrapper::NewIntArrayWrapper(thr_->GetVM(),
 						 array_length, width);
@@ -45,7 +46,8 @@ Object *Executor::CreateMemoryObject(const NumberWidth *width, int array_length,
   return obj;
 }
 
-IntArray *Executor::CreateIntArray(const NumberWidth *width, int array_length,
+IntArray *Executor::CreateIntArray(const numeric::Width *width,
+				   int array_length,
 				   fe::ArrayInitializer *array_initializer) {
   IntArray *array = IntArray::Create(width, array_length);
   InitializeArray(array, array_initializer);
@@ -58,7 +60,8 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   case OP_NUM:
     {
       int dst = insn->dst_regs_[0]->id_;
-      const NumberWidth *width = method->method_regs_[dst]->type_.width_;
+      const numeric::Width *width =
+	method->method_regs_[dst]->type_.width_;
       frame->reg_values_[dst].num_ = insn->src_regs_[0]->initial_num_;
       frame->reg_values_[dst].num_.type = width;
     }
@@ -169,49 +172,60 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
   int rhs = insn->src_regs_[1]->id_;
   switch (insn->op_) {
   case OP_ADD:
-    Numeric::Add(frame->reg_values_[lhs].num_, frame->reg_values_[rhs].num_,
-		 &frame->reg_values_[dst].num_);
+    numeric::Numeric::Add(frame->reg_values_[lhs].num_,
+			  frame->reg_values_[rhs].num_,
+			  &frame->reg_values_[dst].num_);
     break;
   case OP_SUB:
-    Numeric::Sub(frame->reg_values_[lhs].num_, frame->reg_values_[rhs].num_,
-		 &frame->reg_values_[dst].num_);
+    numeric::Numeric::Sub(frame->reg_values_[lhs].num_,
+			  frame->reg_values_[rhs].num_,
+			  &frame->reg_values_[dst].num_);
     break;
   case OP_MUL:
-    Numeric::CalcBinOp(Numeric::BINOP_MUL,
-		       frame->reg_values_[lhs].num_, frame->reg_values_[rhs].num_,
-		       &frame->reg_values_[dst].num_);
+    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_MUL,
+				frame->reg_values_[lhs].num_,
+				frame->reg_values_[rhs].num_,
+				&frame->reg_values_[dst].num_);
     break;
   case OP_ASSIGN:
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
-    Numeric::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
-			&frame->reg_values_[dst].num_);
+    numeric::Numeric::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+				 &frame->reg_values_[dst].num_);
     break;
   case OP_AND:
-    Numeric::CalcBinOp(Numeric::BINOP_AND, frame->reg_values_[lhs].num_,
-		       frame->reg_values_[rhs].num_,
-		       &frame->reg_values_[dst].num_);
+    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_AND,
+				frame->reg_values_[lhs].num_,
+				frame->reg_values_[rhs].num_,
+				&frame->reg_values_[dst].num_);
     break;
   case OP_OR:
-    Numeric::CalcBinOp(Numeric::BINOP_OR, frame->reg_values_[lhs].num_,
-		       frame->reg_values_[rhs].num_,
-		       &frame->reg_values_[dst].num_);
+    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_OR,
+				frame->reg_values_[lhs].num_,
+				frame->reg_values_[rhs].num_,
+				&frame->reg_values_[dst].num_);
     break;
   case OP_XOR:
-    Numeric::CalcBinOp(Numeric::BINOP_XOR, frame->reg_values_[lhs].num_,
-		       frame->reg_values_[rhs].num_,
-		       &frame->reg_values_[dst].num_);
+    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_XOR,
+				frame->reg_values_[lhs].num_,
+				frame->reg_values_[rhs].num_,
+				&frame->reg_values_[dst].num_);
     break;
   case OP_CONCAT:
-    Numeric::Concat(frame->reg_values_[lhs].num_, frame->reg_values_[rhs].num_,
-		    &frame->reg_values_[dst].num_);
+    numeric::Numeric::Concat(frame->reg_values_[lhs].num_,
+			     frame->reg_values_[rhs].num_,
+			     &frame->reg_values_[dst].num_);
     break;
   case OP_LSHIFT:
-    Numeric::CalcBinOp(Numeric::BINOP_LSHIFT, frame->reg_values_[lhs].num_, frame->reg_values_[rhs].num_,
-		       &frame->reg_values_[dst].num_);
+    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_LSHIFT,
+				frame->reg_values_[lhs].num_,
+				frame->reg_values_[rhs].num_,
+				&frame->reg_values_[dst].num_);
     break;
   case OP_RSHIFT:
-    Numeric::CalcBinOp(Numeric::BINOP_RSHIFT, frame->reg_values_[lhs].num_, frame->reg_values_[rhs].num_,
-		       &frame->reg_values_[dst].num_);
+    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_RSHIFT,
+				frame->reg_values_[lhs].num_,
+				frame->reg_values_[rhs].num_,
+				&frame->reg_values_[dst].num_);
     break;
   default:
     CHECK(false) << "unknown binop:" << vm::OpCodeName(insn->op_);
@@ -253,7 +267,7 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
     Value &index = frame->reg_values_[insn->src_regs_[0]->id_];
     
     frame->reg_values_[insn->dst_regs_[0]->id_].num_ =
-      array.local_int_array_->Read(Numeric::GetInt(index.num_));
+      array.local_int_array_->Read(numeric::Numeric::GetInt(index.num_));
     frame->reg_values_[insn->dst_regs_[0]->id_].type_ = Value::NUM;
   }
 }
@@ -285,7 +299,7 @@ void Executor::ExecLogicInv(MethodFrame *frame, Insn *insn) {
       val = 0;
     }
   } else if (value.type_ == Value::NUM) {
-    if (!Numeric::IsZero(value.num_)) {
+    if (!numeric::Numeric::IsZero(value.num_)) {
       val = 0;
     }
   }
@@ -294,16 +308,16 @@ void Executor::ExecLogicInv(MethodFrame *frame, Insn *insn) {
 
 void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
-  Number res;
+  numeric::Number res;
   switch (insn->op_) {
   case OP_BIT_INV:
-    Numeric::BitInv(value.num_, &res);
+    numeric::Numeric::BitInv(value.num_, &res);
     break;
   case OP_PLUS:
     res = value.num_;
     break;
   case OP_MINUS:
-    Numeric::Minus(value.num_, &res);
+    numeric::Numeric::Minus(value.num_, &res);
     break;
   default:
     CHECK(false);
@@ -311,7 +325,7 @@ void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
   }
   int dst_id = insn->dst_regs_[0]->id_;
   Value &dst = frame->reg_values_[dst_id];
-  Numeric::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
+  numeric::Numeric::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
   dst.num_ = res;
 }
 
@@ -354,13 +368,13 @@ bool Executor::ExecChannelRead(MethodFrame *frame, Insn *insn) {
 
 void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {
   int target = insn->dst_regs_[0]->id_;
-  Number n1;
-  Numeric::MakeConst(1, 0, &n1);
-  Number res;
+  numeric::Number n1;
+  numeric::Numeric::MakeConst(1, 0, &n1);
+  numeric::Number res;
   if (insn->op_ == OP_PRE_INC) {
-    Numeric::Add(frame->reg_values_[target].num_, n1, &res);
+    numeric::Numeric::Add(frame->reg_values_[target].num_, n1, &res);
   } else {
-    Numeric::Sub(frame->reg_values_[target].num_, n1, &res);
+    numeric::Numeric::Sub(frame->reg_values_[target].num_, n1, &res);
   }
   frame->reg_values_[target].num_ = res;
 }
@@ -399,27 +413,27 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
     {
       bool r;
       if (frame->reg_values_[rhs].type_ == Value::NUM) {
-	Numeric::CompareOp op;
+	numeric::Numeric::CompareOp op;
 	switch (insn->op_) {
 	case OP_LT:
 	case OP_GTE:
-	  op = Numeric::COMPARE_LT;
+	  op = numeric::Numeric::COMPARE_LT;
 	  break;
 	case OP_GT:
 	case OP_LTE:
-	  op = Numeric::COMPARE_GT;
+	  op = numeric::Numeric::COMPARE_GT;
 	  break;
 	case OP_EQ:
 	case OP_NE:
-	  op = Numeric::COMPARE_EQ;
+	  op = numeric::Numeric::COMPARE_EQ;
 	  break;
 	default:
-	  op = Numeric::COMPARE_EQ;
+	  op = numeric::Numeric::COMPARE_EQ;
 	  CHECK(false);
 	  break;
 	}
-	r = Numeric::Compare(op, frame->reg_values_[lhs].num_,
-			     frame->reg_values_[rhs].num_);
+	r = numeric::Numeric::Compare(op, frame->reg_values_[lhs].num_,
+				      frame->reg_values_[rhs].num_);
       } else {
 	CHECK(frame->reg_values_[rhs].type_ == Value::ENUM_ITEM);
 	r = (frame->reg_values_[lhs].enum_val_.val ==
@@ -522,19 +536,19 @@ void Executor::SetupCallee(Object *obj, Method *callee_method,
   MethodFrame *frame = thr_->PushMethodFrame(obj, callee_method);
   for (size_t i = 0; i < args.size(); ++i) {
     frame->reg_values_[i] = args[i];
-    const NumberWidth *width = callee_method->GetNthArgWidth(i);
+    const numeric::Width *width = callee_method->GetNthArgWidth(i);
     if (width) {
       frame->reg_values_[i].num_.type = width;
     }
   }
 }
 
-void Executor::MemoryWrite(int addr, const Number &data) {
+void Executor::MemoryWrite(int addr, const numeric::Number &data) {
   IntArray *mem = thr_->GetVM()->GetDefaultMemory();
   mem->Write(addr, data);
 }
 
-void Executor::MemoryRead(int addr, Number *res) {
+void Executor::MemoryRead(int addr, numeric::Number *res) {
   IntArray *mem = thr_->GetVM()->GetDefaultMemory();
   *res = mem->Read(addr);
 }
@@ -561,18 +575,18 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
 }
 
 void Executor::ExecBitRange(MethodFrame *frame, Insn *insn) {
-  int h = Numeric::GetInt(frame->reg_values_[insn->src_regs_[1]->id_].num_);
-  int l = Numeric::GetInt(frame->reg_values_[insn->src_regs_[2]->id_].num_);
+  int h = numeric::Numeric::GetInt(frame->reg_values_[insn->src_regs_[1]->id_].num_);
+  int l = numeric::Numeric::GetInt(frame->reg_values_[insn->src_regs_[2]->id_].num_);
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
   Value &res = frame->reg_values_[insn->dst_regs_[0]->id_];
-  Numeric::SelectBits(value.num_, h, l, &res.num_);
+  numeric::Numeric::SelectBits(value.num_, h, l, &res.num_);
 }
 
 void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_initializer) {
   if (array_initializer) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
-      Number num;
-      Numeric::MakeConst(array_initializer->num_[i], 0, &num);
+      numeric::Number num;
+      numeric::Numeric::MakeConst(array_initializer->num_[i], 0, &num);
       array->Write(i, num);
     }
   }

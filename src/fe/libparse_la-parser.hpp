@@ -141,7 +141,7 @@ union YYSTYPE
   const char *str;
   sym_t sym;
   uint64_t num;
-  const class NumberWidth *width;
+  const class numeric::Width *width;
   class import_param *import_param;
   class import_params *import_params;
 

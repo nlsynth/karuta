@@ -73,8 +73,8 @@ bool Channel::ReadValue(Thread *thr, Object *obj, Value *value) {
   value->type_ = Value::NUM;
   int64_t v = *(pipe_data->values_.begin());
   pipe_data->values_.pop_front();
-  Numeric::MakeConst(v, 0, &value->num_);
-  value->num_.type = NumberWidth::MakeInt(false, pipe_data->width_, 0);
+  numeric::Numeric::MakeConst(v, 0, &value->num_);
+  value->num_.type = numeric::Width::MakeInt(false, pipe_data->width_, 0);
   return true;
 }
 
@@ -84,7 +84,7 @@ void Channel::WriteMethod(Thread *thr, Object *obj, const vector<Value> &args) {
 }
 
 void Channel::WriteValue(const Value &value, Object *obj) {
-  int64_t v = Numeric::GetInt(value.num_);
+  int64_t v = numeric::Numeric::GetInt(value.num_);
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   pipe_data->values_.push_back(v);
   if (pipe_data->blocking_thread_) {

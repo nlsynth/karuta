@@ -2,9 +2,10 @@
 #ifndef _fe_expr_h_
 #define _fe_expr_h_
 
-#include "fe/nodecode.h"
 #include "nli.h"
-#include "numeric.h"
+
+#include "fe/nodecode.h"
+#include "numeric/numeric.h"
 
 class DumpStream;
 
@@ -16,7 +17,7 @@ public:
   void Dump(DumpStream &os);
 
   NodeCode type_;
-  Number num_;
+  numeric::Number num_;
   sym_t sym_;
   string str_;
 

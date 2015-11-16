@@ -161,7 +161,7 @@ void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
 }
 
 void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
-				  const NumberWidth *width) {
+				  const numeric::Width *width) {
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);
   stmt->sym_ = type_name;
   stmt->expr_ = var;

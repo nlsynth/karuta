@@ -5,7 +5,9 @@
 #include "nli.h"
 #include "fe/nodecode.h"
 
-class NumberWidth;
+namespace numeric {
+class Width;
+}  // namespace numeric
 
 namespace fe {
 
@@ -31,7 +33,7 @@ class Builder {
   static VarDeclSet *VarDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ArgDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ReturnDeclList(VarDeclSet *decls, VarDecl *decl);
-  static VarDecl *ReturnType(sym_t type_name, const NumberWidth *w);
+  static VarDecl *ReturnType(sym_t type_name, const numeric::Width *w);
   static void SetArrayLength(VarDecl *decl, int length);
   static Expr *ArrayRefExpr(Expr *array, Expr *index);
   static Expr *BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb);
@@ -39,7 +41,7 @@ class Builder {
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);
 
   static VarDecl *ModifiedVar(Expr *var, bool is_ptr, sym_t ns);
-  static VarDecl *BuildVarDecl(sym_t type, const NumberWidth *w, VarDecl *var);
+  static VarDecl *BuildVarDecl(sym_t type, const numeric::Width *w, VarDecl *var);
   static sym_t TypeNameFromVarDeclSet(VarDeclSet *vds);
 
   static Stmt *NewStmt(int type);

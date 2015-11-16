@@ -4,7 +4,9 @@
 
 #include "nli.h"
 
-class NumberWidth;
+namespace numeric {
+class Width;
+}  // namespace numeric
 
 namespace vm {
 
@@ -19,7 +21,8 @@ public:
   static string ToString(Object *obj);
 
   static Object *NewObjectArrayWrapper(VM *vm, int size);
-  static Object *NewIntArrayWrapper(VM *vm, int size, const NumberWidth *width);
+  static Object *NewIntArrayWrapper(VM *vm, int size,
+				    const numeric::Width *width);
   static Object *Copy(VM *vm, Object *obj);
 
   static Object *Get(Object *obj, int nth);

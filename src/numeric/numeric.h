@@ -1,10 +1,12 @@
 // -*- C++ -*-
-#ifndef _numeric_h_
-#define _numeric_h_
+#ifndef _numeric_numeric_h_
+#define _numeric_numeric_h_
 
 #include "nli.h"
 
-class NumberWidth {
+namespace numeric {
+
+class Width {
 public:
   // signedness affects only for printing.
   bool is_signed;
@@ -12,18 +14,18 @@ public:
   int frac_width;
 
 public:
-  static const NumberWidth *Null();
-  static const NumberWidth *DefaultInt();
-  static const NumberWidth *MakeInt(bool is_signed,
-				    int int_part, int frac_part);
-  static const NumberWidth *CommonWidth(const NumberWidth *w1,
-					const NumberWidth *w2);
-  static void Dump(const NumberWidth *w, ostream &os);
-  static bool IsNull(const NumberWidth *w);
-  static bool IsEqual(const NumberWidth *w1, const NumberWidth *w2);
+  static const Width *Null();
+  static const Width *DefaultInt();
+  static const Width *MakeInt(bool is_signed,
+			      int int_part, int frac_part);
+  static const Width *CommonWidth(const Width *w1,
+				  const Width *w2);
+  static void Dump(const Width *w, ostream &os);
+  static bool IsNull(const Width *w);
+  static bool IsEqual(const Width *w1, const Width *w2);
   // Checks if w1 is wider than w2.
-  static bool IsWide(const NumberWidth *w1, const NumberWidth *w2);
-  static int GetWidth(const NumberWidth *w);
+  static bool IsWide(const Width *w1, const Width *w2);
+  static int GetWidth(const Width *w);
 };
 
 class Number {
@@ -33,7 +35,7 @@ public:
   //
   uint64_t int_part;
   uint64_t frac_part;
-  const NumberWidth *type;
+  const Width *type;
 };
 
 class Numeric {
@@ -56,7 +58,7 @@ public:
 
   static bool IsZero(const Number &n);
   // Gets required width to store given number.
-  static const NumberWidth *ValueWidth(const Number &n);
+  static const Width *ValueWidth(const Number &n);
   static void Add(const Number &x, const Number &y, Number *a);
   static void Sub(const Number &x, const Number &y, Number *a);
   static void Minus(const Number &num, Number *res);
@@ -68,8 +70,10 @@ public:
   static void SelectBits(const Number &num, int h, int l, Number *res);
   static void BitInv(const Number &num, Number *res);
   // cuts upper bits
-  static void FixupWidth(const NumberWidth *w, Number *num);
+  static void FixupWidth(const Width *w, Number *num);
   static uint64_t GetInt(const Number &x);
 };
 
-#endif  // _numeric_h_
+}  // namespace numeric
+
+#endif  // _numeric_numeric_h_

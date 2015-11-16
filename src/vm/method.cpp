@@ -25,7 +25,7 @@ int Method::GetNumReturnRegisters() {
   return return_types_.size();
 }
 
-const NumberWidth *Method::GetNthArgWidth(int i) {
+const numeric::Width *Method::GetNthArgWidth(int i) {
   return parse_tree_->args_->decls[i]->width;
 }
 

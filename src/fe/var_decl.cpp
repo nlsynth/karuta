@@ -33,7 +33,7 @@ void VarDecl::Dump(DumpStream &ds) {
   }
   if (width) {
     ds.indent();
-    NumberWidth::Dump(width, ds.os);
+    numeric::Width::Dump(width, ds.os);
     ds.os << "\n";
   }
   if (array_length >= 0) {

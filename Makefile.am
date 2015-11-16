@@ -28,6 +28,9 @@ fe_SOURCES = \
  src/fe/method.cpp src/fe/method.h \
  src/fe/var_decl.cpp src/fe/var_decl.h
 
+numeric_SOURCES = \
+ src/numeric/numeric.cpp src/numeric/numeric.h
+
 opt_SOURCES = \
  src/opt/opt.cpp src/opt/opt.h \
  src/opt/opt_context.cpp src/opt/opt_context.h \
@@ -109,7 +112,6 @@ nli_bin_SOURCES = \
  src/main.cpp \
  src/nli.cpp src/nli.h src/pool.h src/stl_util.h \
  src/initializer.cpp src/initializer.h \
- src/numeric.cpp src/numeric.h \
  src/dump_stream.cpp src/dump_stream.h \
  src/logging.cpp src/logging.h \
  src/messages.cpp src/messages.h \
@@ -117,6 +119,7 @@ nli_bin_SOURCES = \
  $(compiler_SOURCES) \
  $(dfg_SOURCES) \
  $(fe_SOURCES) \
+ $(numeric_SOURCES) \
  $(opt_SOURCES) \
  $(synth_SOURCES) \
  $(vm_SOURCES) \

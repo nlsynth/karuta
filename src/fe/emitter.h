@@ -4,7 +4,9 @@
 
 #include "nli.h"
 
-class NumberWidth;
+namespace numeric {
+class Width;
+}  // namespace numeric
 
 namespace dfg {
 class import_params;
@@ -43,7 +45,7 @@ public:
   static void EmitReturnStmt(Expr *expr);
   static void EmitThreadDeclStmt(Expr *var, Expr *funcall);
   static void EmitChannelDeclStmt(Expr *var, sym_t type_name,
-				  const NumberWidth *width);
+				  const numeric::Width *width);
 
 private:
   static vector<MethodDecl> method_stack_;

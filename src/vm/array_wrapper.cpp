@@ -13,7 +13,7 @@ static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
 public:
-  ArrayWrapperData(int size, bool is_int, const NumberWidth *width) {
+  ArrayWrapperData(int size, bool is_int, const numeric::Width *width) {
     if (is_int) {
       int_array_ = IntArray::Create(width, size);
     } else {
@@ -81,7 +81,7 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
 }
 
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
-					 const NumberWidth *width) {
+					 const numeric::Width *width) {
   Object *array_obj = vm->string_object_->Clone(vm);
   ArrayWrapperData *data = new ArrayWrapperData(size, true, width);
   array_obj->object_specific_.reset(data);

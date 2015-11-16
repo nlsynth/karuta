@@ -5,7 +5,10 @@
 #include "nli.h"
 
 class DumpStream;
-class NumberWidth;
+
+namespace numeric {
+class Width;
+}  // namespace numeric
 
 namespace fe {
 
@@ -25,7 +28,7 @@ public:
 
   Expr *name_expr;
   sym_t type;
-  const NumberWidth *width;
+  const numeric::Width *width;
   Expr *initial_val;
   int array_length;
   ArrayInitializer *array_initializer;
