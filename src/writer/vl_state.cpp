@@ -307,9 +307,15 @@ void VLState::OutputTaskFinish(const DInsn *insn) {
 void VLState::OutputSubModuleCall(const DInsn *insn) {
   string pin_base = VLUtil::TaskControlPinNameFromCallerInsn(graph_, insn);
   if (insn->outputs_.size() > 0) {
+    // Retrieve return values.
     os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
-	<< "            if (" << pin_base << "_rdy) begin\n"
-	<< "              " << SubStateRegName(insn) << " <= 3;\n"
+	<< "            if (" << pin_base << "_rdy) begin\n";
+    for (size_t nth_arg = 0; nth_arg < insn->outputs_.size(); ++nth_arg) {
+      os_ << "  " << RegisterName(insn->outputs_[nth_arg])
+	  << " <= " << VLUtil::TaskParamPinName(pin_base, nth_arg, "_o")
+	  << ";\n";
+    }
+    os_ << "              " << SubStateRegName(insn) << " <= 3;\n"
 	<< "            end\n"
 	<< "          end\n";
     return;
