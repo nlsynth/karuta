@@ -45,7 +45,13 @@ vm::Value::ValueType Compiler::GetVariableType(sym_t name) {
   if (reg) {
     return reg->type_.value_type_;
   } else {
-    return (obj_->LookupValue(name, false))->type_;
+    vm::Value *value = obj_->LookupValue(name, false);
+    if (!value) {
+      std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
+      m->os() << "'" << sym_cstr(name) << "' is not a member of the object";
+      return vm::Value::NONE;
+    }
+    return value->type_;
   }
 }
 
