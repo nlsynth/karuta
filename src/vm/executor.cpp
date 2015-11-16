@@ -182,7 +182,7 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			  &frame->reg_values_[dst].num_);
     break;
   case OP_MUL:
-    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_MUL,
+    numeric::Numeric::CalcBinOp(numeric::BINOP_MUL,
 				frame->reg_values_[lhs].num_,
 				frame->reg_values_[rhs].num_,
 				&frame->reg_values_[dst].num_);
@@ -193,19 +193,19 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 				 &frame->reg_values_[dst].num_);
     break;
   case OP_AND:
-    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_AND,
+    numeric::Numeric::CalcBinOp(numeric::BINOP_AND,
 				frame->reg_values_[lhs].num_,
 				frame->reg_values_[rhs].num_,
 				&frame->reg_values_[dst].num_);
     break;
   case OP_OR:
-    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_OR,
+    numeric::Numeric::CalcBinOp(numeric::BINOP_OR,
 				frame->reg_values_[lhs].num_,
 				frame->reg_values_[rhs].num_,
 				&frame->reg_values_[dst].num_);
     break;
   case OP_XOR:
-    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_XOR,
+    numeric::Numeric::CalcBinOp(numeric::BINOP_XOR,
 				frame->reg_values_[lhs].num_,
 				frame->reg_values_[rhs].num_,
 				&frame->reg_values_[dst].num_);
@@ -216,13 +216,13 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			     &frame->reg_values_[dst].num_);
     break;
   case OP_LSHIFT:
-    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_LSHIFT,
+    numeric::Numeric::CalcBinOp(numeric::BINOP_LSHIFT,
 				frame->reg_values_[lhs].num_,
 				frame->reg_values_[rhs].num_,
 				&frame->reg_values_[dst].num_);
     break;
   case OP_RSHIFT:
-    numeric::Numeric::CalcBinOp(numeric::Numeric::BINOP_RSHIFT,
+    numeric::Numeric::CalcBinOp(numeric::BINOP_RSHIFT,
 				frame->reg_values_[lhs].num_,
 				frame->reg_values_[rhs].num_,
 				&frame->reg_values_[dst].num_);
@@ -413,22 +413,22 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
     {
       bool r;
       if (frame->reg_values_[rhs].type_ == Value::NUM) {
-	numeric::Numeric::CompareOp op;
+	numeric::CompareOp op;
 	switch (insn->op_) {
 	case OP_LT:
 	case OP_GTE:
-	  op = numeric::Numeric::COMPARE_LT;
+	  op = numeric::COMPARE_LT;
 	  break;
 	case OP_GT:
 	case OP_LTE:
-	  op = numeric::Numeric::COMPARE_GT;
+	  op = numeric::COMPARE_GT;
 	  break;
 	case OP_EQ:
 	case OP_NE:
-	  op = numeric::Numeric::COMPARE_EQ;
+	  op = numeric::COMPARE_EQ;
 	  break;
 	default:
-	  op = numeric::Numeric::COMPARE_EQ;
+	  op = numeric::COMPARE_EQ;
 	  CHECK(false);
 	  break;
 	}

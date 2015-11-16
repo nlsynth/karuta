@@ -38,22 +38,23 @@ public:
   const Width *type;
 };
 
+enum CompareOp {
+  COMPARE_LT,
+  COMPARE_GT,
+  COMPARE_EQ,
+};
+
+enum BinOp {
+  BINOP_LSHIFT,
+  BINOP_RSHIFT,
+  BINOP_AND,
+  BINOP_OR,
+  BINOP_XOR,
+  BINOP_MUL,
+};
+
 class Numeric {
 public:
-  enum CompareOp {
-    COMPARE_LT,
-    COMPARE_GT,
-    COMPARE_EQ,
-  };
-  enum BinOp {
-    BINOP_LSHIFT,
-    BINOP_RSHIFT,
-    BINOP_AND,
-    BINOP_OR,
-    BINOP_XOR,
-    BINOP_MUL,
-  };
-
   static void Init();
 
   static bool IsZero(const Number &n);
