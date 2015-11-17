@@ -3,6 +3,7 @@
 *.la
 *.lo
 *.o
+*.pyc
 *.deps/
 .dirstamp
 .libs/

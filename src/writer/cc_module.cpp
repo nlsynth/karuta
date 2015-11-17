@@ -161,8 +161,8 @@ void CCModule::OutputArrayDecl(const string &name, const DArray *array) {
 void CCModule::OutputChannelInstantiation(const DModule *dmod) {
   for (size_t i = 0; i < dmod->channels_.size(); ++i) {
     DChannel *chan = dmod->channels_[i];
-    cw_->AddMember("", "NliChannel", chan->name_ + "_channel_inst",
-		   "\"" + chan->name_ + "\"");
+    cw_->AddMember("", "NliChannel", chan->channel_name_ + "_channel_inst",
+		   "\"" + chan->channel_name_ + "\"");
   }
 }
 

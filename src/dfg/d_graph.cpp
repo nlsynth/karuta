@@ -7,7 +7,7 @@ DArray::DArray() {
   may_write_ = false;
 }
 
-DChannel::DChannel() : writer_(NULL), reader_(NULL) {
+DChannel::DChannel() : writer_module_(NULL), reader_module_(NULL) {
 }
 
 DRegister::DRegister(enum RegType reg_type, DType *val_type) {

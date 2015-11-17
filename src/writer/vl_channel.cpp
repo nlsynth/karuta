@@ -65,10 +65,10 @@ string VLChannelWriter::ModuleName(int width) {
 void VLChannelWriter::OutputChannelWires(DModule *mod, ostream &os) {
   for (size_t i = 0; i < mod->channels_.size(); ++i) {
     DChannel *chan = mod->channels_[i];
-    if (chan->reader_ == NULL || chan->writer_ == NULL) {
+    if (chan->reader_module_ == NULL || chan->writer_module_ == NULL) {
       continue;
     }
-    const string &c = chan->name_;
+    const string &c = chan->channel_name_;
     
     os << "  // channel " << c << "\n"
        << "  wire [31:0] " << c << "_wdata;\n"
@@ -84,19 +84,21 @@ void VLChannelWriter::OutputChannelWires(DModule *mod, ostream &os) {
 void VLChannelWriter::OutputChannelInstances(DModule *mod, ostream &os) {
   for (size_t i = 0; i < mod->channels_.size(); ++i) {
     DChannel *chan = mod->channels_[i];
-    if (chan->reader_ == NULL || chan->writer_ == NULL) {
+    if (chan->reader_module_ == NULL || chan->writer_module_ == NULL) {
       continue;
     }
-    const string &c = chan->name_;
+    const string &c = chan->channel_name_;
     os << "  // channel from "
-	<< chan->writer_->module_name_ << " to "
-	<< chan->reader_->module_name_ << " \n";
+	<< chan->writer_module_->module_name_ << " to "
+	<< chan->reader_module_->module_name_ << "\n";
     string mod_name = ModuleName(32);
     string inst_name =
-      mod_name + "_" + chan->name_ + "_" + chan->writer_->module_name_ + "_" +
-      chan->reader_->module_name_ + "_inst";
+      mod_name + "_" + chan->channel_name_ + "_" +
+      chan->writer_module_->module_name_ + "_" +
+      chan->reader_module_->module_name_ + "_inst";
     os << "  " << mod_name << " " << inst_name << "(.clk(clk), .rst(rst),\n"
-       << "    .wdata("<< c << "_wdata), .wdata_en("<< c << "_wdata_en), .wdata_rdy("<< c <<"_wdata_rdy),\n"
+       << "    .wdata("<< c << "_wdata), .wdata_en("<< c
+       << "_wdata_en), .wdata_rdy("<< c <<"_wdata_rdy),\n"
        << "    .rdata("<< c << "_rdata), .rdata_valid("<< c << "_rdata_valid), .rdata_req("<< c <<"_rdata_req));\n";
   }
 }
@@ -104,13 +106,17 @@ void VLChannelWriter::OutputChannelInstances(DModule *mod, ostream &os) {
 void VLChannelWriter::MayOutputChannelConnections(DModule *mod, DModule *sub_mod, ostream &os) {
   for (size_t i = 0; i < mod->channels_.size(); ++i) {
     DChannel *chan = mod->channels_[i];
-    const string c = chan->name_;
-    const string p = "channel_" + chan->name_;
-    if (chan->writer_ == sub_mod) {
-      os << "/* write */, ." << p << "_data(" << c <<"_wdata), ." << p << "_en(" << c << "_wdata_en), ." << p << "_rdy(" << c << "_wdata_rdy)";
+    const string &c = chan->channel_name_;
+    const string p = "channel_" + chan->channel_name_;
+    if (chan->writer_module_ == sub_mod) {
+      os << "/* write */, ." << p << "_data(" << c <<"_wdata), "
+	 << "." << p << "_en(" << c << "_wdata_en), "
+	 << "." << p << "_rdy(" << c << "_wdata_rdy)";
     }
-    if (chan->reader_ == sub_mod) {
-      os << "/* read */, ." << p << "_data(" << c << "_rdata), ." << p << "_en(" << c << "_rdata_valid), ." << p << "_rdy(" << c << "_rdata_req)";
+    if (chan->reader_module_ == sub_mod) {
+      os << "/* read */, ." << p << "_data(" << c << "_rdata), "
+	 << "." << p << "_en(" << c << "_rdata_valid), "
+	 << "." << p << "_rdy(" << c << "_rdata_req)";
     }
   }
 }

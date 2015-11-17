@@ -325,16 +325,16 @@ void DFGDump::DumpModuleRec(const string &path,
     dc->os << "channels:<br>\n";
     for (size_t i = 0; i < dm->channels_.size(); ++i) {
       DChannel *chan = dm->channels_[i];
-      dc->os << chan->name_;
+      dc->os << chan->channel_name_;
       dc->os << " writer=";
-      if (chan->writer_) {
-	dc->os << chan->writer_->module_name_;
+      if (chan->writer_module_) {
+	dc->os << chan->writer_module_->module_name_;
       } else {
 	dc->os << "none";
       }
       dc->os << ", reader=";
-      if (chan->reader_) {
-	dc->os << chan->reader_->module_name_;
+      if (chan->reader_module_) {
+	dc->os << chan->reader_module_->module_name_;
       } else {
 	dc->os << "none";
       }

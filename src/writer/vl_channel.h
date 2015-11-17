@@ -22,7 +22,8 @@ public:
 
   static void OutputChannelWires(DModule *mod, ostream &os);
   static void OutputChannelInstances(DModule *mod, ostream &os);
-  static void MayOutputChannelConnections(DModule *mod, DModule *sub_mod, ostream &os);
+  static void MayOutputChannelConnections(DModule *mod, DModule *sub_mod,
+					  ostream &os);
 
   set<int> bits;
 };

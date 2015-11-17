@@ -50,9 +50,9 @@ public:
 class DChannel {
 public:
   DChannel();
-  string name_;
-  DModule *writer_;
-  DModule *reader_;
+  string channel_name_;
+  DModule *writer_module_;
+  DModule *reader_module_;
 };
 
 class DType {

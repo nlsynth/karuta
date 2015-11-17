@@ -26,7 +26,7 @@ def process_file(fn):
             section += line
 
 
-files=glob.glob("*.cpp")
+files=glob.glob("src/*.cpp") + glob.glob("src/*/*.cpp")
 
 for fn in files:
     process_file(fn)

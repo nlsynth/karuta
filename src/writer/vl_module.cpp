@@ -62,7 +62,7 @@ void VLModule::OutputExternalStuff(vector<string> *copy_files) {
 
   for (size_t i = 0; i < mod_->channels_.size(); ++i) {
     DChannel *chan = mod_->channels_[i];
-    if (chan->writer_ != mod_ && chan->reader_ != mod_) {
+    if (chan->writer_module_ != mod_ && chan->reader_module_ != mod_) {
       ch_->MaybeOutput(32, os_);
     }
   }
@@ -120,17 +120,18 @@ void VLModule::CollectPinDecls() {
 
   for (size_t i = 0; i < mod_->channels_.size(); ++i) {
     DChannel *chan = mod_->channels_[i];
-    string c = "Channel " + chan->name_;
-    if (chan->writer_ == mod_) {
-      CHECK(chan->reader_ != mod_);
-      pins_->AddPin("channel_" + chan->name_ + "_data", VLIOSet::OUTPUT, 32, c);
-      pins_->AddPin("channel_" + chan->name_ + "_en", VLIOSet::OUTPUT, 0, c);
-      pins_->AddPin("channel_" + chan->name_ + "_rdy", VLIOSet::INPUT, 0, c);
-    } else if (chan->reader_ == mod_) {
-      CHECK(chan->writer_ != mod_);
-      pins_->AddPin("channel_" + chan->name_ + "_data", VLIOSet::INPUT, 32, c);
-      pins_->AddPin("channel_" + chan->name_ + "_en", VLIOSet::INPUT, 0, c);
-      pins_->AddPin("channel_" + chan->name_ + "_rdy", VLIOSet::OUTPUT, 0, c);
+    string c = "Channel " + chan->channel_name_;
+    string channel_base = "channel_" + chan->channel_name_;
+    if (chan->writer_module_ == mod_) {
+      CHECK(chan->reader_module_ != mod_);
+      pins_->AddPin(channel_base + "_data", VLIOSet::OUTPUT, 32, c);
+      pins_->AddPin(channel_base + "_en", VLIOSet::OUTPUT, 0, c);
+      pins_->AddPin(channel_base + "_rdy", VLIOSet::INPUT, 0, c);
+    } else if (chan->reader_module_ == mod_) {
+      CHECK(chan->writer_module_ != mod_);
+      pins_->AddPin(channel_base + "_data", VLIOSet::INPUT, 32, c);
+      pins_->AddPin(channel_base + "_en", VLIOSet::INPUT, 0, c);
+      pins_->AddPin(channel_base + "_rdy", VLIOSet::OUTPUT, 0, c);
     } else {
       CHECK(false);
     }

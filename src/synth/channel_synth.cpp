@@ -28,11 +28,13 @@ void ChannelSynth::ConnectChannels() {
 void ChannelSynth::ConnectInternal(Channel &c) {
   // find the common parent.
   set<DModule *> reader_parents_set;
-  for (DModule *p = c.reader_channel->reader_->parent_mod_; p != NULL; p = p->parent_mod_) {
+  for (DModule *p = c.reader_channel->reader_module_->parent_mod_;
+       p != NULL; p = p->parent_mod_) {
     reader_parents_set.insert(p);
   }
   DModule *common_parent = NULL;
-  for (DModule *p = c.writer_channel->writer_->parent_mod_; p != NULL; p = p->parent_mod_) {
+  for (DModule *p = c.writer_channel->writer_module_->parent_mod_;
+       p != NULL; p = p->parent_mod_) {
     if (reader_parents_set.find(p) != reader_parents_set.end()) {
       common_parent = p;
       break;
@@ -40,9 +42,9 @@ void ChannelSynth::ConnectInternal(Channel &c) {
   }
   CHECK(common_parent);
   DChannel *dchan = DModuleUtil::CreateChannel(common_parent);
-  dchan->name_ = c.reader_channel->name_;
-  dchan->writer_ = c.writer_channel->writer_;
-  dchan->reader_ = c.reader_channel->reader_;
+  dchan->channel_name_ = c.reader_channel->channel_name_;
+  dchan->writer_module_ = c.writer_channel->writer_module_;
+  dchan->reader_module_ = c.reader_channel->reader_module_;
   // Supports just 1 level between the root.
 }
 
@@ -50,19 +52,19 @@ void ChannelSynth::ConnectExternal(Channel &c) {
   string name;
   DModule *p;
   if (c.reader_channel == NULL) {
-    name = c.writer_channel->name_;
-    p = c.writer_channel->writer_->parent_mod_;
+    name = c.writer_channel->channel_name_;
+    p = c.writer_channel->writer_module_->parent_mod_;
   } else {
-    name = c.reader_channel->name_;
-    p = c.reader_channel->reader_->parent_mod_;
+    name = c.reader_channel->channel_name_;
+    p = c.reader_channel->reader_module_->parent_mod_;
   }
   for (; p != NULL; p = p->parent_mod_) {
     DChannel *dchan = DModuleUtil::CreateChannel(p);
-    dchan->name_ = name;
+    dchan->channel_name_ = name;
     if (c.reader_channel != NULL) {
-      dchan->reader_ = c.reader_channel->reader_;
+      dchan->reader_module_ = c.reader_channel->reader_module_;
     } else {
-      dchan->writer_ = c.writer_channel->writer_;
+      dchan->writer_module_ = c.writer_channel->writer_module_;
     }
   }
 }
@@ -74,17 +76,17 @@ void ChannelSynth::ExtractChannels(DModule *mod) {
     GetChannels(mod->graph_, &r_channels, &w_channels);
     for (size_t i = 0; i < w_channels.size(); ++i) {
       DChannel *chan = DModuleUtil::CreateChannel(mod);
-      chan->writer_ = mod;
-      chan->name_ = w_channels[i];
-      CHECK(channels_[chan->name_].writer_channel == NULL);
-      channels_[chan->name_].writer_channel = chan;
+      chan->writer_module_ = mod;
+      chan->channel_name_ = w_channels[i];
+      CHECK(channels_[chan->channel_name_].writer_channel == NULL);
+      channels_[chan->channel_name_].writer_channel = chan;
     }
     for (size_t i = 0; i < r_channels.size(); ++i) {
       DChannel *chan = DModuleUtil::CreateChannel(mod);
-      chan->reader_ = mod;
-      chan->name_ = r_channels[i];
-      CHECK(channels_[chan->name_].reader_channel == NULL);
-      channels_[chan->name_].reader_channel = chan;
+      chan->reader_module_ = mod;
+      chan->channel_name_ = r_channels[i];
+      CHECK(channels_[chan->channel_name_].reader_channel == NULL);
+      channels_[chan->channel_name_].reader_channel = chan;
     }
   }
   for (size_t i = 0; i < mod->sub_modules_.size(); ++i) {
