@@ -5,7 +5,7 @@
 
 namespace writer {
 
-void VLChannelWriter::MaybeOutput(int width, ostream &os) {
+void VLChannelWriter::MaybeOutputModuleCode(int width, ostream &os) {
   if (bits.find(width) != bits.end()) {
     return;
   }
@@ -99,11 +99,15 @@ void VLChannelWriter::OutputChannelInstances(DModule *mod, ostream &os) {
     os << "  " << mod_name << " " << inst_name << "(.clk(clk), .rst(rst),\n"
        << "    .wdata("<< c << "_wdata), .wdata_en("<< c
        << "_wdata_en), .wdata_rdy("<< c <<"_wdata_rdy),\n"
-       << "    .rdata("<< c << "_rdata), .rdata_valid("<< c << "_rdata_valid), .rdata_req("<< c <<"_rdata_req));\n";
+       << "    .rdata("<< c << "_rdata), "
+       << ".rdata_valid("<< c << "_rdata_valid), "
+       << ".rdata_req("<< c <<"_rdata_req));\n";
   }
 }
 
-void VLChannelWriter::MayOutputChannelConnections(DModule *mod, DModule *sub_mod, ostream &os) {
+void VLChannelWriter::MayOutputChannelConnections(DModule *mod,
+						  DModule *sub_mod,
+						  ostream &os) {
   for (size_t i = 0; i < mod->channels_.size(); ++i) {
     DChannel *chan = mod->channels_[i];
     const string &c = chan->channel_name_;

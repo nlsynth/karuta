@@ -17,7 +17,10 @@ namespace writer {
 
 class VLChannelWriter {
 public:
-  void MaybeOutput(int width, ostream &os);
+  // Module for each width can be output up to once.
+  // Each module may be instantiated multiple times.
+  void MaybeOutputModuleCode(int width, ostream &os);
+
   static string ModuleName(int width);
 
   static void OutputChannelWires(DModule *mod, ostream &os);

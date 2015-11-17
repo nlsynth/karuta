@@ -62,8 +62,10 @@ void VLModule::OutputExternalStuff(vector<string> *copy_files) {
 
   for (size_t i = 0; i < mod_->channels_.size(); ++i) {
     DChannel *chan = mod_->channels_[i];
+    // This DModule is the common parent of both reader and writer.
+    // Request channel module code.
     if (chan->writer_module_ != mod_ && chan->reader_module_ != mod_) {
-      ch_->MaybeOutput(32, os_);
+      ch_->MaybeOutputModuleCode(chan->data_width_, os_);
     }
   }
 }
@@ -145,7 +147,7 @@ void VLModule::CollectPinDecls() {
   }
 }
 
-void VLModule::PreProcessModule() {
+void VLModule::GenerateSubModuleInstances() {
   bool has_graph = (mod_->module_type_ != DModule::MODULE_CONTAINER);
   ostream &os =
     template_->GetStream(ModuleTemplate::SUB_MODULE_INSTANCES);
@@ -154,11 +156,11 @@ void VLModule::PreProcessModule() {
     os << "  " << sub_module_name << " " << sub_module_name
        << "_inst(.clk(clk), .rst(rst)";
     if (sub_module->module_type_ == DModule::MODULE_TASK) {
-      PreProcessSubModuleControl(sub_module, has_graph, os);
+      GenerateSubModuleControl(sub_module, has_graph, os);
     }
     if (sub_module->module_type_ == DModule::MODULE_CONTAINER) {
       for (DModule *sub_sub_module : sub_module->sub_modules_) {
-	PreProcessSubModuleControl(sub_sub_module, has_graph, os);
+	GenerateSubModuleControl(sub_sub_module, has_graph, os);
       }
     }
     VLChannelWriter::MayOutputChannelConnections(mod_, sub_module, os);
@@ -247,9 +249,9 @@ void VLModule::OutputRAM(const DArray *array) {
       << "  end\n";
 }
 
-void VLModule::PreProcessSubModuleControl(const DModule *sub_mod,
-					  bool has_graph,
-					  ostream &os) {
+void VLModule::GenerateSubModuleControl(const DModule *sub_mod,
+					bool has_graph,
+					ostream &os) {
   string pin_base = VLUtil::TaskControlPinName(sub_mod);
   os << ", ." << pin_base << "_en(" << pin_base << "_en)"
      << ", ." << pin_base << "_rdy(" << pin_base << "_rdy)";
@@ -296,7 +298,7 @@ void VLModule::OutputVLModule() {
 				   template_.get(), os_));
     graph_writer->PreProcess();
   }
-  PreProcessModule();
+  GenerateSubModuleInstances();
 
   OutputModuleHead();
 

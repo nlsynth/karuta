@@ -1,8 +1,9 @@
 #include "synth/resource_set.h"
 
-#include "dump_stream.h"
 #include "dfg/dfg.h"
 #include "dfg/imported_resource.h"
+#include "dump_stream.h"
+#include "messages.h"
 #include "vm/insn.h"
 #include "vm/opcode.h"
 
@@ -155,10 +156,18 @@ DResource *ResourceSet::GetArrayResource(sym_t name) {
   return res;
 }
 
-DResource *ResourceSet::GetChannelResource(const string &name, bool is_write) {
+DResource *ResourceSet::GetChannelResource(const string &name, bool is_write,
+					   int data_width) {
   for (size_t i = 0; i < channel_resources_.size(); ++i) {
     DResource *res = channel_resources_[i];
     if (res->name_ == name) {
+      // Checks if read/write is consistent.
+      if (!((is_write && res->opr_->type_ == sym_write_channel) ||
+	    (!is_write && res->opr_->type_ == sym_read_channel))) {
+	std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
+	m->os() << "'" << name << "' cannot be both read/write port";
+	return nullptr;
+      }
       return res;
     }
   }
@@ -169,6 +178,11 @@ DResource *ResourceSet::GetChannelResource(const string &name, bool is_write) {
     op = sym_read_channel;
   }
   DResource *res = DGraphUtil::AllocResource(graph_, op);
+  if (is_write) {
+    res->input_types_.push_back(DTypeUtil::GetIntType(data_width));
+  } else {
+    res->output_types_.push_back(DTypeUtil::GetIntType(data_width));
+  }
   res->name_ = name;
   channel_resources_.push_back(res);
   return res;

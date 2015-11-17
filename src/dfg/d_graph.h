@@ -49,10 +49,12 @@ public:
 
 class DChannel {
 public:
-  DChannel();
+  DChannel(int data_width);
+
   string channel_name_;
   DModule *writer_module_;
   DModule *reader_module_;
+  int data_width_;
 };
 
 class DType {

@@ -44,7 +44,8 @@ public:
   DResource *GetOpResource(vm::OpCode op, DType *type);
   DResource *GetImportedResource(ImportedResource *resource);
   DResource *GetArrayResource(sym_t name);
-  DResource *GetChannelResource(const string &name, bool is_write);
+  DResource *GetChannelResource(const string &name, bool is_write,
+				int data_width);
   DResource *GetSubModuleCallResource(vm::Object *callee_object,
 				      sym_t method_name,
 				      sym_t orig_obj_name);

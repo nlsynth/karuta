@@ -46,7 +46,7 @@ class DModuleUtil {
 public:
   static DModule *Create(DModule *parent, const char *name);
   static void ClearAnnotation(DModule *mod);
-  static DChannel *CreateChannel(DModule *mod);
+  static DChannel *CreateChannel(DModule *mod, int data_width);
 };
 
 }  // namespace dfg

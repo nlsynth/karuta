@@ -16,7 +16,8 @@ static const char *kChannelObjectKey = "channel";
 
 class ChannelData : public ObjectSpecificData {
 public:
-  ChannelData(int width, sym_t name) : width_(width), name_(sym_cstr(name)), blocking_thread_(NULL) {};
+  ChannelData(int width, sym_t name) : width_(width), name_(sym_cstr(name)),
+				       blocking_thread_(NULL) {};
   virtual ~ChannelData() {};
 
   virtual const char *ObjectTypeKey() {

@@ -39,8 +39,8 @@ DModule *DModuleUtil::Create(DModule *parent, const char *name) {
   return mod;
 }
 
-DChannel *DModuleUtil::CreateChannel(DModule *mod) {
-  DChannel *chan = new DChannel();
+DChannel *DModuleUtil::CreateChannel(DModule *mod, int data_width) {
+  DChannel *chan = new DChannel(data_width);
   mod->channels_.push_back(chan);
   return chan;
 }

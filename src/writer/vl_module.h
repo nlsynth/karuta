@@ -40,9 +40,9 @@ public:
   const string &GetModuleName();
 
 private:
-  void PreProcessModule();
-  void PreProcessSubModuleControl(const DModule *sub_mod, bool has_graph,
-				  ostream &os);
+  void GenerateSubModuleInstances();
+  void GenerateSubModuleControl(const DModule *sub_mod, bool has_graph,
+				ostream &os);
 
   void OutputVLModule();
   void OutputExternalStuff(vector<string> *copy_files);
