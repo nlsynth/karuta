@@ -61,6 +61,7 @@ dfg_SOURCES = \
  src/dfg/d_graph_util.cpp src/dfg/d_graph_util.h \
  src/dfg/d_insn.cpp src/dfg/d_insn.h \
  src/dfg/d_module.cpp src/dfg/d_module.h \
+ src/dfg/d_resource.cpp src/dfg/d_resource.h \
  src/dfg/imported_resource.cpp src/dfg/imported_resource.h
 
 synth_SOURCES = \

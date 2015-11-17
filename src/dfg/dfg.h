@@ -8,6 +8,7 @@
 #include "dfg/d_graph.h"
 #include "dfg/d_graph_annotation.h"
 #include "dfg/d_graph_util.h"
+#include "dfg/d_resource.h"
 #include "dfg/d_insn.h"
 #include "dfg/d_module.h"
 

@@ -3,14 +3,6 @@
 #include "dfg/d_module.h"
 #include "dfg/imported_resource.h"
 
-DArray::DArray() {
-  may_write_ = false;
-}
-
-DChannel::DChannel(int data_width) : writer_module_(NULL), reader_module_(NULL),
-				     data_width_(data_width) {
-}
-
 DRegister::DRegister(enum RegType reg_type, DType *val_type) {
   data_type_ = val_type;
   reg_type_ = reg_type;
@@ -26,20 +18,6 @@ DType::DType(enum TypeClass type, int size) {
 DState::DState(int id) : state_id_(id),
 			 text_annotation_(NULL),
 			 annotation_(NULL) {
-}
-
-DOperator::DOperator(sym_t type) {
-  type_ = type;
-  is_exclusive_ = true;
-  has_side_effect_ = false;
-}
-
-DResource::DResource(DOperator *opr) {
-  opr_ = opr;
-  imported_resource_ = NULL;
-  annotation_ = NULL;
-  array_ = NULL;
-  module_ = NULL;
 }
 
 DAnnotation::~DAnnotation() {

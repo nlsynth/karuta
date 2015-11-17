@@ -6,6 +6,7 @@
 
 #include "pool.h"
 #include "dfg/d_insn.h"
+#include "dfg/d_resource.h"
 
 #include <list>
 
@@ -13,16 +14,9 @@ using std::list;
 
 namespace dfg {
 
-class DAnnotation;
-class DArray;
-class DGraphPool;
-class DInsn;
 class DModule;
-class DOperator;
 class DState;
-class DResource;
 class DRegister;
-class ImportedResource;
 
 class DAnnotation {
 public:
@@ -38,26 +32,6 @@ public:
   Pool<DResource> resources_;
 };
 
-class DArray {
-public:
-  DArray();
-
-  int address_width;
-  int data_width;
-  vector<int> num_;
-  bool may_write_;
-};
-
-class DChannel {
-public:
-  DChannel(int data_width);
-
-  string channel_name_;
-  DModule *writer_module_;
-  DModule *reader_module_;
-  int data_width_;
-};
-
 class DType {
 public:
   enum TypeClass {
@@ -69,18 +43,6 @@ public:
   enum TypeClass type_;
   // width for INT, size for ENUM.
   int size_;
-};
-
-// class of operation
-class DOperator {
-public:
-  DOperator(sym_t type);
-  sym_t type_;
-  // e.g. assign resource can have multiple insn-s in a state. so
-  // it is not exclusive.
-  bool is_exclusive_;
-  // has affect other than the output registers of the insn.
-  bool has_side_effect_;
 };
 
 // register, constant, intermediate wire, I/O
@@ -109,25 +71,6 @@ public:
   int state_id_;
   list<DInsn *> insns_;
   const char *text_annotation_;
-  DAnnotation *annotation_;
-};
-
-class DResource {
-public:
-  DResource(DOperator *opr);
-  // key for this resource
-  string name_; // for imported resource, array and sub module.
-  int resource_id_;
-  // class of operation.
-  DOperator *opr_;
-  ImportedResource *imported_resource_;
-  DArray *array_;
-  // for sub module call.
-  DModule *module_;
-
-  vector<DType *> input_types_;
-  vector<DType *> output_types_;
-
   DAnnotation *annotation_;
 };
 
