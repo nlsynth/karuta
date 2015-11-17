@@ -124,14 +124,15 @@ void VLModule::CollectPinDecls() {
     DChannel *chan = mod_->channels_[i];
     string c = "Channel " + chan->channel_name_;
     string channel_base = "channel_" + chan->channel_name_;
+    int width = chan->data_width_;
     if (chan->writer_module_ == mod_) {
       CHECK(chan->reader_module_ != mod_);
-      pins_->AddPin(channel_base + "_data", VLIOSet::OUTPUT, 32, c);
+      pins_->AddPin(channel_base + "_data", VLIOSet::OUTPUT, width, c);
       pins_->AddPin(channel_base + "_en", VLIOSet::OUTPUT, 0, c);
       pins_->AddPin(channel_base + "_rdy", VLIOSet::INPUT, 0, c);
     } else if (chan->reader_module_ == mod_) {
       CHECK(chan->writer_module_ != mod_);
-      pins_->AddPin(channel_base + "_data", VLIOSet::INPUT, 32, c);
+      pins_->AddPin(channel_base + "_data", VLIOSet::INPUT, width, c);
       pins_->AddPin(channel_base + "_en", VLIOSet::INPUT, 0, c);
       pins_->AddPin(channel_base + "_rdy", VLIOSet::OUTPUT, 0, c);
     } else {

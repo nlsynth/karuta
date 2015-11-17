@@ -42,6 +42,8 @@ private:
   void ConnectExternal(ChannelInfo &c);
 
   void ExtractChannels(DModule *mod);
+  void PopulateChannelInfo(const string &name, bool is_write,
+			   int width, DModule *mod);
   void GetChannels(DGraph *graph,
 		   vector<pair<string, int> > *read_channels,
 		   vector<pair<string, int> > *write_channels);

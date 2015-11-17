@@ -53,6 +53,12 @@ const string &Channel::ChannelName(Object *obj) {
   return pipe_data->name_;
 }
 
+int Channel::ChannelWidth(Object *obj) {
+  CHECK(IsChannel(obj));
+  ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
+  return pipe_data->width_;
+}
+
 void Channel::ReadMethod(Thread *thr, Object *obj,
 			  const vector<Value> &args) {
   Value value;

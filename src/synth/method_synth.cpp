@@ -349,8 +349,9 @@ void MethodSynth::SynthLogicInv(vm::Insn *insn) {
 void MethodSynth::SynthChannelRead(vm::Insn *insn) {
   vm::Object *obj = member_reg_to_obj_map_[insn->obj_reg_];
   CHECK(vm::Channel::IsChannel(obj));
+  int width = vm::Channel::ChannelWidth(obj);
   DResource *res = resource_->GetChannelResource(vm::Channel::ChannelName(obj),
-						 false, 32);
+						 false, width);
   DInsn *d_insn = DGraphUtil::InsnNew(graph_, res);
   d_insn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
   DState *state = AllocState();
@@ -360,8 +361,9 @@ void MethodSynth::SynthChannelRead(vm::Insn *insn) {
 void MethodSynth::SynthChannelWrite(vm::Insn *insn) {
   vm::Object *obj = member_reg_to_obj_map_[insn->obj_reg_];
   CHECK(vm::Channel::IsChannel(obj));
+  int width = vm::Channel::ChannelWidth(obj);
   DResource *res =
-    resource_->GetChannelResource(vm::Channel::ChannelName(obj), true, 32);
+    resource_->GetChannelResource(vm::Channel::ChannelName(obj), true, width);
   DInsn *d_insn = DGraphUtil::InsnNew(graph_, res);
   d_insn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
   DState *state = AllocState();

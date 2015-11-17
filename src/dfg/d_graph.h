@@ -3,6 +3,7 @@
 #define _dfg_d_graph_h_
 
 #include "nli.h"
+
 #include "pool.h"
 #include "dfg/d_insn.h"
 

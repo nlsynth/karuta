@@ -4,6 +4,8 @@
 
 #include "nli.h"
 
+#include "pool.h"
+
 namespace opt {
 class OptimizeContext;
 }  // namespace opt
@@ -35,6 +37,8 @@ public:
   DModule *parent_mod_;
   vector<DModule *> sub_modules_;
   vector<DChannel *> channels_;
+
+  Pool<DChannel> channels_pool_;
 
   opt::OptimizeContext *GetOptimizeContext();
 

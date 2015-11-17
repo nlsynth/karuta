@@ -75,24 +75,39 @@ void ChannelSynth::ExtractChannels(DModule *mod) {
     vector<pair<string, int> > w_channels;
     GetChannels(mod->graph_, &r_channels, &w_channels);
     for (size_t i = 0; i < w_channels.size(); ++i) {
-      DChannel *dchan = DModuleUtil::CreateChannel(mod, w_channels[i].second);
-      dchan->writer_module_ = mod;
-      dchan->channel_name_ = w_channels[i].first;
-      CHECK(channel_infos_[dchan->channel_name_].writer_channel == NULL);
-      channel_infos_[dchan->channel_name_].writer_channel = dchan;
+      PopulateChannelInfo(w_channels[i].first, true,
+			  w_channels[i].second, mod);
     }
     for (size_t i = 0; i < r_channels.size(); ++i) {
-      DChannel *dchan = DModuleUtil::CreateChannel(mod, r_channels[i].second);
-      dchan->reader_module_ = mod;
-      dchan->channel_name_ = r_channels[i].first;
-      CHECK(channel_infos_[dchan->channel_name_].reader_channel == NULL);
-      channel_infos_[dchan->channel_name_].reader_channel = dchan;
+      PopulateChannelInfo(r_channels[i].first, false,
+			  r_channels[i].second, mod);
     }
   }
   for (size_t i = 0; i < mod->sub_modules_.size(); ++i) {
     ExtractChannels(mod->sub_modules_[i]);
   }
 }
+
+void ChannelSynth::PopulateChannelInfo(const string &name, bool is_write,
+				       int width, DModule *mod) {
+  DChannel *dchan = DModuleUtil::CreateChannel(mod, width);
+  dchan->channel_name_ = name;
+  if (is_write) {
+    dchan->writer_module_ = mod;
+    CHECK(channel_infos_[dchan->channel_name_].writer_channel == NULL);
+  } else {
+    dchan->reader_module_ = mod;
+    CHECK(channel_infos_[dchan->channel_name_].reader_channel == NULL);
+  }
+  ChannelInfo &ci = channel_infos_[dchan->channel_name_];
+  if (is_write) {
+    ci.writer_channel = dchan;
+  } else {
+    ci.reader_channel = dchan;
+  }
+  ci.data_width = width;
+}
+
 
 void ChannelSynth::GetChannels(DGraph *graph,
 			       vector<pair<string, int> > *r_channels,

@@ -17,6 +17,7 @@ public:
 
   static bool IsChannel(Object *obj);
   static const string &ChannelName(Object *obj);
+  static int ChannelWidth(Object *obj);
 
   static void ReadMethod(Thread *thr, Object *obj, const vector<Value> &args);
   static void WriteMethod(Thread *thr, Object *obj, const vector<Value> &args);

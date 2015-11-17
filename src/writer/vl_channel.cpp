@@ -69,12 +69,13 @@ void VLChannelWriter::OutputChannelWires(DModule *mod, ostream &os) {
       continue;
     }
     const string &c = chan->channel_name_;
+    int width = chan->data_width_;
     
     os << "  // channel " << c << "\n"
-       << "  wire [31:0] " << c << "_wdata;\n"
+       << "  wire [" << (width - 1) << ":0] " << c << "_wdata;\n"
        << "  wire " << c << "_wdata_en;\n"
        << "  wire " << c << "_wdata_rdy;\n"
-       << "  wire [31:0] " << c << "_rdata;\n"
+       << "  wire [" << (width - 1) << ":0] " << c << "_rdata;\n"
        << "  wire " << c << "_rdata_valid;\n"
        << "  wire " << c << "_rdata_req;\n"
        << "\n";
@@ -91,7 +92,7 @@ void VLChannelWriter::OutputChannelInstances(DModule *mod, ostream &os) {
     os << "  // channel from "
 	<< chan->writer_module_->module_name_ << " to "
 	<< chan->reader_module_->module_name_ << "\n";
-    string mod_name = ModuleName(32);
+    string mod_name = ModuleName(chan->data_width_);
     string inst_name =
       mod_name + "_" + chan->channel_name_ + "_" +
       chan->writer_module_->module_name_ + "_" +
