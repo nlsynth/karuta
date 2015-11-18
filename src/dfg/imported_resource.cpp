@@ -14,90 +14,85 @@ namespace dfg {
 
 static Pool<ImportedResource> imported_resource_pool;
 
-class import_param {
+class ImportParam {
 public:
-  sym_t key;
-  vector <string> values;
-  sym_t nthSym(int nth);
+  sym_t GetNthSym(int nth);
+
+  sym_t key_;
+  vector <string> values_;
 };
 
-class import_params {
+class ImportParamSet {
 public:
-  ~import_params();
-  vector<import_param *> param_list;
+  ~ImportParamSet();
+  vector<ImportParam *> params_;
 };
 
-sym_t import_param::nthSym(int nth) {
-  for (string &s : values) {
-    if (nth == 0) {
-      return sym_lookup(s.c_str());
-    }
-    nth --;
+sym_t ImportParam::GetNthSym(int nth) {
+  if (nth < values_.size()) {
+    return sym_lookup(values_[nth].c_str());
   }
   return sym_null;
 }
 
-import_params::~import_params() {
-  STLDeleteValues(&param_list);
+ImportParamSet::~ImportParamSet() {
+  STLDeleteValues(&params_);
 }
 
-ImportedResource::ImportedResource(import_params *params) {
+ImportedResource::ImportedResource(ImportParamSet *params) {
   imported_resource_pool.Add(this);
-  m_params = params;
+  params_ = params;
 }
 
 ImportedResource::~ImportedResource() {
-  delete m_params;
+  delete params_;
 }
 
-sym_t ImportedResource::lookup_sym_param(sym_t key, sym_t dflt) {
-  import_param *p = lookup_param(key);
+sym_t ImportedResource::LookupSymParam(sym_t key, sym_t dflt) {
+  ImportParam *p = LookupParam(key);
   if (!p) {
     return dflt;
   }
-  return p->nthSym(0);
+  return p->GetNthSym(0);
 }
 
-import_param *ImportedResource::lookup_param(sym_t key) {
-  const char *key_cstr = sym_cstr(key);
-  LOG(INFO) << "lookup: " << key_cstr;
-  for (vector<import_param *>::iterator it = m_params->param_list.begin();
-       it != m_params->param_list.end(); it++) {
-    if (!strcmp(sym_cstr((*it)->key), key_cstr)) {
-      return *it;
+ImportParam *ImportedResource::LookupParam(sym_t key) {
+  for (ImportParam *param : params_->params_) {
+    if (key == param->key_) {
+      return param;
     }
   }
   return NULL;
 }
 
 sym_t ImportedResource::GetResourceName() {
-  return lookup_sym_param(sym_resource, sym_null);
+  return LookupSymParam(sym_resource, sym_null);
 }
 
 sym_t ImportedResource::GetCopyFileName() {
-  sym_t file = lookup_sym_param(sym_file, sym_null);
+  sym_t file = LookupSymParam(sym_file, sym_null);
   if (file != sym_copy) {
     return sym_null;
   }
-  import_param *p = lookup_param(sym_verilog);
+  ImportParam *p = LookupParam(sym_verilog);
   if (!p) {
     std::cout << "source file to be copied is not specified.\n";
     abort();
     return sym_null;
   }
-  return p->nthSym(0);
+  return p->GetNthSym(0);
 }
 
 sym_t ImportedResource::GetModuleName() {
-  return lookup_sym_param(sym_module, sym_null);
+  return LookupSymParam(sym_module, sym_null);
 }
 
 sym_t ImportedResource::GetClockPinName() {
-  return lookup_sym_param(sym_clock, sym_lookup("clk"));
+  return LookupSymParam(sym_clock, sym_lookup("clk"));
 }
 
 sym_t ImportedResource::GetResetPinName() {
-  return lookup_sym_param(sym_reset, sym_lookup("rst"));
+  return LookupSymParam(sym_reset, sym_lookup("rst"));
 }
 
 void ImportedResource::AddPinDecl(sym_t name, bool is_out, int width) {
@@ -106,43 +101,43 @@ void ImportedResource::AddPinDecl(sym_t name, bool is_out, int width) {
   pin.is_out = is_out;
   pin.width = width;
 
-  m_pins.push_back(pin);
+  pins_.push_back(pin);
 }
 
 int ImportedResource::GetNrPinDecls() {
-  return m_pins.size();
+  return pins_.size();
 }
 
 bool ImportedResource::GetNthPinDecl(int nth, ImportedResource_pin *decl) {
-  if (nth >= 0 && nth < static_cast<int>(m_pins.size())) {
-    *decl = m_pins[nth];
+  if (nth >= 0 && nth < static_cast<int>(pins_.size())) {
+    *decl = pins_[nth];
     return true;
   }
   return false;
 }
 
-void import_param_add_str(import_param *p, const char *str) {
-  p->values.push_back(string(str));
+void Importer::AddStrParam(ImportParam *p, const char *str) {
+  p->values_.push_back(string(str));
 }
 
-import_param *build_str_import_param(sym_t key, const char *str) {
-  import_param *p = new import_param();
-  p->key = key;
-  import_param_add_str(p, str);
+ImportParam *Importer::BuildStrParam(sym_t key, const char *str) {
+  ImportParam *p = new ImportParam();
+  p->key_ = key;
+  AddStrParam(p, str);
   return p;
 }
 
-import_params *build_import_params(import_params *params, import_param *p) {
+ImportParamSet *Importer::BuildParamSet(ImportParamSet *params,
+					ImportParam *p) {
   if (!params) {
-    params = new import_params();
+    params = new ImportParamSet();
   }
-  params->param_list.push_back(p);
+  params->params_.push_back(p);
   return params;
 }
 
-ImportedResource *import_resource(import_params *params) {
-  ImportedResource *res = new ImportedResource(params);
-  return res;
+ImportedResource *Importer::Import(ImportParamSet *params) {
+  return new ImportedResource(params);
 }
 
 void Importer::Init() {

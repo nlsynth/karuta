@@ -30,8 +30,7 @@ void VM::Run() {
   bool ran = true;
   while (ran) {
     ran = false;
-    for (auto it = threads_.begin(); it != threads_.end(); ++it) {
-      Thread *thr = *it;
+    for (Thread *thr : threads_) {
       if (thr->IsRunnable()) {
 	thr->Run();
 	ran = true;
@@ -39,9 +38,7 @@ void VM::Run() {
     }
   }
 
-  for (set<Thread*>::iterator it = threads_.begin();
-       it != threads_.end(); ++it) {
-    Thread *thr = *it;
+  for (Thread *thr : threads_) {
     if (!thr->IsDone()) {
       std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
       m->os() << "Remaining thread";

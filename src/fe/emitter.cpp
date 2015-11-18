@@ -42,16 +42,16 @@ void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
   decl.method_->returns_ = returns;
 }
 
-void Emitter::SetImportedResource(import_params *params) {
+void Emitter::SetImportedResource(ImportParamSet *params) {
   MethodDecl &decl = CurrentMethod();
-  decl.method_->imported_resource_ = import_resource(params);
+  decl.method_->imported_resource_ = dfg::Importer::Import(params);
   fe::VarDeclSet *args = decl.method_->args_;
   if (args) {
     for (size_t i = 0; i < args->decls.size(); ++i) {
       fe::VarDecl *arg = args->decls[i];
       int width = 1;
       if (arg->type == sym_int) {
-	width = 32;
+	width = numeric::Width::GetWidth(arg->width);
       } else {
 	CHECK(arg->type == sym_bool);
       }

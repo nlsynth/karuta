@@ -6,16 +6,24 @@
 
 namespace dfg {
 
-class import_param;
-class import_params;
+class ImportParam;
+class ImportParamSet;
+class ImportedResource;
 
 class Importer {
 public:
   static void Init();
+
+  // Called from parser
+  static ImportedResource *Import(ImportParamSet *params);
+  static ImportParam *BuildStrParam(sym_t key, const char *str);
+  static void AddStrParam(ImportParam *p, const char *str);
+  static ImportParamSet *BuildParamSet(ImportParamSet *lst,
+				       ImportParam *p);
 };
 
 class ImportedResource_pin {
- public:
+public:
   sym_t name;
   bool is_out;
   int width;
@@ -23,7 +31,7 @@ class ImportedResource_pin {
 
 class ImportedResource {
 public:
-  ImportedResource(import_params *params);
+  ImportedResource(ImportParamSet *params);
   ~ImportedResource();
 
   sym_t GetResourceName();
@@ -37,17 +45,12 @@ public:
   bool GetNthPinDecl(int nth, ImportedResource_pin *decl);
 
 private:
-  sym_t lookup_sym_param(sym_t key, sym_t dflt);
-  import_param *lookup_param(sym_t key);
-  import_params *m_params;
-  vector<ImportedResource_pin> m_pins;
-};
+  sym_t LookupSymParam(sym_t key, sym_t dflt);
+  ImportParam *LookupParam(sym_t key);
 
-// called parser
-import_param *build_str_import_param(sym_t key, const char *str);
-void import_param_add_str(import_param *p, const char *str);
-import_params *build_import_params(import_params *lst, import_param *p);
-ImportedResource *import_resource(import_params *params);
+  ImportParamSet *params_;
+  vector<ImportedResource_pin> pins_;
+};
 
 }  // namespace dfg
 using namespace dfg;

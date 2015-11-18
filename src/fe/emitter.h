@@ -9,7 +9,7 @@ class Width;
 }  // namespace numeric
 
 namespace dfg {
-class import_params;
+class ImportParamSet;
 }  // namespace dfg
 
 namespace fe {
@@ -31,7 +31,7 @@ public:
   static MethodDecl EndFunction();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
-  static void SetImportedResource(dfg::import_params *params);
+  static void SetImportedResource(dfg::ImportParamSet *params);
   static void BeginBlock();
   static void EndBlock();
   static void EmitExprStmt(Expr *expr);

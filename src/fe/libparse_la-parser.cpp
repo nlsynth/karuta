@@ -217,8 +217,8 @@ union YYSTYPE
   sym_t sym;
   uint64_t num;
   const class numeric::Width *width;
-  class import_param *import_param;
-  class import_params *import_params;
+  class ImportParam *import_param;
+  class ImportParamSet *import_params;
 
 #line 224 "src/fe/libparse_la-parser.cpp" /* yacc.c:355  */
 };
@@ -1641,7 +1641,7 @@ yyreduce:
   case 5:
 #line 92 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_param) = dfg::build_str_import_param((yyvsp[-3].sym), (yyvsp[0].str));
+  (yyval.import_param) = dfg::Importer::BuildStrParam((yyvsp[-3].sym), (yyvsp[0].str));
 }
 #line 1647 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1649,7 +1649,7 @@ yyreduce:
   case 6:
 #line 94 "parser.ypp" /* yacc.c:1646  */
     {
-  dfg::import_param_add_str((yyvsp[-2].import_param), (yyvsp[0].str));
+  dfg::Importer::AddStrParam((yyvsp[-2].import_param), (yyvsp[0].str));
   (yyval.import_param) = (yyvsp[-2].import_param);
 }
 #line 1656 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
@@ -1658,7 +1658,7 @@ yyreduce:
   case 7:
 #line 99 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_param) = dfg::build_str_import_param((yyvsp[-2].sym), (yyvsp[0].str));
+  (yyval.import_param) = dfg::Importer::BuildStrParam((yyvsp[-2].sym), (yyvsp[0].str));
 }
 #line 1664 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1674,7 +1674,7 @@ yyreduce:
   case 9:
 #line 105 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_params) = dfg::build_import_params(NULL, (yyvsp[0].import_param));
+  (yyval.import_params) = dfg::Importer::BuildParamSet(NULL, (yyvsp[0].import_param));
 }
 #line 1680 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1682,7 +1682,7 @@ yyreduce:
   case 10:
 #line 107 "parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_params) = dfg::build_import_params((yyvsp[-2].import_params), (yyvsp[0].import_param));
+  (yyval.import_params) = dfg::Importer::BuildParamSet((yyvsp[-2].import_params), (yyvsp[0].import_param));
 }
 #line 1688 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
