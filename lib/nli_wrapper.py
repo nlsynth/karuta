@@ -13,14 +13,27 @@ import time
 
 def GetExampleSource(qs):
     tmpl = (qs.get('e', ['']))[0]
-    if tmpl == 's':
+    if tmpl == 'h':
+        return 'print("Hello World!");'
+    else:
         return '''def main() {
+  int i;
+  int s = 0;
+  for (i = 0; i < 10; ++i) {
+    s += i;
+  }
+  // TODO: Do real I/O.
+  print(s);
 }
 
+// Synthesize and output.
 compile();
+writeHdl("a.v");
+writeHdl("a.html");
+
+// Run on interpreter mode.
+main();
 '''
-    else:
-        return 'print("Hello World!");'
 
 def GetRunID():
     return 'run-' + str(time.time()) + '-' + str(os.getpid())
@@ -44,7 +57,7 @@ def RunNLI(ofh, src):
     rundir = workdir + '/' + runid
     os.mkdir(rundir)
 
-    srcf = tempfile.mktemp()
+    srcf = rundir + '/src'
     srcfh = open(srcf, 'w')
     srcfh.write(src)
     srcfh.close()
@@ -55,11 +68,10 @@ def RunNLI(ofh, src):
 
     cmd = (bin + ' --root=' + rundir + ' ' +
            '--output_marker=' + marker + ' ' +
-           '--timeout=3 ' +
+           '--timeout=3000 ' +
            srcf +
            ' > ' + output)
     os.system(cmd)
-    os.unlink(srcf)
 
     ofh.write('OUTPUT:<br>\n')
     ifh = open(output, 'r')
@@ -78,24 +90,24 @@ def Render(ofh, is_post, qs):
     version = os.getenv('NLI_VERSION')
 
     ofh.write(
-'''<html><body>%s<br>\n''' % version)
+'''<html><head><title>Neon Light</title></head><body>%s<br>\n''' % version)
 
     ofh.write(
 '''<form id="src" method="POST" action="">
-<textarea name="s" cols=100 rows=10>
+<textarea name="s" cols=100 rows=20>
 %s
 </textarea>
-<input type="submit" value="run">
+<input type="submit" value="Run">
 </form>
 ''' % src)
 
     ofh.write(
 '''<form id="example" method="GET" action="">
 <select name="e">
-<option value="h">hello world</option>
-<option value="s">synth</option>
+<option value="h">Hello world</option>
+<option value="s">Synth</option>
 </select>
-<input type="submit" value="update">
+<input type="submit" value="Load code">
 </form>
 ''')
 

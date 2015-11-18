@@ -72,6 +72,5 @@ if __name__ == '__main__':
     os.environ['NLI_BINARY'] = nli_interpreter
     os.environ['NLI_TEMP'] = tmpdir
     print(os.getenv('NLI_VERSION'))
-    HandlerClass = NliServerHandler
-    ServerClass = BaseHTTPServer.HTTPServer
-    BaseHTTPServer.test(HandlerClass, ServerClass)
+    httpd = BaseHTTPServer.HTTPServer(('localhost', 8000), NliServerHandler)
+    httpd.serve_forever()
