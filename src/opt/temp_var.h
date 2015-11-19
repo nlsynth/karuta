@@ -23,15 +23,13 @@ private:
     // assign insn, not other insns' output.
     set<DInsn *> insns_assign_to_this;
     bool is_block_local;
+    set<DState *> writer_states;
   };
 
   void CollectAssigns(DGraph *graph);
   void MarkBlockLocals();
   void KillTempRegsInBB(DGraph *graph, BasicBlock *bb);
-  void UpdateEquiv(map<DRegister *, DRegister *>& equiv_map, DGraph *graph);
-  void RemoveInsns(set<DInsn *> &insns, DGraph *graph);
-  bool CanKillInput(DRegister *input, PerRegister *pr);
-
+  bool IsRedundantAssign(DState *st, DInsn *insn);
   map<DRegister *, PerRegister *> per_register_map_;
   PerRegister *GetPerRegister(DRegister *reg);
 };

@@ -1,0 +1,25 @@
+// VERILOG_OUTPUT: a.v
+
+// github issue #1
+
+def main() {
+  int param = 2;
+  int curr;
+  int next;
+  int prev;
+  int i;
+  curr = 0;
+  next = 1;
+  for (i = 0; i < param; ++i) {
+    prev = curr;
+    curr = next;
+    next = next + prev;
+  }
+
+  assert(curr == 1);
+}
+
+main();
+
+compile();
+writeHdl("a.v");

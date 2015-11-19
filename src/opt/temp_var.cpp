@@ -20,32 +20,12 @@ bool PureTempVarElimination::Perform(const char *phase, DGraph *graph,
 
   // Collect all BBs assign to the register.
   CollectAssigns(graph);
-  // block local temp var elimination.
+  // Block local temp var elimination.
   MarkBlockLocals();
   for (BasicBlock * bb : bbs.bbs_) {
     KillTempRegsInBB(graph, bb);
   }
 
-  // process one time assign
-  set<DInsn *> assign_once;
-  map<DRegister *, DRegister *> equiv_regs;
-  for (map<DRegister *, PerRegister *>::iterator it = per_register_map_.begin();
-       it != per_register_map_.end(); ++it) {
-    PerRegister *pr = it->second;
-    DRegister *output = it->first;
-    if (pr->insns_assign_to_this.size() == 1 &&
-	output->reg_type_ == DRegister::REG_NORMAL &&
-	!output->has_initial_) {
-      DInsn *insn = *(pr->insns_assign_to_this.begin());
-      DRegister *input = *(insn->inputs_.begin());
-      if (input->reg_type_ == DRegister::REG_NORMAL) {
-	assign_once.insert(insn);
-	equiv_regs[output] = input;
-      }
-    }
-  }
-  UpdateEquiv(equiv_regs, graph);
-  RemoveInsns(assign_once, graph);
   OptimizeContext *ctx = graph->owner_module_->GetOptimizeContext();
   ctx->DumpIntermediateGraph(graph, &an, "temp_var");
   return true;
@@ -78,6 +58,7 @@ void PureTempVarElimination::CollectAssigns(DGraph *graph) {
       for (DRegister *reg : insn->outputs_) {
 	PerRegister *pr = GetPerRegister(reg);
 	pr->using_bbs.insert(bb);
+	pr->writer_states.insert(st);
 	if (insn->resource_ == as) {
 	  CHECK(insn->inputs_.size() == 1);
 	  pr->insns_assign_to_this.insert(insn);
@@ -107,11 +88,9 @@ void PureTempVarElimination::KillTempRegsInBB(DGraph *graph,
       if (insn->resource_ == as) {
 	DRegister *input = *(insn->inputs_.begin());
 	DRegister *output = *(insn->outputs_.begin());
-	PerRegister *pr = GetPerRegister(output);
-	if (CanKillInput(input, pr)) {
+	if (IsRedundantAssign(st, insn)) {
 	  // assign: @output <- @input
-	  // where @output is only used in this block, so all @output should be
-	  // replaced with @input and @input will not be reused.
+	  // @output can be replaced with @input.
 	  equiv_regs[output] = input;
 	  // this insn is useless
 	  tmp_insns[insn] = st;
@@ -137,59 +116,26 @@ void PureTempVarElimination::KillTempRegsInBB(DGraph *graph,
   }
 }
 
-bool PureTempVarElimination::CanKillInput(DRegister *input, PerRegister *pr) {
-  // TODO(yusuke): github issue #1. @input might be used after
-  // overwrite.
-  return (input->reg_type_ == DRegister::REG_NORMAL &&
-	  pr->is_block_local);
-}
-
-void PureTempVarElimination::UpdateEquiv(map<DRegister *, DRegister *>& equiv_map,
-					 DGraph *graph) {
-  for (list<DState *>::iterator it = graph->states_.begin();
-       it != graph->states_.end(); it++) {
-    DState *st = *it;
-    for (list<DInsn *>::iterator jt = st->insns_.begin();
-	 jt != st->insns_.end(); jt++) {
-      DInsn *insn = *jt;
-      for (vector<DRegister *>::iterator kt = insn->inputs_.begin(); kt != insn->inputs_.end();
-	   ++kt) {
-	DRegister *reg = equiv_map[*kt];
-	if (reg) {
-	  *kt = reg;
-	}
-      }
-      for (vector<DRegister *>::iterator kt = insn->outputs_.begin(); kt != insn->outputs_.end();
-	   ++kt) {
-	DRegister *reg = equiv_map[*kt];
-	if (reg) {
-	  *kt = reg;
-	}
-      }
+bool PureTempVarElimination::IsRedundantAssign(DState *st, DInsn *insn) {
+  DRegister *output = *(insn->outputs_.begin());
+  PerRegister *pr_output = GetPerRegister(output);
+  DRegister *input = *(insn->inputs_.begin());
+  if (input->reg_type_ != DRegister::REG_NORMAL ||
+      !pr_output->is_block_local) {
+    return false;
+  }
+  PerRegister *pr_input = GetPerRegister(input);
+  StateAnnotation *cur_sa = StateAnnotation::Get(st);
+  for (DState *writer_state : pr_input->writer_states) {
+    StateAnnotation *writer_sa = StateAnnotation::Get(writer_state);
+    if (writer_sa->bb_ == cur_sa->bb_) {
+      // @input might be over written in this block. so don't kill.
+      // (this can be more precise by checking whether @input is over
+      //  written between the read of @input and use of @output)
+      return false;
     }
   }
-}
-
-void PureTempVarElimination::RemoveInsns(set<DInsn *> &insns, DGraph *graph) {
-  map<DInsn *, DState *> live_insns;
-  for (list<DState *>::iterator it = graph->states_.begin();
-       it != graph->states_.end(); it++) {
-    DState *st = *it;
-    for (list<DInsn *>::iterator jt = st->insns_.begin();
-	 jt != st->insns_.end(); jt++) {
-      DInsn *insn = *jt;
-      if (insns.find(insn) != insns.end()) {
-	live_insns[insn] = st;
-      }
-    }
-  }
-
-  while (live_insns.size() > 0) {
-    map<DInsn *, DState *>::iterator it = live_insns.begin();
-    DStateUtil::EraseInsn(it->second, it->first);
-    LOG(INFO) << "Removing insn id:" << it->first->insn_id_;
-    live_insns.erase(it);
-  }
+  return true;
 }
 
 PureTempVarElimination::PerRegister *
