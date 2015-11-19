@@ -30,7 +30,8 @@ TEST04 = \
  synth_regression/t04_0_0_33_4.n synth_regression/t04_0_0_33_5.n \
  synth_regression/t04_0_0_33_6.n synth_regression/t04_0_0_34_1.n \
  synth_regression/t04_0_0_34_2.n synth_regression/t04_0_0_35_1.n \
- synth_regression/t04_0_1_0_0.n synth_regression/t04_0_1_1_0.n
+ synth_regression/t04_0_1_0_0.n synth_regression/t04_0_1_1_0.n \
+ synth_regression/t04_0_1_9_0.n
 # Needs reconfirm and triage
 TEST05 =
 
