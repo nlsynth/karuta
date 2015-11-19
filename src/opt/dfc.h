@@ -60,7 +60,7 @@ private:
   void CollectDefs(BasicBlock *bb, BBInfo *bbi);
   void CollectKills(BasicBlock *bb, BBInfo *bbi);
   void CollectReaches();
-  // DEF(P) U {REACH(P) - KILL(P)
+  // DEF(P) U {REACH(P) - KILL(P)}
   void CollectPropagates(BBInfo *bbi, set<DefInfo *> *prop);
 
   void AnnotateDefs();

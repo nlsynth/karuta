@@ -45,18 +45,14 @@ DataFlowCollector::~DataFlowCollector() {
 }
 
 void DataFlowCollector::Perform() {
-  for (set<BasicBlock *>::iterator it = bbs_->bbs_.begin();
-       it != bbs_->bbs_.end(); ++it) {
-    bb_info_[*it] = new BBInfo;
+  for (BasicBlock *bb : bbs_->bbs_) {
+    bb_info_[bb] = new BBInfo;
   }
   // update bbi.pred
-  for (set<BasicBlock *>::iterator it = bbs_->bbs_.begin();
-       it != bbs_->bbs_.end(); ++it) {
-    BasicBlock *bb = *it;
-    for (set<BasicBlock *>::iterator jt = bb->next_bb.begin();
-	 jt != bb->next_bb.end(); ++jt) {
+  for (BasicBlock *bb : bbs_->bbs_) {
+    for (BasicBlock *next_bb : bb->next_bb) {
       BBInfo *pred_bbi = bb_info_[bb];
-      bb_info_[*jt]->pred.insert(pred_bbi);
+      bb_info_[next_bb]->pred.insert(pred_bbi);
     }
   }
   for (BasicBlock *bb : bbs_->bbs_) {
@@ -79,9 +75,8 @@ void DataFlowCollector::Perform() {
 
 void DataFlowCollector::GetReachDefs(BasicBlock *bb, set<DefInfo *> *s) {
   BBInfo *bbi = bb_info_[bb];
-  for (set<DefInfo *>::iterator it = bbi->reaches.begin();
-       it != bbi->reaches.end(); ++it) {
-    s->insert(*it);
+  for (DefInfo *di : bbi->reaches) {
+    s->insert(di);
   }
 }
 
@@ -96,13 +91,11 @@ void DataFlowCollector::CollectReaches() {
   bool changed;
   do {
     changed = false;
-    for (set<BasicBlock *>::iterator it = bbs_->bbs_.begin();
-	 it != bbs_->bbs_.end(); ++it) {
-      BBInfo *bbi = bb_info_[*it];
+    for (BasicBlock *bb : bbs_->bbs_) {
+      BBInfo *bbi = bb_info_[bb];
       set<DefInfo *> temp;
-      for (set<BBInfo *>::iterator jt = bbi->pred.begin();
-	   jt != bbi->pred.end(); ++jt) {
-	CollectPropagates(*jt, &temp);
+      for (BBInfo *pred_bbi : bbi->pred) {
+	CollectPropagates(pred_bbi, &temp);
       }
       if (temp.size() > bbi->reaches.size()) {
 	changed = true;
@@ -120,14 +113,14 @@ void DataFlowCollector::CollectPropagates(BBInfo *bbi, set<DefInfo *> *prop) {
   }
   // REACH(P) - KILL(P)
   set<DefInfo *> di;
-  for (set<DefInfo *>::iterator it = bbi->reaches.begin(); it != bbi->reaches.end(); ++it) {
-    di.insert(*it);
+  for (DefInfo *reach : bbi->reaches) {
+    di.insert(reach);
   }
-  for (set<DefInfo *>::iterator it = bbi->kills.begin(); it != bbi->kills.end(); ++it) {
-    di.erase(*it);
+  for (DefInfo *kills : bbi->kills) {
+    di.erase(kills);
   }
-  for (set<DefInfo *>::iterator it = di.begin(); it != di.end(); ++it) {
-    prop->insert(*it);
+  for (DefInfo *r : di) {
+    prop->insert(r);
   }
 }
 
@@ -139,19 +132,17 @@ void DataFlowCollector::AnnotateDefs() {
   os << "Defs<br>\n";
   vector<BasicBlock *> sorted_bbs;
   bbs_->GetSortedBBs(&sorted_bbs);
-  for (vector<BasicBlock *>::iterator it = sorted_bbs.begin();
-       it != sorted_bbs.end(); ++it) {
-    BBInfo *bbi = bb_info_[*it];
-    os << "bb" << (*it)->bb_id << "<br>";
+  for (BasicBlock *bb : sorted_bbs) {
+    BBInfo *bbi = bb_info_[bb];
+    os << "bb" << bb->bb_id << "<br>";
     vector<DefInfo *> di;
     for (map<DRegister *, DefInfo *>::iterator jt = bbi->defs.begin();
 	 jt != bbi->defs.end(); ++jt) {
       di.push_back(jt->second);
     }
     DefInfo::SortDefInfo(&di);
-    for (vector<DefInfo *>::iterator jt = di.begin(); jt != di.end();
-	 ++jt) {
-      os << DefInfoToString(*(*jt)) << "<br>";
+    for (DefInfo *d : di) {
+      os << DefInfoToString(*d) << "<br>";
     }
     os << "\n";
   }
@@ -190,13 +181,11 @@ void DataFlowCollector::CollectDefs(BasicBlock *bb, BBInfo *info) {
   map<DRegister *, DefInfo *> last_write;
   for (int i = 0; i < (int)bb->states.size(); ++i) {
     DState *st = bb->states[i];
-    for (list<DInsn *>::iterator it = st->insns_.begin();
-	 it != st->insns_.end(); ++it) {
-      DInsn *insn = *it;
+    for (DInsn *insn : st->insns_) {
       int nth_output = 0;
-      for (vector<DRegister *>::iterator jt = insn->outputs_.begin();
-	   jt != insn->outputs_.end(); ++jt, ++nth_output) {
-	DRegister *reg = *jt;
+      for (vector<DRegister *>::iterator it = insn->outputs_.begin();
+	   it != insn->outputs_.end(); ++it, ++nth_output) {
+	DRegister *reg = *it;
 	if (reg->reg_type_ != DRegister::REG_NORMAL) {
 	  continue;
 	}

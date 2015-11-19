@@ -15,12 +15,8 @@ public:
     return new PureTempVarElimination;
   };
   virtual bool Perform(const char *phase, DGraph *graph, const char *msg);
-private:
-  void CollectAssigns(DGraph *graph);
-  void KillTempRegsInBB(DGraph *graph, BasicBlock *bb);
-  void UpdateEquiv(map<DRegister *, DRegister *>& equiv_map, DGraph *graph);
-  void RemoveInsns(set<DInsn *> &insns, DGraph *graph);
 
+private:
   struct PerRegister {
     // use mean both read or write.
     set<BasicBlock *> using_bbs;
@@ -28,6 +24,14 @@ private:
     set<DInsn *> insns_assign_to_this;
     bool is_block_local;
   };
+
+  void CollectAssigns(DGraph *graph);
+  void MarkBlockLocals();
+  void KillTempRegsInBB(DGraph *graph, BasicBlock *bb);
+  void UpdateEquiv(map<DRegister *, DRegister *>& equiv_map, DGraph *graph);
+  void RemoveInsns(set<DInsn *> &insns, DGraph *graph);
+  bool CanKillInput(DRegister *input, PerRegister *pr);
+
   map<DRegister *, PerRegister *> per_register_map_;
   PerRegister *GetPerRegister(DRegister *reg);
 };
