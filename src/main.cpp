@@ -166,8 +166,8 @@ bool ArgParser::Parse(int argc, char **argv) {
       }
     } else {
       if (arg[0] == '-') {
-	std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-	m->os() << "Unknown command line flag:" << arg;
+	Message::os(Message::USER) << "Unknown command line flag:" << arg;
+	MessageFlush(Message::USER);
 	return false;
       }
       source_files.push_back(arg);
@@ -291,6 +291,7 @@ void Main::main(int argc, char **argv) {
   string exit_status;
   LOG(INFO) << "NLI-" << Env::GetVersion();
   RunFiles(args.source_files);
+  Message::CheckAll();
   StaticInitializer::RunFinalizers();
   if (print_exit_status) {
     // Used to confirm this program was finished normally.

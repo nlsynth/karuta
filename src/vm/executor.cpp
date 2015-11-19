@@ -507,10 +507,10 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
   *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   Value *value = (*obj)->LookupValue(insn->label_, false);
   if (!value) {
-    Message m(Message::USER);
-    m.os() << "method not found: ";
-    m.os() << sym_cstr(insn->label_);
-    thr_->UserError(m.Get().c_str());
+    Message::os(Message::USER) << "method not found: "
+			       << sym_cstr(insn->label_);
+    Message::Check(Message::USER);
+    thr_->UserError();
     return NULL;
   }
   CHECK(value->type_ == Value::METHOD);

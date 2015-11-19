@@ -81,15 +81,16 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     phase = StringWrapper::String(args[0].object_);
   }
   if (!synth::Synth::Synthesize(thr->GetVM(), phase, obj)) {
-    thr->UserError("Compile failed");
+    Message::os(Message::USER) << "Compile failed";
+    thr->UserError();
   }
 }
 
 void NativeMethods::WidthOf(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
-    std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-    m->os() << "Invalid argument to widthof()";
+    Message::os(Message::USER) << "Invalid argument to widthof()";
+    MessageFlush(Message::USER);
     return;
   }
   Value value;

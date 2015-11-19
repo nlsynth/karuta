@@ -124,7 +124,8 @@ void ExecutorToplevel::ExecImport(Insn *insn) {
   VM *vm = thr_->GetVM();
   Method *method = fe::FE::CompileFile(fn, false, vm);
   if (!method) {
-    thr_->UserError("Failed to import");
+    Message::os(Message::USER) << "Failed to import: " << fn;
+    thr_->UserError();
     return;
   }
   vm->AddThreadFromMethod(thr_, method);
@@ -143,7 +144,8 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
 				    Insn *insn) {
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   if (!obj) {
-    thr_->UserError("can't find object");
+    Message::os(Message::USER) << "Can't find object";
+    thr_->UserError();
     return;
   }
 

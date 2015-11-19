@@ -75,8 +75,8 @@ void GraphOptimizeStat::PerformPhase(const char *phase,
     opt->Perform(phase, graph, note);
     DGraphUtil::ClearAnnotation(graph);
   } else {
-    std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-    m->os() << "unknown optimization phase:" << phase;
+    Message::os(Message::USER) << "unknown optimization phase:" << phase;
+    MessageFlush(Message::USER);
   }
 }
 
@@ -180,8 +180,9 @@ void ModuleOptimizeStat::ApplyOptimization(list<DGraph *> *opts,
   }
   if (phase_sym == sym_lookup("opt_ssa") &&
       mod->GetOptimizeContext()->IsSet(OptimizeContext::RegisterShare)) {
-    std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-    m->os() << "Can't perform SSA optimization after register sharing";
+    Message::os(Message::USER)
+      << "Can't perform SSA optimization after register sharing";
+    MessageFlush(Message::USER);
     return;
   }
   OptimizeContext *ctx = mod->GetOptimizeContext();

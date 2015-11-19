@@ -7,6 +7,10 @@
 using std::ostringstream;
 using std::string;
 
+// Usage:
+//  Message::os(Message::INFO) << "something happened."
+//  MessageFlush(Message::INFO); // let the destructor flush info messages.
+
 class Message {
 public:
   enum Type {
@@ -14,22 +18,38 @@ public:
     USER,
     // Debug message.
     INFO,
-    ICE
+    ICE,
+    NUM_TYPES,
   };
 
-  static Message *CreateMessage(Type t);
+  static void SetLineNumber(int ln, Type t);
 
-  explicit Message(Type t);
-  ~Message();
-  void SetLineNumber(int ln);
-  string Get();
-
-  ostringstream &os();
+  static void Check(Type t);
+  static void CheckAll();
+  static ostringstream &os(Type t);
 
 private:
-  ostringstream ss_;
-  int ln_;
-  Type type_;
+  class Context {
+  public:
+    Context() : ln_(-1) {
+    }
+    ostringstream ss_;
+    int ln_;
+  };
+
+  static Context context_[NUM_TYPES];
+
+  static Context *GetContext(Type t);
+};
+
+class MessageFlush {
+public:
+  MessageFlush(Message::Type t) : t_(t) {
+  }
+  ~MessageFlush() {
+    Message::Check(t_);
+  }
+  Message::Type t_;
 };
 
 #endif  // _messages_h_

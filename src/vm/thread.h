@@ -38,7 +38,7 @@ public:
   void SetReturnValueFromNativeMethod(const Value &value);
   bool IsRootThread() const;
 
-  void UserError(const char *msg);
+  void UserError();
 
 private:
   enum Stat {

@@ -164,8 +164,9 @@ DResource *ResourceSet::GetChannelResource(const string &name, bool is_write,
       // Checks if read/write is consistent.
       if (!((is_write && res->opr_->type_ == sym_write_channel) ||
 	    (!is_write && res->opr_->type_ == sym_read_channel))) {
-	std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-	m->os() << "'" << name << "' cannot be both read/write port";
+	Message::os(Message::USER)
+	  << "'" << name << "' cannot be both read/write port";
+	MessageFlush(Message::USER);
 	return nullptr;
       }
       return res;

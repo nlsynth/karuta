@@ -3,6 +3,7 @@
 #include "dump_stream.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
+#include "messages.h"
 #include "vm/value.h"
 #include "vm/executor.h"
 #include "vm/executor_toplevel.h"
@@ -111,8 +112,8 @@ bool Thread::IsRootThread() const {
   return (parent_thread_ == NULL);
 }
 
-void Thread::UserError(const char *msg) {
-  cout << msg << "\n";
+void Thread::UserError() {
+  Message::Check(Message::USER);
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
   frame->pc_ = method->insns_.size();

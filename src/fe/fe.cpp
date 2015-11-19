@@ -196,8 +196,7 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 			    vm::VM *vm) {
   Method *parse_tree = ReadFile(file);
   if (!parse_tree) {
-    std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-    m->os() << "Failed to load: " << file;
+    Message::os(Message::USER) << "Failed to load: " << file;
     return NULL;
   }
   DumpStream ds(cout);

@@ -47,8 +47,9 @@ vm::Value::ValueType Compiler::GetVariableType(sym_t name) {
   } else {
     vm::Value *value = obj_->LookupValue(name, false);
     if (!value) {
-      std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-      m->os() << "'" << sym_cstr(name) << "' is not a member of the object";
+      Message::os(Message::USER)
+	<< "'" << sym_cstr(name) << "' is not a member of the object";
+      MessageFlush(Message::USER);
       return vm::Value::NONE;
     }
     return value->type_;
@@ -175,8 +176,8 @@ void Compiler::CompileIncDecExpr(fe::Expr *expr) {
   }
   vm::Register *reg = CompileSymExpr(expr->args_);
   if (!reg) {
-    std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-    m->os() << "Invalid inc/dec";
+    Message::os(Message::USER) << "Invalid inc/dec";
+    MessageFlush(Message::USER);
     return;
   }
   insn->dst_regs_.push_back(reg);

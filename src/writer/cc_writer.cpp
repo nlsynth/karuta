@@ -45,12 +45,12 @@ bool CCWriter::WriteModule(DModule *mod, const string &fn) {
   std::unique_ptr<CCWriter> cw;
   std::unique_ptr<std::ofstream> fos;
 
-  std::unique_ptr<Message> m(Message::CreateMessage(Message::INFO));
-  m->os() << "output file name=" << fn;
+  Message::os(Message::INFO) << "output file name=" << fn;
+  MessageFlush(Message::INFO);
   fos.reset(new std::ofstream(fn));
   if (fos->fail()) {
-    std::unique_ptr<Message> n(Message::CreateMessage(Message::USER));
-    n->os() << "failed to open " << fn;
+    Message::os(Message::USER) << "failed to open " << fn;
+    MessageFlush(Message::USER);
     return false;
   }
   cw.reset(new CCWriter(mod, *(fos.get())));

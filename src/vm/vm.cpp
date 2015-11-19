@@ -40,10 +40,11 @@ void VM::Run() {
 
   for (Thread *thr : threads_) {
     if (!thr->IsDone()) {
-      std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-      m->os() << "Remaining thread";
+      Message::os(Message::USER) << "Remaining thread";
+      MessageFlush(Message::USER);
     }
   }
+  Message::CheckAll();
 }
 
 void VM::AddThreadFromMethod(Thread *parent, Method *method) {

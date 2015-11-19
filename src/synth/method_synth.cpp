@@ -38,8 +38,8 @@ MethodSynth::~MethodSynth() {
 bool MethodSynth::Synth() {
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_), false);
   if (!value || value->type_ != vm::Value::METHOD) {
-    std::unique_ptr<Message> m(Message::CreateMessage(Message::USER));
-    m->os() << "Failed to find method: " << method_name_;
+    Message::os(Message::USER) << "Failed to find method: " << method_name_;
+    MessageFlush(Message::USER);
     return false;
   }
 

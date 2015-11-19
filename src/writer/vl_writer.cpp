@@ -81,12 +81,12 @@ bool VLWriter::WriteModule(DModule *mod, const string &fn) {
   VLWriter vw(mod, name, ss);
   vw.Output();
 
-  std::unique_ptr<Message> m(Message::CreateMessage(Message::INFO));
-  m->os() << "output file name=" << fn;
+  Message::os(Message::INFO) << "output file name=" << fn;
+  MessageFlush(Message::INFO);
   std::unique_ptr<std::ofstream> fos(new std::ofstream(fn));
   if (fos->fail()) {
-    std::unique_ptr<Message> n(Message::CreateMessage(Message::USER));
-    n->os() << "failed to open " << fn;
+    Message::os(Message::USER) << "failed to open " << fn;
+    MessageFlush(Message::USER);
     return false;
   }
   *fos << ss.str();
