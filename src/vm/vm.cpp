@@ -41,7 +41,7 @@ void VM::Run() {
   for (Thread *thr : threads_) {
     if (!thr->IsDone()) {
       Message::os(Message::USER) << "Remaining thread";
-      MessageFlush(Message::USER);
+      MessageFlush::Get(Message::USER);
     }
   }
   Message::CheckAll();

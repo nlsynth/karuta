@@ -166,7 +166,7 @@ DResource *ResourceSet::GetChannelResource(const string &name, bool is_write,
 	    (!is_write && res->opr_->type_ == sym_read_channel))) {
 	Message::os(Message::USER)
 	  << "'" << name << "' cannot be both read/write port";
-	MessageFlush(Message::USER);
+	MessageFlush::Get(Message::USER);
 	return nullptr;
       }
       return res;

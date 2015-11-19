@@ -39,7 +39,7 @@ bool MethodSynth::Synth() {
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_), false);
   if (!value || value->type_ != vm::Value::METHOD) {
     Message::os(Message::USER) << "Failed to find method: " << method_name_;
-    MessageFlush(Message::USER);
+    MessageFlush::Get(Message::USER);
     return false;
   }
 

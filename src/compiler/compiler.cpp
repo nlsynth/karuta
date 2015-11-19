@@ -49,7 +49,7 @@ vm::Value::ValueType Compiler::GetVariableType(sym_t name) {
     if (!value) {
       Message::os(Message::USER)
 	<< "'" << sym_cstr(name) << "' is not a member of the object";
-      MessageFlush(Message::USER);
+      MessageFlush::Get(Message::USER);
       return vm::Value::NONE;
     }
     return value->type_;
@@ -177,7 +177,7 @@ void Compiler::CompileIncDecExpr(fe::Expr *expr) {
   vm::Register *reg = CompileSymExpr(expr->args_);
   if (!reg) {
     Message::os(Message::USER) << "Invalid inc/dec";
-    MessageFlush(Message::USER);
+    MessageFlush::Get(Message::USER);
     return;
   }
   insn->dst_regs_.push_back(reg);

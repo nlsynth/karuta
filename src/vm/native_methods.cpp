@@ -90,7 +90,7 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
     Message::os(Message::USER) << "Invalid argument to widthof()";
-    MessageFlush(Message::USER);
+    MessageFlush::Get(Message::USER);
     return;
   }
   Value value;

@@ -8,8 +8,9 @@ using std::ostringstream;
 using std::string;
 
 // Usage:
-//  Message::os(Message::INFO) << "something happened."
-//  MessageFlush(Message::INFO); // let the destructor flush info messages.
+//  Message::os(Message::INFO) << "something happened.";
+//  // let the destructor flush info messages.
+//  MessageFlush::Get(Message::INFO);
 
 class Message {
 public:
@@ -48,6 +49,10 @@ public:
   }
   ~MessageFlush() {
     Message::Check(t_);
+  }
+  static MessageFlush Get(Message::Type t) {
+    MessageFlush m(t);
+    return m;
   }
   Message::Type t_;
 };

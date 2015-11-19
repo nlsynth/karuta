@@ -167,7 +167,7 @@ bool ArgParser::Parse(int argc, char **argv) {
     } else {
       if (arg[0] == '-') {
 	Message::os(Message::USER) << "Unknown command line flag:" << arg;
-	MessageFlush(Message::USER);
+	MessageFlush::Get(Message::USER);
 	return false;
       }
       source_files.push_back(arg);

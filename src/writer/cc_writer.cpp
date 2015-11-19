@@ -46,11 +46,11 @@ bool CCWriter::WriteModule(DModule *mod, const string &fn) {
   std::unique_ptr<std::ofstream> fos;
 
   Message::os(Message::INFO) << "output file name=" << fn;
-  MessageFlush(Message::INFO);
+  MessageFlush::Get(Message::INFO);
   fos.reset(new std::ofstream(fn));
   if (fos->fail()) {
     Message::os(Message::USER) << "failed to open " << fn;
-    MessageFlush(Message::USER);
+    MessageFlush::Get(Message::USER);
     return false;
   }
   cw.reset(new CCWriter(mod, *(fos.get())));
