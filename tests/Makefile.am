@@ -5,6 +5,7 @@ TEST01 = \
  fe_error/parse_error.n \
  fe_lang/import_file.n fe_lang/decl.n fe_lang/scope.n fe_lang/pipe.n \
  fe_lang/load.n fe_lang/funcall.n fe_lang/for.n fe_lang/if.n \
+ fe_lang/while.n \
  fe_misc/tb.n fe_misc/hello.n \
  fe_misc/parser.n fe_misc/errors.n fe_misc/misc.n \
  fe_obj/object.n \
