@@ -35,7 +35,8 @@ extern void yyerror(const char *msg);
 %type <array> ARRAY_INITIALIZER ARRAY_ELM_LIST
 %type <block> BLOCK IF_STMT FOR_STMT
 %type <block> WHILE_STMT DO_WHILE_STMT SWITCH_STMT
-%type <stmt> IF_COND_PART IF_WITH_ELSE FOR_COND_PART
+%type <stmt> IF_COND_PART IF_WITH_ELSE
+%type <stmt> FOR_COND_PART WHILE_COND_PART
 %type <var_decl_set> ARG_DECL ARG_DECL_LIST
 %type <var_decl> RETURN_TYPE
 %type <var_decl_set> RETURN_SPEC RETURN_TYPE_LIST
@@ -335,8 +336,19 @@ FOR_STMT : FOR_COND_PART ';' EXPR ')' BLOCK {
   Emitter::EndBlock();
 }
 
-WHILE_STMT : K_WHILE '(' EXPR ')' BLOCK {
-  $$ = NULL;
+WHILE_COND_PART : K_WHILE '(' EXPR ')' {
+  Emitter::BeginBlock();
+  // Emit a dummy insn before label_join so that compiler can
+  // find a insn after the label.
+  Emitter::EmitNop();
+  $$ = Emitter::EmitWhileStmt($3);
+  Emitter::EmitLabel($$->label_t_);
+}
+
+WHILE_STMT : WHILE_COND_PART BLOCK {
+  Emitter::EmitGoto($1->label_join_);
+  Emitter::EmitLabel($1->label_f_);
+  Emitter::EndBlock();
 }
 
 DO_WHILE_STMT : K_DO BLOCK K_WHILE '(' EXPR ')' {

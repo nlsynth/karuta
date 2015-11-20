@@ -994,7 +994,7 @@ vm::Register *Compiler::AllocRegister() {
 
 int Compiler::InsnIndexFromLabel(sym_t label) {
   vm::Insn *insn = label_insn_map_[label];
-  CHECK(insn);
+  CHECK(insn) << sym_cstr(label);
   // TODO(yusuke): don't do a linear search.
   for (size_t i = 0; i < method_->insns_.size(); ++i) {
     if (method_->insns_[i] == insn) {

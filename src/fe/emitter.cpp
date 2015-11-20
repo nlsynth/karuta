@@ -76,6 +76,10 @@ MethodDecl &Emitter::CurrentMethod() {
   return *(method_stack_.rbegin());
 }
 
+void Emitter::EmitNop() {
+  EmitExprStmt(Builder::NumExpr(0));
+}
+
 void Emitter::EmitExprStmt(Expr *expr) {
   CHECK(expr);
   Stmt *stmt = NewStmt(STMT_EXPR);
@@ -131,6 +135,11 @@ Stmt *Emitter::EmitForStmt(Expr *cond) {
   EmitLabel(stmt->label_join_);
   EmitStmt(stmt);
   return stmt;
+}
+
+Stmt *Emitter::EmitWhileStmt(Expr *cond) {
+  // ditto for For.
+  return EmitForStmt(cond);
 }
 
 void Emitter::EmitLabel(sym_t label) {

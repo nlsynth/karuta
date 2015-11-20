@@ -34,12 +34,14 @@ public:
   static void SetImportedResource(dfg::ImportParamSet *params);
   static void BeginBlock();
   static void EndBlock();
+  static void EmitNop();
   static void EmitExprStmt(Expr *expr);
   static void EmitImportStmt(const char *str);
   static void EmitSpawnStmt(Expr *expr);
   static void EmitVarDeclStmtSet(VarDeclSet *vds);
   static Stmt *EmitIfStmt(Expr *cond);
   static Stmt *EmitForStmt(Expr *cond);
+  static Stmt *EmitWhileStmt(Expr *cond);
   static void EmitLabel(sym_t label);
   static void EmitGoto(sym_t label);
   static void EmitReturnStmt(Expr *expr);
