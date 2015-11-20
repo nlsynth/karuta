@@ -142,6 +142,11 @@ Stmt *Emitter::EmitWhileStmt(Expr *cond) {
   return EmitForStmt(cond);
 }
 
+void Emitter::EmitDoWhileStmt(Stmt *stmt, Expr *cond) {
+  stmt->expr_ = cond;
+  EmitStmt(stmt);
+}
+
 void Emitter::EmitLabel(sym_t label) {
   Stmt *stmt = NewStmt(STMT_LABEL);
   stmt->sym_ = label;

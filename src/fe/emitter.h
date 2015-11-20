@@ -42,6 +42,7 @@ public:
   static Stmt *EmitIfStmt(Expr *cond);
   static Stmt *EmitForStmt(Expr *cond);
   static Stmt *EmitWhileStmt(Expr *cond);
+  static void EmitDoWhileStmt(Stmt *stmt, Expr *cond);
   static void EmitLabel(sym_t label);
   static void EmitGoto(sym_t label);
   static void EmitReturnStmt(Expr *expr);

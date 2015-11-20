@@ -43,6 +43,7 @@ class Builder {
   static VarDecl *ModifiedVar(Expr *var, bool is_ptr, sym_t ns);
   static VarDecl *BuildVarDecl(sym_t type, const numeric::Width *w, VarDecl *var);
   static sym_t TypeNameFromVarDeclSet(VarDeclSet *vds);
+  static Stmt *DoWhileStmt();
 
   static Stmt *NewStmt(int type);
   static Expr *NewExpr(NodeCode type);

@@ -185,4 +185,13 @@ Expr *Builder::RefExpr(Expr *addr) {
   return expr;
 }
 
+Stmt *Builder::DoWhileStmt() {
+  // Similar to Emitter::EmitForStmt(), but this doesn't emit.
+  Stmt *stmt = NewStmt(STMT_IF);
+  stmt->label_t_ = sym_alloc_tmp_sym("_t");
+  stmt->label_f_ = sym_alloc_tmp_sym("_f");
+  stmt->label_join_ = sym_alloc_tmp_sym("_join");
+  return stmt;
+}
+
 }  // namespace fe

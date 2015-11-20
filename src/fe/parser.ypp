@@ -37,6 +37,7 @@ extern void yyerror(const char *msg);
 %type <block> WHILE_STMT DO_WHILE_STMT SWITCH_STMT
 %type <stmt> IF_COND_PART IF_WITH_ELSE
 %type <stmt> FOR_COND_PART WHILE_COND_PART
+%type <stmt> DO_WHILE_HEAD DO_WHILE_BODY
 %type <var_decl_set> ARG_DECL ARG_DECL_LIST
 %type <var_decl> RETURN_TYPE
 %type <var_decl_set> RETURN_SPEC RETURN_TYPE_LIST
@@ -351,8 +352,23 @@ WHILE_STMT : WHILE_COND_PART BLOCK {
   Emitter::EndBlock();
 }
 
-DO_WHILE_STMT : K_DO BLOCK K_WHILE '(' EXPR ')' {
-  $$ = NULL;
+DO_WHILE_HEAD : K_DO {
+  Emitter::BeginBlock();
+  Emitter::EmitNop();
+  $$ = Builder::DoWhileStmt();
+  Emitter::EmitLabel($$->label_join_);
+}
+
+DO_WHILE_BODY : DO_WHILE_HEAD BLOCK {
+  $$ = $1;
+}
+
+DO_WHILE_STMT : DO_WHILE_BODY K_WHILE '(' EXPR ')' {
+  Emitter::EmitDoWhileStmt($1, $4);
+  Emitter::EmitLabel($1->label_t_);
+  Emitter::EmitGoto($1->label_join_);
+  Emitter::EmitLabel($1->label_f_);
+  Emitter::EndBlock();
 }
 
 SWITCH_STMT : K_SWITCH '(' EXPR ')' CASES_LIST {
