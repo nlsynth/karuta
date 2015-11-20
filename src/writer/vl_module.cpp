@@ -179,6 +179,9 @@ void VLModule::OutputModuleHead() {
   os_ << ");\n";
   pins_->Output(VLIOSet::PIN_TYPE, os_);
   os_ << "\n";
+
+  ostream &rs = template_->GetStream(ModuleTemplate::RESET_STATE);
+  pins_->Output(VLIOSet::REGISTER_RESET, rs);
 }
 
 void VLModule::OutputArray(const string &name, DArray *array) {

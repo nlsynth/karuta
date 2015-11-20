@@ -31,6 +31,7 @@ public:
     PIN_TYPE,
     PIN_DIRECTION,
     PIN_CONNECTION,
+    REGISTER_RESET,
   };
 
   void AddPin(const string &name, enum PinType type, int width,

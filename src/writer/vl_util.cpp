@@ -17,6 +17,12 @@ void VLIOSet::AddPin(const string &name, PinType type, int width,
 void VLIOSet::Output(OutputType type, ostream &os) {
   for (size_t i = 0; i < pins_.size(); ++i) {
     Pin &pin = pins_[i];
+    if (type == REGISTER_RESET) {
+      if (pin.type_ == VLIOSet::OUTPUT) {
+	os << "      " << pin.name_ << " <= 0;\n";
+      }
+      continue;
+    }
     if (type == PIN_NAME) {
       if (i > 0) {
 	os << ", ";

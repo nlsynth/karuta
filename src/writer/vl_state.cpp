@@ -271,7 +271,7 @@ void VLState::OutputChannelReadInsn(const DInsn *insn) {
       << "              " << SubStateRegName(insn) << " <= 3;\n"
       << "              " << pin_base << "_rdy <= 1;\n";
   OutputInsnWireToRegisterAssign(insn);
-    os_ << "            end\n"
+  os_ << "            end\n"
       << "          end ";
   os_ << "else if (" << SubStateRegName(insn) << " == 3) begin\n"
       << "            " << pin_base << "_rdy <= 0;\n"
