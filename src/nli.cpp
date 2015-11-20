@@ -9,6 +9,7 @@ using std::set;
 const char *Env::nli_dir_;
 string Env::output_root_;
 string Env::output_marker_;
+string Env::module_prefix_;
 bool Env::sandbox_mode_;
 
 const string &Env::GetVersion() {
@@ -165,4 +166,12 @@ void Env::SetOutputRootPath(const string &path) {
 
 void Env::SetOutputMarker(const string &marker) {
   output_marker_ = marker;
+}
+
+void Env::SetModulePrefix(const string &name) {
+  module_prefix_ = name;
+}
+
+const string & Env::GetModulePrefix() {
+  return module_prefix_;
 }

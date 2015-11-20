@@ -40,7 +40,6 @@ public:
 public:
   bool enable_logging_;
   vector<char *> debug_flags;
-  vector<char *> opt_flags;
   vector<string> source_files;
   set<string> log_modules;
 
@@ -59,8 +58,7 @@ public:
 private:
   void InstallTimeout();
   void ParseArgs(int argc, char **argv, ArgParser *arg_parser);
-  void ProcDebugArgs(vector<char *> &dbg_flags,
-		     vector<char *> &opt_flags);
+  void ProcDebugArgs(vector<char *> &dbg_flags);
   void RunFiles(vector<string> &files);
   void PrintUsage();
 
@@ -80,10 +78,10 @@ void Main::PrintUsage() {
   cout << " nli [-d[spcg]] scanner,parser,compiler,graph,type\n"
        << "   -l\n"
        << "   -l=[modules]\n"
-       << "   -O[optimize level]\n"
+       << "   --module_prefix [mod]\n"
+       << "   --output_marker [marker]\n"
        << "   --print_exit_status\n"
        << "   --root [path]\n"
-       << "   --output_marker [marker]\n"
        << "   --timeout [ms]\n"
        << "   --vanilla\n"
        << "   --version\n";
@@ -96,8 +94,7 @@ void Main::RunFiles(vector<string> &files) {
   fe.Run(vanilla, files);
 }
 
-void Main::ProcDebugArgs(vector<char *> &dbg_flags,
-			 vector<char *> &opt_flags) {
+void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
   for (char *flag : dbg_flags) {
     switch (*flag) {
     case 'b':
@@ -150,8 +147,6 @@ bool ArgParser::Parse(int argc, char **argv) {
       enable_logging_ = true;
     } else if (!strncmp(arg, "-d", 2)) {
       debug_flags.push_back(&arg[2]);
-    } else if (!strncmp(arg, "-O", 2)) {
-      opt_flags.push_back(&arg[2]);
     } else if (registered_flags_.find(flag_name) != registered_flags_.end()) {
       const string &canonical_flag_name = registered_flags_[flag_name];
       if (flags_with_value_.find(flag_name) != flags_with_value_.end()) {
@@ -245,6 +240,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("timeout", NULL);
   parser->RegisterValueFlag("root", NULL);
   parser->RegisterValueFlag("output_marker", NULL);
+  parser->RegisterValueFlag("module_prefix", NULL);
   parser->RegisterBoolFlag("n", NULL);
   parser->RegisterBoolFlag("z", NULL);
   if (!parser->Parse(argc, argv)) {
@@ -281,13 +277,16 @@ void Main::main(int argc, char **argv) {
   if (args.GetFlagValue("output_marker", &arg)) {
     Env::SetOutputMarker(arg);
   }
+  if (args.GetFlagValue("module_prefix", &arg)) {
+    Env::SetModulePrefix(arg);
+  }
 
   if (timeout) {
     InstallTimeout();
   }
   Logger::Init(args.enable_logging_, args.log_modules);
 
-  ProcDebugArgs(args.debug_flags, args.opt_flags);
+  ProcDebugArgs(args.debug_flags);
   string exit_status;
   LOG(INFO) << "NLI-" << Env::GetVersion();
   RunFiles(args.source_files);

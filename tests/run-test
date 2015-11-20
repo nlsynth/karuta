@@ -213,6 +213,7 @@ class NLITest():
         cmd += " --root " + tmp_prefix
         cmd += " --timeout " + timeout + " "
         cmd += " --print_exit_status "
+        cmd += " --module_prefix=mod "
         cmd += " > " + tf
         return cmd
 

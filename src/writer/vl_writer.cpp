@@ -32,7 +32,11 @@ void VLWriter::Output() {
   os_ << "// " << OutputSignature() << "\n";
   std::ostringstream ss;
   vector<string> files;
-  OutputSubModules(mod_, "mod", &files, ss);
+  string prefix = Env::GetModulePrefix();
+  if (prefix.empty()) {
+    prefix = top_module_name_;
+  }
+  OutputSubModules(mod_, prefix, &files, ss);
   std::set<string> file_set;
   for (string &fn : files) {
     file_set.insert(fn);

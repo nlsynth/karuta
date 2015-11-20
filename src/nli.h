@@ -34,12 +34,15 @@ public:
 
   static void SetOutputRootPath(const string &fn);
   static void SetOutputMarker(const string &marker);
+  static void SetModulePrefix(const string &name);
+  static const string &GetModulePrefix();
 
 private:
   static const char *nli_dir_;
   static string output_root_;
   static string output_marker_;
   static bool sandbox_mode_;
+  static string module_prefix_;
 };
 
 class Util {

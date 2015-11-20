@@ -18,7 +18,6 @@ tbfile = "tests/test_tb.v"
 voptions = ["-Ilib/"]
 nli_cmd = "./nli"
 iverilog_cmd = "iverilog"
-zfe = False
 
 for arg in sys.argv:
   if re.search("\.n$", arg):
@@ -36,8 +35,6 @@ for arg in sys.argv:
     voptions.append("-DLONG_SIM")
   if arg == "-d":
     voptions.append("-DNLI_DEBUG")
-  if arg == "-z":
-    zfe = True
 
 def run_command(args):
   cmd = " ".join(args)
@@ -49,9 +46,7 @@ def run_command(args):
 
 # run nli
 if nfile:
-  cmd = [nli_cmd, nfile]
-  if zfe:
-    cmd.append("-z")
+  cmd = [nli_cmd, nfile, "--module_prefix=mod"]
   run_command(cmd)
 else:
   print "skipping nli"

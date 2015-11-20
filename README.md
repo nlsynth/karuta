@@ -70,12 +70,34 @@ Now some computation is defined within object 'Kernel', so Neon Light Compiler c
 
 -- Command line options
 
-* -ds debug scanner
-* -dp debug parser
-* -dt debug types
-* -dc debug compiler
-* -dg debug graph (after optimization pass)
-* -O0 no optimization
+* Debug options
+    * -db debug byte code compiler
+    * -dp debug parser
+    * -ds debug scanner
+    * -dt debug types
+* -l
+    * Enable info logging.
+    * Comma separated list of modules to enable for specific files.
+* --module_prefix=[mod]
+    * Module name prefix.
+    * File name without suffix ("a" for "a.v") will be used if this is not specified.
+    * This can be used to get fixed module name for testing.
+* --output_marker=[marker]
+    * Marker string to be output before output file name.
+    * NLI server uses this to generate links from output log.
+* --print_exit_status
+    * Shows exit status at the end of execution.
+    * Test uses this to check if NLI isn't aborted.
+* --root
+    * Prefix for file output name.
+    * NLI server uses this to isolate each run.
+* --timeout
+    * Timeout of NLI command execution.
+    * Avoid infinite loop to run forever for test or NLI server.
+* --vanilla
+    * Don't read lib/default.n.
+* --version
+    * Print version number.
 
 -- Source tree
 
