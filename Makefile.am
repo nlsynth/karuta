@@ -5,7 +5,9 @@ AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
 SUBDIRS = lib docs tests
 CCRT_FILES = ccrt.h ccrt_main.cpp
 EXAMPLES_FILES= \
- examples/hello.n examples/top.n examples/tb_top.v examples/md5.n \
+ examples/hello.n examples/top.n examples/tb_top.v \
+ examples/handshake.n examples/tb_handshake.v \
+ examples/md5.n \
  examples/mt.n examples/mt_test.n examples/mt.cpp
 EXTRA_DIST = $(CCRT_FILES) $(EXAMPLES_FILES) nli run-file README.md .gitignore
 

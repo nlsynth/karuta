@@ -1,0 +1,12 @@
+object HS = Kernel.clone();
+
+channel HS.in = int;
+channel HS.out = int;
+
+def HS.main() {
+  print(*in);
+  *out = 5;
+}
+
+HS.compile();
+HS.writeHdl("handshake.v");
