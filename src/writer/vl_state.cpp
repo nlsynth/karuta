@@ -269,12 +269,12 @@ void VLState::OutputChannelReadInsn(const DInsn *insn) {
   os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
       << "            if (" << pin_base << "_en) begin\n"
       << "              " << SubStateRegName(insn) << " <= 3;\n"
-      << "              " << pin_base << "_rdy <= 1;\n";
+      << "              " << pin_base << "_ack <= 1;\n";
   OutputInsnWireToRegisterAssign(insn);
   os_ << "            end\n"
       << "          end ";
   os_ << "else if (" << SubStateRegName(insn) << " == 3) begin\n"
-      << "            " << pin_base << "_rdy <= 0;\n"
+      << "            " << pin_base << "_ack <= 0;\n"
       << "          end\n";
 }
 
@@ -282,7 +282,7 @@ void VLState::OutputChannelWriteInsn(const DInsn *insn) {
   os_ << "          // channel write\n";
   string pin_base = "channel_" + insn->resource_->name_;
   os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
-      << "            if (" << pin_base << "_rdy) begin\n"
+      << "            if (" << pin_base << "_ack) begin\n"
       << "              " << SubStateRegName(insn) << " <= 3;\n"
       << "              " << pin_base << "_en <= 1;\n";
   os_ << "              " << pin_base << "_data <= ";

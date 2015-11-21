@@ -116,12 +116,12 @@ void VLChannelWriter::MayOutputChannelConnections(DModule *mod,
     if (chan->writer_module_ == sub_mod) {
       os << "/* write */, ." << p << "_data(" << c <<"_wdata), "
 	 << "." << p << "_en(" << c << "_wdata_en), "
-	 << "." << p << "_rdy(" << c << "_wdata_rdy)";
+	 << "." << p << "_ack(" << c << "_wdata_rdy)";
     }
     if (chan->reader_module_ == sub_mod) {
       os << "/* read */, ." << p << "_data(" << c << "_rdata), "
 	 << "." << p << "_en(" << c << "_rdata_valid), "
-	 << "." << p << "_rdy(" << c << "_rdata_req)";
+	 << "." << p << "_ack(" << c << "_rdata_req)";
     }
   }
 }
