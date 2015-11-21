@@ -26,11 +26,11 @@ At first, you have to compile the interpreter (nli command).
 Run tb.n (this example outputs a.v)
 
     > $ cd examples
-    > $ ../nli tb.n
+    > $ ../nli top.n
 
 Run the output with your Verilog simulator.
 
-    > $ iverilog tb_top.v a.v
+    > $ iverilog tb_top.v top.v
     > $ ./a.out # Icarus verilog
 
 (If you do 'make install', nli command will be available at the path you specified)

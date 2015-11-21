@@ -26,11 +26,11 @@ module tb_top;
 
 `ifndef NO_DEBUG
  always @(posedge clk) begin
-   $display("time %t, %d %d", $time, rst, m.cur_st);
+   $display("time %t, %d %d", $time, rst, dut.top_main_inst.cur_st);
  end
 `endif
 
- mod_main m(.clk(clk), .rst(rst)
+ top dut(.clk(clk), .rst(rst)
 `ifndef NO_MEMORY
        ,
        .addr_o(addr), .write_en_o(write_en),
