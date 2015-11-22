@@ -1,9 +1,9 @@
 // VERILOG_OUTPUT: a.v
-def Kernel.g(int x) {
+def Kernel.g(int x) (int) {
   return x;
 }
 
-def Kernel.f(int x, int y) {
+def Kernel.f(int x, int y) (int) {
   return 10 + g(x);
 }
 
