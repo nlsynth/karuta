@@ -183,7 +183,7 @@ DRegister *MethodSynth::FindLocalVarRegister(vm::Register *zreg) {
   return dreg;
 }
 
-DRegister *MethodSynth::FindArgRegister(fe::VarDecl *arg_decl) {
+DRegister *MethodSynth::FindArgRegister(int nth, fe::VarDecl *arg_decl) {
   DType *type = NULL;
   if (arg_decl->type == sym_bool) {
     type = DTypeUtil::GetBoolType();
@@ -192,9 +192,15 @@ DRegister *MethodSynth::FindArgRegister(fe::VarDecl *arg_decl) {
   } else {
     CHECK(false);
   }
-  return DGraphUtil::FindSym(graph_,
-			     string(sym_cstr(arg_decl->name_expr->sym_)),
-			     type);
+  string reg_name(sym_cstr(arg_decl->name_expr->sym_));
+  DRegister *reg = DGraphUtil::FindSym(graph_,
+				       reg_name,
+				       type);
+  // Add as a local variable if this isn't a native method.
+  if (method_->parse_tree_) {
+    local_reg_map_[method_->method_regs_[nth]] = reg;
+  }
+  return reg;
 }
 
 void MethodSynth::ResolveJumps() {
@@ -459,7 +465,7 @@ DInsn *MethodSynth::EmitEntryInsn(vm::Method *method) {
   if (args) {
     num_args = args->decls.size();
     for (size_t i = 0; i < args->decls.size(); ++i) {
-      DRegister *reg = FindArgRegister(args->decls[i]);
+      DRegister *reg = FindArgRegister(i, args->decls[i]);
       entry_insn->inputs_.push_back(reg);
     }
   }

@@ -145,16 +145,12 @@ void ThreadSynth::CopyStates(map<DState *, DState *> &state_mapping,
   for (size_t i = 0; i < orig_states.size(); ++i) {
     DState *orig_state = orig_states[i];
     DState *new_state = state_mapping[orig_state];
-    for (list<DInsn *>::iterator it = orig_state->insns_.begin();
-	 it != orig_state->insns_.end(); ++it) {
-      DInsn *orig_insn = *it;
+    for (DInsn *orig_insn : orig_state->insns_) {
       DInsn *new_insn = DGraphUtil::InsnNew(graph_, orig_insn->resource_);
       new_insn->func_name_ = orig_insn->func_name_;
       new_state->insns_.push_back(new_insn);
       // copy target states.
-      for (vector<DState *>::iterator jt = orig_insn->targets_.begin();
-	   jt != orig_insn->targets_.end(); ++jt) {
-	DState *orig_target = *jt;
+      for (DState *orig_target : orig_insn->targets_) {
 	DState *new_target = state_mapping[orig_target];
 	new_insn->targets_.push_back(new_target);
       }

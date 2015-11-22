@@ -85,7 +85,7 @@ private:
   set<sym_t> called_functions_;
 
   DRegister *FindLocalVarRegister(vm::Register *reg);
-  DRegister *FindArgRegister(fe::VarDecl *arg_decl);
+  DRegister *FindArgRegister(int nth, fe::VarDecl *arg_decl);
   DState *AllocState();
   void ResolveJumps();
   void LinkStates();
