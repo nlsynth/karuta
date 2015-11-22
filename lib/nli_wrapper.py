@@ -70,7 +70,7 @@ def RunNLI(ofh, src):
            '--output_marker=' + marker + ' ' +
            '--timeout=3000 ' +
            srcf +
-           ' > ' + output)
+           ' > ' + output + ' 2>&1')
     os.system(cmd)
 
     ofh.write('OUTPUT:<br>\n')
