@@ -1,6 +1,6 @@
-/* string operation */
+/* string operations */
 
-p = "x";
+string p = "x";
 
 assert("x" == "x");
 assert("x" != "y");
