@@ -86,4 +86,18 @@ const string &Object::ToString() {
   return empty;
 }
 
+bool Object::Compare(Object *obj) {
+  if (object_specific_.get()) {
+    auto *od = obj->object_specific_.get();
+    if (!od) {
+      return false;
+    }
+    if (object_specific_->ObjectTypeKey() != od->ObjectTypeKey()) {
+      return false;
+    }
+    return object_specific_->Compare(obj);
+  }
+  return (this == obj);
+}
+
 }  // namespace vm

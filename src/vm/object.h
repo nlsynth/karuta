@@ -13,11 +13,13 @@ class DumpStream;
 
 namespace vm {
 
+class Object;
 class VM;
 
 class ObjectSpecificData {
 public:
   virtual ~ObjectSpecificData();
+  virtual bool Compare(Object *obj) { return false; };
   virtual const char *ObjectTypeKey();
 };
 
@@ -33,6 +35,7 @@ public:
   void LookupMemberNames(Object *obj, vector<sym_t> *slots);
   Object *Clone(VM *vm);
   const string &ToString();
+  bool Compare(Object *obj);
 
   map<sym_t, Value> members_;
 

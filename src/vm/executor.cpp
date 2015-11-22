@@ -434,10 +434,11 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
 	}
 	r = numeric::Numeric::Compare(op, frame->reg_values_[lhs].num_,
 				      frame->reg_values_[rhs].num_);
-      } else {
-	CHECK(frame->reg_values_[rhs].type_ == Value::ENUM_ITEM);
+      } else if (frame->reg_values_[rhs].type_ == Value::ENUM_ITEM) {
 	r = (frame->reg_values_[lhs].enum_val_.val ==
 	     frame->reg_values_[rhs].enum_val_.val);
+      } else {
+	r = frame->reg_values_[lhs].object_->Compare(frame->reg_values_[rhs].object_);
       }
       if (insn->op_ == OP_NE || insn->op_ == OP_GTE ||
 	  insn->op_ == OP_LTE) {

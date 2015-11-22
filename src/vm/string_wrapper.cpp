@@ -12,6 +12,11 @@ public:
   StringWrapperData(const string &str) : str_(str) {}
   string str_;
 
+  virtual bool Compare(Object *obj) {
+    auto *od = (StringWrapperData *)obj->object_specific_.get();
+    return str_ == od->str_;
+  }
+
   virtual const char *ObjectTypeKey() {
     return kStringObjectKey;
   }
