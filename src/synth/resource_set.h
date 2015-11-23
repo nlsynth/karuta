@@ -15,6 +15,7 @@ class Object;
 
 namespace dfg {
 class DGraph;
+class DInsn;
 class DResource;
 class DType;
 class ImportedResource;
@@ -40,6 +41,9 @@ public:
   DResource *FuncallResource();
   DResource *FunctionEntryResource(bool is_task_root);
   DResource *TaskFinishResource();
+  DResource *GetExtIOResource(sym_t name,
+			      ImportedResource *resource,
+			      DInsn *insn);
 
   DResource *GetOpResource(vm::OpCode op, DType *type);
   DResource *GetImportedResource(ImportedResource *resource);
@@ -80,6 +84,7 @@ private:
   vector<DResource *> imported_resources_;
   vector<DResource *> array_resources_;
   vector<DResource *> channel_resources_;
+  vector<DResource *> ext_io_resources_;
 };
 
 }  // namespace synth

@@ -57,6 +57,7 @@ void DFG::Init() {
   DOperatorUtil::InstallOperatorWithSideEffect(sym_write_channel);
   DOperatorUtil::InstallOperatorWithSideEffect(sym_task_entry);
   DOperatorUtil::InstallOperatorWithSideEffect(sym_task_finish);
+  DOperatorUtil::InstallOperatorWithSideEffect(sym_ext_io);
   // Target specific.
   DOperatorUtil::InstallOperatorWithSideEffect(sym_sram_if);
   DOperatorUtil::InstallOperator(sym_phi, true);

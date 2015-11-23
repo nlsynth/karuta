@@ -34,11 +34,21 @@ public:
   ImportedResource(ImportParamSet *params);
   ~ImportedResource();
 
+  bool IsImportedModule();
+  bool IsExtIO();
+  bool IsExtInput();
+  bool IsExtOutput();
+
+  // For imported Verilog module.
   sym_t GetResourceName();
   sym_t GetCopyFileName();
   sym_t GetModuleName();
   sym_t GetClockPinName();
   sym_t GetResetPinName();
+
+  // For external resource.
+  string GetOutputPinName();
+  string GetInputPinName();
 
   void AddPinDecl(sym_t name, bool is_out, int width);
   int GetNrPinDecls();

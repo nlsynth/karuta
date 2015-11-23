@@ -88,6 +88,12 @@ public:
   static bool IsResourceUnshareBinOp(const DResource *r);
   static bool IsResourceShareBinOp(const DResource *r);
 
+  static string GetExtOutputName(const DResource *r);
+  static int GetExtOutputWidth(const DResource *r);
+
+  static string GetExtInputName(const DResource *r);
+  static int GetExtInputWidth(const DResource *r);
+
 private:
   static string WidthType(const DType *type);
 };

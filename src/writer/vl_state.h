@@ -46,6 +46,7 @@ private:
   void OutputInsnWireToRegisterAssign(const DInsn *insn);
   void OutputRegisterValue(const DRegister *reg);
   void OutputSubModuleCall(const DInsn *insn);
+  void OutputExtIO(const DInsn *insn);
   void OutputTaskFinish(const DInsn *insn);
   void OutputSubModuleArgs(const DInsn *insn);
   void CollectSubState(string *state_guard, string *initialize);

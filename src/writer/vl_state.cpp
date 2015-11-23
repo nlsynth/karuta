@@ -8,6 +8,7 @@
 #include <string>
 
 #include "dfg/dfg.h"
+#include "dfg/imported_resource.h"
 #include "messages.h"
 #include "nli.h"
 #include "writer/module_template.h"
@@ -182,10 +183,28 @@ void VLState::OutputInsn(const DInsn *insn) {
     OutputTaskFinish(insn);
   } else if (type == sym_sub_module_call) {
     OutputSubModuleCall(insn);
+  } else if (type == sym_ext_io) {
+    OutputExtIO(insn);
   } else if (type == sym_task_entry) {
     CHECK(graph_->owner_module_->module_type_ == DModule::MODULE_TASK);
   } else {
     VLWriter::ICE("unknown type of insn", type);
+  }
+}
+
+void VLState::OutputExtIO(const DInsn *insn) {
+  const DResource *res = insn->resource_;
+  if (res->imported_resource_->IsExtOutput()) {
+    os_ << "          " << VLUtil::GetExtOutputName(res) << " <= ";
+    OutputRegisterValue(*(insn->inputs_.begin()));
+    os_ << ";\n";
+  }
+  if (res->imported_resource_->IsExtInput()) {
+    // TODO(yusuke): Fix if LHS is a wire.
+    os_ << "          ";
+    OutputRegisterValue(*(insn->outputs_.begin()));
+    os_<< " <= " << VLUtil::GetExtInputName(res);
+    os_ << ";\n";
   }
 }
 

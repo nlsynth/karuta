@@ -50,6 +50,11 @@ bool MethodSynth::Synth() {
     SynthNativeMethod(method_);
     return true;
   }
+  if (method_->parse_tree_->imported_resource_ &&
+      method_->parse_tree_->imported_resource_->IsExtIO()) {
+    SynthExtIOResource();
+    return true;
+  }
   compiler::Compiler::CompileMethod(vm_, obj_,
 				    method_->parse_tree_,
 				    method_);
@@ -164,6 +169,17 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   }
 }
 
+DType *MethodSynth::GetTypeFromValueReg(vm::Register *vreg) {
+  DType *type;
+  if (vreg->type_.value_type_ == vm::Value::NUM) {
+    type = DTypeUtil::GetIntType(numeric::Width::GetWidth(vreg->type_.width_));
+  } else {
+    CHECK(vreg->type_.value_type_ == vm::Value::ENUM_ITEM);
+    type = DTypeUtil::GetBoolType();
+  }
+  return type;
+}
+  
 DRegister *MethodSynth::FindLocalVarRegister(vm::Register *zreg) {
   DRegister *dreg = local_reg_map_[zreg];
   if (dreg) {
@@ -171,13 +187,7 @@ DRegister *MethodSynth::FindLocalVarRegister(vm::Register *zreg) {
   }
   char name[10];
   sprintf(name, "r%d_", zreg->id_);
-  DType *type;
-  if (zreg->type_.value_type_ == vm::Value::NUM) {
-    type = DTypeUtil::GetIntType(numeric::Width::GetWidth(zreg->type_.width_));
-  } else {
-    CHECK(zreg->type_.value_type_ == vm::Value::ENUM_ITEM);
-    type = DTypeUtil::GetBoolType();
-  }
+  DType *type = GetTypeFromValueReg(zreg);
   dreg = DGraphUtil::FindSym(graph_, string(name) + method_name_, type);
   local_reg_map_[zreg] = dreg;
   return dreg;
@@ -197,7 +207,8 @@ DRegister *MethodSynth::FindArgRegister(int nth, fe::VarDecl *arg_decl) {
 				       reg_name,
 				       type);
   // Add as a local variable if this isn't a native method.
-  if (method_->parse_tree_) {
+  if (method_->parse_tree_ &&
+      !method_->parse_tree_->imported_resource_) {
     local_reg_map_[method_->method_regs_[nth]] = reg;
   }
   return reg;
@@ -471,11 +482,24 @@ DInsn *MethodSynth::EmitEntryInsn(vm::Method *method) {
   }
   // Task root uses task_finish insn instead.
   if (!is_task_root_) {
+    bool is_ext_io = false;
+    if ((method_->parse_tree_ &&
+	 method_->parse_tree_->imported_resource_ &&
+	 method_->parse_tree_->imported_resource_->IsExtIO())) {
+      is_ext_io = true;
+    }
     fe::VarDeclSet *rets = method->parse_tree_->returns_;
     if (rets) {
       for (size_t i = 0; i < rets->decls.size(); ++i) {
-	vm::Register *zreg = method->method_regs_[i + num_args];
-	entry_insn->outputs_.push_back(FindLocalVarRegister(zreg));
+	if (is_ext_io) {
+	  vm::Register *vreg = method->method_regs_[i + num_args];
+	  DType *type = GetTypeFromValueReg(vreg);
+	  DRegister *reg = DGraphUtil::AllocTmpReg(graph_, type);
+	  entry_insn->outputs_.push_back(reg);
+	} else {
+	  vm::Register *vreg = method->method_regs_[i + num_args];
+	  entry_insn->outputs_.push_back(FindLocalVarRegister(vreg));
+	}
       }
     }
   }
@@ -641,6 +665,24 @@ set<sym_t> MethodSynth::GetCalledFunctions() {
 
 vector<DState *> &MethodSynth::AllStates() {
   return all_states_;
+}
+
+void MethodSynth::SynthExtIOResource() {
+  DInsn *entry_insn = EmitEntryInsn(method_);
+  DResource *resource =
+    resource_->GetExtIOResource(sym_lookup(method_name_),
+				method_->parse_tree_->imported_resource_,
+				entry_insn);
+  DState *state = AllocState();
+  DInsn *d_insn = DGraphUtil::InsnNew(graph_, resource);
+  state->insns_.push_back(d_insn);
+  for (size_t i = 0; i < entry_insn->inputs_.size(); ++i) {
+    d_insn->inputs_.push_back(entry_insn->inputs_[i]);
+  }
+  for (size_t i = 0; i < entry_insn->outputs_.size(); ++i) {
+    d_insn->outputs_.push_back(entry_insn->outputs_[i]);
+  }
+  LinkStates();
 }
 
 void MethodSynth::SynthNativeMethod(vm::Method *method) {

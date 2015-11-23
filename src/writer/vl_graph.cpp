@@ -629,7 +629,8 @@ void VLGraph::OutputImportedModuleInstancesAll() {
   os_ << "  // imported modules begin\n";
   //
   for (DResource *r : graph_->resources_) {
-    if (!r->imported_resource_) {
+    if (!r->imported_resource_ ||
+	!r->imported_resource_->IsImportedModule()) {
       continue;
     }
     sym_t mod_name = r->imported_resource_->GetModuleName();

@@ -112,6 +112,7 @@ private:
   void SynthChannelRead(vm::Insn *insn);
   void SynthChannelWrite(vm::Insn *insn);
 
+  DType *GetTypeFromValueReg(vm::Register *vreg);
   DInsn *EmitEntryInsn(vm::Method *method);
   void EmitTaskFinishInsn();
   void EmitOneAssign(vm::Register *lhs, vm::Register *rhs);
@@ -120,6 +121,7 @@ private:
 			       sym_t array_name);
 
   void SynthNativeMethod(vm::Method *method);
+  void SynthExtIOResource();
 
   void GenNeg(DRegister *src, DRegister *dst);
   // used for shift and range select operator.

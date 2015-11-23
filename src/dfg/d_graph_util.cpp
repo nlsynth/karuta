@@ -317,6 +317,14 @@ DType *DTypeUtil::GetBoolType() {
   return bool_type;
 }
 
+int DTypeUtil::GetWidth(DType *type) {
+  if (type->type_ == DType::ENUM) {
+    CHECK(type->size_ == 2);
+    return 1;
+  }
+  return type->size_;
+}
+
 DOperator *DOperatorUtil::FindOperator(sym_t opr) {
   std::list<DOperator *>::iterator it;
   for (it = operators.begin(); it != operators.end(); it++) {

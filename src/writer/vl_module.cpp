@@ -48,7 +48,8 @@ void VLModule::Output(vector<string> *copy_files) {
 void VLModule::OutputExternalStuff(vector<string> *copy_files) {
   if (mod_->graph_) {
     for (DResource *r : mod_->graph_->resources_) {
-      if (r->imported_resource_) {
+      if (r->imported_resource_ &&
+	  r->imported_resource_->IsImportedModule()) {
 	// imported resource
 	sym_t fn = r->imported_resource_->GetCopyFileName();
 	copy_files->push_back(sym_cstr(fn));
@@ -145,6 +146,23 @@ void VLModule::CollectPinDecls() {
     pins_->AddPin("write_en_o", VLIOSet::OUTPUT, 0, c);
     pins_->AddPin("data_o", VLIOSet::OUTPUT, 32, c);
     pins_->AddPin("data_i", VLIOSet::INPUT, 32, c);
+  }
+
+  for (DResource *r : mod_->graph_->resources_) {
+    if (r->opr_->type_ == sym_ext_io) {
+      if (r->imported_resource_->IsExtOutput()) {
+	string o = VLUtil::GetExtOutputName(r);
+	if (!o.empty()) {
+	  pins_->AddPin(o, VLIOSet::OUTPUT, VLUtil::GetExtOutputWidth(r), "");
+	}
+      }
+      if (r->imported_resource_->IsExtInput()) {
+	string i = VLUtil::GetExtInputName(r);
+	if (!i.empty()) {
+	  pins_->AddPin(i, VLIOSet::INPUT, VLUtil::GetExtInputWidth(r), "");
+	}
+      }
+    }
   }
 }
 

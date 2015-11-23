@@ -48,6 +48,44 @@ ImportedResource::~ImportedResource() {
   delete params_;
 }
 
+bool ImportedResource::IsImportedModule() {
+  if (LookupParam(sym_verilog)) {
+    return true;
+  }
+  return false;
+}
+
+string ImportedResource::GetOutputPinName() {
+  sym_t o = LookupSymParam(sym_output, sym_null);
+  return string(sym_cstr(o));
+}
+
+string ImportedResource::GetInputPinName() {
+  sym_t i = LookupSymParam(sym_input, sym_null);
+  return string(sym_cstr(i));
+}
+
+bool ImportedResource::IsExtIO() {
+  if (LookupParam(sym_output) || LookupParam(sym_input)) {
+    return true;
+  }
+  return false;
+}
+
+bool ImportedResource::IsExtInput() {
+  if (LookupParam(sym_input)) {
+    return true;
+  }
+  return false;
+}
+
+bool ImportedResource::IsExtOutput() {
+  if (LookupParam(sym_output)) {
+    return true;
+  }
+  return false;
+}
+
 sym_t ImportedResource::LookupSymParam(sym_t key, sym_t dflt) {
   ImportParam *p = LookupParam(key);
   if (!p) {

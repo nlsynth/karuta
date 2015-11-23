@@ -68,6 +68,7 @@ public:
   static DType *GetBoolType();
   static DType *FindDType(enum DType::TypeClass type, int width);
   static bool IsCompatibleType(DType *src, DType *type);
+  static int GetWidth(DType *type);
 
   static void ReleaseTypes();
 private:

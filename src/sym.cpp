@@ -54,6 +54,7 @@ sym_t sym_channel, sym_read_channel, sym_write_channel;
 sym_t sym_sram_if, sym_bit_sel, sym_imported, sym_sub_module_call;
 sym_t sym_task_entry, sym_task_finish;
 sym_t sym_array_ref, sym_phi, sym_selector;
+sym_t sym_ext_io, sym_output, sym_input;
 
 static int str_hash(const char *str) {
   int h = 0;
@@ -205,4 +206,7 @@ void sym_table_init(void) {
   sym_array_ref = sym_lookup("array_ref");
   sym_phi = sym_lookup("phi");
   sym_selector = sym_lookup("selector");
+  sym_ext_io = sym_lookup("ext_io");
+  sym_output = sym_lookup("output");
+  sym_input = sym_lookup("input");
 }

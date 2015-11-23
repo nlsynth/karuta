@@ -1,6 +1,7 @@
 #include "writer/vl_util.h"
 
 #include "dfg/dfg.h"
+#include "dfg/imported_resource.h"
 
 namespace writer {
 
@@ -224,6 +225,24 @@ bool VLUtil::IsResourceUnshareUniOp(const DResource *r) {
     return true;
   }
   return false;
+}
+
+string VLUtil::GetExtOutputName(const DResource *r) {
+  return "ext_" + r->imported_resource_->GetOutputPinName();
+}
+
+int VLUtil::GetExtOutputWidth(const DResource *r) {
+  CHECK(r->input_types_.size() == 1);
+  return DTypeUtil::GetWidth(r->input_types_[0]);
+}
+
+string VLUtil::GetExtInputName(const DResource *r) {
+  return "ext_" + r->imported_resource_->GetInputPinName();
+}
+
+int VLUtil::GetExtInputWidth(const DResource *r) {
+  CHECK(r->output_types_.size() == 1);
+  return DTypeUtil::GetWidth(r->output_types_[0]);
 }
 
 }  // namespace writer

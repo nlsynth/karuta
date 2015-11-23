@@ -55,6 +55,27 @@ DResource *ResourceSet::TaskFinishResource() {
   return task_finish_;
 }
 
+DResource *ResourceSet::GetExtIOResource(sym_t name,
+					 ImportedResource *resource,
+					 DInsn *insn) {
+  for (size_t i = 0; i < ext_io_resources_.size(); ++i) {
+    if (ext_io_resources_[i]->name_ == sym_cstr(name)) {
+      return ext_io_resources_[i];
+    }
+  }
+  DResource *res = DGraphUtil::AllocResource(graph_, sym_ext_io);
+  res->name_ = sym_cstr(name);
+  res->imported_resource_ = resource;
+  for (DRegister *input : insn->inputs_) {
+    res->input_types_.push_back(input->data_type_);
+  }
+  for (DRegister *output : insn->outputs_) {
+    res->output_types_.push_back(output->data_type_);
+  }
+  ext_io_resources_.push_back(res);
+  return res;
+}
+
 DResource *ResourceSet::GetOpResource(vm::OpCode op, DType *type) {
   // Remap.
   switch (op) {
