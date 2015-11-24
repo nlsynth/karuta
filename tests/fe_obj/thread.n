@@ -1,0 +1,15 @@
+int Kernel.x = 9;
+
+object M = Kernel.clone();
+int M.x = 10;
+
+def M.f() {
+  // *this* should be M.
+  assert(x == 10);
+  x++;
+}
+
+thread M.t = f();
+
+M.run();
+assert(Kernel.x == 9);
