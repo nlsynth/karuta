@@ -40,11 +40,11 @@ public:
   bool IsExtOutput();
 
   // For imported Verilog module.
-  sym_t GetResourceName();
-  sym_t GetCopyFileName();
-  sym_t GetModuleName();
-  sym_t GetClockPinName();
-  sym_t GetResetPinName();
+  string GetResourceName();
+  string GetCopyFileName();
+  string GetModuleName();
+  string GetClockPinName();
+  string GetResetPinName();
 
   // For external resource.
   string GetOutputPinName();
@@ -55,7 +55,7 @@ public:
   bool GetNthPinDecl(int nth, ImportedResource_pin *decl);
 
 private:
-  sym_t LookupSymParam(sym_t key, sym_t dflt);
+  string LookupStrParam(sym_t key, string dflt);
   ImportParam *LookupParam(sym_t key);
 
   ImportParamSet *params_;

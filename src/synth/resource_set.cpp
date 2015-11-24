@@ -145,7 +145,7 @@ sym_t ResourceSet::GetResourceType(vm::OpCode op) {
 }
 
 DResource *ResourceSet::GetImportedResource(ImportedResource *resource) {
-  string name(sym_cstr(resource->GetResourceName()));
+  string name = resource->GetResourceName();
   for (size_t i = 0; i < imported_resources_.size(); ++i) {
     DResource *res = imported_resources_[i];
     if (res->opr_->type_ == sym_imported && res->name_ == name) {

@@ -16,7 +16,7 @@ static Pool<ImportedResource> imported_resource_pool;
 
 class ImportParam {
 public:
-  sym_t GetNthSym(int nth);
+  string GetNthValue(int nth);
 
   sym_t key_;
   vector <string> values_;
@@ -28,11 +28,11 @@ public:
   vector<ImportParam *> params_;
 };
 
-sym_t ImportParam::GetNthSym(int nth) {
+string ImportParam::GetNthValue(int nth) {
   if (nth < values_.size()) {
-    return sym_lookup(values_[nth].c_str());
+    return values_[nth];
   }
-  return sym_null;
+  return "";
 }
 
 ImportParamSet::~ImportParamSet() {
@@ -56,13 +56,11 @@ bool ImportedResource::IsImportedModule() {
 }
 
 string ImportedResource::GetOutputPinName() {
-  sym_t o = LookupSymParam(sym_output, sym_null);
-  return string(sym_cstr(o));
+  return LookupStrParam(sym_output, "");
 }
 
 string ImportedResource::GetInputPinName() {
-  sym_t i = LookupSymParam(sym_input, sym_null);
-  return string(sym_cstr(i));
+  return LookupStrParam(sym_input, "");
 }
 
 bool ImportedResource::IsExtIO() {
@@ -86,12 +84,12 @@ bool ImportedResource::IsExtOutput() {
   return false;
 }
 
-sym_t ImportedResource::LookupSymParam(sym_t key, sym_t dflt) {
+string ImportedResource::LookupStrParam(sym_t key, string dflt) {
   ImportParam *p = LookupParam(key);
   if (!p) {
     return dflt;
   }
-  return p->GetNthSym(0);
+  return p->GetNthValue(0);
 }
 
 ImportParam *ImportedResource::LookupParam(sym_t key) {
@@ -103,34 +101,34 @@ ImportParam *ImportedResource::LookupParam(sym_t key) {
   return NULL;
 }
 
-sym_t ImportedResource::GetResourceName() {
-  return LookupSymParam(sym_resource, sym_null);
+string ImportedResource::GetResourceName() {
+  return LookupStrParam(sym_resource, "");
 }
 
-sym_t ImportedResource::GetCopyFileName() {
-  sym_t file = LookupSymParam(sym_file, sym_null);
-  if (file != sym_copy) {
-    return sym_null;
+string ImportedResource::GetCopyFileName() {
+  string file = LookupStrParam(sym_file, "");
+  if (file != "copy") {
+    return "";
   }
   ImportParam *p = LookupParam(sym_verilog);
   if (!p) {
     std::cout << "source file to be copied is not specified.\n";
     abort();
-    return sym_null;
+    return "";
   }
-  return p->GetNthSym(0);
+  return p->GetNthValue(0);
 }
 
-sym_t ImportedResource::GetModuleName() {
-  return LookupSymParam(sym_module, sym_null);
+string ImportedResource::GetModuleName() {
+  return LookupStrParam(sym_module, "");
 }
 
-sym_t ImportedResource::GetClockPinName() {
-  return LookupSymParam(sym_clock, sym_lookup("clk"));
+string ImportedResource::GetClockPinName() {
+  return LookupStrParam(sym_clock, "clk");
 }
 
-sym_t ImportedResource::GetResetPinName() {
-  return LookupSymParam(sym_reset, sym_lookup("rst"));
+string ImportedResource::GetResetPinName() {
+  return LookupStrParam(sym_reset, "rst");
 }
 
 void ImportedResource::AddPinDecl(sym_t name, bool is_out, int width) {

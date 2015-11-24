@@ -51,8 +51,10 @@ void VLModule::OutputExternalStuff(vector<string> *copy_files) {
       if (r->imported_resource_ &&
 	  r->imported_resource_->IsImportedModule()) {
 	// imported resource
-	sym_t fn = r->imported_resource_->GetCopyFileName();
-	copy_files->push_back(sym_cstr(fn));
+	string fn = r->imported_resource_->GetCopyFileName();
+	if (!fn.empty()) {
+	  copy_files->push_back(fn);
+	}
       }
       if (r->array_) {
 	// array

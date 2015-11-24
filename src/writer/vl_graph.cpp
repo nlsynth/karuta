@@ -642,14 +642,14 @@ void VLGraph::OutputImportedModuleInstancesAll() {
 	!r->imported_resource_->IsImportedModule()) {
       continue;
     }
-    sym_t mod_name = r->imported_resource_->GetModuleName();
-    sym_t clk_name = r->imported_resource_->GetClockPinName();
-    sym_t rst_name = r->imported_resource_->GetResetPinName();
-    os_ << "  " << sym_cstr(mod_name) << " ";
+    string mod_name = r->imported_resource_->GetModuleName();
+    string clk_name = r->imported_resource_->GetClockPinName();
+    string rst_name = r->imported_resource_->GetResetPinName();
+    os_ << "  " << mod_name << " ";
     os_ << r->name_ << "_inst";
     os_ << r->resource_id_ << "(";
-    os_ << "." << sym_cstr(clk_name) << "(clk), ";
-    os_ << "." << sym_cstr(rst_name) << "(rst), ";
+    os_ << "." << clk_name << "(clk), ";
+    os_ << "." << rst_name << "(rst), ";
     os_ << ".req(";
     os_ << r->name_ << r->resource_id_ << "_en)";
     OutputImportedModulePin(r);
