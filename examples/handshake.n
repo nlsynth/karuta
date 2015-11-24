@@ -1,5 +1,23 @@
 object HS = Kernel.clone();
 
+// Output channel:
+//
+// clk(I)   _|~|_|~|_|~|_|~|_|~|_|~|_|~|_|~|_|~|_|~|
+// data(O)  ?        /d0 /   /d1 /           /d2
+// en(O)    ?        /~~~\   /~~~\           /~~~\
+// rdy(I)   _____/~~~~~~~X~~~~~~~\___/~~~~~~~~~~~
+//
+// NL write channel outputs a data when it sees rdy is high.
+
+// Input channel:
+//
+// clk(I)   _|~|_|~|_|~|_|~|_|~|_|~|_|~|_|~|_|~|_|~|
+// data(I)  ?    /d0     / d1    /   /d2
+// en(I)    _____/~~~~~~~X~~~~~~~\___/~~~~~~~~~~~
+// ack(O)   ?        /~~~\   /~~~\           /~~~\
+//
+// NL read channel asserts ack high for 1 clock.
+
 channel HS.in = int;
 channel HS.out = int;
 

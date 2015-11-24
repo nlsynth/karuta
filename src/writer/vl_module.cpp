@@ -132,7 +132,7 @@ void VLModule::CollectPinDecls() {
       CHECK(chan->reader_module_ != mod_);
       pins_->AddPin(channel_base + "_data", VLIOSet::OUTPUT, width, c);
       pins_->AddPin(channel_base + "_en", VLIOSet::OUTPUT, 0, c);
-      pins_->AddPin(channel_base + "_ack", VLIOSet::INPUT, 0, c);
+      pins_->AddPin(channel_base + "_rdy", VLIOSet::INPUT, 0, c);
     } else if (chan->reader_module_ == mod_) {
       CHECK(chan->writer_module_ != mod_);
       pins_->AddPin(channel_base + "_data", VLIOSet::INPUT, width, c);

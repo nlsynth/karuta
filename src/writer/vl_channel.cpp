@@ -77,7 +77,7 @@ void VLChannelWriter::OutputChannelWires(DModule *mod, ostream &os) {
        << "  wire " << c << "_wdata_rdy;\n"
        << "  wire [" << (width - 1) << ":0] " << c << "_rdata;\n"
        << "  wire " << c << "_rdata_valid;\n"
-       << "  wire " << c << "_rdata_req;\n"
+       << "  wire " << c << "_rdata_ack;\n"
        << "\n";
   }
 }
@@ -102,7 +102,7 @@ void VLChannelWriter::OutputChannelInstances(DModule *mod, ostream &os) {
        << "_wdata_en), .wdata_rdy("<< c <<"_wdata_rdy),\n"
        << "    .rdata("<< c << "_rdata), "
        << ".rdata_valid("<< c << "_rdata_valid), "
-       << ".rdata_req("<< c <<"_rdata_req));\n";
+       << ".rdata_req("<< c <<"_rdata_ack));\n";
   }
 }
 
@@ -116,12 +116,12 @@ void VLChannelWriter::MayOutputChannelConnections(DModule *mod,
     if (chan->writer_module_ == sub_mod) {
       os << "/* write */, ." << p << "_data(" << c <<"_wdata), "
 	 << "." << p << "_en(" << c << "_wdata_en), "
-	 << "." << p << "_ack(" << c << "_wdata_rdy)";
+	 << "." << p << "_rdy(" << c << "_wdata_rdy)";
     }
     if (chan->reader_module_ == sub_mod) {
       os << "/* read */, ." << p << "_data(" << c << "_rdata), "
 	 << "." << p << "_en(" << c << "_rdata_valid), "
-	 << "." << p << "_ack(" << c << "_rdata_req)";
+	 << "." << p << "_ack(" << c << "_rdata_ack)";
     }
   }
 }
