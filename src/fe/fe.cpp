@@ -216,7 +216,7 @@ void FE::RunFile(const string &file, vm::VM *vm) {
   if (!method) {
     return;
   }
-  vm->AddThreadFromMethod(NULL, method);
+  vm->AddThreadFromMethod(NULL, vm->kernel_object_, method);
   vm->Run();
 }
 

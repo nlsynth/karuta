@@ -16,12 +16,12 @@ namespace vm {
 
 bool Thread::dbg_bytecode_;
 
-Thread::Thread(VM *vm, Thread *parent, Method *method)
+Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method)
   : vm_(vm), parent_thread_(parent),
     executor_(new Executor(this)),
     executor_toplevel_(new ExecutorToplevel(this)) {
   stat_ = RUNNABLE;
-  PushMethodFrame(vm_->kernel_object_, method);
+  PushMethodFrame(obj, method);
 }
 
 Thread::~Thread() {

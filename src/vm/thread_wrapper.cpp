@@ -32,11 +32,12 @@ void ThreadWrapper::Run(VM *vm, Object *obj) {
   for (size_t i = 0; i < methods.size(); ++i) {
     Value *method_value = obj->LookupValue(sym_lookup(methods[i].method_name.c_str()), false);
     CHECK(method_value && method_value->type_ == Value::METHOD);
-    vm->AddThreadFromMethod(NULL, method_value->method_);
+    vm->AddThreadFromMethod(NULL, obj, method_value->method_);
   }
 }
 
-void ThreadWrapper::GetThreadMethods(Object *obj, vector<ThreadEntry> *methods) {
+void ThreadWrapper::GetThreadMethods(Object *obj,
+				     vector<ThreadEntry> *methods) {
   for (map<sym_t, Value>::iterator it = obj->members_.begin();
        it != obj->members_.end(); ++it) {
     Value &value = it->second;

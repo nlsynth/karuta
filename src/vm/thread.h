@@ -19,7 +19,7 @@ class VM;
 
 class Thread {
 public:
-  Thread(VM *vm, Thread *parent, Method *method);
+  Thread(VM *vm, Thread *parent, Object *obj, Method *method);
   ~Thread();
 
   void Run();

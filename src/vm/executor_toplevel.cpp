@@ -128,7 +128,7 @@ void ExecutorToplevel::ExecImport(Insn *insn) {
     thr_->UserError();
     return;
   }
-  vm->AddThreadFromMethod(thr_, method);
+  vm->AddThreadFromMethod(thr_, vm->kernel_object_, method);
   thr_->Suspend();
 }
 
@@ -137,7 +137,7 @@ void ExecutorToplevel::ExecSpawn(MethodFrame *frame, Insn *insn) {
   Object *obj;
   Method *method = LookupMethod(frame, insn, &obj);
   CHECK(method) << "no method";
-  vm->AddThreadFromMethod(NULL, method);
+  vm->AddThreadFromMethod(NULL, obj, method);
 }
 
 void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,

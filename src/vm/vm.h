@@ -28,7 +28,7 @@ public:
   ~VM();
 
   void Run();
-  void AddThreadFromMethod(Thread *parent, Method *method);
+  void AddThreadFromMethod(Thread *parent, Object *object, Method *method);
   IntArray *GetDefaultMemory();
 
   Method *NewMethod(bool is_toplevel);

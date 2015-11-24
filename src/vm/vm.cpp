@@ -47,8 +47,8 @@ void VM::Run() {
   Message::CheckAll();
 }
 
-void VM::AddThreadFromMethod(Thread *parent, Method *method) {
-  Thread *thread = new Thread(this, parent, method);
+void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method) {
+  Thread *thread = new Thread(this, parent, object, method);
   threads_.insert(thread);
 }
 
