@@ -294,16 +294,14 @@ void VLState::OutputChannelWriteInsn(const DInsn *insn) {
   os_ << "          // channel write\n";
   string pin_base = "channel_" + insn->resource_->name_;
   os_ << "          if (" << SubStateRegName(insn) << " == 0) begin\n"
-      << "            if (" << pin_base << "_rdy) begin\n"
-      << "              " << SubStateRegName(insn) << " <= 3;\n"
-      << "              " << pin_base << "_en <= 1;\n";
-  os_ << "              " << pin_base << "_data <= ";
+      << "            " << pin_base << "_en <= 1;\n"
+      << "            " << pin_base << "_data <= ";
   OutputRegisterValue(*(insn->inputs_.begin()));
   os_ << ";\n";
+  os_ << "            if (" << pin_base << "_ack) begin\n"
+      << "              " << SubStateRegName(insn) << " <= 3;\n"
+      << "              " << pin_base << "_en <= 0;\n";
   os_ << "            end\n"
-      << "          end ";
-  os_ << "else if (" << SubStateRegName(insn) << " == 3) begin\n"
-      << "            " << pin_base << "_en <= 0;\n"
       << "          end\n";
 }
 

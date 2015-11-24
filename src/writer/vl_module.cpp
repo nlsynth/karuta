@@ -132,7 +132,7 @@ void VLModule::CollectPinDecls() {
       CHECK(chan->reader_module_ != mod_);
       pins_->AddPin(channel_base + "_data", VLIOSet::OUTPUT, width, c);
       pins_->AddPin(channel_base + "_en", VLIOSet::OUTPUT, 0, c);
-      pins_->AddPin(channel_base + "_rdy", VLIOSet::INPUT, 0, c);
+      pins_->AddPin(channel_base + "_ack", VLIOSet::INPUT, 0, c);
     } else if (chan->reader_module_ == mod_) {
       CHECK(chan->writer_module_ != mod_);
       pins_->AddPin(channel_base + "_data", VLIOSet::INPUT, width, c);
@@ -184,7 +184,7 @@ void VLModule::GenerateSubModuleInstances() {
 	GenerateSubModuleControl(sub_sub_module, has_graph, os);
       }
     }
-    VLChannelWriter::MayOutputChannelConnections(mod_, sub_module, os);
+    VLChannelWriter::MaybeOutputChannelConnections(mod_, sub_module, os);
     os << ");\n";
   }
 }
@@ -338,7 +338,7 @@ void VLModule::OutputVLModule() {
   os_ << template_->GetContents(ModuleTemplate::SUB_MODULE_INSTANCES);
   os_ << "  // sub modules end\n";
 
-  VLChannelWriter::OutputChannelInstances(mod_, os_);
+  ch_->OutputChannelInstances(mod_, os_);
 
   os_ << "\n"
       << "endmodule\n";

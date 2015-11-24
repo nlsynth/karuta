@@ -36,7 +36,8 @@ void VLWriter::Output() {
   if (prefix.empty()) {
     prefix = top_module_name_;
   }
-  OutputSubModules(mod_, prefix, &files, ss);
+  VLChannelWriter ch(prefix);
+  OutputSubModulesRec(mod_, prefix, &ch, &files, ss);
   std::set<string> file_set;
   for (string &fn : files) {
     file_set.insert(fn);
@@ -49,14 +50,14 @@ void VLWriter::Output() {
   os_ << ss.str();
 }
 
-void VLWriter::OutputSubModules(DModule *dm, const string &path_name,
-				vector<string> *files, ostream &os) {
+void VLWriter::OutputSubModulesRec(DModule *dm, const string &path_name,
+				   VLChannelWriter *ch,
+				   vector<string> *files, ostream &os) {
   string cur_path = path_name + "_" + dm->module_name_;
   for (DModule *sub_module : dm->sub_modules_) {
-    OutputSubModules(sub_module, cur_path, files, os);
+    OutputSubModulesRec(sub_module, cur_path, ch, files, os);
   }
-  VLChannelWriter ch;
-  VLModule mod(dm, path_name, &ch, os);
+  VLModule mod(dm, path_name, ch, os);
   mod.Output(files);
 
   if (!dm->parent_mod_ && mod.GetModuleName() != top_module_name_) {

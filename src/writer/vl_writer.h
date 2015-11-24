@@ -10,6 +10,7 @@ class DModule;
 
 namespace writer {
 
+class VLChannelWriter;
 class VLModule;
 
 class VLWriter : public Writer {
@@ -24,8 +25,9 @@ public:
 private:
   const string &top_module_name_;
 
-  void OutputSubModules(DModule *mod, const string &path_name,
-			vector<string> *files, ostream &os);
+  void OutputSubModulesRec(DModule *mod, const string &path_name,
+			   VLChannelWriter *ch,
+			   vector<string> *files, ostream &os);
   void OutputTopLevelWrapper(VLModule *module_writer, ostream &os);
 };
 
