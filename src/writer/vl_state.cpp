@@ -199,13 +199,6 @@ void VLState::OutputExtIO(const DInsn *insn) {
     OutputRegisterValue(*(insn->inputs_.begin()));
     os_ << ";\n";
   }
-  if (res->imported_resource_->IsExtInput()) {
-    // TODO(yusuke): Fix if LHS is a wire.
-    os_ << "          ";
-    OutputRegisterValue(*(insn->outputs_.begin()));
-    os_<< " <= " << VLUtil::GetExtInputName(res);
-    os_ << ";\n";
-  }
 }
 
 void VLState::OutputTransition(DGraph *g, DState *st) {

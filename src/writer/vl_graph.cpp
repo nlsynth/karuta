@@ -576,6 +576,15 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
 	  << ";\n";
     }
   }
+  if (type == sym_ext_io) {
+    if (insn->resource_->imported_resource_->IsExtInput()) {
+      os_ << "  assign "
+	  << VLState::InsnOutputWireName(insn, 0)
+	  << " = ext_"
+	  << insn->resource_->imported_resource_->GetInputPinName()
+	  << ";\n";
+    }
+  }
 }
 
 void VLGraph::OutputInsnWiresAll() {
