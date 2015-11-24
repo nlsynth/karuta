@@ -39,15 +39,7 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         self.end_headers()
 
         qs = urlparse.parse_qs(urlparse.urlparse(self.path).query)
-        tf = tempfile.mktemp()
-        tfh = open(tf, 'w')
-        nli_wrapper.Render(tfh, False, qs)
-        tfh.close()
-
-        rf = open(tf, 'r')
-        for line in rf:
-            self.wfile.write(line)
-        os.unlink(tf)
+        nli_wrapper.Render(self.wfile, False, qs)
 
     def do_POST(self):
         # DIR, PATH
