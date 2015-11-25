@@ -19,7 +19,7 @@ void z_yyerror(const char *msg) {
   std::cout << msg;
 }
 
-static sym_t sym_def, sym_enum, sym_import, sym_struct, sym_spawn;
+static sym_t sym_def, sym_func, sym_enum, sym_import, sym_struct, sym_spawn;
 
 static struct OperatorTableEntry op_tab[] = {
   {"<<=", K_ASSIGN, BINOP_LSHIFT_ASSIGN},
@@ -72,6 +72,8 @@ static struct OperatorTableEntry op_tab[] = {
 static int nfe_lookup_keyword(sym_t sym) {
   if (sym == sym_def) {
     return K_DEF;
+  }else if (sym == sym_func) {
+    return K_FUNC;
   } else if (sym == sym_bool) {
     return K_BOOL;
   } else if (sym == sym_int) {
@@ -132,6 +134,7 @@ static void nfe_init_scanner_info(fe::ScannerInfo *s_info) {
 static void nfe_init_syms() {
   sym_def = sym_lookup("def");
   sym_enum = sym_lookup("enum");
+  sym_func = sym_lookup("func");
   sym_import = sym_lookup("import");
   sym_struct = sym_lookup("struct");
   sym_spawn = sym_lookup("spawn");

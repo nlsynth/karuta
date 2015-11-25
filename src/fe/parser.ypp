@@ -53,7 +53,7 @@ extern void yyerror(const char *msg);
 %type <import_param> IMPORT_PARAM IMPORT_PARAM_HEAD
 %type <import_params> IMPORT_PARAM_LIST
 
-%token K_DEF K_ENUM K_IMPORT K_STRUCT
+%token K_DEF K_FUNC K_ENUM K_IMPORT K_STRUCT
 %token K_ASSIGN K_SHIFT
 %token K_INT K_BOOL K_STRING K_OBJECT K_THREAD K_CHANNEL
 %token K_ADD_SUB K_LG_COMPARE K_EQ_COMPARE
@@ -140,7 +140,10 @@ FUNC_DECL_HEAD : FUNC_DECL_NAME ARG_DECL ')' RETURN_SPEC {
   Emitter::SetCurrentFunctionReturns($4);
 }
 
-FUNC_DECL_NAME : K_DEF VAR '(' {
+// K_DEF is for compatibility.
+FUNC_DECL_HEAD : K_DEF | K_FUNC
+
+FUNC_DECL_NAME : FUNC_DECL_HEAD VAR '(' {
   Emitter::BeginFunction($2);
 }
 
