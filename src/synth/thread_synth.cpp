@@ -21,7 +21,7 @@ ThreadSynth::~ThreadSynth() {
 
 bool ThreadSynth::Synth() {
   set<sym_t> all_functions;
-  all_functions.insert(sym_lookup(method_name_));
+  all_functions.insert(sym_lookup(method_name_.c_str()));
   int num_compiled;
   do {
     num_compiled = 0;
@@ -61,7 +61,7 @@ bool ThreadSynth::Synth() {
 }
 
 void ThreadSynth::ExpandFunctions() {
-  MethodSynth *entry_func = function_map_[sym_lookup(method_name_)];
+  MethodSynth *entry_func = function_map_[sym_lookup(method_name_.c_str())];
   CHECK(entry_func);
   while (ExpandOneFunction(entry_func)) {
     // just loop.

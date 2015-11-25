@@ -50,7 +50,7 @@ private:
   vm::VM *vm_;
   vm::Object *obj_;
   DModule *module_;
-  const char *method_name_;
+  const string method_name_;
   DGraph *graph_;
   MethodSynth *root_method_synth_;
   std::unique_ptr<ResourceSet> resource_;
