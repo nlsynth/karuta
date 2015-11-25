@@ -25,11 +25,14 @@ class FE {
   static vm::Method *CompileFile(const string &file, bool dbg_parser,
 				 vm::VM *vm);
   static FileImage *GetFileImage(const string &fn);
+  static int LookupKeyword(sym_t sym);
 
  private:
   void RunFile(const string &file, vm::VM *vm);
 
   static Method *ReadFile(const string &file);
+  static void InitScannerInfo(ScannerInfo *s_info);
+  static void InitSyms();
 
   bool dbg_parser_;
 

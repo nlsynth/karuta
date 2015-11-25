@@ -25,8 +25,8 @@ public:
 
   static void SetLineNumber(int ln, Type t);
 
-  static void Check(Type t);
-  static void CheckAll();
+  static bool Check(Type t);
+  static bool CheckAll();
   static ostringstream &os(Type t);
 
 private:

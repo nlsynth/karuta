@@ -19,10 +19,10 @@ ostringstream &Message::os(Type t) {
   return context->ss_;
 }
 
-void Message::Check(Type t) {
+bool Message::Check(Type t) {
   Context *context = GetContext(t);
   if (context->ss_.str().empty()) {
-    return;
+    return false;
   }
   string s;
   if (t == USER) {
@@ -40,12 +40,15 @@ void Message::Check(Type t) {
 
   context->ss_.str("");
   context->ln_ = -1;
+  return true;
 }
 
-void Message::CheckAll() {
-  Check(USER);
-  Check(INFO);
-  Check(ICE);
+bool Message::CheckAll() {
+  bool b = false;
+  b |= Check(USER);
+  b |= Check(INFO);
+  b |= Check(ICE);
+  return b;
 }
 
 Message::Context *Message::GetContext(Type t) {

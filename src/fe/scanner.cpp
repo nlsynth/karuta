@@ -54,7 +54,7 @@ int Scanner::GetToken(int *sub) {
   return -1;
 }
 
-uint64_t Scanner::get_num() {
+uint64_t Scanner::GetNum() {
   if (token_[0] == '0' &&
       token_[1] == 'x') {
     uint64_t num;
@@ -64,17 +64,18 @@ uint64_t Scanner::get_num() {
   return atoll(token_);
 }
 
-sym_t Scanner::get_sym() {
+sym_t Scanner::GetSym() {
   return sym_lookup(token_);
 }
 
-const char *Scanner::get_str() {
+const char *Scanner::GetStr() {
   return token_;
 }
 
-void Scanner::get_position(scanner_position *pos) {
+void Scanner::GetPosition(ScannerPos *pos) {
   pos->pos = 0;
   pos->line = ln_;
+  pos->file = im_->file_name;
 }
 
 char Scanner::cur_char() {
@@ -305,6 +306,7 @@ FileImage *Scanner::CreateFileImage(const char *fn) {
     return NULL;
   }
   FileImage *im = new FileImage();
+  im->file_name = string(fn);
   char *buf = (char *)malloc(st.st_size + 1);
   size_t s = fread(buf, st.st_size, 1, fp);
   buf[st.st_size] = 0;
@@ -332,8 +334,7 @@ void Scanner::ReleaseFileImage() {
   im_.reset(NULL);
 }
 
-scanner_position::scanner_position() {
-  file = -1;
+ScannerPos::ScannerPos() {
   line = -1;
   pos = -1;
 }
@@ -342,23 +343,23 @@ Scanner* ScannerInterface::CreateScanner() {
   return new Scanner;
 }
 
-void ScannerInterface::GetPosition(scanner_position *pos) {
-  Scanner::current_scanner_->get_position(pos);
+void ScannerInterface::GetPosition(ScannerPos *pos) {
+  Scanner::current_scanner_->GetPosition(pos);
 }
 
-int ScannerInterface::GetToken(scanner_token *tk) {
+int ScannerInterface::GetToken(ScannerToken *tk) {
   int sub_op;
   int r = Scanner::current_scanner_->GetToken(&sub_op);
   tk->sub_op = 0;
   tk->str = NULL;
   if (r == s_info->num_token) {
-    tk->num = Scanner::current_scanner_->get_num();
+    tk->num = Scanner::current_scanner_->GetNum();
     if (dbg_scanner) {
       printf("num=(%lu)\n", tk->num);
     }
   } else if (r == s_info->sym_token) {
     int k;
-    tk->sym = Scanner::current_scanner_->get_sym();
+    tk->sym = Scanner::current_scanner_->GetSym();
     if (dbg_scanner) {
       printf("sym=(%s)\n", sym_cstr(tk->sym));
     }
@@ -367,7 +368,7 @@ int ScannerInterface::GetToken(scanner_token *tk) {
       return k;
     }
   } else if (r == s_info->str_token) {
-    tk->str = Scanner::current_scanner_->get_str();
+    tk->str = Scanner::current_scanner_->GetStr();
     if (dbg_scanner) {
       printf("str=(%s)\n", tk->str);
     }

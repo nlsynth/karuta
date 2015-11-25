@@ -15,10 +15,6 @@
 // This should be the last.
 #include "fe/libparse_la-parser.hpp"
 
-void z_yyerror(const char *msg) {
-  std::cout << msg;
-}
-
 static sym_t sym_def, sym_func, sym_enum, sym_import, sym_struct, sym_spawn;
 
 static struct OperatorTableEntry op_tab[] = {
@@ -69,85 +65,8 @@ static struct OperatorTableEntry op_tab[] = {
   {0, 0, 0}
 };
 
-static int nfe_lookup_keyword(sym_t sym) {
-  if (sym == sym_def) {
-    return K_DEF;
-  }else if (sym == sym_func) {
-    return K_FUNC;
-  } else if (sym == sym_bool) {
-    return K_BOOL;
-  } else if (sym == sym_int) {
-    return K_INT;
-  } else if (sym == sym_object) {
-    return K_OBJECT;
-  } else if (sym == sym_thread) {
-    return K_THREAD;
-  } else if (sym == sym_channel) {
-    return K_CHANNEL;
-  } else if (sym == sym_goto) {
-    return K_GOTO;
-  } else if (sym == sym_return) {
-    return K_RETURN;
-  } else if (sym == sym_if) {
-    return K_IF;
-  } else if (sym == sym_else) {
-    return K_ELSE;
-  } else if (sym == sym_enum) {
-    return K_ENUM;
-  } else if (sym == sym_import) {
-    return K_IMPORT;
-  } else if (sym == sym_for) {
-    return K_FOR;
-  } else if (sym == sym_while) {
-    return K_WHILE;
-  } else if (sym == sym_do) {
-    return K_DO;
-  } else if (sym == sym_const) {
-    return K_CONST;
-  } else if (sym == sym_struct) {
-    return K_STRUCT;
-  } else if (sym == sym_switch) {
-    return K_SWITCH;
-  } else if (sym == sym_case) {
-    return K_CASE;
-  } else if (sym == sym_default) {
-    return K_DEFAULT;
-  } else if (sym == sym_break) {
-    return K_BREAK;
-  } else if (sym == sym_continue) {
-    return K_CONTINUE;
-  } else if (sym == sym_spawn) {
-    return K_SPAWN;
-  } else if (sym == sym_string) {
-    return K_STRING;
-  }
-  return 0;
-}
-
-static void nfe_init_scanner_info(fe::ScannerInfo *s_info) {
-  s_info->op_tab = op_tab;
-  s_info->num_token = NUM;
-  s_info->sym_token = SYM;
-  s_info->str_token = STR;
-}
-
-static void nfe_init_syms() {
-  sym_def = sym_lookup("def");
-  sym_enum = sym_lookup("enum");
-  sym_func = sym_lookup("func");
-  sym_import = sym_lookup("import");
-  sym_struct = sym_lookup("struct");
-  sym_spawn = sym_lookup("spawn");
-}
-
-struct ZScannerInfo : fe::ScannerInfo {
-  virtual int LookupKeyword(sym_t sym) const {
-    return nfe_lookup_keyword(sym);
-  }
-};
-
 int z_yylex() {
-  scanner_token tk;
+  ScannerToken tk;
   tk.sub_op = 0;
   int r = ScannerInterface::GetToken(&tk);
   if (r == SYM) {
@@ -166,16 +85,30 @@ int z_yylex() {
   return r;
 }
 
+void z_yyerror(const char *msg) {
+  fe::ScannerPos pos;
+  fe::ScannerInterface::GetPosition(&pos);
+  Message::os(Message::USER)
+    << "Failed to parse [" << msg << "] at line: " << pos.line
+    << " in " << pos.file;
+}
+
 namespace fe {
 
 std::unique_ptr<fe::ScannerInfo> FE::scanner_info_;
 string FE::dirname_;
 
+struct NLScannerInfo : ScannerInfo {
+  virtual int LookupKeyword(sym_t sym) const {
+    return FE::LookupKeyword(sym);
+  }
+};
+
 FE::FE(bool dbg_parser, bool dbg_scanner, bool dbg_bytecode)
   : dbg_parser_(dbg_parser) {
-  nfe_init_syms();
-  scanner_info_.reset(new ZScannerInfo);
-  nfe_init_scanner_info(scanner_info_.get());
+  InitSyms();
+  scanner_info_.reset(new NLScannerInfo);
+  InitScannerInfo(scanner_info_.get());
   Scanner::Init(scanner_info_.get(), dbg_scanner);
   compiler::Compiler::SetByteCodeDebug(dbg_bytecode);
   vm::Thread::SetByteCodeDebug(dbg_bytecode);
@@ -237,6 +170,9 @@ Method *FE::ReadFile(const string &file) {
   scanner->ReleaseFileImage();
 
   MethodDecl decl = Emitter::EndFunction();
+  if (Message::Check(Message::USER)) {
+    return nullptr;
+  }
   return decl.method_;
 }
 
@@ -260,6 +196,77 @@ FileImage *FE::GetFileImage(const string &fn) {
     LOG(INFO) << "no image";
   }
   return im;
+}
+
+int FE::LookupKeyword(sym_t sym) {
+  if (sym == sym_def) {
+    return K_DEF;
+  }else if (sym == sym_func) {
+    return K_FUNC;
+  } else if (sym == sym_bool) {
+    return K_BOOL;
+  } else if (sym == sym_int) {
+    return K_INT;
+  } else if (sym == sym_object) {
+    return K_OBJECT;
+  } else if (sym == sym_thread) {
+    return K_THREAD;
+  } else if (sym == sym_channel) {
+    return K_CHANNEL;
+  } else if (sym == sym_goto) {
+    return K_GOTO;
+  } else if (sym == sym_return) {
+    return K_RETURN;
+  } else if (sym == sym_if) {
+    return K_IF;
+  } else if (sym == sym_else) {
+    return K_ELSE;
+  } else if (sym == sym_enum) {
+    return K_ENUM;
+  } else if (sym == sym_import) {
+    return K_IMPORT;
+  } else if (sym == sym_for) {
+    return K_FOR;
+  } else if (sym == sym_while) {
+    return K_WHILE;
+  } else if (sym == sym_do) {
+    return K_DO;
+  } else if (sym == sym_const) {
+    return K_CONST;
+  } else if (sym == sym_struct) {
+    return K_STRUCT;
+  } else if (sym == sym_switch) {
+    return K_SWITCH;
+  } else if (sym == sym_case) {
+    return K_CASE;
+  } else if (sym == sym_default) {
+    return K_DEFAULT;
+  } else if (sym == sym_break) {
+    return K_BREAK;
+  } else if (sym == sym_continue) {
+    return K_CONTINUE;
+  } else if (sym == sym_spawn) {
+    return K_SPAWN;
+  } else if (sym == sym_string) {
+    return K_STRING;
+  }
+  return 0;
+}
+
+void FE::InitSyms() {
+  sym_def = sym_lookup("def");
+  sym_enum = sym_lookup("enum");
+  sym_func = sym_lookup("func");
+  sym_import = sym_lookup("import");
+  sym_struct = sym_lookup("struct");
+  sym_spawn = sym_lookup("spawn");
+}
+
+void FE::InitScannerInfo(ScannerInfo *s_info) {
+  s_info->op_tab = op_tab;
+  s_info->num_token = NUM;
+  s_info->sym_token = SYM;
+  s_info->str_token = STR;
 }
 
 }  // namespace fe
