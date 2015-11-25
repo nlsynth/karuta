@@ -2,18 +2,18 @@
 
 #include "fe/expr.h"
 #include "messages.h"
-#include "vm/opcode.h"
+#include "vm/channel.h"
+#include "vm/gc.h"
+#include "vm/int_array.h"
 #include "vm/method.h"
 #include "vm/object.h"
-#include "vm/int_array.h"
-#include "vm/channel.h"
+#include "vm/opcode.h"
 #include "vm/thread.h"
 
 namespace vm {
 
 VM::VM() {
   methods_.reset(new Pool<Method>());
-  objects_.reset(new Pool<Object>());
 
   root_object_ = NewObject();
   InstallBoolType();
@@ -24,6 +24,7 @@ VM::VM() {
 
 VM::~VM() {
   STLDeleteValues(&threads_);
+  STLDeleteValues(&objects_);
 }
 
 void VM::Run() {
@@ -50,6 +51,10 @@ void VM::Run() {
 void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method) {
   Thread *thread = new Thread(this, parent, object, method);
   threads_.insert(thread);
+}
+
+void VM::GC() {
+  GC::Run(this, &threads_, &objects_);
 }
 
 void VM::InstallBoolType() {
@@ -115,7 +120,7 @@ Method *VM::NewMethod(bool is_toplevel) {
 
 Object *VM::NewObject() {
   Object *object = new Object;
-  objects_->Add(object);
+  objects_.insert(object);
   return object;
 }
 

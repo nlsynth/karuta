@@ -184,7 +184,7 @@ void InsnAnnotator::EnforceValueWidth(VM *vm, Object *obj,
   fe::VarDeclSet *args = method->parse_tree_->args_;
   if (args) {
     num_args = args->decls.size();
-    for (size_t i = 0; i < num_args; ++i) {
+    for (int i = 0; i < num_args; ++i) {
       AnnotateByDecl(vm, args->decls[i], method->method_regs_[i]);
     }
   }

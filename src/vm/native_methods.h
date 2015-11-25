@@ -27,6 +27,7 @@ public:
 
   // Env.
   static void IsMain(Thread *thr, Object *obj, const vector<Value> &args);
+  static void GC(Thread *thr, Object *obj, const vector<Value> &args);
 
   static void SetReturnValue(Thread *thr, const Value &value);
 };

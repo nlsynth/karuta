@@ -117,6 +117,11 @@ void NativeMethods::IsMain(Thread *thr, Object *obj,
   SetReturnValue(thr, value);
 }
 
+void NativeMethods::GC(Thread *thr, Object *obj,
+		       const vector<Value> &args) {
+  thr->GetVM()->GC();
+}
+
 void NativeMethods::SetReturnValue(Thread *thr, const Value &value) {
   thr->SetReturnValueFromNativeMethod(value);
 }
@@ -164,6 +169,7 @@ void Method::InstallNativeMethod(VM *vm, Object *obj, const char *name,
 
 void Method::InstallEnvNativeMethods(VM *vm, Object *env) {
   vector<RegisterType> rets;
+  InstallNativeMethod(vm, env, "gc", &NativeMethods::GC, rets);
   rets.push_back(BoolType(vm));
   InstallNativeMethod(vm, env, "isMain", &NativeMethods::IsMain, rets);
 }

@@ -161,7 +161,7 @@ am__objects_7 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-channel.$(OBJEXT) \
 	src/vm/nli_bin-executor.$(OBJEXT) \
 	src/vm/nli_bin-executor_toplevel.$(OBJEXT) \
-	src/vm/nli_bin-insn.$(OBJEXT) \
+	src/vm/nli_bin-gc.$(OBJEXT) src/vm/nli_bin-insn.$(OBJEXT) \
 	src/vm/nli_bin-insn_annotator.$(OBJEXT) \
 	src/vm/nli_bin-register.$(OBJEXT) \
 	src/vm/nli_bin-value.$(OBJEXT) src/vm/nli_bin-method.$(OBJEXT) \
@@ -575,6 +575,7 @@ vm_SOURCES = \
  src/vm/channel.cpp src/vm/channel.h \
  src/vm/executor.cpp src/vm/executor.h \
  src/vm/executor_toplevel.cpp src/vm/executor_toplevel.h \
+ src/vm/gc.cpp src/vm/gc.h \
  src/vm/insn.cpp src/vm/insn.h \
  src/vm/insn_annotator.cpp src/vm/insn_annotator.h \
  src/vm/register.cpp src/vm/register.h \
@@ -901,6 +902,8 @@ src/vm/nli_bin-executor.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
 src/vm/nli_bin-executor_toplevel.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
+src/vm/nli_bin-gc.$(OBJEXT): src/vm/$(am__dirstamp) \
+	src/vm/$(DEPDIR)/$(am__dirstamp)
 src/vm/nli_bin-insn.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
 src/vm/nli_bin-insn_annotator.$(OBJEXT): src/vm/$(am__dirstamp) \
@@ -1041,6 +1044,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-dmodule_wrapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-executor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-executor_toplevel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-gc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-insn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-insn_annotator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-int_array.Po@am__quote@
@@ -1932,6 +1936,20 @@ src/vm/nli_bin-executor_toplevel.obj: src/vm/executor_toplevel.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/vm/executor_toplevel.cpp' object='src/vm/nli_bin-executor_toplevel.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/vm/nli_bin-executor_toplevel.obj `if test -f 'src/vm/executor_toplevel.cpp'; then $(CYGPATH_W) 'src/vm/executor_toplevel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/vm/executor_toplevel.cpp'; fi`
+
+src/vm/nli_bin-gc.o: src/vm/gc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/vm/nli_bin-gc.o -MD -MP -MF src/vm/$(DEPDIR)/nli_bin-gc.Tpo -c -o src/vm/nli_bin-gc.o `test -f 'src/vm/gc.cpp' || echo '$(srcdir)/'`src/vm/gc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/vm/$(DEPDIR)/nli_bin-gc.Tpo src/vm/$(DEPDIR)/nli_bin-gc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/vm/gc.cpp' object='src/vm/nli_bin-gc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/vm/nli_bin-gc.o `test -f 'src/vm/gc.cpp' || echo '$(srcdir)/'`src/vm/gc.cpp
+
+src/vm/nli_bin-gc.obj: src/vm/gc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/vm/nli_bin-gc.obj -MD -MP -MF src/vm/$(DEPDIR)/nli_bin-gc.Tpo -c -o src/vm/nli_bin-gc.obj `if test -f 'src/vm/gc.cpp'; then $(CYGPATH_W) 'src/vm/gc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/vm/gc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/vm/$(DEPDIR)/nli_bin-gc.Tpo src/vm/$(DEPDIR)/nli_bin-gc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/vm/gc.cpp' object='src/vm/nli_bin-gc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/vm/nli_bin-gc.obj `if test -f 'src/vm/gc.cpp'; then $(CYGPATH_W) 'src/vm/gc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/vm/gc.cpp'; fi`
 
 src/vm/nli_bin-insn.o: src/vm/insn.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/vm/nli_bin-insn.o -MD -MP -MF src/vm/$(DEPDIR)/nli_bin-insn.Tpo -c -o src/vm/nli_bin-insn.o `test -f 'src/vm/insn.cpp' || echo '$(srcdir)/'`src/vm/insn.cpp

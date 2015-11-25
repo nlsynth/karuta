@@ -82,6 +82,7 @@ vm_SOURCES = \
  src/vm/channel.cpp src/vm/channel.h \
  src/vm/executor.cpp src/vm/executor.h \
  src/vm/executor_toplevel.cpp src/vm/executor_toplevel.h \
+ src/vm/gc.cpp src/vm/gc.h \
  src/vm/insn.cpp src/vm/insn.h \
  src/vm/insn_annotator.cpp src/vm/insn_annotator.h \
  src/vm/register.cpp src/vm/register.h \

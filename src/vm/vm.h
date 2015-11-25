@@ -29,6 +29,7 @@ public:
 
   void Run();
   void AddThreadFromMethod(Thread *parent, Object *object, Method *method);
+  void GC();
   IntArray *GetDefaultMemory();
 
   Method *NewMethod(bool is_toplevel);
@@ -45,12 +46,13 @@ public:
   // prototype of string.
   Object *string_object_;
   std::unique_ptr<EnumType> bool_type_;
+
 private:
   set<Thread*> threads_;
   std::unique_ptr<IntArray> memory_;
 
   std::unique_ptr<Pool<Method> > methods_;
-  std::unique_ptr<Pool<Object> > objects_;
+  set<Object*> objects_;
 
   void InstallBoolType();
   void InstallObjects();
