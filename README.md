@@ -18,8 +18,12 @@ See https://sites.google.com/site/neonlightcompiler/ for some more details.
 
 At first, you have to compile the interpreter (nli command).
 
-    > $ ./configure;make
+    > $ ./configure; make
     > $ make install # optional
+
+You may also have to (install and) run auto tools if you got this package from git.
+
+    > $ aclocal; automake; autoconf
 
 -- Use
 

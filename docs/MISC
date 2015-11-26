@@ -1,115 +1,34 @@
-Misc documents
+# Misc documents
 
-Phylotype
-(1) Common
- file io, debug, common includes, numbers, environments.
-(2) Phylotype
- language, vm, compiler and executor.
-(3) Synth, optimizer, DFG and writer.
- Implementation.
+## TODOs.
 
-Supported operators.
-()
-!
-++
---
-*
-&
-+ binary
-- binary
-<<
->>
-<
->
-<=
->=
-==
-!=
-~(bit not)
-+ unary
+* Test!
+ * sub module hierarchy.
+* Features
+ * Wide number
+ * GC
+ * Width inference
+ * Pipeline
+ * Object array
+ * Enum
+ * goto f();
+ * goto label;
+ * switch
+* Optimizer
+ * Profiling on script runtime and optimize based on it
+* Web UI
+* Maturity
+ * Better error reporting
+ * Coding style consistency
+ * More documents
+* More examples
+ * Basic functionalities
+ * Well known algorithms
 
-未実装
-不明
-bit reduction
--単項
-(cast)
-[]
-sizeof
-*
-/
-%
-&
-^
-|
-&&
-?:
-=
-+=
--=
-*=
-/=
-%=
-<<=
->>=
-&=
-^=
-|=
-,
-サポートしない
-->
-.
+## Multiple blocking insns can be in a state.
 
-Verilogモジュールのインポート
- (1) 内部にインスタンスを持つ
-  (1-1) 外部まで貫通するピンを持つ
-  (1-2) 内部で完結する
-  (1-a) Verilogファイルをコピーする
-  (1-b) Verilogファイルをコピーしない
- (2) 外部にインスタンスを持つ
+Use sub-state machine
 
- resource
-  リソースの名前
- verilog
-  verilogファイル名
- file
-  出力時のファイルの扱い
-   copy: 出力ファイルにコピーする
-   未指定: 外部モジュール
- module
-  モジュール名
-  省略した場合は外部モジュールになる
-
-特徴
- *プロトタイプ型オブジェクト指向言語
- *インスタンスからのRTL生成
- *goto f();の形式の関数呼び出し
- *メソッド単位でのRTL置き換え
-そのうち
- *型推論
- *スクリプト言語実行時のプロファイリングによる最適化
-  +ステートエンコーディング他
- *パイプライン
-
-memo
-型チェックのタイミング
- nst_end_function() -> nst_check_expr_types_all()
- fileを読んだ後にもnst_end_function()
-
-expressionの分解
-
-x = p ? a : b;
-x.m(1,2,3);
-xがどのインスタンスか分からないとバグる？
-
-streaming
-
-ideas:
- indexed array initializer
-int x[] = {
- 100: 1
-};
-
-Blocking insns in a state. Use substate.
 if (s1 == INITIAL) {
   if (canStart1()) {
     do it;
