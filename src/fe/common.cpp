@@ -1,5 +1,6 @@
 #include "fe/common.h"
 
+#include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/stmt.h"
@@ -7,6 +8,7 @@
 
 namespace fe {
 
+Pool<EnumDecl> *NodePool::enums_;
 Pool<Expr> *NodePool::exprs_;
 Pool<Method> *NodePool::methods_;
 Pool<Stmt> *NodePool::stmts_;
@@ -14,6 +16,7 @@ Pool<VarDecl> *NodePool::decls_;
 Pool<VarDeclSet> *NodePool::decl_sets_;
 
 void NodePool::Init() {
+  enums_ = new Pool<EnumDecl>();
   exprs_ = new Pool<Expr>();
   methods_ = new Pool<Method>();
   stmts_ = new Pool<Stmt>();
@@ -22,11 +25,16 @@ void NodePool::Init() {
 }
 
 void NodePool::Release() {
+  delete enums_;
   delete exprs_;
   delete methods_;
   delete stmts_;
   delete decls_;
   delete decl_sets_;
+}
+
+void NodePool::AddEnumDecl(EnumDecl *decl) {
+  enums_->Add(decl);
 }
 
 void NodePool::AddExpr(Expr *expr) {

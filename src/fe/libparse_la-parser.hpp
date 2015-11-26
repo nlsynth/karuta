@@ -132,10 +132,11 @@ extern int z_yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 16 "parser.ypp" /* yacc.c:1909  */
+#line 17 "parser.ypp" /* yacc.c:1909  */
 
   class ArrayInitializer *array;
   class Expr *expr;
+  class EnumDecl *enum_decl;
   class Stmt *stmt;
   class VarDecl *var_decl;
   class VarDeclSet *var_decl_set;
@@ -147,7 +148,7 @@ union YYSTYPE
   class ImportParam *import_param;
   class ImportParamSet *import_params;
 
-#line 151 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
+#line 152 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

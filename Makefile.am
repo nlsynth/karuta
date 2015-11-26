@@ -24,6 +24,7 @@ fe_SOURCES = \
  src/fe/common.cpp src/fe/common.h \
  src/fe/builder.cpp src/fe/builder.h \
  src/fe/emitter.cpp src/fe/emitter.h \
+ src/fe/enum_decl.cpp src/fe/enum_decl.h \
  src/fe/expr.cpp src/fe/expr.h \
  src/fe/scanner.cpp src/fe/scanner.h \
  src/fe/stmt.cpp src/fe/stmt.h \

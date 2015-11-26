@@ -12,6 +12,7 @@ class Width;
 namespace fe {
 
 class ArrayInitializer;
+class EnumDecl;
 class Expr;
 class Stmt;
 class VarDecl;
@@ -30,6 +31,7 @@ class Builder {
   static Expr *ElmRefExpr(Expr *expr, sym_t sym);
   static Expr *LogicInvertExpr(Expr *expr);
   static Expr *BitInvertExpr(Expr *expr);
+  static EnumDecl *EnumItemList(EnumDecl *decls, sym_t item);
   static VarDeclSet *VarDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ArgDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ReturnDeclList(VarDeclSet *decls, VarDecl *decl);
@@ -41,7 +43,8 @@ class Builder {
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);
 
   static VarDecl *ModifiedVar(Expr *var, bool is_ptr, sym_t ns);
-  static VarDecl *BuildVarDecl(sym_t type, const numeric::Width *w, VarDecl *var);
+  static VarDecl *BuildVarDecl(sym_t type, const numeric::Width *w,
+			       VarDecl *var);
   static sym_t TypeNameFromVarDeclSet(VarDeclSet *vds);
   static Stmt *DoWhileStmt();
 

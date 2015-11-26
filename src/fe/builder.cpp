@@ -1,8 +1,9 @@
 #include "fe/builder.h"
 
-#include "fe/nodecode.h"
 #include "fe/common.h"
+#include "fe/enum_decl.h"
 #include "fe/expr.h"
+#include "fe/nodecode.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "numeric/numeric.h"
@@ -134,6 +135,15 @@ VarDeclSet *Builder::ArgDeclList(VarDeclSet *decls, VarDecl *decl) {
     decls->decls.push_back(decl);
   }
   return decls;
+}
+
+EnumDecl *Builder::EnumItemList(EnumDecl *decl, sym_t item) {
+  if (decl == NULL) {
+    decl = new EnumDecl;
+    NodePool::AddEnumDecl(decl);
+  }
+  decl->items.push_back(item);
+  return decl;
 }
 
 VarDeclSet *Builder::VarDeclList(VarDeclSet *decls, VarDecl *decl) {

@@ -14,6 +14,7 @@ class ImportParamSet;
 
 namespace fe {
 
+class EnumDecl;
 class Expr;
 class Method;
 class Stmt;
@@ -39,6 +40,7 @@ public:
   static void EmitImportStmt(const char *str);
   static void EmitSpawnStmt(Expr *expr);
   static void EmitVarDeclStmtSet(VarDeclSet *vds);
+  static void EmitEnumTypeDeclStmt(Expr *name, EnumDecl *decl);
   static Stmt *EmitIfStmt(Expr *cond);
   static Stmt *EmitForStmt(Expr *cond);
   static Stmt *EmitWhileStmt(Expr *cond);

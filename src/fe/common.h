@@ -7,6 +7,7 @@
 
 namespace fe {
 
+class EnumDecl;
 class Expr;
 class Stmt;
 class Method;
@@ -18,6 +19,7 @@ public:
   static void Init();
   static void Release();
 
+  static void AddEnumDecl(EnumDecl *decl);
   static void AddExpr(Expr *expr);
   static void AddStmt(Stmt *stmt);
   static void AddMethod(Method *method);
@@ -25,6 +27,7 @@ public:
   static void AddVarDeclSet(VarDeclSet *decl_set);
 
   static Pool<Expr> *exprs_;
+  static Pool<EnumDecl> *enums_;
   static Pool<Method> *methods_;
   static Pool<Stmt> *stmts_;
   static Pool<VarDecl> *decls_;

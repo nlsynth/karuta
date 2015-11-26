@@ -14,6 +14,7 @@ class Width;
 
 namespace fe {
 
+class EnumDecl;
 class Expr;
 class Method;
 class VarDecl;
@@ -29,6 +30,7 @@ public:
   sym_t sym_;
   string str_;
   VarDecl *decl_;
+  EnumDecl *enum_;
   const numeric::Width *width_;
 
   // IF stmt.

@@ -66,6 +66,7 @@ enum NodeCode {
   STMT_POP_BINDING,
   STMT_THREAD_DECL,
   STMT_CHANNEL_DECL,
+  STMT_ENUM_DECL,
 };
 
 const char *NodeName(enum NodeCode node);

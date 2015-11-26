@@ -115,6 +115,13 @@ void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
   }
 }
 
+void Emitter::EmitEnumTypeDeclStmt(Expr *name, EnumDecl *decl) {
+  Stmt *stmt = NewStmt(STMT_ENUM_DECL);
+  stmt->expr_ = name;
+  stmt->enum_ = decl;
+  EmitStmt(stmt);
+}
+  
 Stmt *Emitter::EmitIfStmt(Expr *cond) {
   Stmt *stmt = NewStmt(STMT_IF);
   stmt->expr_ = cond;

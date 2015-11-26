@@ -3,6 +3,7 @@
 #include "sym.h"
 #include "fe/builder.h"
 #include "fe/emitter.h"
+#include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/nodecode.h"
 #include "fe/stmt.h"
@@ -16,6 +17,7 @@ extern void yyerror(const char *msg);
 %union {
   class ArrayInitializer *array;
   class Expr *expr;
+  class EnumDecl *enum_decl;
   class Stmt *stmt;
   class VarDecl *var_decl;
   class VarDeclSet *var_decl_set;
@@ -41,7 +43,7 @@ extern void yyerror(const char *msg);
 %type <var_decl_set> ARG_DECL ARG_DECL_LIST
 %type <var_decl> RETURN_TYPE
 %type <var_decl_set> RETURN_SPEC RETURN_TYPE_LIST
-%type <stmt> ENUM_DECL ENUM_ITEM_LIST
+%type <enum_decl> ENUM_DECL ENUM_ITEM_LIST
 %type <stmt> STRUCT_DECL STRUCT_ELEMENT_LIST
 %type <str> STR
 %type <sym> SYM TYPE_NAME
@@ -394,13 +396,13 @@ BLOCK_HEAD : '{' {
 }
 
 ENUM_DECL : K_ENUM VAR '{' ENUM_ITEM_LIST '}' {
-  // NstEmitter::EmitEnumTypeDecl($2, $4);
+  Emitter::EmitEnumTypeDeclStmt($2, $4);
 }
 
 ENUM_ITEM_LIST : SYM {
-  $$ = NULL; // NstBuilder::EnumItemList(NULL, $1);
+  $$ = Builder::EnumItemList(NULL, $1);
 } | ENUM_ITEM_LIST ',' SYM {
-  $$ = NULL; // NstBuilder::EnumItemList($1, $3);
+  $$ = Builder::EnumItemList($1, $3);
 }
 
 STRUCT_DECL : STRUCT_DECL_HEAD '{' STRUCT_ELEMENT_LIST '}' {

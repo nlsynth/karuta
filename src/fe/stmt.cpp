@@ -1,6 +1,7 @@
 #include "fe/stmt.h"
 
 #include "dump_stream.h"
+#include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/nodecode.h"
@@ -58,6 +59,13 @@ void Stmt::Dump(DumpStream &ds) {
     ds.indent();
     numeric::Width::Dump(width_, ds.os);
     ds.os << "\n";
+    ds.pop_indent();
+    break;
+  case STMT_ENUM_DECL:
+    ds.os << "enum:\n";
+    ds.push_indent();
+    expr_->Dump(ds);
+    enum_->Dump(ds);
     ds.pop_indent();
     break;
   case STMT_IF:

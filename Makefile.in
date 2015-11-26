@@ -132,9 +132,10 @@ am__objects_2 = src/dfg/nli_bin-dfg.$(OBJEXT) \
 am__objects_3 = src/fe/nli_bin-nodecode.$(OBJEXT) \
 	src/fe/nli_bin-fe.$(OBJEXT) src/fe/nli_bin-common.$(OBJEXT) \
 	src/fe/nli_bin-builder.$(OBJEXT) \
-	src/fe/nli_bin-emitter.$(OBJEXT) src/fe/nli_bin-expr.$(OBJEXT) \
-	src/fe/nli_bin-scanner.$(OBJEXT) src/fe/nli_bin-stmt.$(OBJEXT) \
-	src/fe/nli_bin-method.$(OBJEXT) \
+	src/fe/nli_bin-emitter.$(OBJEXT) \
+	src/fe/nli_bin-enum_decl.$(OBJEXT) \
+	src/fe/nli_bin-expr.$(OBJEXT) src/fe/nli_bin-scanner.$(OBJEXT) \
+	src/fe/nli_bin-stmt.$(OBJEXT) src/fe/nli_bin-method.$(OBJEXT) \
 	src/fe/nli_bin-var_decl.$(OBJEXT)
 am__objects_4 = src/numeric/nli_bin-numeric.$(OBJEXT)
 am__objects_5 = src/opt/nli_bin-opt.$(OBJEXT) \
@@ -528,6 +529,7 @@ fe_SOURCES = \
  src/fe/common.cpp src/fe/common.h \
  src/fe/builder.cpp src/fe/builder.h \
  src/fe/emitter.cpp src/fe/emitter.h \
+ src/fe/enum_decl.cpp src/fe/enum_decl.h \
  src/fe/expr.cpp src/fe/expr.h \
  src/fe/scanner.cpp src/fe/scanner.h \
  src/fe/stmt.cpp src/fe/stmt.h \
@@ -814,6 +816,8 @@ src/fe/nli_bin-builder.$(OBJEXT): src/fe/$(am__dirstamp) \
 	src/fe/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-emitter.$(OBJEXT): src/fe/$(am__dirstamp) \
 	src/fe/$(DEPDIR)/$(am__dirstamp)
+src/fe/nli_bin-enum_decl.$(OBJEXT): src/fe/$(am__dirstamp) \
+	src/fe/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-expr.$(OBJEXT): src/fe/$(am__dirstamp) \
 	src/fe/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-scanner.$(OBJEXT): src/fe/$(am__dirstamp) \
@@ -1016,6 +1020,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-builder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-emitter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-enum_decl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-expr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-fe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-method.Po@am__quote@
@@ -1428,6 +1433,20 @@ src/fe/nli_bin-emitter.obj: src/fe/emitter.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/fe/emitter.cpp' object='src/fe/nli_bin-emitter.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/fe/nli_bin-emitter.obj `if test -f 'src/fe/emitter.cpp'; then $(CYGPATH_W) 'src/fe/emitter.cpp'; else $(CYGPATH_W) '$(srcdir)/src/fe/emitter.cpp'; fi`
+
+src/fe/nli_bin-enum_decl.o: src/fe/enum_decl.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/fe/nli_bin-enum_decl.o -MD -MP -MF src/fe/$(DEPDIR)/nli_bin-enum_decl.Tpo -c -o src/fe/nli_bin-enum_decl.o `test -f 'src/fe/enum_decl.cpp' || echo '$(srcdir)/'`src/fe/enum_decl.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/fe/$(DEPDIR)/nli_bin-enum_decl.Tpo src/fe/$(DEPDIR)/nli_bin-enum_decl.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/fe/enum_decl.cpp' object='src/fe/nli_bin-enum_decl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/fe/nli_bin-enum_decl.o `test -f 'src/fe/enum_decl.cpp' || echo '$(srcdir)/'`src/fe/enum_decl.cpp
+
+src/fe/nli_bin-enum_decl.obj: src/fe/enum_decl.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/fe/nli_bin-enum_decl.obj -MD -MP -MF src/fe/$(DEPDIR)/nli_bin-enum_decl.Tpo -c -o src/fe/nli_bin-enum_decl.obj `if test -f 'src/fe/enum_decl.cpp'; then $(CYGPATH_W) 'src/fe/enum_decl.cpp'; else $(CYGPATH_W) '$(srcdir)/src/fe/enum_decl.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/fe/$(DEPDIR)/nli_bin-enum_decl.Tpo src/fe/$(DEPDIR)/nli_bin-enum_decl.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/fe/enum_decl.cpp' object='src/fe/nli_bin-enum_decl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/fe/nli_bin-enum_decl.obj `if test -f 'src/fe/enum_decl.cpp'; then $(CYGPATH_W) 'src/fe/enum_decl.cpp'; else $(CYGPATH_W) '$(srcdir)/src/fe/enum_decl.cpp'; fi`
 
 src/fe/nli_bin-expr.o: src/fe/expr.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/fe/nli_bin-expr.o -MD -MP -MF src/fe/$(DEPDIR)/nli_bin-expr.Tpo -c -o src/fe/nli_bin-expr.o `test -f 'src/fe/expr.cpp' || echo '$(srcdir)/'`src/fe/expr.cpp
