@@ -112,6 +112,10 @@ bool Thread::IsRootThread() const {
   return (parent_thread_ == NULL);
 }
 
+vector<MethodFrame*> &Thread::MethodStack() {
+  return method_stack_;
+}
+
 void Thread::UserError() {
   Message::Check(Message::USER);
   MethodFrame *frame = CurrentMethodFrame();

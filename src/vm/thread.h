@@ -38,6 +38,9 @@ public:
   void SetReturnValueFromNativeMethod(const Value &value);
   bool IsRootThread() const;
 
+  // For GC.
+  vector<MethodFrame*> &MethodStack();
+
   void UserError();
 
 private:

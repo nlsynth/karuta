@@ -28,7 +28,8 @@ const char *Object::ObjectTypeKey() {
 }
 
 void Object::Dump(DumpStream &ds) {
-  ds.os << "dump called " << std::hex << (unsigned long)this
+  ds.os << "dump called [" << ToString() << "] "
+	<< std::hex << (unsigned long)this
 	<< std::dec << "\n";
   ds.push_indent();
   for (const std::pair<sym_t, Value> &it : members_) {

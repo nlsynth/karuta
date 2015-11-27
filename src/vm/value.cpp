@@ -8,7 +8,7 @@
 
 namespace vm {
 
-Value::Value() : type_(NONE), is_const_(false), method_(NULL), local_int_array_(NULL) {
+  Value::Value() : type_(NONE), is_const_(false), method_(NULL), object_(NULL), local_int_array_(NULL) {
 }
 
 void Value::Dump() const {
