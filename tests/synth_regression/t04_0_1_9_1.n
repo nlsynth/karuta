@@ -1,0 +1,15 @@
+// VERILOG_OUTPUT: a.v
+
+// Synth failure for an inifinite loop.
+
+channel Kernel.c = int;
+
+func main() {
+  while (true) {
+    print(*c);
+  }
+}
+
+compile();
+// Unused. Just to see if this doesn't fail.
+writeHdl("a.v");

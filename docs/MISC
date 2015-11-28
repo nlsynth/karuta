@@ -4,11 +4,10 @@
 
 * Test!
  * sub module hierarchy.
-* Features
+* Language features
  * Wide number
  * GC
  * Width inference
- * Pipeline
  * Object array
  * Enum
  * goto f();
@@ -16,6 +15,9 @@
  * switch
 * Optimizer
  * Profiling on script runtime and optimize based on it
+ * Pipeline
+* Other features
+ * C++ writer to catch up verilog.
 * Web UI
 * Maturity
  * Better error reporting
