@@ -48,6 +48,8 @@ public:
   static StateAnnotation *Get(DState *ds);
   virtual void Output(ostream &os);
 
+  // Number of previous state. This doesn't include
+  // reset state for initial state.
   int nr_join_;
   int nr_branch_;
 

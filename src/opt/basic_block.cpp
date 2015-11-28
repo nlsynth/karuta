@@ -73,7 +73,8 @@ void BasicBlockCollector::CollectBB(DState *bb_head, DState *bb_next) {
   DState *ds = bb_next;
   while (ds) {
     sa = StateAnnotation::Get(ds);
-    if (sa->nr_join_ > 1) {
+    // Initial state is technically a joining point from reset state.
+    if (sa->nr_join_ > 1 || ds == graph_->initial_state_) {
       // new BB begins from here
       break;
     }
@@ -117,7 +118,7 @@ void BasicBlockCollector::CollectBBAll(dfg::DGraphAnnotation *an) {
 	next = NULL;
       }
       if (targets_seen.find(next) != targets_seen.end()) {
-	//n there may dupes in targets.
+	// there may dupes in targets.
 	continue;
       }
       targets_seen.insert(next);
