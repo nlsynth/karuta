@@ -9,7 +9,7 @@
 
 #include "dfg/dfg.h"
 #include "dfg/imported_resource.h"
-#include "messages.h"
+#include "status.h"
 #include "nli.h"
 #include "writer/module_template.h"
 #include "writer/vl_channel.h"

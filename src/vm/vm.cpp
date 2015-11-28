@@ -1,7 +1,7 @@
 #include "vm/vm.h"
 
 #include "fe/expr.h"
-#include "messages.h"
+#include "status.h"
 #include "vm/channel.h"
 #include "vm/gc.h"
 #include "vm/int_array.h"
@@ -41,11 +41,11 @@ void VM::Run() {
 
   for (Thread *thr : threads_) {
     if (!thr->IsDone()) {
-      Message::os(Message::USER) << "Remaining thread";
-      MessageFlush::Get(Message::USER);
+      Status::os(Status::USER) << "Remaining thread";
+      MessageFlush::Get(Status::USER);
     }
   }
-  Message::CheckAll();
+  Status::CheckAll();
 }
 
 void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method) {

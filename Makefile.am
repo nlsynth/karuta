@@ -119,7 +119,7 @@ nli_bin_SOURCES = \
  src/initializer.cpp src/initializer.h \
  src/dump_stream.cpp src/dump_stream.h \
  src/logging.cpp src/logging.h \
- src/messages.cpp src/messages.h \
+ src/status.cpp src/status.h \
  src/sym.cpp src/sym.h \
  $(compiler_SOURCES) \
  $(dfg_SOURCES) \

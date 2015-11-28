@@ -1,17 +1,17 @@
-#include "messages.h"
+#include "status.h"
 
 #include <iostream>
 
 using std::cout;
 
-Message::Context Message::context_[Message::NUM_TYPES];
+Status::Context Status::context_[Status::NUM_TYPES];
 
-void Message::SetLineNumber(int ln, Type t) {
+void Status::SetLineNumber(int ln, Type t) {
   Context *context = GetContext(t);
   context->ln_ = ln;
 }
 
-ostringstream &Message::os(Type t) {
+ostringstream &Status::os(Type t) {
   Context *context = GetContext(t);
   if (!context->ss_.str().empty()) {
     context->ss_ << "\n";
@@ -19,7 +19,7 @@ ostringstream &Message::os(Type t) {
   return context->ss_;
 }
 
-bool Message::Check(Type t) {
+bool Status::Check(Type t) {
   Context *context = GetContext(t);
   if (context->ss_.str().empty()) {
     return false;
@@ -43,14 +43,14 @@ bool Message::Check(Type t) {
   return true;
 }
 
-bool Message::CheckAll() {
+bool Status::CheckAll() {
   bool b = false;
+  // Ignores INFO.
   b |= Check(USER);
-  b |= Check(INFO);
   b |= Check(ICE);
   return b;
 }
 
-Message::Context *Message::GetContext(Type t) {
+Status::Context *Status::GetContext(Type t) {
   return &context_[t];
 }

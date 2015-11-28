@@ -14,7 +14,7 @@
 #include "nli.h"
 #include "dfg/dfg.h"
 #include "dfg/imported_resource.h"
-#include "messages.h"
+#include "status.h"
 #include "writer/vl_channel.h"
 #include "writer/vl_module.h"
 #include "writer/vl_util.h"
@@ -86,12 +86,12 @@ bool VLWriter::WriteModule(DModule *mod, const string &fn) {
   VLWriter vw(mod, name, ss);
   vw.Output();
 
-  Message::os(Message::INFO) << "output file name=" << fn;
-  MessageFlush::Get(Message::INFO);
+  Status::os(Status::INFO) << "output file name=" << fn;
+  MessageFlush::Get(Status::INFO);
   std::unique_ptr<std::ofstream> fos(new std::ofstream(fn));
   if (fos->fail()) {
-    Message::os(Message::USER) << "failed to open " << fn;
-    MessageFlush::Get(Message::USER);
+    Status::os(Status::USER) << "failed to open " << fn;
+    MessageFlush::Get(Status::USER);
     return false;
   }
   *fos << ss.str();

@@ -3,7 +3,7 @@
 #include "dfg/dfg.h"
 #include "dfg/imported_resource.h"
 #include "dump_stream.h"
-#include "messages.h"
+#include "status.h"
 #include "vm/insn.h"
 #include "vm/opcode.h"
 
@@ -185,9 +185,9 @@ DResource *ResourceSet::GetChannelResource(const string &name, bool is_write,
       // Checks if read/write is consistent.
       if (!((is_write && res->opr_->type_ == sym_write_channel) ||
 	    (!is_write && res->opr_->type_ == sym_read_channel))) {
-	Message::os(Message::USER)
+	Status::os(Status::USER)
 	  << "'" << name << "' cannot be both read/write port";
-	MessageFlush::Get(Message::USER);
+	MessageFlush::Get(Status::USER);
 	return nullptr;
       }
       return res;

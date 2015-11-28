@@ -1,14 +1,14 @@
 #include "fe.h"
 
-#include "messages.h"
-#include "dump_stream.h"
 #include "compiler/compiler.h"
+#include "dump_stream.h"
 #include "fe/builder.h"
 #include "fe/common.h"
 #include "fe/emitter.h"
 #include "fe/method.h"
 #include "fe/nodecode.h"
 #include "fe/scanner.h"
+#include "status.h"
 #include "vm/method.h"
 #include "vm/thread.h"
 #include "vm/vm.h"
@@ -88,7 +88,7 @@ int z_yylex() {
 void z_yyerror(const char *msg) {
   fe::ScannerPos pos;
   fe::ScannerInterface::GetPosition(&pos);
-  Message::os(Message::USER)
+  Status::os(Status::USER)
     << "Failed to parse [" << msg << "] at line: " << pos.line
     << " in " << pos.file;
 }
@@ -132,7 +132,7 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 			    vm::VM *vm) {
   Method *parse_tree = ReadFile(file);
   if (!parse_tree) {
-    Message::os(Message::USER) << "Failed to load: " << file;
+    Status::os(Status::USER) << "Failed to load: " << file;
     return NULL;
   }
   DumpStream ds(cout);
@@ -170,7 +170,7 @@ Method *FE::ReadFile(const string &file) {
   scanner->ReleaseFileImage();
 
   MethodDecl decl = Emitter::EndFunction();
-  if (Message::Check(Message::USER)) {
+  if (Status::Check(Status::USER)) {
     return nullptr;
   }
   return decl.method_;

@@ -2,7 +2,7 @@
 #include "compiler/compiler.h"
 
 #include "pool.h"
-#include "messages.h"
+#include "status.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/stmt.h"
@@ -47,9 +47,9 @@ vm::Value::ValueType Compiler::GetVariableType(sym_t name) {
   } else {
     vm::Value *value = obj_->LookupValue(name, false);
     if (!value) {
-      Message::os(Message::USER)
+      Status::os(Status::USER)
 	<< "'" << sym_cstr(name) << "' is not a member of the object";
-      MessageFlush::Get(Message::USER);
+      MessageFlush::Get(Status::USER);
       return vm::Value::NONE;
     }
     return value->type_;
@@ -176,8 +176,8 @@ void Compiler::CompileIncDecExpr(fe::Expr *expr) {
   }
   vm::Register *reg = CompileSymExpr(expr->args_);
   if (!reg) {
-    Message::os(Message::USER) << "Invalid inc/dec";
-    MessageFlush::Get(Message::USER);
+    Status::os(Status::USER) << "Invalid inc/dec";
+    MessageFlush::Get(Status::USER);
     return;
   }
   insn->dst_regs_.push_back(reg);

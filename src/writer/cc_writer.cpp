@@ -6,9 +6,9 @@
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
-#include "messages.h"
 #include "nli.h"
 #include "dfg/dfg.h"
+#include "status.h"
 #include "writer/cc_class.h"
 #include "writer/cc_module.h"
 
@@ -45,12 +45,12 @@ bool CCWriter::WriteModule(DModule *mod, const string &fn) {
   std::unique_ptr<CCWriter> cw;
   std::unique_ptr<std::ofstream> fos;
 
-  Message::os(Message::INFO) << "output file name=" << fn;
-  MessageFlush::Get(Message::INFO);
+  Status::os(Status::INFO) << "output file name=" << fn;
+  MessageFlush::Get(Status::INFO);
   fos.reset(new std::ofstream(fn));
   if (fos->fail()) {
-    Message::os(Message::USER) << "failed to open " << fn;
-    MessageFlush::Get(Message::USER);
+    Status::os(Status::USER) << "failed to open " << fn;
+    MessageFlush::Get(Status::USER);
     return false;
   }
   cw.reset(new CCWriter(mod, *(fos.get())));

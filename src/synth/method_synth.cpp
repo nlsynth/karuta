@@ -3,13 +3,13 @@
 #include <stdio.h>
 
 #include "dfg/dfg.h"
-#include "messages.h"
 #include "dump_stream.h"
 #include "compiler/compiler.h"
 #include "dfg/imported_resource.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
+#include "status.h"
 #include "synth/resource_set.h"
 #include "vm/array_wrapper.h"
 #include "vm/channel.h"
@@ -38,8 +38,8 @@ MethodSynth::~MethodSynth() {
 bool MethodSynth::Synth() {
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_), false);
   if (!value || value->type_ != vm::Value::METHOD) {
-    Message::os(Message::USER) << "Failed to find method: " << method_name_;
-    MessageFlush::Get(Message::USER);
+    Status::os(Status::USER) << "Failed to find method: " << method_name_;
+    MessageFlush::Get(Status::USER);
     return false;
   }
 

@@ -10,8 +10,8 @@
 #include <string.h>
 
 #include "dfg/dfg.h"
-#include "messages.h"
 #include "nli.h"
+#include "status.h"
 #include "opt/basic_block.h"
 #include "opt/resource_annotation.h"
 #include "opt/opt_context.h"
@@ -75,8 +75,8 @@ void GraphOptimizeStat::PerformPhase(const char *phase,
     opt->Perform(phase, graph, note);
     DGraphUtil::ClearAnnotation(graph);
   } else {
-    Message::os(Message::USER) << "unknown optimization phase:" << phase;
-    MessageFlush::Get(Message::USER);
+    Status::os(Status::USER) << "unknown optimization phase:" << phase;
+    MessageFlush::Get(Status::USER);
   }
 }
 
@@ -180,9 +180,9 @@ void ModuleOptimizeStat::ApplyOptimization(list<DGraph *> *opts,
   }
   if (phase_sym == sym_lookup("opt_ssa") &&
       mod->GetOptimizeContext()->IsSet(OptimizeContext::RegisterShare)) {
-    Message::os(Message::USER)
+    Status::os(Status::USER)
       << "Can't perform SSA optimization after register sharing";
-    MessageFlush::Get(Message::USER);
+    MessageFlush::Get(Status::USER);
     return;
   }
   OptimizeContext *ctx = mod->GetOptimizeContext();

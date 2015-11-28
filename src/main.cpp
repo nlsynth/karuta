@@ -22,8 +22,8 @@
 
 #include "dfg/dfg.h"
 #include "fe/fe.h"
-#include "messages.h"
 #include "nli.h"
+#include "status.h"
 
 using std::map;
 
@@ -161,8 +161,8 @@ bool ArgParser::Parse(int argc, char **argv) {
       }
     } else {
       if (arg[0] == '-') {
-	Message::os(Message::USER) << "Unknown command line flag:" << arg;
-	MessageFlush::Get(Message::USER);
+	Status::os(Status::USER) << "Unknown command line flag:" << arg;
+	MessageFlush::Get(Status::USER);
 	return false;
       }
       source_files.push_back(arg);
@@ -290,7 +290,7 @@ void Main::main(int argc, char **argv) {
   string exit_status;
   LOG(INFO) << "NLI-" << Env::GetVersion();
   RunFiles(args.source_files);
-  Message::CheckAll();
+  Status::CheckAll();
   StaticInitializer::RunFinalizers();
   if (print_exit_status) {
     // Used to confirm this program was finished normally.

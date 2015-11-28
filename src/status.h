@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _messages_h_
-#define _messages_h_
+#ifndef _status_h_
+#define _status_h_
 
 #include <sstream>
 
@@ -8,11 +8,11 @@ using std::ostringstream;
 using std::string;
 
 // Usage:
-//  Message::os(Message::INFO) << "something happened.";
+//  Status::os(Status::INFO) << "something happened.";
 //  // let the destructor flush info messages.
-//  MessageFlush::Get(Message::INFO);
+//  MessageFlush::Get(Status::INFO);
 
-class Message {
+class Status {
 public:
   enum Type {
     // Maybe user's issue.
@@ -45,16 +45,16 @@ private:
 
 class MessageFlush {
 public:
-  MessageFlush(Message::Type t) : t_(t) {
+  MessageFlush(Status::Type t) : t_(t) {
   }
   ~MessageFlush() {
-    Message::Check(t_);
+    Status::Check(t_);
   }
-  static MessageFlush Get(Message::Type t) {
+  static MessageFlush Get(Status::Type t) {
     MessageFlush m(t);
     return m;
   }
-  Message::Type t_;
+  Status::Type t_;
 };
 
-#endif  // _messages_h_
+#endif  // _status_h_

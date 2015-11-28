@@ -197,7 +197,7 @@ am__objects_8 = src/writer/nli_bin-writer.$(OBJEXT) \
 am_nli_bin_OBJECTS = src/nli_bin-main.$(OBJEXT) \
 	src/nli_bin-nli.$(OBJEXT) src/nli_bin-initializer.$(OBJEXT) \
 	src/nli_bin-dump_stream.$(OBJEXT) \
-	src/nli_bin-logging.$(OBJEXT) src/nli_bin-messages.$(OBJEXT) \
+	src/nli_bin-logging.$(OBJEXT) src/nli_bin-status.$(OBJEXT) \
 	src/nli_bin-sym.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
 	$(am__objects_6) $(am__objects_7) $(am__objects_8)
@@ -624,7 +624,7 @@ nli_bin_SOURCES = \
  src/initializer.cpp src/initializer.h \
  src/dump_stream.cpp src/dump_stream.h \
  src/logging.cpp src/logging.h \
- src/messages.cpp src/messages.h \
+ src/status.cpp src/status.h \
  src/sym.cpp src/sym.h \
  $(compiler_SOURCES) \
  $(dfg_SOURCES) \
@@ -768,7 +768,7 @@ src/nli_bin-dump_stream.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/nli_bin-logging.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
-src/nli_bin-messages.$(OBJEXT): src/$(am__dirstamp) \
+src/nli_bin-status.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/nli_bin-sym.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
@@ -1002,8 +1002,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-initializer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-logging.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-messages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-nli.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-sym.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/compiler/$(DEPDIR)/nli_bin-compiler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-d_graph.Po@am__quote@
@@ -1182,19 +1182,19 @@ src/nli_bin-logging.obj: src/logging.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/nli_bin-logging.obj `if test -f 'src/logging.cpp'; then $(CYGPATH_W) 'src/logging.cpp'; else $(CYGPATH_W) '$(srcdir)/src/logging.cpp'; fi`
 
-src/nli_bin-messages.o: src/messages.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/nli_bin-messages.o -MD -MP -MF src/$(DEPDIR)/nli_bin-messages.Tpo -c -o src/nli_bin-messages.o `test -f 'src/messages.cpp' || echo '$(srcdir)/'`src/messages.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/nli_bin-messages.Tpo src/$(DEPDIR)/nli_bin-messages.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/messages.cpp' object='src/nli_bin-messages.o' libtool=no @AMDEPBACKSLASH@
+src/nli_bin-status.o: src/status.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/nli_bin-status.o -MD -MP -MF src/$(DEPDIR)/nli_bin-status.Tpo -c -o src/nli_bin-status.o `test -f 'src/status.cpp' || echo '$(srcdir)/'`src/status.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/nli_bin-status.Tpo src/$(DEPDIR)/nli_bin-status.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/status.cpp' object='src/nli_bin-status.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/nli_bin-messages.o `test -f 'src/messages.cpp' || echo '$(srcdir)/'`src/messages.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/nli_bin-status.o `test -f 'src/status.cpp' || echo '$(srcdir)/'`src/status.cpp
 
-src/nli_bin-messages.obj: src/messages.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/nli_bin-messages.obj -MD -MP -MF src/$(DEPDIR)/nli_bin-messages.Tpo -c -o src/nli_bin-messages.obj `if test -f 'src/messages.cpp'; then $(CYGPATH_W) 'src/messages.cpp'; else $(CYGPATH_W) '$(srcdir)/src/messages.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/nli_bin-messages.Tpo src/$(DEPDIR)/nli_bin-messages.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/messages.cpp' object='src/nli_bin-messages.obj' libtool=no @AMDEPBACKSLASH@
+src/nli_bin-status.obj: src/status.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/nli_bin-status.obj -MD -MP -MF src/$(DEPDIR)/nli_bin-status.Tpo -c -o src/nli_bin-status.obj `if test -f 'src/status.cpp'; then $(CYGPATH_W) 'src/status.cpp'; else $(CYGPATH_W) '$(srcdir)/src/status.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/nli_bin-status.Tpo src/$(DEPDIR)/nli_bin-status.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/status.cpp' object='src/nli_bin-status.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/nli_bin-messages.obj `if test -f 'src/messages.cpp'; then $(CYGPATH_W) 'src/messages.cpp'; else $(CYGPATH_W) '$(srcdir)/src/messages.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/nli_bin-status.obj `if test -f 'src/status.cpp'; then $(CYGPATH_W) 'src/status.cpp'; else $(CYGPATH_W) '$(srcdir)/src/status.cpp'; fi`
 
 src/nli_bin-sym.o: src/sym.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/nli_bin-sym.o -MD -MP -MF src/$(DEPDIR)/nli_bin-sym.Tpo -c -o src/nli_bin-sym.o `test -f 'src/sym.cpp' || echo '$(srcdir)/'`src/sym.cpp

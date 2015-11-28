@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "pool.h"
-#include "messages.h"
+#include "status.h"
 #include "synth/synth.h"
 #include "vm/channel.h"
 #include "vm/method.h"
@@ -81,7 +81,7 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     phase = StringWrapper::String(args[0].object_);
   }
   if (!synth::Synth::Synthesize(thr->GetVM(), phase, obj)) {
-    Message::os(Message::USER) << "Compile failed";
+    Status::os(Status::USER) << "Compile failed";
     thr->UserError();
   }
 }
@@ -89,8 +89,8 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
 void NativeMethods::WidthOf(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
-    Message::os(Message::USER) << "Invalid argument to widthof()";
-    MessageFlush::Get(Message::USER);
+    Status::os(Status::USER) << "Invalid argument to widthof()";
+    MessageFlush::Get(Status::USER);
     return;
   }
   Value value;

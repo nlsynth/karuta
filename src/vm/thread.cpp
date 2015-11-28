@@ -3,7 +3,7 @@
 #include "dump_stream.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
-#include "messages.h"
+#include "status.h"
 #include "vm/value.h"
 #include "vm/executor.h"
 #include "vm/executor_toplevel.h"
@@ -117,7 +117,7 @@ vector<MethodFrame*> &Thread::MethodStack() {
 }
 
 void Thread::UserError() {
-  Message::Check(Message::USER);
+  Status::Check(Status::USER);
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
   frame->pc_ = method->insns_.size();

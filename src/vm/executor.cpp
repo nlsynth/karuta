@@ -1,13 +1,13 @@
 #include "vm/executor.h"
 
-#include "dump_stream.h"
-#include "messages.h"
 #include "compiler/compiler.h"
+#include "dump_stream.h"
 #include "fe/fe.h"
 #include "fe/expr.h"
 #include "fe/stmt.h"
 #include "fe/nodecode.h"
 #include "fe/var_decl.h"
+#include "status.h"
 #include "vm/array_wrapper.h"
 #include "vm/channel.h"
 #include "vm/insn.h"
@@ -508,9 +508,9 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
   *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   Value *value = (*obj)->LookupValue(insn->label_, false);
   if (!value) {
-    Message::os(Message::USER) << "method not found: "
+    Status::os(Status::USER) << "method not found: "
 			       << sym_cstr(insn->label_);
-    Message::Check(Message::USER);
+    Status::Check(Status::USER);
     thr_->UserError();
     return NULL;
   }

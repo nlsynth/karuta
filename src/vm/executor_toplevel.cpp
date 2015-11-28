@@ -1,12 +1,12 @@
 #include "vm/executor_toplevel.h"
 
-#include "dump_stream.h"
-#include "messages.h"
 #include "compiler/compiler.h"
+#include "dump_stream.h"
 #include "fe/fe.h"
 #include "fe/expr.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "status.h"
 #include "vm/array_wrapper.h"
 #include "vm/method.h"
 #include "vm/channel.h"
@@ -124,7 +124,7 @@ void ExecutorToplevel::ExecImport(Insn *insn) {
   VM *vm = thr_->GetVM();
   Method *method = fe::FE::CompileFile(fn, false, vm);
   if (!method) {
-    Message::os(Message::USER) << "Failed to import: " << fn;
+    Status::os(Status::USER) << "Failed to import: " << fn;
     thr_->UserError();
     return;
   }
@@ -144,7 +144,7 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
 				    Insn *insn) {
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   if (!obj) {
-    Message::os(Message::USER) << "Can't find object";
+    Status::os(Status::USER) << "Can't find object";
     thr_->UserError();
     return;
   }
