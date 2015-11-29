@@ -13,7 +13,7 @@
 #include <string>
 #include "nli.h"
 #include "dfg/dfg.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 #include "status.h"
 #include "writer/vl_channel.h"
 #include "writer/vl_module.h"

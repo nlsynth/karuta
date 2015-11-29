@@ -10,7 +10,7 @@ class DAnnotation;
 class DArray;
 class DModule;
 class DType;
-class ImportedResource;
+class ResourceParams;
   
 // class of operation
 class DOperator {
@@ -32,7 +32,7 @@ public:
   int resource_id_;
   // class of operation.
   DOperator *opr_;
-  ImportedResource *imported_resource_;
+  ResourceParams *imported_resource_;
   DArray *array_;
   // for sub module call.
   DModule *module_;

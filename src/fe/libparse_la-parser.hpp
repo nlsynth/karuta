@@ -145,8 +145,8 @@ union YYSTYPE
   sym_t sym;
   uint64_t num;
   const class numeric::Width *width;
-  class ImportParam *import_param;
-  class ImportParamSet *import_params;
+  class ResourceParamValue *import_param;
+  class ResourceParamValueSet *import_params;
 
 #line 152 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
 };

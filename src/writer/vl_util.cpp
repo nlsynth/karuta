@@ -1,7 +1,7 @@
 #include "writer/vl_util.h"
 
 #include "dfg/dfg.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 
 namespace writer {
 

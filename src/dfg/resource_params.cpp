@@ -1,4 +1,4 @@
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 
 #include <iostream>
 #include <list>
@@ -12,9 +12,9 @@ static sym_t sym_module, sym_clock, sym_reset;
 
 namespace dfg {
 
-static Pool<ImportedResource> imported_resource_pool;
+static Pool<ResourceParams> resource_params_pool;
 
-class ImportParam {
+class ResourceParamValue {
 public:
   string GetNthValue(int nth);
 
@@ -22,78 +22,78 @@ public:
   vector <string> values_;
 };
 
-class ImportParamSet {
+class ResourceParamValueSet {
 public:
-  ~ImportParamSet();
-  vector<ImportParam *> params_;
+  ~ResourceParamValueSet();
+  vector<ResourceParamValue *> params_;
 };
 
-string ImportParam::GetNthValue(int nth) {
-  if (nth < values_.size()) {
+string ResourceParamValue::GetNthValue(int nth) {
+  if (nth < (int)values_.size()) {
     return values_[nth];
   }
   return "";
 }
 
-ImportParamSet::~ImportParamSet() {
+ResourceParamValueSet::~ResourceParamValueSet() {
   STLDeleteValues(&params_);
 }
 
-ImportedResource::ImportedResource(ImportParamSet *params) {
-  imported_resource_pool.Add(this);
+ResourceParams::ResourceParams(ResourceParamValueSet *params) {
+  resource_params_pool.Add(this);
   params_ = params;
 }
 
-ImportedResource::~ImportedResource() {
+ResourceParams::~ResourceParams() {
   delete params_;
 }
 
-bool ImportedResource::IsImportedModule() {
+bool ResourceParams::IsImportedModule() {
   if (LookupParam(sym_verilog)) {
     return true;
   }
   return false;
 }
 
-string ImportedResource::GetOutputPinName() {
+string ResourceParams::GetOutputPinName() {
   return LookupStrParam(sym_output, "");
 }
 
-string ImportedResource::GetInputPinName() {
+string ResourceParams::GetInputPinName() {
   return LookupStrParam(sym_input, "");
 }
 
-bool ImportedResource::IsExtIO() {
+bool ResourceParams::IsExtIO() {
   if (LookupParam(sym_output) || LookupParam(sym_input)) {
     return true;
   }
   return false;
 }
 
-bool ImportedResource::IsExtInput() {
+bool ResourceParams::IsExtInput() {
   if (LookupParam(sym_input)) {
     return true;
   }
   return false;
 }
 
-bool ImportedResource::IsExtOutput() {
+bool ResourceParams::IsExtOutput() {
   if (LookupParam(sym_output)) {
     return true;
   }
   return false;
 }
 
-string ImportedResource::LookupStrParam(sym_t key, string dflt) {
-  ImportParam *p = LookupParam(key);
+string ResourceParams::LookupStrParam(sym_t key, string dflt) {
+  ResourceParamValue *p = LookupParam(key);
   if (!p) {
     return dflt;
   }
   return p->GetNthValue(0);
 }
 
-ImportParam *ImportedResource::LookupParam(sym_t key) {
-  for (ImportParam *param : params_->params_) {
+ResourceParamValue *ResourceParams::LookupParam(sym_t key) {
+  for (ResourceParamValue *param : params_->params_) {
     if (key == param->key_) {
       return param;
     }
@@ -101,16 +101,16 @@ ImportParam *ImportedResource::LookupParam(sym_t key) {
   return NULL;
 }
 
-string ImportedResource::GetResourceName() {
+string ResourceParams::GetResourceName() {
   return LookupStrParam(sym_resource, "");
 }
 
-string ImportedResource::GetCopyFileName() {
+string ResourceParams::GetCopyFileName() {
   string file = LookupStrParam(sym_file, "");
   if (file != "copy") {
     return "";
   }
-  ImportParam *p = LookupParam(sym_verilog);
+  ResourceParamValue *p = LookupParam(sym_verilog);
   if (!p) {
     std::cout << "source file to be copied is not specified.\n";
     abort();
@@ -119,20 +119,20 @@ string ImportedResource::GetCopyFileName() {
   return p->GetNthValue(0);
 }
 
-string ImportedResource::GetModuleName() {
+string ResourceParams::GetModuleName() {
   return LookupStrParam(sym_module, "");
 }
 
-string ImportedResource::GetClockPinName() {
+string ResourceParams::GetClockPinName() {
   return LookupStrParam(sym_clock, "clk");
 }
 
-string ImportedResource::GetResetPinName() {
+string ResourceParams::GetResetPinName() {
   return LookupStrParam(sym_reset, "rst");
 }
 
-void ImportedResource::AddPinDecl(sym_t name, bool is_out, int width) {
-  ImportedResource_pin pin;
+void ResourceParams::AddPinDecl(sym_t name, bool is_out, int width) {
+  ResourceParams_pin pin;
   pin.name = name;
   pin.is_out = is_out;
   pin.width = width;
@@ -140,11 +140,11 @@ void ImportedResource::AddPinDecl(sym_t name, bool is_out, int width) {
   pins_.push_back(pin);
 }
 
-int ImportedResource::GetNrPinDecls() {
+int ResourceParams::GetNrPinDecls() {
   return pins_.size();
 }
 
-bool ImportedResource::GetNthPinDecl(int nth, ImportedResource_pin *decl) {
+bool ResourceParams::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
   if (nth >= 0 && nth < static_cast<int>(pins_.size())) {
     *decl = pins_[nth];
     return true;
@@ -152,28 +152,28 @@ bool ImportedResource::GetNthPinDecl(int nth, ImportedResource_pin *decl) {
   return false;
 }
 
-void Importer::AddStrParam(ImportParam *p, const char *str) {
+void Importer::AddStrParam(ResourceParamValue *p, const char *str) {
   p->values_.push_back(string(str));
 }
 
-ImportParam *Importer::BuildStrParam(sym_t key, const char *str) {
-  ImportParam *p = new ImportParam();
+ResourceParamValue *Importer::BuildStrParam(sym_t key, const char *str) {
+  ResourceParamValue *p = new ResourceParamValue();
   p->key_ = key;
   AddStrParam(p, str);
   return p;
 }
 
-ImportParamSet *Importer::BuildParamSet(ImportParamSet *params,
-					ImportParam *p) {
+ResourceParamValueSet *Importer::BuildParamSet(ResourceParamValueSet *params,
+					       ResourceParamValue *p) {
   if (!params) {
-    params = new ImportParamSet();
+    params = new ResourceParamValueSet();
   }
   params->params_.push_back(p);
   return params;
 }
 
-ImportedResource *Importer::Import(ImportParamSet *params) {
-  return new ImportedResource(params);
+ResourceParams *Importer::Import(ResourceParamValueSet *params) {
+  return new ResourceParams(params);
 }
 
 void Importer::Init() {

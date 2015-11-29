@@ -18,7 +18,7 @@ class DGraph;
 class DInsn;
 class DResource;
 class DType;
-class ImportedResource;
+class ResourceParams;
 }  // namespace dfg
 using namespace dfg;
 
@@ -42,11 +42,11 @@ public:
   DResource *FunctionEntryResource(bool is_task_root);
   DResource *TaskFinishResource();
   DResource *GetExtIOResource(sym_t name,
-			      ImportedResource *resource,
+			      ResourceParams *resource,
 			      DInsn *insn);
 
   DResource *GetOpResource(vm::OpCode op, DType *type);
-  DResource *GetImportedResource(ImportedResource *resource);
+  DResource *GetImportedResource(ResourceParams *resource);
   DResource *GetArrayResource(sym_t name);
   DResource *GetChannelResource(const string &name, bool is_write,
 				int data_width);

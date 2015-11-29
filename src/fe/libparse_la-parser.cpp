@@ -80,7 +80,7 @@
 #include "fe/nodecode.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 
 extern int yylex();
 extern void yyerror(const char *msg);
@@ -221,8 +221,8 @@ union YYSTYPE
   sym_t sym;
   uint64_t num;
   const class numeric::Width *width;
-  class ImportParam *import_param;
-  class ImportParamSet *import_params;
+  class ResourceParamValue *import_param;
+  class ResourceParamValueSet *import_params;
 
 #line 228 "src/fe/libparse_la-parser.cpp" /* yacc.c:355  */
 };

@@ -5,7 +5,7 @@
 #include "nli.h"
 
 namespace dfg {
-class ImportedResource;
+class ResourceParams;
 }  // namespace dfg
 class DumpStream;
 
@@ -23,7 +23,7 @@ public:
   vector<Stmt*> stmts_;
   VarDeclSet *args_;
   VarDeclSet *returns_;
-  dfg::ImportedResource *imported_resource_;
+  dfg::ResourceParams *imported_resource_;
 };
 
 }  // namespace fe

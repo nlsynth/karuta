@@ -1,7 +1,7 @@
 #include "synth/resource_set.h"
 
 #include "dfg/dfg.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 #include "dump_stream.h"
 #include "status.h"
 #include "vm/insn.h"
@@ -56,7 +56,7 @@ DResource *ResourceSet::TaskFinishResource() {
 }
 
 DResource *ResourceSet::GetExtIOResource(sym_t name,
-					 ImportedResource *resource,
+					 ResourceParams *resource,
 					 DInsn *insn) {
   for (size_t i = 0; i < ext_io_resources_.size(); ++i) {
     if (ext_io_resources_[i]->name_ == sym_cstr(name)) {
@@ -144,7 +144,7 @@ sym_t ResourceSet::GetResourceType(vm::OpCode op) {
   return NULL;
 }
 
-DResource *ResourceSet::GetImportedResource(ImportedResource *resource) {
+DResource *ResourceSet::GetImportedResource(ResourceParams *resource) {
   string name = resource->GetResourceName();
   for (size_t i = 0; i < imported_resources_.size(); ++i) {
     DResource *res = imported_resources_[i];

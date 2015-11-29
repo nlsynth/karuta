@@ -8,7 +8,7 @@
 #include <string>
 #include "nli.h"
 #include "dfg/dfg.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 #include "status.h"
 #include "writer/module_template.h"
 #include "writer/vl_channel.h"
@@ -343,7 +343,7 @@ void VLGraph::OutputArrayRefResource(DResource *r) {
 }
 
 void VLGraph::OutputImportedOpInputPin(DResource *r,
-				       ImportedResource_pin *pin,
+				       ResourceParams_pin *pin,
 				       int nth_input) {
   os_ << "  wire ";
   if (pin->width > 1) {
@@ -399,12 +399,12 @@ void VLGraph::OutputImportedOp(DResource *r) {
   }
   os_ << ";\n";
   // I/O pins
-  ImportedResource *ir = r->imported_resource_;
+  ResourceParams *ir = r->imported_resource_;
   nr = ir->GetNrPinDecls();
   int i;
   int nth_input = 0;
   for (i = 0; i < nr; i++) {
-    ImportedResource_pin pin;
+    ResourceParams_pin pin;
     ir->GetNthPinDecl(i, &pin);
     if (!pin.is_out) {
       OutputImportedOpInputPin(r, &pin, nth_input);
@@ -624,10 +624,10 @@ void VLGraph::OutputInsnResultWire(DInsn *insn) {
 
 // outputs I/O pins for instantiated imported modules
 void VLGraph::OutputImportedModulePin(DResource *res) {
-  ImportedResource *ir = res->imported_resource_;
+  ResourceParams *ir = res->imported_resource_;
   int nr = ir->GetNrPinDecls();
   for (int i = 0; i < nr; i++) {
-    ImportedResource_pin pin;
+    ResourceParams_pin pin;
     ir->GetNthPinDecl(i, &pin);
     os_ << ", ." << sym_cstr(pin.name) << "(" << res->name_
 	<< res->resource_id_ << "_" << sym_cstr(pin.name) << ")";

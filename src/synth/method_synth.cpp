@@ -5,7 +5,7 @@
 #include "dfg/dfg.h"
 #include "dump_stream.h"
 #include "compiler/compiler.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
@@ -694,7 +694,7 @@ void MethodSynth::SynthNativeMethod(vm::Method *method) {
 	alt_method->parse_tree_->imported_resource_);
 
   DInsn *entry_insn = EmitEntryInsn(alt_method);
-  ImportedResource *imported_resource =
+  ResourceParams *imported_resource =
     alt_method->parse_tree_->imported_resource_;
 
   DResource *resource = resource_->GetImportedResource(imported_resource);

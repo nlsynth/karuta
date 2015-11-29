@@ -1,7 +1,7 @@
 #include "dfg/d_graph.h"
 
 #include "dfg/d_module.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 
 DRegister::DRegister(enum RegType reg_type, DType *val_type) {
   data_type_ = val_type;

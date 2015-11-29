@@ -15,7 +15,7 @@ class DRegister;
 class DResource;
 class DState;
 class DType;
-class ImportedResource_pin;
+class ResourceParams_pin;
 }  // namespace
 using namespace dfg;
 
@@ -55,7 +55,7 @@ private:
   void OutputImportedOp(DResource *r);
   void OutputImportedModulePin(DResource *res);
   void OutputImportedOpInputPin(DResource *r,
-				ImportedResource_pin *pin,
+				ResourceParams_pin *pin,
 				int nth_input);
   void OutputBinopSharedResource(DResource *r);
   void OutputBinopWire(DResource *r);

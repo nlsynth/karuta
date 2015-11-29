@@ -17,7 +17,7 @@ class DRegister;
 class DResource;
 class DState;
 class DType;
-class ImportedResource_pin;
+class ResourceParams_pin;
 }  // namespace
 using namespace dfg;
 

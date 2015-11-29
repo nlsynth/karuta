@@ -128,7 +128,7 @@ am__objects_2 = src/dfg/nli_bin-dfg.$(OBJEXT) \
 	src/dfg/nli_bin-d_insn.$(OBJEXT) \
 	src/dfg/nli_bin-d_module.$(OBJEXT) \
 	src/dfg/nli_bin-d_resource.$(OBJEXT) \
-	src/dfg/nli_bin-imported_resource.$(OBJEXT)
+	src/dfg/nli_bin-resource_params.$(OBJEXT)
 am__objects_3 = src/fe/nli_bin-nodecode.$(OBJEXT) \
 	src/fe/nli_bin-fe.$(OBJEXT) src/fe/nli_bin-common.$(OBJEXT) \
 	src/fe/nli_bin-builder.$(OBJEXT) \
@@ -570,7 +570,7 @@ dfg_SOURCES = \
  src/dfg/d_insn.cpp src/dfg/d_insn.h \
  src/dfg/d_module.cpp src/dfg/d_module.h \
  src/dfg/d_resource.cpp src/dfg/d_resource.h \
- src/dfg/imported_resource.cpp src/dfg/imported_resource.h
+ src/dfg/resource_params.cpp src/dfg/resource_params.h
 
 synth_SOURCES = \
  src/synth/interface.cpp src/synth/interface.h \
@@ -804,7 +804,7 @@ src/dfg/nli_bin-d_module.$(OBJEXT): src/dfg/$(am__dirstamp) \
 	src/dfg/$(DEPDIR)/$(am__dirstamp)
 src/dfg/nli_bin-d_resource.$(OBJEXT): src/dfg/$(am__dirstamp) \
 	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-imported_resource.$(OBJEXT): src/dfg/$(am__dirstamp) \
+src/dfg/nli_bin-resource_params.$(OBJEXT): src/dfg/$(am__dirstamp) \
 	src/dfg/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-nodecode.$(OBJEXT): src/fe/$(am__dirstamp) \
 	src/fe/$(DEPDIR)/$(am__dirstamp)
@@ -1015,7 +1015,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-dfg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-dfg_util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-imported_resource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-resource_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/libparse_la-parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-builder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-common.Po@am__quote@
@@ -1350,19 +1350,19 @@ src/dfg/nli_bin-d_resource.obj: src/dfg/d_resource.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_resource.obj `if test -f 'src/dfg/d_resource.cpp'; then $(CYGPATH_W) 'src/dfg/d_resource.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_resource.cpp'; fi`
 
-src/dfg/nli_bin-imported_resource.o: src/dfg/imported_resource.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-imported_resource.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-imported_resource.Tpo -c -o src/dfg/nli_bin-imported_resource.o `test -f 'src/dfg/imported_resource.cpp' || echo '$(srcdir)/'`src/dfg/imported_resource.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-imported_resource.Tpo src/dfg/$(DEPDIR)/nli_bin-imported_resource.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/imported_resource.cpp' object='src/dfg/nli_bin-imported_resource.o' libtool=no @AMDEPBACKSLASH@
+src/dfg/nli_bin-resource_params.o: src/dfg/resource_params.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-resource_params.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo -c -o src/dfg/nli_bin-resource_params.o `test -f 'src/dfg/resource_params.cpp' || echo '$(srcdir)/'`src/dfg/resource_params.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo src/dfg/$(DEPDIR)/nli_bin-resource_params.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/resource_params.cpp' object='src/dfg/nli_bin-resource_params.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-imported_resource.o `test -f 'src/dfg/imported_resource.cpp' || echo '$(srcdir)/'`src/dfg/imported_resource.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-resource_params.o `test -f 'src/dfg/resource_params.cpp' || echo '$(srcdir)/'`src/dfg/resource_params.cpp
 
-src/dfg/nli_bin-imported_resource.obj: src/dfg/imported_resource.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-imported_resource.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-imported_resource.Tpo -c -o src/dfg/nli_bin-imported_resource.obj `if test -f 'src/dfg/imported_resource.cpp'; then $(CYGPATH_W) 'src/dfg/imported_resource.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/imported_resource.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-imported_resource.Tpo src/dfg/$(DEPDIR)/nli_bin-imported_resource.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/imported_resource.cpp' object='src/dfg/nli_bin-imported_resource.obj' libtool=no @AMDEPBACKSLASH@
+src/dfg/nli_bin-resource_params.obj: src/dfg/resource_params.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-resource_params.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo -c -o src/dfg/nli_bin-resource_params.obj `if test -f 'src/dfg/resource_params.cpp'; then $(CYGPATH_W) 'src/dfg/resource_params.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/resource_params.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo src/dfg/$(DEPDIR)/nli_bin-resource_params.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/resource_params.cpp' object='src/dfg/nli_bin-resource_params.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-imported_resource.obj `if test -f 'src/dfg/imported_resource.cpp'; then $(CYGPATH_W) 'src/dfg/imported_resource.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/imported_resource.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-resource_params.obj `if test -f 'src/dfg/resource_params.cpp'; then $(CYGPATH_W) 'src/dfg/resource_params.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/resource_params.cpp'; fi`
 
 src/fe/nli_bin-nodecode.o: src/fe/nodecode.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/fe/nli_bin-nodecode.o -MD -MP -MF src/fe/$(DEPDIR)/nli_bin-nodecode.Tpo -c -o src/fe/nli_bin-nodecode.o `test -f 'src/fe/nodecode.cpp' || echo '$(srcdir)/'`src/fe/nodecode.cpp

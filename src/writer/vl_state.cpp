@@ -8,7 +8,7 @@
 #include <string>
 
 #include "dfg/dfg.h"
-#include "dfg/imported_resource.h"
+#include "dfg/resource_params.h"
 #include "status.h"
 #include "nli.h"
 #include "writer/module_template.h"
