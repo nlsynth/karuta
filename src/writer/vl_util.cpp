@@ -123,7 +123,18 @@ string VLStateEncoder::TaskEntryStateNameWithoutQuote() {
   sprintf(buf, "S_%d", task_entry_state_);
   return string(buf);
 }
-  
+
+bool VLUtil::ResetPolarity(DModule *mod) {
+  while (mod->parent_mod_) {
+    mod = mod->parent_mod_;
+  }
+  if (!mod->synth_params_) {
+    // Use the default.
+    return true;
+  }
+  return mod->synth_params_->ResetPolarity();
+}
+
 string VLUtil::TaskControlPinName(const DModule *dm) {
   return dm->parent_mod_->module_name_ + "_" + dm->module_name_;
 }

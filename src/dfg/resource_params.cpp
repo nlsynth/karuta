@@ -44,8 +44,54 @@ ResourceParams::ResourceParams(ResourceParamValueSet *params) {
   params_ = params;
 }
 
+ResourceParams::ResourceParams(const ResourceParams &that) {
+  resource_params_pool.Add(this);
+  pins_ = that.pins_;
+  params_ = new ResourceParamValueSet;
+  for (ResourceParamValue *param : that.params_->params_) {
+    ResourceParamValue *value = new ResourceParamValue;
+    *value = *param;
+    params_->params_.push_back(value);
+  }
+}
+
 ResourceParams::~ResourceParams() {
   delete params_;
+}
+
+void ResourceParams::Dump(ostream &os) const {
+  bool is_first_param = true;
+  for (ResourceParamValue *param : params_->params_) {
+    if (!is_first_param) {
+      os << ",";
+    }
+    os << "[" << sym_cstr(param->key_) << "]=";
+    bool is_first_value = true;
+    for (string &value : param->values_) {
+      if (!is_first_value) {
+	os << ",";
+      }
+      os << value;
+      is_first_value = false;
+    }
+    is_first_param = false;
+  }
+  if (params_->params_.size()) {
+    os << " ";
+  }
+  for (const ResourceParams_pin &pin : pins_) {
+    os << sym_cstr(pin.name) << ":";
+    if (pin.is_out) {
+      os << "out:";
+    } else {
+      os << "in:";
+    }
+    os << pin.width;
+  }
+}
+
+ResourceParams *ResourceParams::Copy(ResourceParams *params) {
+  return new ResourceParams(*params);
 }
 
 bool ResourceParams::IsImportedModule() {
@@ -61,6 +107,10 @@ string ResourceParams::GetOutputPinName() {
 
 string ResourceParams::GetInputPinName() {
   return LookupStrParam(sym_input, "");
+}
+
+bool ResourceParams::ResetPolarity() {
+  return (LookupStrParam(sym_lookup("resetPolarity"), "1") == "1");
 }
 
 bool ResourceParams::IsExtIO() {
@@ -152,6 +202,16 @@ bool ResourceParams::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
   return false;
 }
 
+void ResourceParams::AddParam(const string &key, const string &value) {
+  ResourceParamValue *param = LookupParam(sym_lookup(key.c_str()));
+  if (param) {
+    param->values_.push_back(value);
+  } else {
+    param = Importer::BuildStrParam(sym_lookup(key.c_str()), value.c_str());
+    params_->params_.push_back(param);
+  }
+}
+
 void Importer::AddStrParam(ResourceParamValue *p, const char *str) {
   p->values_.push_back(string(str));
 }
@@ -173,6 +233,9 @@ ResourceParamValueSet *Importer::BuildParamSet(ResourceParamValueSet *params,
 }
 
 ResourceParams *Importer::Import(ResourceParamValueSet *params) {
+  if (!params) {
+    params = new ResourceParamValueSet;
+  }
   return new ResourceParams(params);
 }
 

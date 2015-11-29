@@ -8,6 +8,7 @@
 #include "synth/synth.h"
 
 #include "dfg/dfg.h"
+#include "dfg/resource_params.h"
 #include "opt/opt.h"
 #include "opt/opt_context.h"
 #include "pool.h"
@@ -52,10 +53,12 @@ bool Synth::Compile(const string &phase) {
 DModule *Synth::SynthModule() {
   LOG(DEBUG) << "Synth start";
   set<sym_t> entry_methods;
-  ObjectSynth obj_synth(vm_, obj_, "main", entry_methods, nullptr);
+  ObjectSynth obj_synth(vm_, obj_, "main", entry_methods,
+			/* parent_module */ nullptr);
   DModule *module = obj_synth.GetDModule();
   dmodule_pool_.Add(module);
   SetDumpFileName(module);
+  SetSynthParams(module);
   if (!obj_synth.Synth()) {
     return NULL;
   }
@@ -80,6 +83,14 @@ void Synth::SetDumpFileName(DModule *module) {
       module->GetOptimizeContext()->SetDumpFn(path.c_str());
     }
   }
+}
+
+void Synth::SetSynthParams(DModule *module) {
+  vm::Value *value = obj_->LookupValue(sym_lookup("$synth_params"), false);
+  if (!value) {
+    return;
+  }
+  module->synth_params_ = new ResourceParams(*value->resource_params_);
 }
 
 bool Synth::Synthesize(vm::VM *vm, const string &phase, vm::Object *obj) {

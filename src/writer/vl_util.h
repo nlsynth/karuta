@@ -68,6 +68,8 @@ private:
 
 class VLUtil {
 public:
+  static bool ResetPolarity(DModule *mod);
+
   static DModule *GetCalleeTaskModule(const DGraph *graph, const DInsn *insn);
   // ParentModName_ThisTaskModName.
   static string TaskControlPinName(const DModule *dm);

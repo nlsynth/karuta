@@ -22,6 +22,8 @@ public:
   static void Print(Thread *thr, Object *obj, const vector<Value> &args);
   static void Run(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetDump(Thread *thr, Object *obj, const vector<Value> &args);
+  static void SetSynthParam(Thread *thr, Object *obj,
+			    const vector<Value> &args);
   static void WidthOf(Thread *thr, Object *obj, const vector<Value> &args);
   static void WriteHdl(Thread *thr, Object *obj, const vector<Value> &args);
 

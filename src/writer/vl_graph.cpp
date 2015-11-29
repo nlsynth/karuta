@@ -121,7 +121,11 @@ void VLGraph::SetEnabledStateSet(DResource *res, const string &dst_signal) {
 
 void VLGraph::OutputFSM() {
   os_ << "  always @(posedge clk) begin\n"
-      << "    if (rst) begin\n"
+      << "    if (";
+  if (!VLUtil::ResetPolarity(graph_->owner_module_)) {
+    os_ << "!";
+  }
+  os_ << "rst) begin\n"
       << "      cur_st <= ";
   if (graph_->owner_module_->module_type_ == DModule::MODULE_TASK) {
     os_ << state_encoder_->TaskEntryStateName();

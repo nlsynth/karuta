@@ -1,5 +1,6 @@
 #include "vm/value.h"
 
+#include "dfg/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
@@ -8,7 +9,8 @@
 
 namespace vm {
 
-  Value::Value() : type_(NONE), is_const_(false), method_(NULL), object_(NULL), local_int_array_(NULL) {
+Value::Value() : type_(NONE), is_const_(false), method_(NULL),
+		 object_(NULL), local_int_array_(NULL) {
 }
 
 void Value::Dump() const {
@@ -32,6 +34,10 @@ void Value::Dump(ostream &os) const {
     break;
   case ENUM_ITEM:
     os << enum_val_.val << " in " << sym_cstr(enum_val_.enum_type->name_);
+    break;
+  case RESOURCE_PARAMS:
+    os << "resource_params: ";
+    resource_params_->Dump(os);
     break;
   case DMODULE:
     os << "dmodule";

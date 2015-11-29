@@ -14,6 +14,7 @@ namespace dfg {
 
 class DChannel;
 class DGraph;
+class ResourceParams;
 
 // A FSM and its subsidiary resource modules and interfaces.
 class DModule {
@@ -41,6 +42,8 @@ public:
   Pool<DChannel> channels_pool_;
 
   opt::OptimizeContext *GetOptimizeContext();
+
+  ResourceParams *synth_params_;
 
 private:
   std::unique_ptr<opt::OptimizeContext> optimize_context_;

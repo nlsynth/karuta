@@ -7,7 +7,7 @@
 #include "numeric/numeric.h"
 
 namespace dfg {
-class DModule;
+class ResourceParams;
 }  // namespace dfg
 using namespace dfg;
 
@@ -42,6 +42,7 @@ public:
     METHOD,
     ENUM_ITEM,
     ENUM_TYPE,
+    RESOURCE_PARAMS,
 
     // In object_.
     DMODULE,
@@ -61,6 +62,8 @@ public:
   EnumVal enum_val_;
   // for ENUM_TYPE
   const EnumType *enum_type_;
+  // for RESOURCE_PARAMS
+  dfg::ResourceParams *resource_params_;
   Object *object_;
   IntArray *local_int_array_;
 };

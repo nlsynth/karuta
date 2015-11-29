@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 
+#include "dfg/resource_params.h"
 #include "pool.h"
 #include "status.h"
 #include "synth/synth.h"
@@ -86,6 +87,24 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
   }
 }
 
+void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
+				  const vector<Value> &args) {
+  if (args.size() != 2 ||
+      !StringWrapper::IsString(args[0].object_) ||
+      !StringWrapper::IsString(args[1].object_)) {
+    Status::os(Status::USER) << "Invalid argument type of setSynthParam()";
+    return;
+  }
+  Value *value = obj->LookupValue(sym_lookup("$synth_params"), true);
+  if (value->type_ == Value::NONE) {
+    value->type_ = Value::RESOURCE_PARAMS;
+    value->resource_params_ = Importer::Import(NULL);
+  }
+  value->resource_params_
+    ->AddParam(StringWrapper::String(args[0].object_),
+	       StringWrapper::String(args[1].object_));
+}
+
 void NativeMethods::WidthOf(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
@@ -143,6 +162,8 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
   InstallNativeMethod(vm, obj, "setDump", &NativeMethods::SetDump, rets);
+  InstallNativeMethod(vm, obj, "setSynthParam",
+		      &NativeMethods::SetSynthParam, rets);
   InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
   InstallNativeMethod(vm, obj, "writeHdl", &NativeMethods::WriteHdl, rets);
   // Depreacte this after 0.1.8.

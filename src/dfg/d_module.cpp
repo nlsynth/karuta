@@ -7,7 +7,8 @@
 namespace dfg {
 
 DModule::DModule(const char *name, enum ModuleType type, DModule *parent)
-  : module_name_(name), module_type_(type), graph_(NULL), parent_mod_(parent) {
+  : module_name_(name), module_type_(type), graph_(NULL),
+    parent_mod_(parent), synth_params_(NULL) {
   optimize_context_.reset(new opt::OptimizeContext(this));
   graph_ = NULL;
 }

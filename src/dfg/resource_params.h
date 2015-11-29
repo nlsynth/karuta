@@ -14,7 +14,7 @@ class Importer {
 public:
   static void Init();
 
-  // Called from parser
+  // Called mainly from parser
   static ResourceParams *Import(ResourceParamValueSet *params);
   static ResourceParamValue *BuildStrParam(sym_t key, const char *str);
   static void AddStrParam(ResourceParamValue *p, const char *str);
@@ -32,7 +32,11 @@ public:
 class ResourceParams {
 public:
   explicit ResourceParams(ResourceParamValueSet *params);
+  ResourceParams(const ResourceParams &that);
   ~ResourceParams();
+
+  void Dump(ostream &os) const;
+  static ResourceParams *Copy(ResourceParams *params);
 
   bool IsImportedModule();
   bool IsExtIO();
@@ -50,9 +54,13 @@ public:
   string GetOutputPinName();
   string GetInputPinName();
 
+  bool ResetPolarity();
+
   void AddPinDecl(sym_t name, bool is_out, int width);
   int GetNrPinDecls();
   bool GetNthPinDecl(int nth, ResourceParams_pin *decl);
+
+  void AddParam(const string &key, const string &value);
 
 private:
   string LookupStrParam(sym_t key, string dflt);

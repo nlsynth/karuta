@@ -29,6 +29,7 @@ public:
 private:
   DModule *SynthModule();
   void SetDumpFileName(DModule *module);
+  void SetSynthParams(DModule *module);
 
   vm::VM *vm_;
   vm::Object *obj_;

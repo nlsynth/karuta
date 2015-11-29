@@ -1,6 +1,7 @@
 #include "vm/object.h"
 
 #include "dump_stream.h"
+#include "dfg/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
@@ -69,11 +70,16 @@ void Object::LookupMemberNames(Object *obj, vector<sym_t> *slots) {
 
 Object *Object::Clone(VM *vm) {
   Object *new_obj = vm->NewObject();
+  // This does shallow copy for most of data types.
   new_obj->members_ = members_;
   for (auto it : new_obj->members_) {
     Value &value = it.second;
     if (value.type_ == Value::INT_ARRAY) {
       value.object_ = ArrayWrapper::Copy(vm, value.object_);
+    }
+    if (value.type_ == Value::RESOURCE_PARAMS) {
+      value.resource_params_ =
+	dfg::ResourceParams::Copy(value.resource_params_);
     }
   }
   return new_obj;
