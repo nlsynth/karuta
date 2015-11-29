@@ -320,7 +320,8 @@ DType *DTypeUtil::GetBoolType() {
 int DTypeUtil::GetWidth(DType *type) {
   if (type->type_ == DType::ENUM) {
     CHECK(type->size_ == 2);
-    return 1;
+    // Scalar value.
+    return 0;
   }
   return type->size_;
 }

@@ -68,6 +68,7 @@ public:
   static DType *GetBoolType();
   static DType *FindDType(enum DType::TypeClass type, int width);
   static bool IsCompatibleType(DType *src, DType *type);
+  // Returns 0 for bool because it is a scalar value.
   static int GetWidth(DType *type);
 
   static void ReleaseTypes();
