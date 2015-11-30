@@ -529,8 +529,8 @@ void VLGraph::OutputInsnWire(DInsn *insn) {
     os_ << " = ";
     if (type == sym_or_reduce) {
       os_ << "|";
-    } else if (type == sym_logic_inv) {
-      os_ << "!";
+    } else if (type == sym_bit_inv) {
+      os_ << "~";
     } else {
       VLWriter::ICE("unknown uniop to make wire");
     }

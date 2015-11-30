@@ -19,7 +19,7 @@ extern sym_t sym_mul, sym_div;
 extern sym_t sym_add_eq, sym_sub_eq;
 extern sym_t sym_incr, sym_decr;
 extern sym_t sym_lshift, sym_rshift;
-extern sym_t sym_bit_or, sym_bit_and, sym_bit_xor, sym_bit_not;
+extern sym_t sym_bit_or, sym_bit_and, sym_bit_xor, sym_bit_inv;
 extern sym_t sym_logic_or, sym_logic_and;
 extern sym_t sym_bit_concat;
 extern sym_t sym_if, sym_else;

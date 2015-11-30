@@ -127,8 +127,9 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   case vm::OP_CONCAT:
     SynthConcat(insn);
     break;
+  case vm::OP_BIT_INV:
   case vm::OP_LOGIC_INV:
-    SynthLogicInv(insn);
+    SynthBitInv(insn);
     break;
   case vm::OP_BIT_RANGE:
     SynthBitRange(insn);
@@ -174,7 +175,7 @@ DType *MethodSynth::GetTypeFromValueReg(vm::Register *vreg) {
   if (vreg->type_.value_type_ == vm::Value::NUM) {
     type = DTypeUtil::GetIntType(numeric::Width::GetWidth(vreg->type_.width_));
   } else {
-    CHECK(vreg->type_.value_type_ == vm::Value::ENUM_ITEM);
+    CHECK(vreg->type_.value_type_ == vm::Value::ENUM_ITEM) << vreg->id_;
     type = DTypeUtil::GetBoolType();
   }
   return type;
@@ -357,7 +358,7 @@ void MethodSynth::SynthBitRange(vm::Insn *insn) {
   GenBitSelect(src, msb, lsb, msb - lsb + 1, res);
 }
 
-void MethodSynth::SynthLogicInv(vm::Insn *insn) {
+void MethodSynth::SynthBitInv(vm::Insn *insn) {
   DRegister *src = FindLocalVarRegister(insn->src_regs_[0]);
   DRegister *res = FindLocalVarRegister(insn->dst_regs_[0]);
   GenNeg(src, res);
@@ -729,9 +730,9 @@ void MethodSynth::GenBitSelect(DRegister *src_reg, int msb, int lsb,
 
 void MethodSynth::GenNeg(DRegister *src, DRegister *dst) {
   DState *state = AllocState();
-  DResource *logic_inv =
-    resource_->GetOpResource(vm::OP_LOGIC_INV, NULL);
-  DInsn *insn = DGraphUtil::InsnNew(graph_, logic_inv);
+  DResource *bit_inv =
+    resource_->GetOpResource(vm::OP_BIT_INV, NULL);
+  DInsn *insn = DGraphUtil::InsnNew(graph_, bit_inv);
   insn->inputs_.push_back(src);
   insn->outputs_.push_back(dst);
   state->insns_.push_back(insn);

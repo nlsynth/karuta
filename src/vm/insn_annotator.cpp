@@ -1,10 +1,10 @@
 #include "vm/insn_annotator.h"
 
-#include "vm/insn.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
@@ -70,6 +70,10 @@ void InsnAnnotator::AnnotateType(VM *vm, Object *obj, Method *method) {
 	insn->src_regs_[1]->type_.value_type_;
       CHECK(insn->src_regs_[0]->type_.value_type_ ==
 	    insn->src_regs_[1]->type_.value_type_);
+    }
+    if (insn->op_ == OP_BIT_INV) {
+      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
+	insn->src_regs_[0]->type_.value_type_;
     }
     if (insn->op_ == OP_LOGIC_INV ||
 	insn->op_ == OP_LAND || insn->op_ == OP_LOR ||

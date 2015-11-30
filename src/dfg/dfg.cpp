@@ -41,11 +41,10 @@ void DFG::Init() {
   // Non exclusive resource.
   DOperatorUtil::InstallOperator(sym_eq, false);
   DOperatorUtil::InstallOperator(sym_or_reduce, false);
-  DOperatorUtil::InstallOperator(sym_logic_inv, false);
   DOperatorUtil::InstallOperator(sym_bit_and, false);
   DOperatorUtil::InstallOperator(sym_bit_or, false);
   DOperatorUtil::InstallOperator(sym_bit_xor, false);
-  DOperatorUtil::InstallOperator(sym_bit_not, false);
+  DOperatorUtil::InstallOperator(sym_bit_inv, false);
   DOperatorUtil::InstallOperator(sym_logic_and, false);
   DOperatorUtil::InstallOperator(sym_logic_or, false);
   DOperatorUtil::InstallOperator(sym_bit_sel, false);

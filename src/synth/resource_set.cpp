@@ -134,7 +134,7 @@ sym_t ResourceSet::GetResourceType(vm::OpCode op) {
   case vm::OP_XOR: return sym_bit_xor;
   case vm::OP_CONCAT: return sym_bit_concat;
   case vm::OP_BIT_RANGE: return sym_bit_sel;
-  case vm::OP_LOGIC_INV: return sym_logic_inv;
+  case vm::OP_BIT_INV: return sym_bit_inv;
   case vm::OP_EQ: return sym_eq;
   case vm::OP_LAND: return sym_logic_and;
   case vm::OP_LOR: return sym_logic_or;

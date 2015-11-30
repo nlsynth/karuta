@@ -40,7 +40,7 @@ sym_t sym_incr, sym_decr;
 sym_t sym_lshift, sym_rshift;
 sym_t sym_logic_or, sym_logic_and;
 sym_t sym_bit_concat;
-sym_t sym_bit_or, sym_bit_and, sym_bit_xor, sym_bit_not;
+sym_t sym_bit_or, sym_bit_and, sym_bit_xor, sym_bit_inv;
 sym_t sym_if, sym_else, sym_branch;
 sym_t sym_for, sym_do, sym_while, sym_do_while, sym_return;
 sym_t sym_switch, sym_case, sym_default;
@@ -158,7 +158,7 @@ void sym_table_init(void) {
   sym_bit_or = sym_lookup("bit_or");
   sym_bit_and = sym_lookup("bit_and");
   sym_bit_xor = sym_lookup("bit_xor");
-  sym_bit_not = sym_lookup("bit_not");
+  sym_bit_inv = sym_lookup("bit_inv");
   sym_logic_or = sym_lookup("logic_or");
   sym_logic_and = sym_lookup("logic_and");
   sym_bit_concat = sym_lookup("concat");

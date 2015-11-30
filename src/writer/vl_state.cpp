@@ -167,9 +167,9 @@ void VLState::OutputInsn(const DInsn *insn) {
     OutputInsnWireToRegisterAssign(insn);
   } else if (VLUtil::IsResourceUnshareUniOp(insn->resource_)) {
     OutputInsnWireToRegisterAssign(insn);
-  } else if (type == sym_bit_sel || type == sym_bit_not ||
+  } else if (type == sym_bit_sel || type == sym_bit_inv ||
 	     type == sym_bit_concat) {
-    // resource would not shared
+    // resource would not be shared
     OutputInsnWireToRegisterAssign(insn);
   } else if (type == sym_write_channel) {
     OutputChannelWriteInsn(insn);

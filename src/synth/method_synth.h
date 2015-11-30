@@ -106,7 +106,7 @@ private:
   void SynthShiftExpr(vm::Insn *insn);
   void SynthConcat(vm::Insn *insn);
   void SynthBitRange(vm::Insn *insn);
-  void SynthLogicInv(vm::Insn *insn);
+  void SynthBitInv(vm::Insn *insn);
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
   void SynthArrayAccess(vm::Insn *insn, bool is_write, bool is_memory);
   void SynthChannelRead(vm::Insn *insn);

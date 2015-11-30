@@ -113,8 +113,8 @@ void CCState::OutputUniOp(const DInsn *insn) {
   sym_t type = insn->resource_->opr_->type_;
   os_ << RegisterName(*(insn->outputs_.begin()))
       << " =";
-  if (type == sym_logic_inv) {
-    os_ << "!";
+  if (type == sym_bit_inv) {
+    os_ << "~";
   }
   os_ << RegisterName(*(insn->inputs_.begin()))
       << ";\n";
@@ -293,7 +293,7 @@ void CCState::OutputInsn(const DInsn *insn) {
       type == sym_bit_and || type == sym_bit_or ||
       type == sym_bit_xor) {
     OutputBinOp(insn);
-  } else if (type == sym_logic_inv) {
+  } else if (type == sym_bit_inv) {
     OutputUniOp(insn);
   } else if (type == sym_assign) {
     OutputAssign(insn);

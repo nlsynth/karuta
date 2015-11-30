@@ -232,7 +232,7 @@ bool VLUtil::IsResourceUnshareBinOp(const DResource *r) {
 
 bool VLUtil::IsResourceUnshareUniOp(const DResource *r) {
   sym_t type = r->opr_->type_;
-  if (type == sym_logic_inv || type == sym_or_reduce) {
+  if (type == sym_bit_inv || type == sym_or_reduce) {
     return true;
   }
   return false;
