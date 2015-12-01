@@ -1,4 +1,4 @@
-LIBFILES = nli_assert.v nli_exit.v nli_print.v
+LIBFILES = nli_assert.v nli_exit.v nli_print.v nli_wait.v
 
 EXTRA_DIST = nli.in default.n $(LIBFILES) nli_server.py nli_wrapper.py mem16k.v
 bin_SCRIPTS = nli
