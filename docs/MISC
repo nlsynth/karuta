@@ -6,7 +6,6 @@
  * sub module hierarchy.
 * Language features
  * Wide number
- * GC
  * Width inference
  * Object array
  * Enum
@@ -26,6 +25,10 @@
 * More examples
  * Basic functionalities
  * Well known algorithms
+* Small features
+ * GC on memory pressure
+ * Pass object as an argument or return value
+ * Declare a function as a thread entry
 
 ## Multiple blocking insns can be in a state.
 
