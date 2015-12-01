@@ -66,7 +66,7 @@ private:
 class BasicBlockShrinker {
 public:
   BasicBlockShrinker(DGraph *graph);
-  void Perform(set<BasicBlock *> *bb, dfg::DGraphAnnotation *an);
+  void Perform(set<BasicBlock *> *bbs, dfg::DGraphAnnotation *an);
   void CramInsns(BasicBlock *bb,
 		 dfg::DGraphAnnotation *an);
   int TryMove(BasicBlock *bb, int current_index,

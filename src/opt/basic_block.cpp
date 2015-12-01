@@ -43,18 +43,16 @@ void BasicBlockCollector::CollectBBEntryStates() {
   DStateUtil::CollectReachable(graph_, graph_->initial_state_, &reachable);
   DResource *br = DGraphUtil::FindResource(graph_, sym_branch, true);
   // push entry point of basic blocks
-  for (set<DState *>::iterator it = reachable.begin();
-       it != reachable.end(); it++) {
-    const StateAnnotation *da = StateAnnotation::Get(*it);
+  for (DState *st : reachable) {
+    const StateAnnotation *da = StateAnnotation::Get(st);
     if (da->nr_branch_ > 1) {
-      DInsn *insn = DStateUtil::FindInsnByResource(*it, br);
-      for (vector<DState *>::iterator jt = insn->targets_.begin();
-           jt != insn->targets_.end(); jt++) {
-        bb_entry_.insert(*jt);
+      DInsn *insn = DStateUtil::FindInsnByResource(st, br);
+      for (DState *target_st : insn->targets_) {
+        bb_entry_.insert(target_st);
       }
     }
     if (da->nr_join_ > 1) {
-      bb_entry_.insert(*it);
+      bb_entry_.insert(st);
     }
   }
   bb_entry_.insert(graph_->initial_state_);
@@ -102,27 +100,25 @@ void BasicBlockCollector::CollectBBAll(dfg::DGraphAnnotation *an) {
   CollectBBEntryStates();
 
   DResource *br = DGraphUtil::FindResource(graph_, sym_branch, true);
-  for (set<DState *>::iterator it = bb_entry_.begin();
-       it != bb_entry_.end(); it++) {
-    DInsn *insn = DStateUtil::FindInsnByResource(*it, br);
+  for (DState *entry_st : bb_entry_) {
+    DInsn *insn = DStateUtil::FindInsnByResource(entry_st, br);
     set<DState *> targets_seen;
-    for (vector<DState *>::iterator jt = insn->targets_.begin();
-	 jt != insn->targets_.end(); jt++) {
-      DState *next = *jt;
-      StateAnnotation *sa = StateAnnotation::Get(next);
+    for (DState *target_st : insn->targets_) {
+      DState *next_st = target_st;
+      StateAnnotation *sa = StateAnnotation::Get(next_st);
       if (sa->nr_join_ > 1) {
 	// next state have multiple incoming path, so not in this bb
-	next = NULL;
+	next_st = NULL;
       }
-      if (bb_entry_.find(next) != bb_entry_.end()) {
-	next = NULL;
+      if (bb_entry_.find(next_st) != bb_entry_.end()) {
+	next_st = NULL;
       }
-      if (targets_seen.find(next) != targets_seen.end()) {
+      if (targets_seen.find(next_st) != targets_seen.end()) {
 	// there may dupes in targets.
 	continue;
       }
-      targets_seen.insert(next);
-      CollectBB(*it, next);
+      targets_seen.insert(next_st);
+      CollectBB(entry_st, next_st);
     }
   }
   BuildBBStateMapping();
@@ -136,9 +132,7 @@ void BasicBlockCollector::CollectBBAll(dfg::DGraphAnnotation *an) {
 }
 
 void BasicBlockCollector::BuildBBStateMapping() {
-  for (set<BasicBlock *>::iterator it = bbs_->bbs_.begin();
-       it != bbs_->bbs_.end(); ++it) {
-    BasicBlock *bb = *it;
+  for (BasicBlock *bb : bbs_->bbs_) {
     for (int i = 0; i < (int)bb->states.size(); ++i) {
       DState *st = bb->states[i];
       bbs_->state_bb_mapping_[st] = bb;
@@ -147,15 +141,11 @@ void BasicBlockCollector::BuildBBStateMapping() {
 }
 
 void BasicBlockCollector::CollectNextBB() {
-  for (set<BasicBlock *>::iterator it = bbs_->bbs_.begin();
-       it != bbs_->bbs_.end(); ++it) {
-    BasicBlock *bb = *it;
+  for (BasicBlock *bb :  bbs_->bbs_) {
     for (int i = 0; i < (int)bb->states.size(); ++i) {
       DState *st = bb->states[i];
       StateAnnotation *sa = StateAnnotation::Get(st);
-      for (list<StateAnnotation *>::iterator jt = sa->next_states_.begin();
-	   jt != sa->next_states_.end(); ++jt) {
-	StateAnnotation *next_sa = *jt;
+      for (StateAnnotation *next_sa : sa->next_states_) {
 	if (next_sa->bb_ == bb &&
 	    next_sa->state_ != bb->states[0]) {
 	  // if next state is in this block and is not initail state,
@@ -170,9 +160,7 @@ void BasicBlockCollector::CollectNextBB() {
 }
 
 void BasicBlockCollector::CollectReachableBB() {
-  for (set<BasicBlock *>::iterator it = bbs_->bbs_.begin();
-       it != bbs_->bbs_.end(); ++it) {
-    BasicBlock *bb = *it;
+  for (BasicBlock *bb : bbs_->bbs_) {
     set<BasicBlock *> frontier;
     ExpandNext(bb, &frontier);
     while (frontier.size()) {
@@ -189,31 +177,26 @@ void BasicBlockCollector::CollectReachableBB() {
 
 void BasicBlockCollector::ExpandNext(BasicBlock *bb_cur,
 				     set<BasicBlock *> *frontier) {
-  for (set<BasicBlock *>::iterator it = bb_cur->next_bb.begin();
-       it != bb_cur->next_bb.end(); ++it) {
-    frontier->insert(*it);
+  for (BasicBlock *bb : bb_cur->next_bb) {
+    frontier->insert(bb);
   }
 }
 
-  void BasicBlockCollector::AnnotateBB(dfg::DGraphAnnotation *an) {
+void BasicBlockCollector::AnnotateBB(dfg::DGraphAnnotation *an) {
   an->SummaryAnnotation() << "Basic blocks<br>\n* id -> next | reachable<br>\n";
   vector<BasicBlock *> sorted_bbs;
   bbs_->GetSortedBBs(&sorted_bbs);
-  for (vector<BasicBlock *>::iterator it = sorted_bbs.begin();
-       it != sorted_bbs.end(); ++it) {
-    BasicBlock *bb = *it;
+  for (BasicBlock *bb : sorted_bbs) {
     vector<BasicBlock *> related_bbs;
     an->SummaryAnnotation() << bb->bb_id << "->";
     BasicBlockSet::SortBBs(bb->next_bb, &related_bbs);
-    for (vector<BasicBlock *>::iterator jt = related_bbs.begin();
-	 jt != related_bbs.end(); ++jt) {
-      an->SummaryAnnotation() << " " << (*jt)->bb_id;
+    for (BasicBlock *related_bb : related_bbs) {
+      an->SummaryAnnotation() << " " << related_bb->bb_id;
     }
     an->SummaryAnnotation() << "|";
     BasicBlockSet::SortBBs(bb->reachable_bb, &related_bbs);
-    for (vector<BasicBlock *>::iterator jt = related_bbs.begin();
-	 jt != related_bbs.end(); ++jt) {
-      an->SummaryAnnotation() << " " << (*jt)->bb_id;
+    for (BasicBlock *related_bb : related_bbs) {
+      an->SummaryAnnotation() << " " << related_bb->bb_id;
     }
     an->SummaryAnnotation() << "<br>\n";
     an->Flush();
@@ -231,11 +214,10 @@ BasicBlockShrinker::BasicBlockShrinker(DGraph *graph) : graph_(graph) {
   num_moves_ = 0;
 }
 
-void BasicBlockShrinker::Perform(set<BasicBlock *> *bb,
+void BasicBlockShrinker::Perform(set<BasicBlock *> *bbs,
 				 dfg::DGraphAnnotation *an) {
-  for (set<BasicBlock *>::iterator it = bb->begin();
-       it != bb->end(); it++) {
-    CramInsns(*it, an);
+  for (BasicBlock *bb : *bbs) {
+    CramInsns(bb, an);
   }
   an->SummaryAnnotation() << num_moves_ << "moved\n";
   an->Flush();
@@ -260,27 +242,25 @@ void BasicBlockShrinker::CramInsns(BasicBlock *bb, dfg::DGraphAnnotation *an) {
     }
 
     // update write location for each insn
-    for (list<DInsn *>::iterator it = st->insns_.begin();
-	 it != st->insns_.end(); it++) {
-      DInsn *insn = *it;
+    for (DInsn *insn : st->insns_) {
       UpdateRegAccessLocation(insn, st, i);
       UpdateMemWriteLocation(insn, st, i);
     }
   }
 }
 
-void BasicBlockShrinker::FindTargets(DState *st, int idx, map<DInsn *, int> *move_targets) {
+void BasicBlockShrinker::FindTargets(DState *st, int idx,
+				     map<DInsn *, int> *move_targets) {
   DResource *br = DGraphUtil::FindResource(graph_, sym_branch, true);
-  for (list<DInsn *>::iterator it = st->insns_.begin();
-       it != st->insns_.end(); it++) {
-    DInsn *insn = *it;
+  for (DInsn *insn : st->insns_) {
     if (insn->resource_ == br) {
       continue;
     }
     int min_target = 0;
     // memory write location
     if (insn->resource_->opr_->type_ == sym_memory) {
-      map<DResource *, access_location>::iterator jt = written_mems_.find(insn->resource_);
+      map<DResource *, access_location>::iterator jt =
+	written_mems_.find(insn->resource_);
       if (jt != written_mems_.end()) {
 	access_location &loc = jt->second;
 	int target = loc.index + 1;
@@ -290,25 +270,26 @@ void BasicBlockShrinker::FindTargets(DState *st, int idx, map<DInsn *, int> *mov
       }
     }
     // Register write position
-    min_target = UpdateMinTarget(min_target, /* is_write */ false, &insn->inputs_);
-    min_target = UpdateMinTarget(min_target, /* is_write */ true, &insn->outputs_);
+    min_target = UpdateMinTarget(min_target, /* is_write */ false,
+				 &insn->inputs_);
+    min_target = UpdateMinTarget(min_target, /* is_write */ true,
+				 &insn->outputs_);
     if (min_target < idx) {
       (*move_targets)[insn] = min_target;
     }
   }
 }
 
-void BasicBlockShrinker::UpdateRegAccessLocation(DInsn *insn, DState *st, int pos) {
-  for (vector<DRegister *>::iterator it = insn->outputs_.begin();
-       it != insn->outputs_.end(); ++it) {
+void BasicBlockShrinker::UpdateRegAccessLocation(DInsn *insn, DState *st,
+						 int pos) {
+  for (DRegister *output_reg : insn->outputs_) {
     // Just overwrite. No reordering will happen for write.
-    access_location &loc = written_regs_[*it];
+    access_location &loc = written_regs_[output_reg];
     loc.index = pos;
     loc.state = st;
   }
-  for (vector<DRegister *>::iterator it = insn->inputs_.begin();
-       it != insn->inputs_.end(); ++it) {
-    access_location &loc = read_regs_[*it];
+  for (DRegister *input_reg : insn->inputs_) {
+    access_location &loc = read_regs_[input_reg];
     if (loc.index < pos) {
       loc.index = pos;
       loc.state = st;
@@ -316,8 +297,10 @@ void BasicBlockShrinker::UpdateRegAccessLocation(DInsn *insn, DState *st, int po
   }
 }
 
-void BasicBlockShrinker::UpdateMemWriteLocation(DInsn *insn, DState *st, int pos) {
-  if (insn->resource_->opr_->type_ == sym_memory && insn->outputs_.size() == 0) {
+void BasicBlockShrinker::UpdateMemWriteLocation(DInsn *insn, DState *st,
+						int pos) {
+  if (insn->resource_->opr_->type_ ==
+      sym_memory && insn->outputs_.size() == 0) {
     // memory write
     written_mems_[insn->resource_].index = pos;
     written_mems_[insn->resource_].state = st;
@@ -327,10 +310,9 @@ void BasicBlockShrinker::UpdateMemWriteLocation(DInsn *insn, DState *st, int pos
 int BasicBlockShrinker::UpdateMinTarget(int min_target,
 					bool is_write,
 					vector<DRegister *> *regs) {
-  for (vector<DRegister *>::iterator it = regs->begin();
-       it != regs->end(); ++it) {
+  for (DRegister *reg : *regs) {
     map<DRegister *, access_location>::iterator jt =
-      written_regs_.find(*it);
+      written_regs_.find(reg);
     if (jt != written_regs_.end()) {
       // + 1, currently this don't use insn wire.
       if (min_target < jt->second.index + 1) {
@@ -338,7 +320,7 @@ int BasicBlockShrinker::UpdateMinTarget(int min_target,
       }
     }
     if (is_write) {
-      jt = read_regs_.find(*it);
+      jt = read_regs_.find(reg);
       if (jt != read_regs_.end()) {
 	if (min_target < jt->second.index + 1) {
 	  min_target = jt->second.index + 1;
@@ -361,17 +343,18 @@ int BasicBlockShrinker::TryMove(BasicBlock *bb, int current_index,
 	continue;
       }
     }
-    // don't move to where read channel exists.
-    bool has_read_channel = false;
-    for (list<DInsn *>::iterator it = target_state->insns_.begin(); it != target_state->insns_.end(); it++) {
-      if ((*it)->resource_->opr_->type_ == sym_read_channel) {
-	has_read_channel = true;
+    // don't move to where multi cycle insn exists.
+    bool has_multi_cycle = false;
+    for (DInsn *target_insn : target_state->insns_) {
+      if (DInsnUtil::IsMultiCycle(target_insn)) {
+	has_multi_cycle = true;
       }
     }
-    if (has_read_channel) {
+    if (has_multi_cycle) {
       continue;
     }
-    if (target_state->insns_.size() > 0 && insn->resource_->opr_->type_ == sym_read_channel) {
+    if (target_state->insns_.size() > 0 &&
+	DInsnUtil::IsMultiCycle(insn)) {
       continue;
     }
     // ok let's move
@@ -384,4 +367,3 @@ int BasicBlockShrinker::TryMove(BasicBlock *bb, int current_index,
 }
 
 }  // namespace opt
-
