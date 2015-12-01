@@ -7,7 +7,7 @@ CCRT_FILES = ccrt.h ccrt_main.cpp
 EXAMPLES_FILES= \
  examples/hello.n examples/top.n examples/tb_top.v \
  examples/handshake.n examples/tb_handshake.v \
- examples/md5.n \
+ examples/md5.n examples/led.n \
  examples/mt.n examples/mt_test.n examples/mt_ref.cpp
 EXTRA_DIST = $(CCRT_FILES) $(EXAMPLES_FILES) nli run-file README.md .gitignore
 

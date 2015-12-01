@@ -39,4 +39,3 @@ module wait_cycles(clk, rst, req, cycles, ack);
    end
 
 endmodule
-   

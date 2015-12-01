@@ -303,11 +303,22 @@ void Executor::ExecLogicInv(MethodFrame *frame, Insn *insn) {
       val = 0;
     }
   }
-  frame->reg_values_[insn->dst_regs_[0]->id_].enum_val_.val = val;
+  Value &dst_value = frame->reg_values_[insn->dst_regs_[0]->id_];
+  dst_value.enum_val_.val = val;
 }
 
 void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
+  Value &dst_value = frame->reg_values_[insn->dst_regs_[0]->id_];
+  if (value.type_ == Value::ENUM_ITEM) {
+    CHECK(insn->op_ == OP_BIT_INV);
+    if (value.enum_val_.val) {
+      dst_value.enum_val_.val = 0;
+    } else {
+      dst_value.enum_val_.val = 1;
+    }
+    return;
+  }
   numeric::Number res;
   switch (insn->op_) {
   case OP_BIT_INV:
@@ -324,9 +335,8 @@ void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
     break;
   }
   int dst_id = insn->dst_regs_[0]->id_;
-  Value &dst = frame->reg_values_[dst_id];
   numeric::Numeric::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
-  dst.num_ = res;
+  dst_value.num_ = res;
 }
 
 void Executor::ExecMemoryRead(MethodFrame *frame, Insn *insn) {
