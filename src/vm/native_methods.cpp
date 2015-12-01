@@ -119,6 +119,10 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
   SetReturnValue(thr, value);
 }
 
+void NativeMethods::Wait(Thread *thr, Object *obj,
+			 const vector<Value> &args) {
+}
+
 void NativeMethods::WriteHdl(Thread *thr, Object *obj,
 			     const vector<Value> &args) {
   CHECK(args.size() == 1);
@@ -158,6 +162,7 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   InstallNativeMethodWithAltImpl(vm, obj, "assert", &NativeMethods::Assert, rets, "__assert");
   InstallNativeMethodWithAltImpl(vm, obj, "print", &NativeMethods::Print, rets, "__print");
+  InstallNativeMethodWithAltImpl(vm, obj, "wait", &NativeMethods::Wait, rets, "__wait");
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
@@ -171,7 +176,8 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
 }
 
 void Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj, const char *name,
-					    method_func func, const vector<RegisterType> &types,
+					    method_func func,
+					    const vector<RegisterType> &types,
 					    const char *alt) {
   Method *method = vm->NewMethod(false /* not toplevel */);
   method->method_fn_ = func;

@@ -1,6 +1,7 @@
 #include "dfg/d_insn.h"
 
-#include "dfg.h"
+#include "dfg/dfg.h"
+#include "dfg/resource_params.h"
 
 namespace dfg {
 
@@ -21,6 +22,10 @@ bool DInsnUtil::HasSideEffect(DInsn *insn) {
 }
 
 bool DInsnUtil::IsMultiCycle(const DInsn *insn) {
+  if (insn->resource_->imported_resource_ &&
+      !insn->resource_->imported_resource_->GetAckPinName().empty()) {
+    return true;
+  }
   sym_t type = insn->resource_->opr_->type_;
   return (type == sym_sub_module_call || type == sym_write_channel ||
 	  type == sym_read_channel);

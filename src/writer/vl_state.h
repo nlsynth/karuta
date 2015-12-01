@@ -34,6 +34,7 @@ public:
   // primitive output
   static string InsnOutputWireName(const DInsn *insn, int n);
   static string RegisterName(const DRegister *reg);
+  static string SubStateRegName(const DInsn *insn);
 
 private:
   void OutputInsn(const DInsn *insn);
@@ -49,9 +50,8 @@ private:
   void OutputExtIO(const DInsn *insn);
   void OutputTaskFinish(const DInsn *insn);
   void OutputSubModuleArgs(const DInsn *insn);
+  void OutputImportedMultiCycleResource(const DInsn *insn);
   void CollectSubState(string *state_guard, string *initialize);
-
-  string SubStateRegName(const DInsn *insn);
 
   DState *st_;
   DGraph *graph_;

@@ -109,6 +109,10 @@ string ResourceParams::GetInputPinName() {
   return LookupStrParam(sym_input, "");
 }
 
+string ResourceParams::GetAckPinName() {
+  return LookupStrParam(sym_lookup("ack"), "");
+}
+
 bool ResourceParams::ResetPolarity() {
   return (LookupStrParam(sym_lookup("resetPolarity"), "1") == "1");
 }

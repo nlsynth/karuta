@@ -175,6 +175,11 @@ string VLUtil::TaskParamPinName(const string &pin_base,
   return pin_base + "_" + buf + dir;
 }
 
+string VLUtil::AckWireName(const DResource *res) {
+  char buf[10];
+  sprintf(buf, "%d", res->resource_id_);
+  return res->name_ + string(buf) + "_ack";
+}
 
 string VLUtil::RegType(const DType *type) {
   return "  reg" + WidthType(type);

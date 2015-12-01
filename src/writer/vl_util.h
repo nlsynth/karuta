@@ -79,6 +79,8 @@ public:
   static string TaskParamPinName(const string &pin_base,
 				 int nth,
 				 const string &dir);
+  // For imported resource.
+  static string AckWireName(const DResource *res);
   // "reg [dd:0]"
   static string RegType(const DType *type);
   // "wire [dd:0]"

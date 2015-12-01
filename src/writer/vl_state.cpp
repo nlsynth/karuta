@@ -178,7 +178,7 @@ void VLState::OutputInsn(const DInsn *insn) {
   } else if (type == sym_branch || type == sym_gt) {
     // do nothing
   } else if (type == sym_imported) {
-    // do nothing
+    OutputImportedMultiCycleResource(insn);
   } else if (type == sym_task_finish) {
     OutputTaskFinish(insn);
   } else if (type == sym_sub_module_call) {
@@ -354,6 +354,16 @@ void VLState::OutputSubModuleArgs(const DInsn *insn) {
     DRegister *src_reg = insn->inputs_[nth_arg];
     os_ << RegisterName(src_reg) << ";\n";
   }
+}
+
+void VLState::OutputImportedMultiCycleResource(const DInsn *insn) {
+  if (!DInsnUtil::IsMultiCycle(insn)) {
+    return;
+  }
+  os_ << "          // imported multicycle resource\n";
+  os_ << "          if (" << VLUtil::AckWireName(insn->resource_) << ") begin\n"
+      << "            " << SubStateRegName(insn) << " <= 3;\n"
+      << "          end\n";
 }
 
 string VLState::SubStateRegName(const DInsn *insn) {

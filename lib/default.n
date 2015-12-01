@@ -69,6 +69,8 @@ def Kernel.compile() {
   __compile("opt_synth");
 }
 
+// Native methods.
+// Adding __ prefix so that users can overwrite the original one.
 def Kernel.__print(int v)
   [
     resource = "print",
@@ -99,4 +101,14 @@ def Kernel.__exit()
     module="exit"
   ] {
   exit();
+}
+
+def Kernel.__wait(int cycles)
+  [
+    resource = "wait_cycles",
+    verilog = "nli_wait.v",
+    ack = "ack",
+    file= "copy",
+    module= "wait_cycles"
+  ] {
 }

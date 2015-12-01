@@ -381,6 +381,8 @@ void VLGraph::OutputImportedOpInputPin(DResource *r,
 }
 
 void VLGraph::OutputImportedOp(DResource *r) {
+  ResourceParams *ir = r->imported_resource_;
+  bool has_ack = !ir->GetAckPinName().empty();
   // enable wire
   os_ << "  wire " << r->name_ << r->resource_id_ << "_en;\n";
   os_ << "  assign " << r->name_ << r->resource_id_ << "_en = ";
@@ -395,6 +397,9 @@ void VLGraph::OutputImportedOp(DResource *r) {
     }
     os_ << "(cur_st == "
 	<< state_encoder_->StateName(st);
+    if (has_ack) {
+      os_ << " && " << VLState::SubStateRegName(insn) << " == 0";
+    }
     os_ << ")";
     nr ++;
   }
@@ -402,8 +407,11 @@ void VLGraph::OutputImportedOp(DResource *r) {
     os_ << "0";
   }
   os_ << ";\n";
+  // ack wire
+  if (has_ack) {
+    os_ << "  wire " << VLUtil::AckWireName(r) << ";\n";
+  }
   // I/O pins
-  ResourceParams *ir = r->imported_resource_;
   nr = ir->GetNrPinDecls();
   int i;
   int nth_input = 0;
@@ -649,6 +657,7 @@ void VLGraph::OutputImportedModuleInstancesAll() {
     string mod_name = r->imported_resource_->GetModuleName();
     string clk_name = r->imported_resource_->GetClockPinName();
     string rst_name = r->imported_resource_->GetResetPinName();
+    string ack_name = r->imported_resource_->GetAckPinName();
     os_ << "  " << mod_name << " ";
     os_ << r->name_ << "_inst";
     os_ << r->resource_id_ << "(";
@@ -657,6 +666,10 @@ void VLGraph::OutputImportedModuleInstancesAll() {
     os_ << ".req(";
     os_ << r->name_ << r->resource_id_ << "_en)";
     OutputImportedModulePin(r);
+    if (!ack_name.empty()) {
+      os_ << ", .ack("
+	  << VLUtil::AckWireName(r) << ")";
+    }
     os_ << ");\n";
   }
   os_ << "  // imported modules end\n";

@@ -49,6 +49,7 @@ public:
   string GetModuleName();
   string GetClockPinName();
   string GetResetPinName();
+  string GetAckPinName();
 
   // For external resource.
   string GetOutputPinName();
