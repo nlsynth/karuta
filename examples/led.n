@@ -1,0 +1,21 @@
+// This generates a blinking output port "ext_led".
+
+object L = Kernel.clone();
+
+def L.f(bool b) [ output = "led" ] {
+  // print(b);
+}
+
+def L.main() {
+  bool b = false;
+  while (true) {
+    wait(10000000);
+    f(b);
+    b = ~b;
+  }
+}
+
+L.compile();
+L.writeHdl("led.v");
+
+// L.main();
