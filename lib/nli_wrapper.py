@@ -12,13 +12,18 @@ import time
 # use html package when I migrate to python 3.x
 import xml.sax.saxutils
 
-
-def GetExampleSource(qs):
-    tmpl = (qs.get('e', ['']))[0]
-    if tmpl == 'h':
-        return 'print("Hello World!");'
-    else:
-        return '''def main() {
+# Key: Example key (query parameter 'e')
+# Value: Example
+#  'n' : title
+#  'i' : index for sorting
+#  's' : source
+EXAMPLES = {
+    'h': {'i' : 0,
+          'n' : 'Hello World!',
+          's' : 'print("Hello World!");'},
+    'default': {'i' : 1,
+                'n' : 'Synth example',
+         's' : '''def main() {
   int i;
   int s = 0;
   for (i = 0; i < 10; ++i) {
@@ -35,7 +40,18 @@ writeHdl("a.html");
 
 // Run on interpreter mode.
 main();
-'''
+'''}
+}
+
+def GetExampleSource(qs):
+    tmpl = (qs.get('e', ['']))[0]
+    if not tmpl:
+        tmpl = ''
+    if tmpl in EXAMPLES:
+        e = EXAMPLES[tmpl]
+    else:
+        e = EXAMPLES['default']
+    return e['s']
 
 def GetRunDir(runid):
     workdir = os.getenv('NLI_TEMP')
@@ -105,12 +121,27 @@ def RunNLI(ofh, src):
     ifh = open(outputfn, 'r')
     CopyOutput(ifh, marker, runid, ofh)
 
+def RenderExampleOptions(ofh, qs):
+    temp = []
+    for key, value in EXAMPLES.iteritems():
+        temp.append([key, value])
+    s = sorted(temp, key=lambda k: (k[1])['i'])
+    for v in s:
+        key = v[0]
+        value = v[1]
+        tmpl = (qs.get('e', ['']))[0]
+        if tmpl == key:
+            selected = 'selected'
+        else:
+            selected = ''
+        ofh.write('''
+<option value="%s" %s>%s</option>
+        ''' % (key, selected, value['n']))
+
 def Render(ofh, is_post, qs):
-    runid = None
+    prev_runid = None
     if qs.get('r'):
-        runid = qs.get('r')[0]
-    else:
-        runid = None
+        prev_runid = qs.get('r')[0]
 
     if is_post:
         form = cgi.FieldStorage()
@@ -118,8 +149,8 @@ def Render(ofh, is_post, qs):
         form = {}
     if 's' in form:
         src = form['s'].value
-    elif runid:
-        src = GetSourceFromRun(runid)
+    elif prev_runid:
+        src = GetSourceFromRun(prev_runid)
     else:
         src = GetExampleSource(qs)
 
@@ -139,15 +170,15 @@ def Render(ofh, is_post, qs):
 
     ofh.write(
 '''<form id="example" method="GET" action="">
-<select name="e">
-<option value="h">Hello world</option>
-<option value="s">Synth</option>
+<select name="e">''')
+    RenderExampleOptions(ofh, qs)
+    ofh.write('''
 </select>
 <input type="submit" value="Load code">
 </form>
 ''')
-    if runid:
-        ShowPreviousOutput(ofh, runid)
+    if prev_runid:
+        ShowPreviousOutput(ofh, prev_runid)
 
     if is_post:
         RunNLI(ofh, src)
