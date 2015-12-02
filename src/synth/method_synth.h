@@ -121,6 +121,7 @@ private:
 			       sym_t array_name);
 
   void SynthNativeMethod(vm::Method *method);
+  void SynthEmbeddedMethod(vm::Method *method);
   void SynthExtIOResource();
 
   void GenNeg(DRegister *src, DRegister *dst);
