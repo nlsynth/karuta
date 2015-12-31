@@ -258,7 +258,7 @@ void DFGDumpContext::DumpResource(DResource *r,
 }
 
 DFGDumpContext *DFGDump::Start(const string &fn) {
-  cout << "output html file name=(" << (fn) << ")\n";
+  cout << "output html file name=(" << fn << ")\n";
   ostream *ofs = new std::ofstream(fn);
   DFGDumpContext *ddc = new DFGDumpContext(*ofs, true);
 

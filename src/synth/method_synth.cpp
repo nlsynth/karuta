@@ -50,10 +50,15 @@ bool MethodSynth::Synth() {
     SynthNativeMethod(method_);
     return true;
   }
-  if (method_->parse_tree_->imported_resource_ &&
-      method_->parse_tree_->imported_resource_->IsExtIO()) {
-    SynthExtIOResource();
-    return true;
+  if (method_->parse_tree_->imported_resource_) {
+    if (method_->parse_tree_->imported_resource_->IsExtIO()) {
+      SynthExtIOResource();
+      return true;
+    }
+    if (method_->parse_tree_->imported_resource_->IsImportedModule()) {
+      SynthEmbeddedMethod(method_);
+      return true;
+    }
   }
   compiler::Compiler::CompileMethod(vm_, obj_,
 				    method_->parse_tree_,
@@ -692,11 +697,16 @@ void MethodSynth::SynthNativeMethod(vm::Method *method) {
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(name);
   vm::Method *alt_method = value->method_;
   CHECK(alt_method->parse_tree_ &&
-	alt_method->parse_tree_->imported_resource_);
+	alt_method->parse_tree_->imported_resource_ &&
+	alt_method->parse_tree_->imported_resource_->IsImportedModule());
 
-  DInsn *entry_insn = EmitEntryInsn(alt_method);
+  SynthEmbeddedMethod(alt_method);
+}
+
+void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
+  DInsn *entry_insn = EmitEntryInsn(method);
   ResourceParams *imported_resource =
-    alt_method->parse_tree_->imported_resource_;
+    method->parse_tree_->imported_resource_;
 
   DResource *resource = resource_->GetImportedResource(imported_resource);
   DState *state = AllocState();

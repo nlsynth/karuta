@@ -36,6 +36,10 @@ void OptimizeContext::DoBeginPhase() {
   sprintf(idx, "%d", index_);
   ++index_;
   string fn = dump_fn_ + "." + idx + "." + current_phase_ + ".html";
+  const string &marker = Env::GetOutputMarker();
+  if (!marker.empty()) {
+    cout << marker << Util::BaseName(fn) << "\n";
+  }
   ddc_ = dfg::DFGDump::Start(fn);
   dump_fn_list_.push_back(fn);
 }
