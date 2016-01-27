@@ -13,6 +13,7 @@
 #include "opt/opt_context.h"
 #include "pool.h"
 #include "synth/channel_synth.h"
+#include "synth/iroha_dumper.h"
 #include "synth/object_synth.h"
 #include "vm/dmodule_wrapper.h"
 #include "vm/object.h"
@@ -69,6 +70,14 @@ DModule *Synth::SynthModule() {
   obj_synth.ExpandFunctions();
   module->GetOptimizeContext()->DumpIntermediateModule(NULL, "expanded");
 
+  vm::Value *value = obj_->LookupValue(sym_lookup("$ir_file_name"), false);
+  if (value && value->type_ == vm::Value::OBJECT) {
+    const string &fn = value->object_->ToString();
+    string path;
+    if (Env::GetOutputPath(fn.c_str(), &path)) {
+      IrohaDumper::Dump(module, path);
+    }
+  }
   // Let obj_synth be deleted.
 
   return module;

@@ -74,6 +74,18 @@ void NativeMethods::SetDump(Thread *thr, Object *obj,
   }
 }
 
+void NativeMethods::SetIROutput(Thread *thr, Object *obj,
+				const vector<Value> &args) {
+  if (args.size() == 1 && args[0].type_ == Value::OBJECT &&
+      StringWrapper::IsString(args[0].object_)) {
+    const string &fn = StringWrapper::String(args[0].object_);
+    Value value;
+    value.object_ = StringWrapper::NewStringWrapper(thr->GetVM(), fn);
+    value.type_ = Value::OBJECT;
+    obj->InstallValue(sym_lookup("$ir_file_name"), value);
+  }
+}
+
 void NativeMethods::Compile(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   string phase;
@@ -167,6 +179,7 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
   InstallNativeMethod(vm, obj, "setDump", &NativeMethods::SetDump, rets);
+  InstallNativeMethod(vm, obj, "setIROutput", &NativeMethods::SetIROutput, rets);
   InstallNativeMethod(vm, obj, "setSynthParam",
 		      &NativeMethods::SetSynthParam, rets);
   InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);

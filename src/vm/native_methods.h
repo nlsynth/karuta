@@ -22,6 +22,7 @@ public:
   static void Print(Thread *thr, Object *obj, const vector<Value> &args);
   static void Run(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetDump(Thread *thr, Object *obj, const vector<Value> &args);
+  static void SetIROutput(Thread *thr, Object *obj, const vector<Value> &arg);
   static void SetSynthParam(Thread *thr, Object *obj,
 			    const vector<Value> &args);
   static void Wait(Thread *thr, Object *obj, const vector<Value> &args);

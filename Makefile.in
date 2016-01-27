@@ -156,7 +156,8 @@ am__objects_5 = src/opt/nli_bin-opt.$(OBJEXT) \
 	src/opt/nli_bin-ssa_converter.$(OBJEXT) \
 	src/opt/nli_bin-ssa_misc.$(OBJEXT) \
 	src/opt/nli_bin-wire_insn.$(OBJEXT)
-am__objects_6 = src/synth/nli_bin-interface.$(OBJEXT) \
+am__objects_6 = src/synth/nli_bin-iroha_dumper.$(OBJEXT) \
+	src/synth/nli_bin-interface.$(OBJEXT) \
 	src/synth/nli_bin-resource_set.$(OBJEXT) \
 	src/synth/nli_bin-synth.$(OBJEXT) \
 	src/synth/nli_bin-channel_synth.$(OBJEXT) \
@@ -573,6 +574,7 @@ dfg_SOURCES = \
  src/dfg/resource_params.cpp src/dfg/resource_params.h
 
 synth_SOURCES = \
+ src/synth/iroha_dumper.cpp src/synth/iroha_dumper.h \
  src/synth/interface.cpp src/synth/interface.h \
  src/synth/resource_set.cpp src/synth/resource_set.h \
  src/synth/synth.cpp src/synth/synth.h \
@@ -884,6 +886,8 @@ src/synth/$(am__dirstamp):
 src/synth/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/synth/$(DEPDIR)
 	@: > src/synth/$(DEPDIR)/$(am__dirstamp)
+src/synth/nli_bin-iroha_dumper.$(OBJEXT): src/synth/$(am__dirstamp) \
+	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-interface.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-resource_set.$(OBJEXT): src/synth/$(am__dirstamp) \
@@ -1049,6 +1053,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-wire_insn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-channel_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-interface.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-iroha_dumper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-method_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-object_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-resource_set.Po@am__quote@
@@ -1783,6 +1788,20 @@ src/opt/nli_bin-wire_insn.obj: src/opt/wire_insn.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/wire_insn.cpp' object='src/opt/nli_bin-wire_insn.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-wire_insn.obj `if test -f 'src/opt/wire_insn.cpp'; then $(CYGPATH_W) 'src/opt/wire_insn.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/wire_insn.cpp'; fi`
+
+src/synth/nli_bin-iroha_dumper.o: src/synth/iroha_dumper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-iroha_dumper.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-iroha_dumper.Tpo -c -o src/synth/nli_bin-iroha_dumper.o `test -f 'src/synth/iroha_dumper.cpp' || echo '$(srcdir)/'`src/synth/iroha_dumper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-iroha_dumper.Tpo src/synth/$(DEPDIR)/nli_bin-iroha_dumper.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/iroha_dumper.cpp' object='src/synth/nli_bin-iroha_dumper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-iroha_dumper.o `test -f 'src/synth/iroha_dumper.cpp' || echo '$(srcdir)/'`src/synth/iroha_dumper.cpp
+
+src/synth/nli_bin-iroha_dumper.obj: src/synth/iroha_dumper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-iroha_dumper.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-iroha_dumper.Tpo -c -o src/synth/nli_bin-iroha_dumper.obj `if test -f 'src/synth/iroha_dumper.cpp'; then $(CYGPATH_W) 'src/synth/iroha_dumper.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/iroha_dumper.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-iroha_dumper.Tpo src/synth/$(DEPDIR)/nli_bin-iroha_dumper.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/iroha_dumper.cpp' object='src/synth/nli_bin-iroha_dumper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-iroha_dumper.obj `if test -f 'src/synth/iroha_dumper.cpp'; then $(CYGPATH_W) 'src/synth/iroha_dumper.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/iroha_dumper.cpp'; fi`
 
 src/synth/nli_bin-interface.o: src/synth/interface.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-interface.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-interface.Tpo -c -o src/synth/nli_bin-interface.o `test -f 'src/synth/interface.cpp' || echo '$(srcdir)/'`src/synth/interface.cpp

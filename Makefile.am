@@ -68,6 +68,7 @@ dfg_SOURCES = \
  src/dfg/resource_params.cpp src/dfg/resource_params.h
 
 synth_SOURCES = \
+ src/synth/iroha_dumper.cpp src/synth/iroha_dumper.h \
  src/synth/interface.cpp src/synth/interface.h \
  src/synth/resource_set.cpp src/synth/resource_set.h \
  src/synth/synth.cpp src/synth/synth.h \
