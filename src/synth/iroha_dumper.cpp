@@ -43,7 +43,12 @@ void IrohaDumper::DumpGraph(DGraph *graph) {
   }
   os_ << "    )\n";
   os_ << "    (INITIAL " << graph->initial_state_->state_id_ << ")\n";
+  set<DState *> reachables;
+  DStateUtil::CollectReachable(graph, graph->initial_state_, &reachables);
   for (DState *st : graph->states_) {
+    if (reachables.find(st) == reachables.end()) {
+      continue;
+    }
     DumpState(st);
   }
   os_ << "  )\n";
@@ -72,12 +77,13 @@ void IrohaDumper::DumpRegister(DRegister *reg) {
   } else if (reg->reg_type_ == DRegister::REG_CONST) {
     os_ << "CONST ";
   }
+  os_ << "UINT ";
   if (reg->data_type_->type_ == DType::INT) {
     os_ << reg->data_type_->size_;
   } else {
     os_ << 0;
   }
-  if (reg->has_initial_) {
+  if (reg->has_initial_ || reg->reg_type_ == DRegister::REG_CONST) {
     os_ << " " << reg->num_;
   } else {
     os_ << " ()";
@@ -116,7 +122,9 @@ void IrohaDumper::DumpInsn(DInsn *insn) {
 void IrohaDumper::DumpTransition(DInsn *insn) {
   os_ << " (";
   bool is_first = true;
-  for (DState *st : insn->targets_) {
+  // Iroha's order is value: 0, 1, 2...
+  for (auto it = insn->targets_.rbegin(); it != insn->targets_.rend(); ++it) {
+    DState *st = *it;
     if (!is_first) {
       os_ << " ";
     }
@@ -146,6 +154,7 @@ void IrohaDumper::DumpTypes(vector<DType *> &types) {
     if (!is_first) {
       os_ << " ";
     }
+    os_ << "UINT ";
     if (type->type_ == DType::INT) {
       os_ << type->size_;
     } else {
@@ -166,6 +175,9 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   }
   if (c == "assign") {
     return "set";
+  }
+  if (c == "imported" && res->name_ == "print") {
+    return "print";
   }
   return c;
 }
