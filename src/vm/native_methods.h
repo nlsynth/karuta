@@ -22,18 +22,25 @@ public:
   static void Print(Thread *thr, Object *obj, const vector<Value> &args);
   static void Run(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetDump(Thread *thr, Object *obj, const vector<Value> &args);
-  static void SetIROutput(Thread *thr, Object *obj, const vector<Value> &arg);
   static void SetSynthParam(Thread *thr, Object *obj,
 			    const vector<Value> &args);
   static void Wait(Thread *thr, Object *obj, const vector<Value> &args);
   static void WidthOf(Thread *thr, Object *obj, const vector<Value> &args);
   static void WriteHdl(Thread *thr, Object *obj, const vector<Value> &args);
 
+  // Iroha.
+  static void SetIROutput(Thread *thr, Object *obj, const vector<Value> &arg);
+  static void SetIrohaPath(Thread *thr, Object *obj, const vector<Value> &arg);
+  static void RunIroha(Thread *thr, Object *obj, const vector<Value> &arg);
+
   // Env.
   static void IsMain(Thread *thr, Object *obj, const vector<Value> &args);
   static void GC(Thread *thr, Object *obj, const vector<Value> &args);
 
   static void SetReturnValue(Thread *thr, const Value &value);
+  static void SetMemberString(Thread *thr, const char *name,
+			      Object *obj,
+			      const vector<Value> &args);
 };
 
 }  // namespace vm

@@ -1,0 +1,9 @@
+def main() {
+  int x = 10;
+  print(x);
+}
+
+setIrohaPath("../iroha/iroha");
+setIROutput("/tmp/a.iroha");
+compile();
+runIroha("-v -S -o /tmp/a.v");

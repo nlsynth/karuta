@@ -64,25 +64,51 @@ void NativeMethods::Run(Thread *thr, Object *obj,
 
 void NativeMethods::SetDump(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
-  if (args.size() == 1 && args[0].type_ == Value::OBJECT &&
-      StringWrapper::IsString(args[0].object_)) {
-    const string &fn = StringWrapper::String(args[0].object_);
-    Value value;
-    value.object_ = StringWrapper::NewStringWrapper(thr->GetVM(), fn);
-    value.type_ = Value::OBJECT;
-    obj->InstallValue(sym_lookup("$dump_file_name"), value);
-  }
+  SetMemberString(thr, "$dump_file_name", obj, args);
 }
 
 void NativeMethods::SetIROutput(Thread *thr, Object *obj,
 				const vector<Value> &args) {
+  SetMemberString(thr, "$ir_file_name", obj, args);
+}
+
+void NativeMethods::SetIrohaPath(Thread *thr, Object *obj,
+				 const vector<Value> &args) {
+  SetMemberString(thr, "$iroha_path", obj, args);
+}
+
+void NativeMethods::RunIroha(Thread *thr, Object *obj,
+			     const vector<Value> &args) {
+  if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
+      !StringWrapper::IsString(args[0].object_)) {
+    Status::os(Status::USER) << "Missing argument for runIroha()";
+    return;
+  }
+  Value *path = obj->LookupValue(sym_lookup("$ir_file_name"), false);
+  if (!path || path->type_ != Value::OBJECT || !StringWrapper::IsString(path->object_)) {
+    Status::os(Status::USER) << "Missing setIROutput() call";
+    return;
+  }
+  Value *fn = obj->LookupValue(sym_lookup("$iroha_path"), false);
+  if (!fn || fn->type_ != Value::OBJECT || !StringWrapper::IsString(fn->object_)) {
+    Status::os(Status::USER) << "Missing setIrohaPath() call";
+    return;
+  }
+  string e = StringWrapper::String(fn->object_) + " " + StringWrapper::String(path->object_) + " " + StringWrapper::String(args[0].object_);
+  cout << "command=" << e << "\n";
+  system(e.c_str());
+}
+
+void NativeMethods::SetMemberString(Thread *thr, const char *name,
+				    Object *obj,
+				    const vector<Value> &args) {
   if (args.size() == 1 && args[0].type_ == Value::OBJECT &&
       StringWrapper::IsString(args[0].object_)) {
     const string &fn = StringWrapper::String(args[0].object_);
     Value value;
     value.object_ = StringWrapper::NewStringWrapper(thr->GetVM(), fn);
     value.type_ = Value::OBJECT;
-    obj->InstallValue(sym_lookup("$ir_file_name"), value);
+    obj->InstallValue(sym_lookup(name), value);
   }
 }
 
@@ -180,6 +206,8 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
   InstallNativeMethod(vm, obj, "setDump", &NativeMethods::SetDump, rets);
   InstallNativeMethod(vm, obj, "setIROutput", &NativeMethods::SetIROutput, rets);
+  InstallNativeMethod(vm, obj, "setIrohaPath", &NativeMethods::SetIrohaPath, rets);
+  InstallNativeMethod(vm, obj, "runIroha", &NativeMethods::RunIroha, rets);
   InstallNativeMethod(vm, obj, "setSynthParam",
 		      &NativeMethods::SetSynthParam, rets);
   InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
