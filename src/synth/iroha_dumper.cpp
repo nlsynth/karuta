@@ -104,10 +104,12 @@ void IrohaDumper::DumpResource(DResource *res) {
   DumpTypes(res->output_types_);
   os_ << "\n        (";
   if (c == "ext_output") {
-    os_ << "PARAMS (OUTPUT " << res->imported_resource_->GetOutputPinName() << ")";
+    os_ << "PARAMS (OUTPUT " << res->imported_resource_->GetOutputPinName() << ") "
+	<< "(WIDTH " << DTypeUtil::GetWidth(res->input_types_[0]) << ")";
   }
   if (c == "ext_input") {
-    os_ << "PARAMS (OUTPUT " << res->imported_resource_->GetInputPinName() << ")";
+    os_ << "PARAMS (INPUT " << res->imported_resource_->GetInputPinName() << ") "
+	<< "(WIDTH " << DTypeUtil::GetWidth(res->output_types_[0]) << ")";
   }
   os_ << ")\n"
       << "      )\n";
