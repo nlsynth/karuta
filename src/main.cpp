@@ -1,4 +1,4 @@
-// Copyright (C) Yusuke Tabata 2007-2015
+// Copyright (C) Yusuke Tabata 2007-2016
 /*
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,11 +66,11 @@ private:
   bool dbg_scanner;
   bool dbg_parser;
   int timeout;
-  // nfe specific
   bool dbg_types;
   bool print_exit_status;
   bool vanilla;
   bool dbg_bytecode;
+  bool use_iroha;
 };
 
 void Main::PrintUsage() {
@@ -84,7 +84,8 @@ void Main::PrintUsage() {
        << "   --root [path]\n"
        << "   --timeout [ms]\n"
        << "   --vanilla\n"
-       << "   --version\n";
+       << "   --version\n"
+       << "   -z\n";
   exit(0);
 }
 
@@ -241,7 +242,6 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("root", NULL);
   parser->RegisterValueFlag("output_marker", NULL);
   parser->RegisterValueFlag("module_prefix", NULL);
-  parser->RegisterBoolFlag("n", NULL);
   parser->RegisterBoolFlag("z", NULL);
   if (!parser->Parse(argc, argv)) {
     exit(0);
@@ -264,6 +264,7 @@ void Main::main(int argc, char **argv) {
   }
   vanilla = args.GetBoolFlag("vanilla", false);
   print_exit_status = args.GetBoolFlag("print_exit_status", false);
+  use_iroha = args.GetBoolFlag("z", false);
 
   string arg;
   if (args.GetFlagValue("timeout", &arg)) {

@@ -89,12 +89,15 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
     Status::os(Status::USER) << "Missing setIROutput() call";
     return;
   }
-  Value *fn = obj->LookupValue(sym_lookup("$iroha_path"), false);
-  if (!fn || fn->type_ != Value::OBJECT || !StringWrapper::IsString(fn->object_)) {
+  Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
+  if (!cmd || cmd->type_ != Value::OBJECT || !StringWrapper::IsString(cmd->object_)) {
     Status::os(Status::USER) << "Missing setIrohaPath() call";
     return;
   }
-  string e = StringWrapper::String(fn->object_) + " " + StringWrapper::String(path->object_) + " " + StringWrapper::String(args[0].object_);
+  string iopt = string("-I ") + Env::GetNliDir();
+  string e = StringWrapper::String(cmd->object_) + " " +
+    StringWrapper::String(path->object_) + " " +
+    StringWrapper::String(args[0].object_) + " " + iopt;
   cout << "command=" << e << "\n";
   system(e.c_str());
 }

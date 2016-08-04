@@ -1,6 +1,7 @@
 #include "synth/iroha_dumper.h"
 
 #include "dfg/dfg.h"
+#include "dfg/resource_params.h"
 
 #include <fstream>
 
@@ -101,7 +102,14 @@ void IrohaDumper::DumpResource(DResource *res) {
   DumpTypes(res->input_types_);
   os_ << " ";
   DumpTypes(res->output_types_);
-  os_ << "\n        ()\n"
+  os_ << "\n        (";
+  if (c == "ext_output") {
+    os_ << "PARAMS (OUTPUT " << res->imported_resource_->GetOutputPinName() << ")";
+  }
+  if (c == "ext_input") {
+    os_ << "PARAMS (OUTPUT " << res->imported_resource_->GetInputPinName() << ")";
+  }
+  os_ << ")\n"
       << "      )\n";
 }
 
@@ -170,14 +178,33 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   if (c == "function_entry" || c == "funcall" || c == "transition") {
     return "";
   }
+  if (c == "ext_io") {
+    if (res->input_types_.size() > 0) {
+      CHECK(res->output_types_.size() == 0);
+      return "ext_output";
+    }
+    if (res->output_types_.size() > 0) {
+      return "ext_input";
+    }
+    return "";
+  }
   if (c == "branch") {
     return "tr";
   }
   if (c == "assign") {
     return "set";
   }
+  if (c == "logic_and") {
+    return "bit-and";
+  }
+  if (c == "logic_or") {
+    return "bit-or";
+  }
   if (c == "imported" && res->name_ == "print") {
     return "print";
+  }
+  if (c == "imported" && res->name_ == "assert") {
+    return "assert";
   }
   return c;
 }
