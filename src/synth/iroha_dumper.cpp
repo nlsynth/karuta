@@ -102,17 +102,37 @@ void IrohaDumper::DumpResource(DResource *res) {
   DumpTypes(res->input_types_);
   os_ << " ";
   DumpTypes(res->output_types_);
-  os_ << "\n        (";
+  os_ << "\n        (PARAMS";
   if (c == "ext_output") {
-    os_ << "PARAMS (OUTPUT " << res->imported_resource_->GetOutputPinName() << ") "
+    os_ << " (OUTPUT " << res->imported_resource_->GetOutputPinName() << ") "
 	<< "(WIDTH " << DTypeUtil::GetWidth(res->input_types_[0]) << ")";
   }
   if (c == "ext_input") {
-    os_ << "PARAMS (INPUT " << res->imported_resource_->GetInputPinName() << ") "
+    os_ << " (INPUT " << res->imported_resource_->GetInputPinName() << ") "
 	<< "(WIDTH " << DTypeUtil::GetWidth(res->output_types_[0]) << ")";
   }
-  os_ << ")\n"
-      << "      )\n";
+  os_ << ")\n";
+  if (c == "array") {
+    WriteArraySpec(res);
+  }
+  os_ << "      )\n";
+}
+
+void IrohaDumper::WriteArraySpec(DResource *res) {
+  DArray *array = res->array_;
+  os_ << "        (ARRAY ";
+  if (array == nullptr) {
+    os_ << "32 UINT 32 EXTERNAL RAM";
+  } else {
+    os_ << array->address_width << " UINT " << array->data_width
+	<< " INTERNAL ";
+    if (array->may_write_) {
+      os_ << "RAM";
+    } else {
+      os_ << "ROM";
+    }
+  }
+  os_ << ")\n";
 }
 
 void IrohaDumper::DumpInsn(DInsn *insn) {
@@ -189,6 +209,9 @@ string IrohaDumper::GetResourceClass(DResource *res) {
       return "ext_input";
     }
     return "";
+  }
+  if (c == "memory") {
+    return "array";
   }
   if (c == "branch") {
     return "tr";

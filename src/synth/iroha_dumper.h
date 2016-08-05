@@ -38,6 +38,7 @@ private:
   void DumpRegister(DRegister *reg);
   void DumpResource(DResource *res);
   void DumpTypes(vector<DType *> &types);
+  void WriteArraySpec(DResource *res);
 
   DModule *mod_;
   ostream &os_;
