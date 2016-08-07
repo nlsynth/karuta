@@ -14,10 +14,19 @@ See https://sites.google.com/site/neonlightcompiler/ for some more details.
 
 ## Usage
 
+-- Get the code
+
+To check out the code including Iroha submodule.
+    > $ git clone --recursive https://github.com/nlsynth/nli
+    or
+    > $ git submodule update --init
+    in nli/ directory.
+
 -- Install
 
 At first, you have to compile the interpreter (nli command).
 
+NOTE: Please make sure you checked out iroha submodule and have iroha/ directory
     > $ ./configure; make
     > $ make install # optional
 

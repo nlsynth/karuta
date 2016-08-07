@@ -500,9 +500,11 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
+subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
@@ -511,7 +513,7 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
-SUBDIRS = lib docs tests
+SUBDIRS = iroha lib docs tests
 CCRT_FILES = ccrt.h ccrt_main.cpp
 EXAMPLES_FILES = \
  examples/hello.n examples/top.n examples/tb_top.v \

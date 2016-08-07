@@ -9,5 +9,6 @@ AC_PROG_CXX
 AC_PROG_YACC
 LT_INIT
 
+AC_CONFIG_SUBDIRS([iroha])
 AC_CONFIG_FILES([Makefile lib/Makefile lib/nli docs/Makefile tests/Makefile])
 AC_OUTPUT

@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
 
-SUBDIRS = lib docs tests
+SUBDIRS = iroha lib docs tests
 CCRT_FILES = ccrt.h ccrt_main.cpp
 EXAMPLES_FILES= \
  examples/hello.n examples/top.n examples/tb_top.v \
