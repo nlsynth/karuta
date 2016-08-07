@@ -1,0 +1,3 @@
+[submodule "iroha"]
+	path = iroha
+	url = https://github.com/nlsynth/iroha
