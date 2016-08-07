@@ -18,6 +18,11 @@ void IrohaDumper::Dump(DModule *mod, const string &path) {
 }
 
 void IrohaDumper::DumpIR() {
+  int nth_ch = 0;
+  for (DChannel *ch : mod_->channels_) {
+    DumpChannel(ch, nth_ch);
+    ++nth_ch;
+  }
   os_ << "(MODULE " << mod_->module_name_ << "\n";
   if (mod_->graph_) {
     DumpGraph(mod_->graph_);
@@ -225,6 +230,12 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   if (c == "logic_or") {
     return "bit-or";
   }
+  if (c == "read_channel") {
+    return "channel-read";
+  }
+  if (c == "write_channel") {
+    return "channel-write";
+  }
   if (c == "imported" && res->name_ == "print") {
     return "print";
   }
@@ -232,6 +243,29 @@ string IrohaDumper::GetResourceClass(DResource *res) {
     return "assert";
   }
   return c;
+}
+
+void IrohaDumper::DumpChannel(DChannel *ch, int id) {
+  os_ << "(CHANNEL " << id << " UINT 32 ";
+  DumpChannelEndPoint(ch, ch->reader_module_);
+  os_ << " ";
+  DumpChannelEndPoint(ch, ch->writer_module_);
+  os_ << ")\n";
+}
+
+void IrohaDumper::DumpChannelEndPoint(DChannel *ch, DModule *mod) {
+  if (mod == nullptr) {
+    os_ << "()";
+    return;
+  }
+  int res_id = 0;
+  for (DResource *res : mod->graph_->resources_) {
+    if (res->name_ == ch->channel_name_) {
+      res_id = res->resource_id_;
+    }
+  }
+  // mod name, table id, res id
+  os_ << "(" << mod->module_name_ << " 1 " << res_id << ")";
 }
 
 }  // namespace synth

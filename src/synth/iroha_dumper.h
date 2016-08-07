@@ -9,6 +9,7 @@
 using std::map;
 
 namespace dfg {
+class DChannel;
 class DModule;
 class DGraph;
 class DState;
@@ -39,6 +40,8 @@ private:
   void DumpResource(DResource *res);
   void DumpTypes(vector<DType *> &types);
   void WriteArraySpec(DResource *res);
+  void DumpChannel(DChannel *ch, int id);
+  void DumpChannelEndPoint(DChannel *ch, DModule *mod);
 
   DModule *mod_;
   ostream &os_;
