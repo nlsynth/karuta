@@ -203,7 +203,7 @@ am_nli_bin_OBJECTS = src/nli_bin-main.$(OBJEXT) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
 	$(am__objects_6) $(am__objects_7) $(am__objects_8)
 nli_bin_OBJECTS = $(am_nli_bin_OBJECTS)
-nli_bin_DEPENDENCIES = libparse.la
+nli_bin_DEPENDENCIES = libparse.la iroha/libiroha.la
 nli_bin_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(nli_bin_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -512,7 +512,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
+AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc -Iiroha/src
 SUBDIRS = iroha lib docs tests
 CCRT_FILES = ccrt.h ccrt_main.cpp
 EXAMPLES_FILES = \
@@ -639,7 +639,7 @@ nli_bin_SOURCES = \
  $(vm_SOURCES) \
  $(writer_SOURCES)
 
-nli_bin_LDADD = libparse.la
+nli_bin_LDADD = libparse.la iroha/libiroha.la
 nli_bin_YFLAGS = -d -g
 nli_bin_CXXFLAGS = -Wall -g
 noinst_LTLIBRARIES = libparse.la

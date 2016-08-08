@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc
+AM_CPPFLAGS = -DNLI_DIR=\"$(sysconfdir)\" -Isrc -Iiroha/src
 
 SUBDIRS = iroha lib docs tests
 CCRT_FILES = ccrt.h ccrt_main.cpp
@@ -132,7 +132,7 @@ nli_bin_SOURCES = \
  $(writer_SOURCES)
 
 
-nli_bin_LDADD = libparse.la
+nli_bin_LDADD = libparse.la iroha/libiroha.la
 nli_bin_YFLAGS = -d -g
 nli_bin_CXXFLAGS = -Wall -g
 

@@ -22,6 +22,7 @@
 
 #include "dfg/dfg.h"
 #include "fe/fe.h"
+#include "iroha/iroha_main.h"
 #include "nli.h"
 #include "status.h"
 
@@ -53,7 +54,7 @@ private:
 
 class Main {
 public:
-  void main(int argc, char **argv);
+  int main(int argc, char **argv);
 
 private:
   void InstallTimeout();
@@ -70,7 +71,6 @@ private:
   bool print_exit_status;
   bool vanilla;
   bool dbg_bytecode;
-  bool use_iroha;
 };
 
 void Main::PrintUsage() {
@@ -236,6 +236,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterBoolFlag("h", "help");
   parser->RegisterBoolFlag("help", NULL);
   parser->RegisterBoolFlag("version", "help");
+  parser->RegisterBoolFlag("iroha", NULL);
   parser->RegisterBoolFlag("vanilla", NULL);
   parser->RegisterBoolFlag("print_exit_status", NULL);
   parser->RegisterValueFlag("timeout", NULL);
@@ -248,23 +249,23 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   }
 }
 
-void Main::main(int argc, char **argv) {
+int Main::main(int argc, char **argv) {
   dbg_scanner = false;
   dbg_parser = false;
   dbg_types = false;
   dbg_bytecode = false;
-  ::sym_table_init();
-  dfg::DFG::Init();
-  StaticInitializer::RunInitializers();
 
   ArgParser args;
   ParseArgs(argc, argv, &args);
+  if (args.GetBoolFlag("iroha", false)) {
+    // Run as Iroha.
+    return iroha::main(argc, argv);
+  }
   if (args.GetBoolFlag("help", false)) {
     PrintUsage();
   }
   vanilla = args.GetBoolFlag("vanilla", false);
   print_exit_status = args.GetBoolFlag("print_exit_status", false);
-  use_iroha = args.GetBoolFlag("z", false);
 
   string arg;
   if (args.GetFlagValue("timeout", &arg)) {
@@ -272,6 +273,11 @@ void Main::main(int argc, char **argv) {
   } else {
     timeout = 0;
   }
+
+  // Actually initialize modules and params.
+  ::sym_table_init();
+  dfg::DFG::Init();
+  StaticInitializer::RunInitializers();
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
   }
@@ -298,10 +304,10 @@ void Main::main(int argc, char **argv) {
     // (without SEGV and so on)
     cout << "NLI DONE: " << exit_status << "\n";
   }
+  return 0;
 }
 
 int main(int argc, char **argv) {
   Main m;
-  m.main(argc, argv);
-  return 0;
+  return m.main(argc, argv);
 }

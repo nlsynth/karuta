@@ -139,6 +139,9 @@ Now some computation is defined within object 'Kernel', so Neon Light Compiler c
     * Data Flow Graph to represent internal RTL
 * Bytecode
     * Compiled fron Neon Light Script and can be executed or synthesized
+* Iroha
+    * Intermediate Representation Of Hardware Abstraction
+    * https://github.com/nlsynth/iroha
 
 -- COPYING
 
