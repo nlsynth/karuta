@@ -84,20 +84,19 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
     Status::os(Status::USER) << "Missing argument for runIroha()";
     return;
   }
+  string cmd = GetIrohaCommand(obj);
+  if (cmd.empty()) {
+    return;
+  }
   Value *path = obj->LookupValue(sym_lookup("$ir_file_name"), false);
   if (!path || path->type_ != Value::OBJECT || !StringWrapper::IsString(path->object_)) {
     Status::os(Status::USER) << "Missing setIROutput() call";
     return;
   }
-  Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
-  if (!cmd || cmd->type_ != Value::OBJECT || !StringWrapper::IsString(cmd->object_)) {
-    Status::os(Status::USER) << "Missing setIrohaPath() call";
-    return;
-  }
-  string iopt = string("-I ") + Env::GetNliDir();
-  string e = StringWrapper::String(cmd->object_) + " " +
+  string iopt = string("--iroha -I ") + Env::GetNliDir();
+  string e = cmd + " " + iopt + " " +
     StringWrapper::String(path->object_) + " " +
-    StringWrapper::String(args[0].object_) + " " + iopt;
+    StringWrapper::String(args[0].object_);
   cout << "command=" << e << "\n";
   system(e.c_str());
 }
@@ -188,6 +187,14 @@ void NativeMethods::GC(Thread *thr, Object *obj,
 
 void NativeMethods::SetReturnValue(Thread *thr, const Value &value) {
   thr->SetReturnValueFromNativeMethod(value);
+}
+
+string NativeMethods::GetIrohaCommand(Object *obj) {
+  Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
+  if (!cmd || cmd->type_ != Value::OBJECT || !StringWrapper::IsString(cmd->object_)) {
+    return Env::GetArgv0();
+  }
+  return StringWrapper::String(cmd->object_);
 }
 
 void Method::InstallNativeRootObjectMethods(VM *vm, Object *obj) {

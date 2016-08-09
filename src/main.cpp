@@ -168,6 +168,10 @@ bool ArgParser::Parse(int argc, char **argv) {
       }
       source_files.push_back(arg);
     }
+    if (!strcmp(arg, "--iroha")) {
+      // Stop parsing other flags.
+      return true;
+    }
   }
   return true;
 }
@@ -278,6 +282,7 @@ int Main::main(int argc, char **argv) {
   ::sym_table_init();
   dfg::DFG::Init();
   StaticInitializer::RunInitializers();
+  Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
   }

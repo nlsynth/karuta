@@ -36,6 +36,8 @@ public:
   static void SetOutputMarker(const string &marker);
   static void SetModulePrefix(const string &name);
   static const string &GetModulePrefix();
+  static void SetArgv0(const string &c);
+  static const string &GetArgv0();
 
 private:
   static const char *nli_dir_;
@@ -43,6 +45,7 @@ private:
   static string output_marker_;
   static bool sandbox_mode_;
   static string module_prefix_;
+  static string argv0_;
 };
 
 class Util {

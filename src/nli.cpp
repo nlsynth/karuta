@@ -11,6 +11,7 @@ string Env::output_root_;
 string Env::output_marker_;
 string Env::module_prefix_;
 bool Env::sandbox_mode_;
+string Env::argv0_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -174,4 +175,12 @@ void Env::SetModulePrefix(const string &name) {
 
 const string & Env::GetModulePrefix() {
   return module_prefix_;
+}
+
+void Env::SetArgv0(const string &c) {
+  argv0_ = c;
+}
+
+const string &Env::GetArgv0() {
+  return argv0_;
 }

@@ -236,6 +236,12 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   if (c == "write_channel") {
     return "channel-write";
   }
+  if (c == "bit_sel") {
+    return "bit-sel";
+  }
+  if (c == "concat") {
+    return "bit-concat";
+  }
   if (c == "imported" && res->name_ == "print") {
     return "print";
   }
