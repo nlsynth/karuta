@@ -7,6 +7,9 @@
 //
 #include "synth/synth.h"
 
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "dfg/dfg.h"
 #include "dfg/resource_params.h"
 #include "opt/opt.h"
@@ -26,6 +29,20 @@ namespace synth {
 static const char *kCompiledModule = "_compiled_module";
 
 Synth::Synth(vm::VM *vm, vm::Object *obj) : vm_(vm), obj_(obj) {
+}
+
+string Synth::IrPath(vm::Object *obj) {
+  vm::Value *value = obj->LookupValue(sym_lookup("$ir_file_name"), false);
+  if (value && value->type_ == vm::Value::OBJECT) {
+    const string &fn = value->object_->ToString();
+    string path;
+    if (Env::GetOutputPath(fn.c_str(), &path)) {
+      return path;
+    }
+  }
+  char buf[64];
+  sprintf(buf, "/tmp/nli-%d-%ld.iroha", getpid(), (long)obj);
+  return string(buf);
 }
 
 bool Synth::Compile(const string &phase) {
@@ -70,13 +87,9 @@ DModule *Synth::SynthModule() {
   obj_synth.ExpandFunctions();
   module->GetOptimizeContext()->DumpIntermediateModule(NULL, "expanded");
 
-  vm::Value *value = obj_->LookupValue(sym_lookup("$ir_file_name"), false);
-  if (value && value->type_ == vm::Value::OBJECT) {
-    const string &fn = value->object_->ToString();
-    string path;
-    if (Env::GetOutputPath(fn.c_str(), &path)) {
-      IrohaDumper::Dump(module, path);
-    }
+  string path = IrPath(obj_);
+  if (!path.empty()) {
+    IrohaDumper::Dump(module, path);
   }
   // Let obj_synth be deleted.
 

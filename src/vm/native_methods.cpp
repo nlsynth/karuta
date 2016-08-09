@@ -88,14 +88,10 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
   if (cmd.empty()) {
     return;
   }
-  Value *path = obj->LookupValue(sym_lookup("$ir_file_name"), false);
-  if (!path || path->type_ != Value::OBJECT || !StringWrapper::IsString(path->object_)) {
-    Status::os(Status::USER) << "Missing setIROutput() call";
-    return;
-  }
+  string path = synth::Synth::IrPath(obj);
   string iopt = string("--iroha -I ") + Env::GetNliDir();
   string e = cmd + " " + iopt + " " +
-    StringWrapper::String(path->object_) + " " +
+    path + " " +
     StringWrapper::String(args[0].object_);
   cout << "command=" << e << "\n";
   system(e.c_str());

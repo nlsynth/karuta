@@ -25,6 +25,7 @@ public:
 
   static bool Synthesize(vm::VM *vm, const string &phase, vm::Object *obj);
   static void WriteHdl(const string &fn, vm::Object *obj);
+  static string IrPath(vm::Object *obj);
 
 private:
   DModule *SynthModule();
