@@ -84,17 +84,7 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
     Status::os(Status::USER) << "Missing argument for runIroha()";
     return;
   }
-  string cmd = GetIrohaCommand(obj);
-  if (cmd.empty()) {
-    return;
-  }
-  string path = synth::Synth::IrPath(obj);
-  string iopt = string("--iroha -I ") + Env::GetNliDir();
-  string e = cmd + " " + iopt + " " +
-    path + " " +
-    StringWrapper::String(args[0].object_);
-  cout << "command=" << e << "\n";
-  system(e.c_str());
+  synth::Synth::RunIroha(obj, StringWrapper::String(args[0].object_));
 }
 
 void NativeMethods::SetMemberString(Thread *thr, const char *name,
@@ -183,14 +173,6 @@ void NativeMethods::GC(Thread *thr, Object *obj,
 
 void NativeMethods::SetReturnValue(Thread *thr, const Value &value) {
   thr->SetReturnValueFromNativeMethod(value);
-}
-
-string NativeMethods::GetIrohaCommand(Object *obj) {
-  Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
-  if (!cmd || cmd->type_ != Value::OBJECT || !StringWrapper::IsString(cmd->object_)) {
-    return Env::GetArgv0();
-  }
-  return StringWrapper::String(cmd->object_);
 }
 
 void Method::InstallNativeRootObjectMethods(VM *vm, Object *obj) {

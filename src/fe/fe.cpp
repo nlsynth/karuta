@@ -119,7 +119,11 @@ void FE::Run(bool vanilla, const vector<string>& files) {
 
   vm::VM vm;
   if (!vanilla) {
-    RunFile("default.n", &vm);
+    if (Env::GetUseIroha()) {
+      RunFile("default-iroha.n", &vm);
+    } else {
+      RunFile("default.n", &vm);
+    }
   }
   for (size_t i = 0; i < files.size(); ++i) {
     RunFile(files[i], &vm);

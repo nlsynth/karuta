@@ -3,7 +3,9 @@ def main() {
   print(x);
 }
 
-setIrohaPath("../iroha/iroha");
-setIROutput("/tmp/a.iroha");
+
+// setIrohaPath("../iroha/iroha");
+// setIROutput("/tmp/a.iroha");
 compile();
-runIroha("-v -S -o /tmp/a.v");
+writeHdl("/tmp/a.v");
+// runIroha("-v -S -o /tmp/a.v");

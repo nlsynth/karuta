@@ -12,6 +12,7 @@ string Env::output_marker_;
 string Env::module_prefix_;
 bool Env::sandbox_mode_;
 string Env::argv0_;
+bool Env::use_iroha_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -183,4 +184,12 @@ void Env::SetArgv0(const string &c) {
 
 const string &Env::GetArgv0() {
   return argv0_;
+}
+
+void Env::SetUseIroha(bool useIroha) {
+  use_iroha_ = useIroha;
+}
+
+bool Env::GetUseIroha() {
+  return use_iroha_;
 }

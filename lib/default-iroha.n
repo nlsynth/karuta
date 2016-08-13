@@ -1,0 +1,46 @@
+// default script
+print("default-iroha.n loaded");
+
+def Kernel.compile() {
+  __compile("array_to_mem");
+}
+
+// Native methods.
+// Adding __ prefix so that users can overwrite the original one.
+def Kernel.__print(int v)
+  [
+    resource = "print",
+    verilog="dummy.v"
+  ] {
+  printf("print=%d", v);
+}
+
+def Kernel.__assert(bool a)
+  [
+    resource = "assert",
+    verilog="dummy.v"
+  ] {
+  if (!a) {
+    print("assertion failed");
+  }
+}
+
+def Kernel.__exit()
+  [
+    resource = "exit",
+    verilog="nli_exit.v",
+    file="copy",
+    module="exit"
+  ] {
+  exit();
+}
+
+def Kernel.__wait(int cycles)
+  [
+    resource = "wait_cycles",
+    verilog = "nli_wait.v",
+    ack = "ack",
+    file= "copy",
+    module= "wait_cycles"
+  ] {
+}

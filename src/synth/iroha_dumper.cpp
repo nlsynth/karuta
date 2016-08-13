@@ -236,6 +236,15 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   if (c == "write_channel") {
     return "channel-write";
   }
+  if (c == "bit_and") {
+    return "bit-and";
+  }
+  if (c == "bit_or") {
+    return "bit-or";
+  }
+  if (c == "bit_xor") {
+    return "bit-xor";
+  }
   if (c == "bit_sel") {
     return "bit-sel";
   }

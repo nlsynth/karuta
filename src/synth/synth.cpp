@@ -20,6 +20,7 @@
 #include "synth/object_synth.h"
 #include "vm/dmodule_wrapper.h"
 #include "vm/object.h"
+#include "vm/string_wrapper.h"
 #include "writer/writer.h"
 
 static Pool<DModule> dmodule_pool_;
@@ -45,6 +46,27 @@ string Synth::IrPath(vm::Object *obj) {
   return string(buf);
 }
 
+string Synth::GetIrohaCommand(vm::Object *obj) {
+  vm::Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
+  if (!cmd || cmd->type_ != vm::Value::OBJECT || !vm::StringWrapper::IsString(cmd->object_)) {
+    return Env::GetArgv0();
+  }
+  return vm::StringWrapper::String(cmd->object_);
+}
+
+void Synth::RunIroha(vm::Object *obj, const string &args) {
+  string cmd = GetIrohaCommand(obj);
+  if (cmd.empty()) {
+    return;
+  }
+  string path = IrPath(obj);
+  string iopt = string("--iroha -I ") + Env::GetNliDir();
+  string e = cmd + " " + iopt + " " +
+    path + " " + args;
+  cout << "command=" << e << "\n";
+  system(e.c_str());
+}
+
 bool Synth::Compile(const string &phase) {
   vm::Value *value =
     obj_->LookupValue(sym_lookup(kCompiledModule), false);
@@ -61,9 +83,13 @@ bool Synth::Compile(const string &phase) {
   }
 
   if (!phase.empty()) {
-    DModule *mod = vm::DModuleWrapper::GetDModule(value->object_);
-    opt::ModuleOptimizeStat::Optimize(mod, phase, "");
-    mod->GetOptimizeContext()->WriteDumpIndex();
+    if (Env::GetUseIroha()) {
+      RunIrohaOpt(phase, obj_);
+    } else {
+      DModule *mod = vm::DModuleWrapper::GetDModule(value->object_);
+      opt::ModuleOptimizeStat::Optimize(mod, phase, "");
+      mod->GetOptimizeContext()->WriteDumpIndex();
+    }
   }
   return true;
 }
@@ -87,9 +113,11 @@ DModule *Synth::SynthModule() {
   obj_synth.ExpandFunctions();
   module->GetOptimizeContext()->DumpIntermediateModule(NULL, "expanded");
 
-  string path = IrPath(obj_);
-  if (!path.empty()) {
-    IrohaDumper::Dump(module, path);
+  if (Env::GetUseIroha()) {
+    string path = IrPath(obj_);
+    if (!path.empty()) {
+      IrohaDumper::Dump(module, path);
+    }
   }
   // Let obj_synth be deleted.
 
@@ -121,11 +149,30 @@ bool Synth::Synthesize(vm::VM *vm, const string &phase, vm::Object *obj) {
 }
 
 void Synth::WriteHdl(const string &fn, vm::Object *obj) {
-  vm::Value *value =
-    obj->LookupValue(sym_lookup(kCompiledModule), false);
-  CHECK(value);
-  writer::Writer::WriteModule(vm::DModuleWrapper::GetDModule(value->object_),
-			      fn);
+  if (Env::GetUseIroha()) {
+    string lang = "-v";
+    if (Util::IsHtmlFileName(fn)) {
+      lang = "-h";
+    } else if (Util::IsCCFileName(fn)) {
+      lang = "-c";
+    }
+    string arg = lang + " -o " + fn;
+    RunIroha(obj, arg);
+  } else {
+    vm::Value *value =
+      obj->LookupValue(sym_lookup(kCompiledModule), false);
+    CHECK(value);
+    writer::Writer::WriteModule(vm::DModuleWrapper::GetDModule(value->object_),
+				fn);
+  }
+}
+
+void Synth::RunIrohaOpt(const string &pass, vm::Object *obj) {
+  LOG(DEBUG) << "pass: " << pass;
+  string tmp = IrPath(obj) + "~";
+  string arg = "-opt " + pass + " -o " + tmp;
+  RunIroha(obj, arg);
+  rename(tmp.c_str(), IrPath(obj).c_str());
 }
 
 }  // namespace synth

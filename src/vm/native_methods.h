@@ -41,8 +41,6 @@ public:
   static void SetMemberString(Thread *thr, const char *name,
 			      Object *obj,
 			      const vector<Value> &args);
-private:
-  static string GetIrohaCommand(Object *obj);
 };
 
 }  // namespace vm

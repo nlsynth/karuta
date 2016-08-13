@@ -283,6 +283,7 @@ int Main::main(int argc, char **argv) {
   dfg::DFG::Init();
   StaticInitializer::RunInitializers();
   Env::SetArgv0(argv[0]);
+  Env::SetUseIroha(args.GetBoolFlag("z", false));
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
   }
