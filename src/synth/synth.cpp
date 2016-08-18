@@ -156,7 +156,9 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
     } else if (Util::IsCCFileName(fn)) {
       lang = "-c";
     }
-    string arg = lang + " -o " + fn;
+    string ofn;
+    Env::GetOutputPath(fn.c_str(), &ofn);
+    string arg = lang + " -s -o " + ofn;
     RunIroha(obj, arg);
   } else {
     vm::Value *value =

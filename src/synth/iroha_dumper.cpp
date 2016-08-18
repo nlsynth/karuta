@@ -18,6 +18,13 @@ void IrohaDumper::Dump(DModule *mod, const string &path) {
 }
 
 void IrohaDumper::DumpIR() {
+  os_ << "(PARAMS";
+  os_ << "(RESET-POLARITY true)";
+  const string &prefix = Env::GetModulePrefix();
+  if (!prefix.empty()) {
+    os_ << "(MODULE-NAME-PREFIX " << prefix << "_)";
+  }
+  os_ << ")\n";
   int nth_ch = 0;
   for (DChannel *ch : mod_->channels_) {
     DumpChannel(ch, nth_ch);
@@ -247,6 +254,9 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   }
   if (c == "bit_sel") {
     return "bit-sel";
+  }
+  if (c == "bit_inv") {
+    return "bit-inv";
   }
   if (c == "concat") {
     return "bit-concat";
