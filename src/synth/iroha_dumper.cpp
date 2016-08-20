@@ -123,6 +123,15 @@ void IrohaDumper::DumpResource(DResource *res) {
     os_ << " (INPUT " << res->imported_resource_->GetInputPinName() << ") "
 	<< "(WIDTH " << DTypeUtil::GetWidth(res->output_types_[0]) << ")";
   }
+  if (c == "embedded") {
+    os_ << " (EMBEDDED-MODULE-FILE " << res->imported_resource_->GetCopyFileName() << ")";
+    os_ << " (EMBEDDED-MODULE " << res->imported_resource_->GetModuleName() << ")";
+    os_ << " (EMBEDDED-MODULE-REQ req)";
+    string ack = res->imported_resource_->GetAckPinName();
+    if (!ack.empty()) {
+      os_ << " (EMBEDDED-MODULE-REQ " << ack << ")";
+    }
+  }
   os_ << ")\n";
   if (c == "array") {
     WriteArraySpec(res);
@@ -261,11 +270,14 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   if (c == "concat") {
     return "bit-concat";
   }
-  if (c == "imported" && res->name_ == "print") {
-    return "print";
-  }
-  if (c == "imported" && res->name_ == "assert") {
-    return "assert";
+  if (c == "imported") {
+    if (res->name_ == "print") {
+      return "print";
+    }
+    if (res->name_ == "assert") {
+      return "assert";
+    }
+    return "embedded";
   }
   return c;
 }
