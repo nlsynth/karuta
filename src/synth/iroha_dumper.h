@@ -24,10 +24,23 @@ namespace synth {
 
 class IrohaDumper {
 public:
-  IrohaDumper(DModule *mod, ostream &os);
+  IrohaDumper(DModule *root_mod, ostream &os);
 
   static void Dump(DModule *mod, const string &path);
-  void DumpIR();
+  void DumpDesign();
+
+private:
+  void DumpModule(DModule *mod);
+
+  DModule *root_mod_;
+  ostream &os_;
+};
+
+class IModuleDumper {
+public:
+  IModuleDumper(DModule *mod, ostream &os);
+  void Dump();
+  void DumpChannel(DChannel *ch, int id);
 
 private:
   void DumpGraph(DGraph *graph);
@@ -40,7 +53,6 @@ private:
   void DumpResource(DResource *res);
   void DumpTypes(vector<DType *> &types);
   void WriteArraySpec(DResource *res);
-  void DumpChannel(DChannel *ch, int id);
   void DumpChannelEndPoint(DChannel *ch, DModule *mod);
 
   DModule *mod_;

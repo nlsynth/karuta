@@ -61,6 +61,8 @@ public:
   DModule *writer_module_;
   DModule *reader_module_;
   int data_width_;
+  // is_root (internal channel) or source (external channel).
+  bool is_root_or_source_;
 };
 
 }  // namespace dfg

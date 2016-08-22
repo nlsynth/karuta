@@ -45,6 +45,7 @@ void ChannelSynth::ConnectInternal(ChannelInfo &ci) {
   dchan->channel_name_ = ci.reader_channel->channel_name_;
   dchan->writer_module_ = ci.writer_channel->writer_module_;
   dchan->reader_module_ = ci.reader_channel->reader_module_;
+  dchan->is_root_or_source_ = true;
   // Supports just 1 level between the root.
 }
 
@@ -58,8 +59,13 @@ void ChannelSynth::ConnectExternal(ChannelInfo &ci) {
     name = ci.reader_channel->channel_name_;
     p = ci.reader_channel->reader_module_->parent_mod_;
   }
+  bool first = true;
   for (; p != NULL; p = p->parent_mod_) {
     DChannel *dchan = DModuleUtil::CreateChannel(p, ci.data_width);
+    if (first) {
+      dchan->is_root_or_source_ = true;
+      first = false;
+    }
     dchan->channel_name_ = name;
     if (ci.reader_channel != NULL) {
       dchan->reader_module_ = ci.reader_channel->reader_module_;

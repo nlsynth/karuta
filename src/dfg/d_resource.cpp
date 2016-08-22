@@ -21,7 +21,8 @@ DArray::DArray() {
 }
 
 DChannel::DChannel(int data_width) : writer_module_(NULL), reader_module_(NULL),
-				     data_width_(data_width) {
+				     data_width_(data_width),
+				     is_root_or_source_(false) {
 }
 
 }  // namespace dfg

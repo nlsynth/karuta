@@ -7,17 +7,18 @@
 
 namespace synth {
 
-IrohaDumper::IrohaDumper(DModule *mod, ostream &os) : mod_(mod), os_(os) {
+IrohaDumper::IrohaDumper(DModule *root_mod, ostream &os)
+  : root_mod_(root_mod), os_(os) {
 }
 
 void IrohaDumper::Dump(DModule *mod, const string &path) {
   std::unique_ptr<std::ofstream> ofs;
   ofs.reset(new std::ofstream(path));
   IrohaDumper dumper(mod, *ofs);
-  dumper.DumpIR();
+  dumper.DumpDesign();
 }
 
-void IrohaDumper::DumpIR() {
+void IrohaDumper::DumpDesign() {
   os_ << "(PARAMS";
   os_ << "(RESET-POLARITY true)";
   const string &prefix = Env::GetModulePrefix();
@@ -25,19 +26,40 @@ void IrohaDumper::DumpIR() {
     os_ << "(MODULE-NAME-PREFIX " << prefix << "_)";
   }
   os_ << ")\n";
+
+  DumpModule(root_mod_);
+}
+
+void IrohaDumper::DumpModule(DModule *mod) {
+  for (DModule *sub : mod->sub_modules_) {
+    DumpModule(sub);
+  }
+  IModuleDumper mod_dumper(mod, os_);
   int nth_ch = 0;
-  for (DChannel *ch : mod_->channels_) {
-    DumpChannel(ch, nth_ch);
+  for (DChannel *ch : mod->channels_) {
+    if (ch->is_root_or_source_) {
+      mod_dumper.DumpChannel(ch, nth_ch);
+    }
     ++nth_ch;
   }
+  mod_dumper.Dump();
+}
+
+IModuleDumper::IModuleDumper(DModule *mod, ostream &os) : mod_(mod), os_(os) {
+}
+
+void IModuleDumper::Dump() {
   os_ << "(MODULE " << mod_->module_name_ << "\n";
+  if (mod_->parent_mod_ != nullptr) {
+    os_ << " (PARENT " << mod_->parent_mod_->module_name_ << ")\n";
+  }
   if (mod_->graph_) {
     DumpGraph(mod_->graph_);
   }
   os_ << ")\n";
 }
 
-void IrohaDumper::DumpGraph(DGraph *graph) {
+void IModuleDumper::DumpGraph(DGraph *graph) {
   reg_id_map_.clear();
   int nth = 0;
   for (DRegister *reg : graph->registers_) {
@@ -67,7 +89,7 @@ void IrohaDumper::DumpGraph(DGraph *graph) {
   os_ << "  )\n";
 }
 
-void IrohaDumper::DumpState(DState *st) {
+void IModuleDumper::DumpState(DState *st) {
   os_ << "    (STATE " << st->state_id_ << "\n";
   for (DInsn *insn : st->insns_) {
     DumpInsn(insn);
@@ -75,7 +97,7 @@ void IrohaDumper::DumpState(DState *st) {
   os_ << "    )\n";
 }
 
-void IrohaDumper::DumpRegister(DRegister *reg) {
+void IModuleDumper::DumpRegister(DRegister *reg) {
   os_ << "      (REGISTER " << reg_id_map_[reg] << " ";
   if (!reg->reg_name_.empty()) {
     os_ << reg->reg_name_;
@@ -104,7 +126,7 @@ void IrohaDumper::DumpRegister(DRegister *reg) {
   os_ << "\n      )\n";
 }
 
-void IrohaDumper::DumpResource(DResource *res) {
+void IModuleDumper::DumpResource(DResource *res) {
   string c = GetResourceClass(res);
   if (c.empty()) {
     return;
@@ -139,7 +161,7 @@ void IrohaDumper::DumpResource(DResource *res) {
   os_ << "      )\n";
 }
 
-void IrohaDumper::WriteArraySpec(DResource *res) {
+void IModuleDumper::WriteArraySpec(DResource *res) {
   DArray *array = res->array_;
   os_ << "        (ARRAY ";
   if (array == nullptr) {
@@ -156,7 +178,7 @@ void IrohaDumper::WriteArraySpec(DResource *res) {
   os_ << ")\n";
 }
 
-void IrohaDumper::DumpInsn(DInsn *insn) {
+void IModuleDumper::DumpInsn(DInsn *insn) {
   DResource *res = insn->resource_;
   string c = GetResourceClass(res);
   if (c.empty()) {
@@ -170,7 +192,7 @@ void IrohaDumper::DumpInsn(DInsn *insn) {
   os_ << ")\n";
 }
 
-void IrohaDumper::DumpTransition(DInsn *insn) {
+void IModuleDumper::DumpTransition(DInsn *insn) {
   os_ << " (";
   bool is_first = true;
   // Iroha's order is value: 0, 1, 2...
@@ -185,7 +207,7 @@ void IrohaDumper::DumpTransition(DInsn *insn) {
   os_ << ")";
 }
 
-void IrohaDumper::DumpRegs(vector<DRegister *> &regs) {
+void IModuleDumper::DumpRegs(vector<DRegister *> &regs) {
   os_ << " (";
   bool is_first = true;
   for (DRegister *reg : regs) {
@@ -198,7 +220,7 @@ void IrohaDumper::DumpRegs(vector<DRegister *> &regs) {
   os_ << ")";
 }
 
-void IrohaDumper::DumpTypes(vector<DType *> &types) {
+void IModuleDumper::DumpTypes(vector<DType *> &types) {
   os_ << "(";
   bool is_first = true;
   for (DType *type: types) {
@@ -216,7 +238,7 @@ void IrohaDumper::DumpTypes(vector<DType *> &types) {
   os_ << ")";
 }
   
-string IrohaDumper::GetResourceClass(DResource *res) {
+string IModuleDumper::GetResourceClass(DResource *res) {
   string c = string(sym_cstr(res->opr_->type_));
   if (c == "function_entry" || c == "funcall" || c == "transition") {
     return "";
@@ -282,7 +304,7 @@ string IrohaDumper::GetResourceClass(DResource *res) {
   return c;
 }
 
-void IrohaDumper::DumpChannel(DChannel *ch, int id) {
+void IModuleDumper::DumpChannel(DChannel *ch, int id) {
   os_ << "(CHANNEL " << id << " UINT 32 ";
   DumpChannelEndPoint(ch, ch->reader_module_);
   os_ << " ";
@@ -290,7 +312,7 @@ void IrohaDumper::DumpChannel(DChannel *ch, int id) {
   os_ << ")\n";
 }
 
-void IrohaDumper::DumpChannelEndPoint(DChannel *ch, DModule *mod) {
+void IModuleDumper::DumpChannelEndPoint(DChannel *ch, DModule *mod) {
   if (mod == nullptr) {
     os_ << "()";
     return;

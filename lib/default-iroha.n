@@ -5,6 +5,10 @@ def Kernel.compile() {
   __compile("array_to_mem");
 }
 
+// Kludge to run a regression test.
+def Kernel.enable_wire_insn() {
+}
+
 // Native methods.
 // Adding __ prefix so that users can overwrite the original one.
 def Kernel.__print(int v)
