@@ -53,19 +53,16 @@ void ChannelSynth::ConnectExternal(ChannelInfo &ci) {
   string name;
   DModule *p;
   if (ci.reader_channel == NULL) {
+    ci.writer_channel->is_root_or_source_ = true;
     name = ci.writer_channel->channel_name_;
     p = ci.writer_channel->writer_module_->parent_mod_;
   } else {
+    ci.reader_channel->is_root_or_source_ = true;
     name = ci.reader_channel->channel_name_;
     p = ci.reader_channel->reader_module_->parent_mod_;
   }
-  bool first = true;
   for (; p != NULL; p = p->parent_mod_) {
     DChannel *dchan = DModuleUtil::CreateChannel(p, ci.data_width);
-    if (first) {
-      dchan->is_root_or_source_ = true;
-      first = false;
-    }
     dchan->channel_name_ = name;
     if (ci.reader_channel != NULL) {
       dchan->reader_module_ = ci.reader_channel->reader_module_;
@@ -77,6 +74,7 @@ void ChannelSynth::ConnectExternal(ChannelInfo &ci) {
 
 void ChannelSynth::ExtractChannels(DModule *mod) {
   if (mod->graph_) {
+    // name, width
     vector<pair<string, int> > r_channels;
     vector<pair<string, int> > w_channels;
     GetChannels(mod->graph_, &r_channels, &w_channels);
@@ -90,6 +88,7 @@ void ChannelSynth::ExtractChannels(DModule *mod) {
     }
   }
   for (size_t i = 0; i < mod->sub_modules_.size(); ++i) {
+    // Recursive call.
     ExtractChannels(mod->sub_modules_[i]);
   }
 }
