@@ -292,6 +292,15 @@ string IModuleDumper::GetResourceClass(DResource *res) {
   if (c == "concat") {
     return "bit-concat";
   }
+  if (c == "task_entry") {
+    return "sub-module-task";
+  }
+  if (c == "task_finish") {
+    return "sub-module-task-finish";
+  }
+  if (c == "sub_module_call") {
+    return "";
+  }
   if (c == "imported") {
     if (res->name_ == "print") {
       return "print";

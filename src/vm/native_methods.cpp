@@ -84,7 +84,11 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
     Status::os(Status::USER) << "Missing argument for runIroha()";
     return;
   }
-  synth::Synth::RunIroha(obj, StringWrapper::String(args[0].object_));
+  int res =
+    synth::Synth::RunIroha(obj, StringWrapper::String(args[0].object_));
+  if (res != 0) {
+    Status::os(Status::USER) << "runIroha() failed: " << res;
+  }
 }
 
 void NativeMethods::SetMemberString(Thread *thr, const char *name,

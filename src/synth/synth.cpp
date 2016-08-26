@@ -54,17 +54,17 @@ string Synth::GetIrohaCommand(vm::Object *obj) {
   return vm::StringWrapper::String(cmd->object_);
 }
 
-void Synth::RunIroha(vm::Object *obj, const string &args) {
+int Synth::RunIroha(vm::Object *obj, const string &args) {
   string cmd = GetIrohaCommand(obj);
   if (cmd.empty()) {
-    return;
+    return -1;
   }
   string path = IrPath(obj);
   string iopt = string("--iroha -I ") + Env::GetNliDir();
   string e = cmd + " " + iopt + " " +
     path + " " + args;
   cout << "command=" << e << "\n";
-  system(e.c_str());
+  return system(e.c_str());
 }
 
 bool Synth::Compile(const string &phase) {
@@ -84,7 +84,9 @@ bool Synth::Compile(const string &phase) {
 
   if (!phase.empty()) {
     if (Env::GetUseIroha()) {
-      RunIrohaOpt(phase, obj_);
+      if (RunIrohaOpt(phase, obj_)) {
+	return false;
+      }
     } else {
       DModule *mod = vm::DModuleWrapper::GetDModule(value->object_);
       opt::ModuleOptimizeStat::Optimize(mod, phase, "");
@@ -169,12 +171,15 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
   }
 }
 
-void Synth::RunIrohaOpt(const string &pass, vm::Object *obj) {
+int Synth::RunIrohaOpt(const string &pass, vm::Object *obj) {
   LOG(DEBUG) << "pass: " << pass;
   string tmp = IrPath(obj) + "~";
   string arg = "-opt " + pass + " -o " + tmp;
-  RunIroha(obj, arg);
-  rename(tmp.c_str(), IrPath(obj).c_str());
+  int res = RunIroha(obj, arg);
+  if (res) {
+    return res;
+  }
+  return rename(tmp.c_str(), IrPath(obj).c_str());
 }
 
 }  // namespace synth
