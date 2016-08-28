@@ -91,7 +91,21 @@ void IModuleDumper::DumpGraph(DGraph *graph) {
 
 void IModuleDumper::DumpState(DState *st) {
   os_ << "    (STATE " << st->state_id_ << "\n";
+  DResource *task_entry = DGraphUtil::FindResource(mod_->graph_, sym_task_entry, false);
+  if (st == mod_->graph_->initial_state_) {
+    if (task_entry) {
+      // Output task_entry insn at the initial_state_ even if it is
+      // not at the initial (synth may put empty states).
+      vector<DInsn *> insns;
+      DGraphUtil::FindInsnsByResource(mod_->graph_, task_entry, &insns);
+      CHECK(insns.size() == 1);
+      DumpInsn(insns[0]);
+    }
+  }
   for (DInsn *insn : st->insns_) {
+    if (insn->resource_ == task_entry) {
+      continue;
+    }
     DumpInsn(insn);
   }
   os_ << "    )\n";
@@ -157,6 +171,15 @@ void IModuleDumper::DumpResource(DResource *res) {
   os_ << ")\n";
   if (c == "array") {
     WriteArraySpec(res);
+  }
+  if (c == "sub-module-task-call") {
+    vector<DInsn *> insns;
+    DGraphUtil::FindInsnsByResource(mod_->graph_, res, &insns);
+    string s = "not_used";
+    if (insns.size() > 0) {
+      s = insns[0]->func_name_;
+    }
+    os_ << "\n        (CALLEE-TABLE " << s << " 1)\n";
   }
   os_ << "      )\n";
 }
@@ -296,10 +319,10 @@ string IModuleDumper::GetResourceClass(DResource *res) {
     return "sub-module-task";
   }
   if (c == "task_finish") {
-    return "sub-module-task-finish";
+    return "";
   }
   if (c == "sub_module_call") {
-    return "";
+    return "sub-module-task-call";
   }
   if (c == "imported") {
     if (res->name_ == "print") {

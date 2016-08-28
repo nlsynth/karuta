@@ -182,6 +182,21 @@ bool DGraphUtil::IsCompatibleResource(DResource *src, DResource *res) {
   return true;
 }
 
+void DGraphUtil::FindInsnsByResource(DGraph *graph, DResource *res,
+				     vector<DInsn *> *insns) {
+  list<DState*>::iterator it;
+  for (auto it = graph->states_.begin(); it != graph->states_.end(); it++) {
+    DState *st = *it;
+    list<DInsn *>::iterator jt;
+    for (jt = st->insns_.begin(); jt != st->insns_.end(); jt++) {
+      DInsn *insn = *jt;
+      if (insn->resource_ == res) {
+	insns->push_back(insn);
+      }
+    }
+  }
+}
+
 DState *DGraphUtil::AllocState(DGraph *g) {
   DState *state = new DState(g->last_state_id_);
   g->pool_->states_.Add(state);

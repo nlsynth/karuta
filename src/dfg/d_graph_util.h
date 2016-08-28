@@ -34,6 +34,8 @@ public:
   static DState *AllocState(DGraph *g);
   static DRegister *GetNthOutput(DInsn *insn, int nth);
   static bool IsCompatibleResource(DResource *src, DResource *res);
+  static void FindInsnsByResource(DGraph *graph, DResource *res,
+				  vector<DInsn *> *insns);
 
   // TODO(yusuke): Move this to object compiler.
   static void KillIntermediateResource(DGraph *g);
