@@ -28,17 +28,22 @@ public:
 
   static void Dump(DModule *mod, const string &path);
   void DumpDesign();
+  int GetModuleId(DModule *mod);
+  int GetModuleIdByName(const string &name);
 
 private:
   void DumpModule(DModule *mod);
+  void AssignModuleIds(DModule *mod);
 
   DModule *root_mod_;
   ostream &os_;
+  map<DModule *, int> module_ids_;
+  map<string, int> module_ids_by_name_;
 };
 
 class IModuleDumper {
 public:
-  IModuleDumper(DModule *mod, ostream &os);
+  IModuleDumper(DModule *mod, IrohaDumper *dumper, ostream &os);
   void Dump();
   void DumpChannel(DChannel *ch, int id);
 
@@ -56,6 +61,7 @@ private:
   void DumpChannelEndPoint(DChannel *ch, DModule *mod);
 
   DModule *mod_;
+  IrohaDumper *dumper_;
   ostream &os_;
   map<DRegister *, int> reg_id_map_;
 };

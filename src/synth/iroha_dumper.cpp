@@ -9,6 +9,7 @@ namespace synth {
 
 IrohaDumper::IrohaDumper(DModule *root_mod, ostream &os)
   : root_mod_(root_mod), os_(os) {
+  AssignModuleIds(root_mod);
 }
 
 void IrohaDumper::Dump(DModule *mod, const string &path) {
@@ -34,7 +35,7 @@ void IrohaDumper::DumpModule(DModule *mod) {
   for (DModule *sub : mod->sub_modules_) {
     DumpModule(sub);
   }
-  IModuleDumper mod_dumper(mod, os_);
+  IModuleDumper mod_dumper(mod, this, os_);
   int nth_ch = 0;
   for (DChannel *ch : mod->channels_) {
     if (ch->is_root_or_source_) {
@@ -45,13 +46,31 @@ void IrohaDumper::DumpModule(DModule *mod) {
   mod_dumper.Dump();
 }
 
-IModuleDumper::IModuleDumper(DModule *mod, ostream &os) : mod_(mod), os_(os) {
+int IrohaDumper::GetModuleId(DModule *mod) {
+  return module_ids_[mod];
+}
+
+int IrohaDumper::GetModuleIdByName(const string &name) {
+  return module_ids_by_name_[name];
+}
+
+void IrohaDumper::AssignModuleIds(DModule *mod) {
+  int id = module_ids_.size();
+  module_ids_[mod] = id;
+  module_ids_by_name_[mod->module_name_] = id;
+  for (DModule *sub : mod->sub_modules_) {
+    AssignModuleIds(sub);
+  }
+}
+
+IModuleDumper::IModuleDumper(DModule *mod, IrohaDumper *dumper, ostream &os)
+  : mod_(mod), dumper_(dumper), os_(os) {
 }
 
 void IModuleDumper::Dump() {
-  os_ << "(MODULE " << mod_->module_name_ << "\n";
+  os_ << "(MODULE " << dumper_->GetModuleId(mod_) << " " << mod_->module_name_ << "\n";
   if (mod_->parent_mod_ != nullptr) {
-    os_ << " (PARENT " << mod_->parent_mod_->module_name_ << ")\n";
+    os_ << " (PARENT " << dumper_->GetModuleId(mod_->parent_mod_) << ")\n";
   }
   if (mod_->graph_) {
     DumpGraph(mod_->graph_);
@@ -179,7 +198,8 @@ void IModuleDumper::DumpResource(DResource *res) {
     if (insns.size() > 0) {
       s = insns[0]->func_name_;
     }
-    os_ << "\n        (CALLEE-TABLE " << s << " 1)\n";
+    os_ << "\n        (CALLEE-TABLE " << dumper_->GetModuleIdByName(s)
+	<< " 1)\n";
   }
   os_ << "      )\n";
 }
@@ -337,7 +357,7 @@ string IModuleDumper::GetResourceClass(DResource *res) {
 }
 
 void IModuleDumper::DumpChannel(DChannel *ch, int id) {
-  os_ << "(CHANNEL " << id << " UINT 32 ";
+  os_ << "(CHANNEL " << id << " UINT " << ch->data_width_ << " ";
   DumpChannelEndPoint(ch, ch->reader_module_);
   os_ << " ";
   DumpChannelEndPoint(ch, ch->writer_module_);
@@ -356,7 +376,7 @@ void IModuleDumper::DumpChannelEndPoint(DChannel *ch, DModule *mod) {
     }
   }
   // mod name, table id, res id
-  os_ << "(" << mod->module_name_ << " 1 " << res_id << ")";
+  os_ << "(" << dumper_->GetModuleId(mod) << " 1 " << res_id << ")";
 }
 
 }  // namespace synth
