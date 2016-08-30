@@ -361,7 +361,11 @@ void IModuleDumper::DumpChannel(DChannel *ch, int id) {
   DumpChannelEndPoint(ch, ch->reader_module_);
   os_ << " ";
   DumpChannelEndPoint(ch, ch->writer_module_);
-  os_ << ")\n";
+  os_ << "\n  (PARAMS\n"
+      << "    (CHANNEL-DATA channel_" << ch->channel_name_ << "_data)\n"
+      << "    (CHANNEL-EN channel_" << ch->channel_name_ << "_en)\n"
+      << "    (CHANNEL-ACK channel_" << ch->channel_name_ << "_ack)\n";
+  os_ << "))\n";
 }
 
 void IModuleDumper::DumpChannelEndPoint(DChannel *ch, DModule *mod) {
