@@ -145,12 +145,13 @@ void IModuleDumper::DumpRegister(DRegister *reg) {
   } else if (reg->reg_type_ == DRegister::REG_CONST) {
     os_ << "CONST ";
   }
-  os_ << "UINT ";
+  os_ << "(UINT ";
   if (reg->data_type_->type_ == DType::INT) {
     os_ << reg->data_type_->size_;
   } else {
     os_ << 0;
   }
+  os_ << ")";
   if (reg->has_initial_ || reg->reg_type_ == DRegister::REG_CONST) {
     os_ << " " << reg->num_;
   } else {
@@ -208,10 +209,10 @@ void IModuleDumper::WriteArraySpec(DResource *res) {
   DArray *array = res->array_;
   os_ << "        (ARRAY ";
   if (array == nullptr) {
-    os_ << "32 UINT 32 EXTERNAL RAM";
+    os_ << "32 (UINT 32) EXTERNAL RAM";
   } else {
-    os_ << array->address_width << " UINT " << array->data_width
-	<< " INTERNAL ";
+    os_ << array->address_width << " (UINT " << array->data_width
+	<< ") INTERNAL ";
     if (array->may_write_) {
       os_ << "RAM";
     } else {
@@ -270,12 +271,13 @@ void IModuleDumper::DumpTypes(vector<DType *> &types) {
     if (!is_first) {
       os_ << " ";
     }
-    os_ << "UINT ";
+    os_ << "(UINT ";
     if (type->type_ == DType::INT) {
       os_ << type->size_;
     } else {
       os_ << 0;
     }
+    os_ << ")";
     is_first = false;
   }
   os_ << ")";
@@ -357,7 +359,7 @@ string IModuleDumper::GetResourceClass(DResource *res) {
 }
 
 void IModuleDumper::DumpChannel(DChannel *ch, int id) {
-  os_ << "(CHANNEL " << id << " UINT " << ch->data_width_ << " ";
+  os_ << "(CHANNEL " << id << " (UINT " << ch->data_width_ << ") ";
   DumpChannelEndPoint(ch, ch->reader_module_);
   os_ << " ";
   DumpChannelEndPoint(ch, ch->writer_module_);
