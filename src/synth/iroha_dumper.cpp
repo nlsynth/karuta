@@ -5,6 +5,8 @@
 
 #include <fstream>
 
+// This will be removed once when we migrate to Iroha.
+
 namespace synth {
 
 IrohaDumper::IrohaDumper(DModule *root_mod, ostream &os)

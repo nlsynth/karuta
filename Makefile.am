@@ -67,6 +67,17 @@ dfg_SOURCES = \
  src/dfg/d_resource.cpp src/dfg/d_resource.h \
  src/dfg/resource_params.cpp src/dfg/resource_params.h
 
+isynth_SOURCES= \
+ src/isynth/common.h \
+ src/isynth/isynth.cpp src/isynth/isynth.h \
+ src/isynth/method_context.cpp src/isynth/method_context.h \
+ src/isynth/method_expander.cpp src/isynth/method_expander.h \
+ src/isynth/method_synth.cpp src/isynth/method_synth.h \
+ src/isynth/object_synth.cpp src/isynth/object_synth.h \
+ src/isynth/resource_set.cpp src/isynth/resource_set.h \
+ src/isynth/thread_synth.cpp src/isynth/thread_synth.h \
+ src/isynth/tool.cpp src/isynth/tool.h
+
 synth_SOURCES = \
  src/synth/iroha_dumper.cpp src/synth/iroha_dumper.h \
  src/synth/interface.cpp src/synth/interface.h \
@@ -127,6 +138,7 @@ nli_bin_SOURCES = \
  $(fe_SOURCES) \
  $(numeric_SOURCES) \
  $(opt_SOURCES) \
+ $(isynth_SOURCES) \
  $(synth_SOURCES) \
  $(vm_SOURCES) \
  $(writer_SOURCES)

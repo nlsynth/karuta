@@ -22,6 +22,7 @@
 
 #include "dfg/dfg.h"
 #include "fe/fe.h"
+#include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
 #include "nli.h"
 #include "status.h"
@@ -281,6 +282,7 @@ int Main::main(int argc, char **argv) {
   // Actually initialize modules and params.
   ::sym_table_init();
   dfg::DFG::Init();
+  iroha::Iroha::Init();
   StaticInitializer::RunInitializers();
   Env::SetArgv0(argv[0]);
   Env::SetUseIroha(args.GetBoolFlag("z", false));

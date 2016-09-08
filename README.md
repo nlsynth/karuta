@@ -122,6 +122,8 @@ Now some computation is defined within object 'Kernel', so Neon Light Compiler c
     * Data flow graph.
 * src/fe
     * Neon Light Script parser.
+* src/isynth
+    * Experimental byte code to Iroha IR.
 * src/numeric
     * Numeric operations.
 * src/opt

@@ -32,6 +32,7 @@ public:
   static void SetIROutput(Thread *thr, Object *obj, const vector<Value> &arg);
   static void SetIrohaPath(Thread *thr, Object *obj, const vector<Value> &arg);
   static void RunIroha(Thread *thr, Object *obj, const vector<Value> &arg);
+  static void ISynth(Thread *thr, Object *obj, const vector<Value> &arg);
 
   // Env.
   static void IsMain(Thread *thr, Object *obj, const vector<Value> &args);
