@@ -5,7 +5,7 @@
 namespace isynth {
 
 StateWrapper::StateWrapper()
-  : state_(nullptr), callee_method_(nullptr) {
+  : state_(nullptr), callee_method_(nullptr), vm_insn_(nullptr) {
 }
 
 MethodContext::MethodContext(MethodSynth *synth)
@@ -16,5 +16,11 @@ MethodContext::~MethodContext() {
   STLDeleteValues(&states_);
 }
 
-}  // namespace isynth
+StateWrapper *MethodContext::LastState() {
+  if (states_.size() > 0) {
+    return *(states_.rbegin());
+  }
+  return nullptr;
+}
 
+}  // namespace isynth

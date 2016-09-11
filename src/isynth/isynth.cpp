@@ -13,6 +13,10 @@ namespace isynth {
 bool ISynth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
   std::unique_ptr<IDesign> design(new IDesign());
 
+  // Libraries of neon light assumes positive reset.
+  iroha::ResourceParams *params = design->GetParams();
+  params->SetResetPolarity(true);
+
   ObjectSynth o(vm, obj, "main", design.get());
   if (!o.Synth()) {
     return false;

@@ -10,7 +10,8 @@ namespace isynth {
 
 ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 			 const char *method_name, IModule *mod)
-  : obj_synth_(obj_synth), method_name_(method_name), mod_(mod), tab_(nullptr) {
+  : obj_synth_(obj_synth), method_name_(method_name), mod_(mod), tab_(nullptr),
+    reg_name_index_(0) {
 }
 
 ThreadSynth::~ThreadSynth() {
@@ -70,6 +71,21 @@ ObjectSynth *ThreadSynth::GetObjectSynth() {
 
 ITable *ThreadSynth::GetITable() {
   return tab_;
+}
+
+void ThreadSynth::AddName(const string &n) {
+  used_reg_names_.insert(n);
+}
+
+string ThreadSynth::GetName(const string &name) {
+  string n;
+  do {
+    char buf[10];
+    sprintf(buf, "_%d", reg_name_index_);
+    n = name + string(buf);
+    ++reg_name_index_;
+  } while (used_reg_names_.find(n) != used_reg_names_.end());
+  return n;
 }
 
 }  // namespace isynth

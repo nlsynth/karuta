@@ -33,15 +33,14 @@ private:
 		  map<IRegister *, IRegister *> &reg_map);
   void BuildInsnRegCopy(IInsn *insn, map<IRegister *, IRegister *> &reg_map);
   void BuildRegCopy(IRegister *reg, map<IRegister *, IRegister *> &reg_map);
-  string GetName(const string &name);
-  void ExpandStates(MethodContext *method, map<IState *, IState *> &st_map,
-		    map<IRegister *, IRegister *> &reg_map);
+  void ExpandCalleeStates(MethodContext *method,
+			  map<IState *, IState *> &st_map,
+			  map<IRegister *, IRegister *> &reg_map);
 
   MethodContext *root_method_;
   ThreadSynth *thread_;
   ITable *tab_;
   int reg_name_index_;
-  set<string> used_reg_names_;
 };
 
 }  // namespace isynth

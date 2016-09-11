@@ -13,6 +13,7 @@ public:
   IState *state_;
   MethodContext *callee_method_;
   string func_name_;
+  vm::Insn *vm_insn_;
 };
 
 class MethodContext {
@@ -22,6 +23,8 @@ public:
 
   IInsn *method_insn_;
   vector<StateWrapper *> states_;
+
+  StateWrapper *LastState();
 
 private:
   MethodSynth *synth_;

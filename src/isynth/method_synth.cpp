@@ -47,10 +47,24 @@ bool MethodSynth::Synth() {
 				    method->parse_tree_,
 				    method);
   EmitEntryInsn(method);
+  StateWrapper *last = nullptr;
+  map<int, int> state_index;
+  state_index[0] = context_->states_.size();
   for (size_t i = 0; i < method->insns_.size(); ++i) {
     SynthInsn(method->insns_[i]);
+    StateWrapper *lw = context_->LastState();
+    if (last == lw) {
+      AllocState();
+    }
+    state_index[i + 1] = context_->states_.size();
+    last = context_->LastState();
+  }
+  for (size_t i = 0; i < method->insns_.size(); ++i) {
+    vm_insn_state_map_[i] = context_->states_[state_index[i]];
   }
   AllocState();
+
+  ResolveJumps();
   LinkStates();
   return true;
 }
@@ -86,6 +100,10 @@ void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
 void MethodSynth::LinkStates() {
   for (size_t i = 0; i < context_->states_.size() - 1; ++i) {
     StateWrapper *s0 = context_->states_[i];
+    IInsn *tr_insn = DesignUtil::FindTransitionInsn(s0->state_);
+    if (tr_insn != nullptr && tr_insn->target_states_.size() > 0) {
+      continue;
+    }
     StateWrapper *s1 = context_->states_[i + 1];
     DesignTool::AddNextState(s0->state_, s1->state_);
   }
@@ -106,9 +124,13 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
     SynthFuncall(insn);
     break;
   case vm::OP_FUNCALL_DONE:
+    SynthFuncallDone(insn);
     break;
   case vm::OP_LOAD_OBJ:
     SynthLoadObj(insn);
+    break;
+  case vm::OP_GOTO:
+    SynthGoto(insn);
     break;
   case vm::OP_ADD:
     SynthBinCalcExpr(insn);
@@ -178,6 +200,16 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   }
 }
 
+void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
+  StateWrapper *sw = context_->LastState();
+  CHECK(sw->state_->insns_.size() == 1);
+  IInsn *iinsn = sw->state_->insns_[0];
+  for (vm::Register *ret : insn->dst_regs_) {
+    IRegister *iret = FindLocalVarRegister(ret);
+    iinsn->outputs_.push_back(iret);
+  }
+}
+
 IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   IRegister *ireg = local_reg_map_[vreg];
   if (ireg) {
@@ -205,6 +237,16 @@ IRegister *MethodSynth::FindArgRegister(int nth, fe::VarDecl *arg_decl) {
   return DesignTool::AllocRegister(tab_, reg_name, w);
 }
 
+void MethodSynth::ResolveJumps() {
+  for (auto &sw : context_->states_) {
+    if (sw->vm_insn_ && sw->vm_insn_->op_ == vm::OP_GOTO) {
+      IState *st = vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
+      CHECK(st) << "couldn't resolve goto" << sw->vm_insn_->jump_target_;
+      DesignTool::AddNextState(sw->state_, st);
+    }
+  }
+}
+
 StateWrapper *MethodSynth::AllocState() {
   StateWrapper *w = new StateWrapper();
   IState *st = new IState(tab_);
@@ -214,9 +256,38 @@ StateWrapper *MethodSynth::AllocState() {
 }
 
 void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
+  IValueType vt;
+  InsnToCalcValueType(insn, &vt);
+  IResource *res = res_->GetOpResource(insn->op_, vt);
+  IInsn *iinsn = new IInsn(res);
+  for (vm::Register *vreg : insn->src_regs_) {
+    IRegister *reg = FindLocalVarRegister(vreg);
+    iinsn->inputs_.push_back(reg);
+  }
+
+  // GT: x > y : x > y
+  // LT: x < y : y > x
+  // LTE: x <= y : !(x > y)
+  // GTE: x >= y : !(y > x)
+  if (insn->op_ == vm::OP_LT || insn->op_ == vm::OP_GTE) {
+    // swap.
+    IRegister *tmp_reg = iinsn->inputs_[0];
+    iinsn->inputs_[0] = iinsn->inputs_[1];
+    iinsn->inputs_[1] = tmp_reg;
+  }
+  StateWrapper *w = AllocState();
+  IRegister *res_reg = FindLocalVarRegister(insn->dst_regs_[0]);
+  if (insn->op_ == vm::OP_LTE || insn->op_ == vm::OP_GTE ||
+      insn->op_ == vm::OP_NE) {
+  } else {
+    iinsn->outputs_.push_back(res_reg);
+    w->state_->insns_.push_back(iinsn);
+  }
 }
 
 void MethodSynth::SynthGoto(vm::Insn *insn) {
+  StateWrapper *w = AllocState();
+  w->vm_insn_ = insn;
 }
 
 void MethodSynth::EmitEntryInsn(vm::Method *method) {
@@ -238,6 +309,21 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
       IRegister *ireg = FindLocalVarRegister(vreg);
       context_->method_insn_->outputs_.push_back(ireg);
     }
+  }
+}
+
+void MethodSynth::InsnToCalcValueType(vm::Insn *insn, IValueType *vt) {
+  vm::Register *reg;
+  if (vm::InsnType::IsComparison(insn->op_)) {
+    reg = insn->src_regs_[0];
+  } else {
+    reg = insn->dst_regs_[0];
+  }
+  vt->SetIsSigned(false);
+  if (reg->type_.value_type_ == vm::Value::NUM) {
+    vt->SetWidth(numeric::Width::GetWidth(reg->type_.width_));
+  } else if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
+    vt->SetWidth(numeric::Width::GetWidth(reg->type_.width_));
   }
 }
 

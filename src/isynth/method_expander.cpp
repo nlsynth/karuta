@@ -11,12 +11,12 @@ namespace isynth {
 
 MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth)
   : root_method_(root), thread_(thread_synth),
-    tab_(thread_synth->GetITable()), reg_name_index_(0) {
+    tab_(thread_synth->GetITable()) {
 }
 
 bool MethodExpander::Expand() {
   for (IRegister *reg : tab_->registers_) {
-    used_reg_names_.insert(reg->GetName());
+    thread_->AddName(reg->GetName());
   }
   CalleeInfo ci = ExpandMethod(root_method_);
   tab_->SetInitialState(ci.initial);
@@ -43,7 +43,7 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
     tab_->states_.push_back(nst);
     CopyState(st, st_copy_map, reg_copy_map, nst);
   }
-  ExpandStates(method, st_copy_map, reg_copy_map);
+  ExpandCalleeStates(method, st_copy_map, reg_copy_map);
   // Add registers.
   for (auto it : reg_copy_map) {
     IRegister *nreg = it.second;
@@ -63,9 +63,9 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   return p;
 }
 
-void MethodExpander::ExpandStates(MethodContext *method,
-				  map<IState *, IState *> &st_map,
-				  map<IRegister *, IRegister *> &reg_map) {
+void MethodExpander::ExpandCalleeStates(MethodContext *method,
+					map<IState *, IState *> &st_map,
+					map<IRegister *, IRegister *> &reg_map) {
   for (StateWrapper *sw : method->states_) {
     if (sw->func_name_.empty()) {
       continue;
@@ -79,11 +79,19 @@ void MethodExpander::ExpandStates(MethodContext *method,
     IInsn *call_insn = DesignUtil::FindInsnByResource(sw->state_, pseudo);
     CHECK(call_insn->inputs_.size() == ci.args.size());
     IResource *assign = thread_->GetResourceSet()->AssignResource();
+    // Set up call arguments.
     for (size_t i = 0; i < call_insn->inputs_.size(); ++i) {
       IInsn *assign_insn = new IInsn(assign);
       assign_insn->inputs_.push_back(reg_map[call_insn->inputs_[i]]);
       assign_insn->outputs_.push_back(ci.args[i]);
       st_map[sw->state_]->insns_.push_back(assign_insn);
+    }
+    // Get return values.
+    for (size_t i = 0; i < call_insn->outputs_.size(); ++i) {
+      IInsn *assign_insn = new IInsn(assign);
+      assign_insn->inputs_.push_back(ci.rets[i]);
+      assign_insn->outputs_.push_back(reg_map[call_insn->outputs_[i]]);
+      st_map[rs]->insns_.push_back(assign_insn);
     }
   }
 }
@@ -132,7 +140,7 @@ void MethodExpander::BuildRegCopy(IRegister *reg,
   if (reg_map.find(reg) != reg_map.end()) {
     return;
   }
-  string name = GetName(reg->GetName());
+  string name = thread_->GetName(reg->GetName());
   IRegister *nreg = new IRegister(tab_, name);
   if (reg->HasInitialValue()) {
     IValue v = reg->GetInitialValue();
@@ -142,17 +150,6 @@ void MethodExpander::BuildRegCopy(IRegister *reg,
   nreg->SetStateLocal(reg->IsStateLocal());
   nreg->value_type_ = reg->value_type_;
   reg_map[reg] = nreg;
-}
-
-string MethodExpander::GetName(const string &name) {
-  string n;
-  do {
-    char buf[10];
-    sprintf(buf, "_%d", reg_name_index_);
-    n = name + string(buf);
-    ++reg_name_index_;
-  } while (used_reg_names_.find(n) != used_reg_names_.end());
-  return n;
 }
 
 }  // namespace isynth

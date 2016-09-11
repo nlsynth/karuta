@@ -5,8 +5,10 @@
 #include "isynth/common.h"
 
 #include <map>
+#include <set>
 
 using std::map;
+using std::set;
 
 namespace isynth {
 
@@ -19,6 +21,8 @@ public:
   bool Synth();
   ObjectSynth *GetObjectSynth();
   void RequestMethod(const string &m);
+  void AddName(const string &n);
+  string GetName(const string &name);
   MethodContext *GetMethodContext(const string &m);
   ResourceSet *GetResourceSet();
   ITable *GetITable();
@@ -30,6 +34,8 @@ private:
   ITable *tab_;
   std::unique_ptr<ResourceSet> resource_;
   map<string, MethodSynth *> methods_;
+  int reg_name_index_;
+  set<string> used_reg_names_;
 };
 
 }  // namespace isynth

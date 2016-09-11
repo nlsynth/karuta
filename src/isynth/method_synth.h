@@ -30,6 +30,7 @@ private:
   void SynthAssign(vm::Insn *insn);
   void SynthLoadObj(vm::Insn *insn);
   void SynthFuncall(vm::Insn *insn);
+  void SynthFuncallDone(vm::Insn *insn);
   void SynthBinCalcExpr(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);
 
@@ -48,10 +49,14 @@ private:
   map<vm::Register *, sym_t> orig_name_map_;
   map<vm::Register *, vm::Object *> member_reg_to_obj_map_;
 
+  map<int, StateWrapper *> vm_insn_state_map_;
+
   IRegister *FindLocalVarRegister(vm::Register *vreg);
   IRegister *FindArgRegister(int nth, fe::VarDecl *arg_decl);
   StateWrapper *AllocState();
+  void ResolveJumps();
   void LinkStates();
+  void InsnToCalcValueType(vm::Insn *insn, IValueType *vt);
 };
 
 }  // namespace isynth

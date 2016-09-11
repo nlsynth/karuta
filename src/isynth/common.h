@@ -16,6 +16,7 @@ class IRegister;
 class IResource;
 class IState;
 class ITable;
+class IValueType;
 class ResourceParams;
 }  // namespace iroha
 
