@@ -330,6 +330,11 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
       IRegister *ireg = FindLocalVarRegister(vreg);
       context_->method_insn_->outputs_.push_back(ireg);
     }
+    // Adds a dummy return value.
+    if (rets->decls.size() == 0) {
+      IRegister *ireg = thr_synth_->AllocRegister("r_");
+      context_->method_insn_->outputs_.push_back(ireg);
+    }
   }
 }
 
