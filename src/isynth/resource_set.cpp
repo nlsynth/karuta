@@ -93,6 +93,7 @@ string ResourceSet::GetResourceClassName(vm::OpCode op) {
   switch (op) {
   case vm::OP_GT: return resource::kGt;
   case vm::OP_ADD: return resource::kAdd;
+  case vm::OP_BIT_INV: return resource::kBitInv;
   default:
     CHECK(false) << "unknown resource type: " << vm::OpCodeName(op);
   }

@@ -133,6 +133,12 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
     SynthGoto(insn);
     break;
   case vm::OP_ADD:
+  case vm::OP_EQ:
+  case vm::OP_NE:
+  case vm::OP_GT:
+  case vm::OP_LT:
+  case vm::OP_GTE:
+  case vm::OP_LTE:
     SynthBinCalcExpr(insn);
     break;
   default:
@@ -279,6 +285,10 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
   IRegister *res_reg = FindLocalVarRegister(insn->dst_regs_[0]);
   if (insn->op_ == vm::OP_LTE || insn->op_ == vm::OP_GTE ||
       insn->op_ == vm::OP_NE) {
+    IRegister *neg_reg = thr_synth_->AllocRegister("t_");
+    iinsn->outputs_.push_back(neg_reg);
+    GenNeg(neg_reg, res_reg);
+    w->state_->insns_.push_back(iinsn);
   } else {
     iinsn->outputs_.push_back(res_reg);
     w->state_->insns_.push_back(iinsn);
@@ -288,6 +298,17 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
 void MethodSynth::SynthGoto(vm::Insn *insn) {
   StateWrapper *w = AllocState();
   w->vm_insn_ = insn;
+}
+
+void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
+  StateWrapper *w = AllocState();
+  IValueType vt;
+  vt.SetWidth(0);
+  IResource *bit_inv = res_->GetOpResource(vm::OP_BIT_INV, vt);
+  IInsn *insn = new IInsn(bit_inv);
+  insn->inputs_.push_back(src);
+  insn->outputs_.push_back(dst);
+  w->state_->insns_.push_back(insn);
 }
 
 void MethodSynth::EmitEntryInsn(vm::Method *method) {

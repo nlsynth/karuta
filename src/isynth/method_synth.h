@@ -34,6 +34,7 @@ private:
   void SynthBinCalcExpr(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);
 
+  void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);
 
   ThreadSynth *thr_synth_;

@@ -22,7 +22,7 @@ public:
   ObjectSynth *GetObjectSynth();
   void RequestMethod(const string &m);
   void AddName(const string &n);
-  string GetName(const string &name);
+  IRegister *AllocRegister(const string &prefix);
   MethodContext *GetMethodContext(const string &m);
   ResourceSet *GetResourceSet();
   ITable *GetITable();

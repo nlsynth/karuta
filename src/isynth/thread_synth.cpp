@@ -77,15 +77,17 @@ void ThreadSynth::AddName(const string &n) {
   used_reg_names_.insert(n);
 }
 
-string ThreadSynth::GetName(const string &name) {
+IRegister *ThreadSynth::AllocRegister(const string &prefix) {
   string n;
   do {
     char buf[10];
     sprintf(buf, "_%d", reg_name_index_);
-    n = name + string(buf);
+    n = prefix + string(buf);
     ++reg_name_index_;
   } while (used_reg_names_.find(n) != used_reg_names_.end());
-  return n;
+  used_reg_names_.insert(n);
+  IRegister *reg = new IRegister(tab_, n);
+  return reg;
 }
 
 }  // namespace isynth

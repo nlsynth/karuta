@@ -140,8 +140,7 @@ void MethodExpander::BuildRegCopy(IRegister *reg,
   if (reg_map.find(reg) != reg_map.end()) {
     return;
   }
-  string name = thread_->GetName(reg->GetName());
-  IRegister *nreg = new IRegister(tab_, name);
+  IRegister *nreg = thread_->AllocRegister(reg->GetName());
   if (reg->HasInitialValue()) {
     IValue v = reg->GetInitialValue();
     nreg->SetInitialValue(v);
