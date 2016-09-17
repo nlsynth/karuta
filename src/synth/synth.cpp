@@ -151,7 +151,7 @@ bool Synth::Synthesize(vm::VM *vm, const string &phase, vm::Object *obj) {
 }
 
 void Synth::WriteHdl(const string &fn, vm::Object *obj) {
-  if (Env::GetUseIroha()) {
+  if (Env::GetUseIroha() || Env::GetUseISynth()) {
     string lang = "-v";
     if (Util::IsHtmlFileName(fn)) {
       lang = "-h";

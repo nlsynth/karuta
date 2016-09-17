@@ -40,6 +40,8 @@ public:
   static const string &GetArgv0();
   static void SetUseIroha(bool useIroha);
   static bool GetUseIroha();
+  static void SetUseISynth(bool useISynth);
+  static bool GetUseISynth();
 
 private:
   static const char *nli_dir_;
@@ -49,6 +51,7 @@ private:
   static string module_prefix_;
   static string argv0_;
   static bool use_iroha_;
+  static bool use_isynth_;
 };
 
 class Util {

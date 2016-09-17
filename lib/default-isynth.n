@@ -1,0 +1,17 @@
+// Native methods.
+// Adding __ prefix so that users can overwrite the original one.
+print("default-isynth.n");
+
+def Kernel.compile() {
+  __compile("");
+}
+
+def Kernel.__print(int v)
+  [
+    resource = "print",
+    verilog="nli_print.v",
+    file="copy",
+    module="print"
+  ] {
+  printf("print=%d", v);
+}

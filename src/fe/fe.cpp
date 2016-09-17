@@ -119,7 +119,9 @@ void FE::Run(bool vanilla, const vector<string>& files) {
 
   vm::VM vm;
   if (!vanilla) {
-    if (Env::GetUseIroha()) {
+    if (Env::GetUseISynth()) {
+      RunFile("default-isynth.n", &vm);
+    } else if (Env::GetUseIroha()) {
       RunFile("default-iroha.n", &vm);
     } else {
       RunFile("default.n", &vm);

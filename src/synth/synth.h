@@ -26,15 +26,15 @@ public:
   static bool Synthesize(vm::VM *vm, const string &phase, vm::Object *obj);
   static void WriteHdl(const string &fn, vm::Object *obj);
   static int RunIroha(vm::Object *obj, const string &args);
+  static int RunIrohaOpt(const string &pass, vm::Object *obj);
+  static string IrPath(vm::Object *obj);
 
 private:
   DModule *SynthModule();
   void SetDumpFileName(DModule *module);
   void SetSynthParams(DModule *module);
 
-  static string IrPath(vm::Object *obj);
   static string GetIrohaCommand(vm::Object *obj);
-  static int RunIrohaOpt(const string &pass, vm::Object *obj);
 
   vm::VM *vm_;
   vm::Object *obj_;

@@ -17,12 +17,20 @@ bool ISynth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
   iroha::ResourceParams *params = design->GetParams();
   params->SetResetPolarity(true);
 
+  const string &prefix = Env::GetModulePrefix();
+  if (!prefix.empty()) {
+    params->SetModuleNamePrefix(prefix + "_");
+  }
+
   ObjectSynth o(vm, obj, "main", design.get());
   if (!o.Synth()) {
     return false;
   }
 
   DesignTool::Validate(design.get());
+
+  iroha::OptAPI *optimizer = iroha::Iroha::CreateOptimizer(design.get());
+  optimizer->ApplyPhase("clean_pseudo_resource");
 
   WriterAPI *writer = Iroha::CreateWriter(design.get());
   writer->SetLanguage("");

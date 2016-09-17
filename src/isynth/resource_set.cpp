@@ -49,9 +49,8 @@ IResource *ResourceSet::GetImportedResource(dfg::ResourceParams *dparams) {
   vector<string> args;
   args.push_back("v");
   iparams->SetValues(resource::kEmbeddedModuleArgs, args);
-  vector<string> req;
-  req.push_back("req");
-  iparams->SetValues(resource::kEmbeddedModuleReq, req);
+  args[0] = "req";
+  iparams->SetValues(resource::kEmbeddedModuleReq, args);
   IValueType vt;
   vt.SetWidth(32);
   res->input_types_.push_back(vt);

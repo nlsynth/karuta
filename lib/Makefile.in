@@ -278,7 +278,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 LIBFILES = nli_assert.v nli_exit.v nli_print.v nli_wait.v
-EXTRA_DIST = nli.in default.n default-iroha.n $(LIBFILES) nli_server.py nli_wrapper.py mem16k.v
+EXTRA_DIST = nli.in default.n default-iroha.n default-isynth.n $(LIBFILES) nli_server.py nli_wrapper.py mem16k.v
 bin_SCRIPTS = nli
 pkgdata_DATA = default.n $(LIBFILES)
 all: all-am

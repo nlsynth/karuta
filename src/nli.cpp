@@ -13,6 +13,7 @@ string Env::module_prefix_;
 bool Env::sandbox_mode_;
 string Env::argv0_;
 bool Env::use_iroha_;
+bool Env::use_isynth_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -193,3 +194,12 @@ void Env::SetUseIroha(bool useIroha) {
 bool Env::GetUseIroha() {
   return use_iroha_;
 }
+
+void Env::SetUseISynth(bool useISynth) {
+  use_isynth_ = useISynth;
+}
+
+bool Env::GetUseISynth() {
+  return use_isynth_;
+}
+
