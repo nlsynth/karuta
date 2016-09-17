@@ -15,3 +15,15 @@ def Kernel.__print(int v)
   ] {
   printf("print=%d", v);
 }
+
+def Kernel.__assert(bool a)
+  [
+    resource = "assert",
+    verilog="nli_assert.v",
+    file="copy",
+    module="assert"
+  ] {
+  if (!a) {
+    print("assertion failed");
+  }
+}

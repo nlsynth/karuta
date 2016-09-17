@@ -23,7 +23,7 @@ public:
   IResource *PseudoResource();
   IResource *GetOpResource(vm::OpCode op, IValueType &vt);
 
-  IResource *GetImportedResource(dfg::ResourceParams *dparams);
+  IResource *GetImportedResource(vm::Method *method);
 
 private:
   string GetResourceClassName(vm::OpCode op);

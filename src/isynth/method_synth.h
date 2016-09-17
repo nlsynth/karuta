@@ -33,6 +33,8 @@ private:
   void SynthFuncallDone(vm::Insn *insn);
   void SynthBinCalcExpr(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);
+  void SynthMemberAccess(vm::Insn *insn, bool is_store);
+  void SynthBitRange(vm::Insn *insn);
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);

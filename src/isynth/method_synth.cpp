@@ -16,6 +16,7 @@
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/register.h"
+#include "vm/value.h"
 
 namespace isynth {
 
@@ -88,9 +89,7 @@ void MethodSynth::SynthNativeMethod(vm::Method *method) {
 void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
   EmitEntryInsn(method);
   StateWrapper *sw = AllocState();
-  dfg::ResourceParams *imported_resource =
-    method->parse_tree_->imported_resource_;
-  IResource *res = res_->GetImportedResource(imported_resource);
+  IResource *res = res_->GetImportedResource(method);
   IInsn *iinsn = new IInsn(res);
   iinsn->inputs_ = context_->method_insn_->inputs_;
   iinsn->outputs_ = context_->method_insn_->outputs_;
@@ -133,13 +132,29 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
     SynthGoto(insn);
     break;
   case vm::OP_ADD:
+  case vm::OP_SUB:
+  case vm::OP_MUL:
   case vm::OP_EQ:
   case vm::OP_NE:
   case vm::OP_GT:
   case vm::OP_LT:
   case vm::OP_GTE:
   case vm::OP_LTE:
+  case vm::OP_AND:
+  case vm::OP_OR:
+  case vm::OP_XOR:
+  case vm::OP_LAND:
+  case vm::OP_LOR:
     SynthBinCalcExpr(insn);
+    break;
+  case vm::OP_MEMBER_READ:
+    SynthMemberAccess(insn, false);
+    break;
+  case vm::OP_MEMBER_WRITE:
+    SynthMemberAccess(insn, true);
+    break;
+  case vm::OP_BIT_RANGE:
+    SynthBitRange(insn);
     break;
   default:
     CHECK(false) << "unknown insn:" << vm::OpCodeName(insn->op_);
@@ -216,6 +231,24 @@ void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
   }
 }
 
+void MethodSynth::SynthBitRange(vm::Insn *insn) {
+  IRegister *src = FindLocalVarRegister(insn->src_regs_[0]);
+  IRegister *res = FindLocalVarRegister(insn->dst_regs_[0]);
+  int msb = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_);
+  int lsb = numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_);
+
+  StateWrapper *sw = AllocState();
+  IValueType vt_none;
+  IResource *bit_sel = res_->GetOpResource(vm::OP_BIT_RANGE, vt_none);
+  IInsn *iinsn = new IInsn(bit_sel);
+
+  iinsn->inputs_.push_back(src);
+  iinsn->inputs_.push_back(DesignTool::AllocConstNum(tab_, 32, msb));
+  iinsn->inputs_.push_back(DesignTool::AllocConstNum(tab_, 32, lsb));
+  iinsn->outputs_.push_back(res);
+  sw->state_->insns_.push_back(iinsn);
+}
+
 IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   IRegister *ireg = local_reg_map_[vreg];
   if (ireg) {
@@ -224,6 +257,9 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   char name[10];
   sprintf(name, "r%d_", vreg->id_);
   int w = numeric::Width::GetWidth(vreg->type_.width_);
+  if (vreg->type_.value_type_ == vm::Value::ENUM_ITEM) {
+    w = 0;
+  }
   ireg = DesignTool::AllocRegister(tab_, name + method_name_,
 				   w);
   local_reg_map_[vreg] = ireg;
@@ -286,6 +322,7 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
   if (insn->op_ == vm::OP_LTE || insn->op_ == vm::OP_GTE ||
       insn->op_ == vm::OP_NE) {
     IRegister *neg_reg = thr_synth_->AllocRegister("t_");
+    neg_reg->value_type_.SetWidth(0);
     iinsn->outputs_.push_back(neg_reg);
     GenNeg(neg_reg, res_reg);
     w->state_->insns_.push_back(iinsn);
@@ -298,6 +335,21 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
 void MethodSynth::SynthGoto(vm::Insn *insn) {
   StateWrapper *w = AllocState();
   w->vm_insn_ = insn;
+}
+
+void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
+  vm::Value *value = obj_->LookupValue(insn->label_, false);
+  CHECK(value) << "member not found";
+  if (value->is_const_) {
+    CHECK(!is_store);
+    CHECK(value->type_ == vm::Value::ENUM_ITEM);
+    IRegister *reg = DesignTool::AllocConstNum(tab_, 0, value->enum_val_.val);
+    local_reg_map_[insn->dst_regs_[0]] = reg;
+  } else if (value->type_ == vm::Value::OBJECT) {
+    CHECK(false) << "member object access is not yet implemented";
+  } else {
+    CHECK(false) << "member access is not yet implemented";
+  }
 }
 
 void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
