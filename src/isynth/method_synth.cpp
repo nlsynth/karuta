@@ -149,6 +149,9 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   case vm::OP_LOR:
     SynthBinCalcExpr(insn);
     break;
+  case vm::OP_CONCAT:
+    SynthConcat(insn);
+    break;
   case vm::OP_MEMBER_READ:
     SynthMemberAccess(insn, false);
     break;
@@ -237,6 +240,20 @@ void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
     IRegister *iret = FindLocalVarRegister(ret);
     iinsn->outputs_.push_back(iret);
   }
+}
+
+void MethodSynth::SynthConcat(vm::Insn *insn) {
+  IValueType vt;
+  IResource *concat = res_->GetOpResource(vm::OP_CONCAT, vt);
+  IInsn *iinsn = new IInsn(concat);
+  IRegister *lhs = FindLocalVarRegister(insn->src_regs_[0]);
+  IRegister *rhs = FindLocalVarRegister(insn->src_regs_[1]);
+  iinsn->inputs_.push_back(lhs);
+  iinsn->inputs_.push_back(rhs);
+  IRegister *res = FindLocalVarRegister(insn->dst_regs_[0]);
+  iinsn->outputs_.push_back(res);
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
 }
 
 void MethodSynth::SynthBitRange(vm::Insn *insn) {
