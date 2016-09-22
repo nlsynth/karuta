@@ -157,6 +157,7 @@ am__objects_5 = src/opt/nli_bin-opt.$(OBJEXT) \
 	src/opt/nli_bin-ssa_misc.$(OBJEXT) \
 	src/opt/nli_bin-wire_insn.$(OBJEXT)
 am__objects_6 = src/isynth/nli_bin-isynth.$(OBJEXT) \
+	src/isynth/nli_bin-channel_synth.$(OBJEXT) \
 	src/isynth/nli_bin-method_context.$(OBJEXT) \
 	src/isynth/nli_bin-method_expander.$(OBJEXT) \
 	src/isynth/nli_bin-method_synth.$(OBJEXT) \
@@ -587,6 +588,7 @@ dfg_SOURCES = \
 isynth_SOURCES = \
  src/isynth/common.h \
  src/isynth/isynth.cpp src/isynth/isynth.h \
+ src/isynth/channel_synth.cpp src/isynth/channel_synth.h \
  src/isynth/method_context.cpp src/isynth/method_context.h \
  src/isynth/method_expander.cpp src/isynth/method_expander.h \
  src/isynth/method_synth.cpp src/isynth/method_synth.h \
@@ -911,6 +913,9 @@ src/isynth/$(DEPDIR)/$(am__dirstamp):
 	@: > src/isynth/$(DEPDIR)/$(am__dirstamp)
 src/isynth/nli_bin-isynth.$(OBJEXT): src/isynth/$(am__dirstamp) \
 	src/isynth/$(DEPDIR)/$(am__dirstamp)
+src/isynth/nli_bin-channel_synth.$(OBJEXT):  \
+	src/isynth/$(am__dirstamp) \
+	src/isynth/$(DEPDIR)/$(am__dirstamp)
 src/isynth/nli_bin-method_context.$(OBJEXT):  \
 	src/isynth/$(am__dirstamp) \
 	src/isynth/$(DEPDIR)/$(am__dirstamp)
@@ -1080,6 +1085,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-scanner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-stmt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-var_decl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/isynth/$(DEPDIR)/nli_bin-channel_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/isynth/$(DEPDIR)/nli_bin-isynth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/isynth/$(DEPDIR)/nli_bin-method_context.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/isynth/$(DEPDIR)/nli_bin-method_expander.Po@am__quote@
@@ -1858,6 +1864,20 @@ src/isynth/nli_bin-isynth.obj: src/isynth/isynth.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/isynth/isynth.cpp' object='src/isynth/nli_bin-isynth.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/isynth/nli_bin-isynth.obj `if test -f 'src/isynth/isynth.cpp'; then $(CYGPATH_W) 'src/isynth/isynth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/isynth/isynth.cpp'; fi`
+
+src/isynth/nli_bin-channel_synth.o: src/isynth/channel_synth.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/isynth/nli_bin-channel_synth.o -MD -MP -MF src/isynth/$(DEPDIR)/nli_bin-channel_synth.Tpo -c -o src/isynth/nli_bin-channel_synth.o `test -f 'src/isynth/channel_synth.cpp' || echo '$(srcdir)/'`src/isynth/channel_synth.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/isynth/$(DEPDIR)/nli_bin-channel_synth.Tpo src/isynth/$(DEPDIR)/nli_bin-channel_synth.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/isynth/channel_synth.cpp' object='src/isynth/nli_bin-channel_synth.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/isynth/nli_bin-channel_synth.o `test -f 'src/isynth/channel_synth.cpp' || echo '$(srcdir)/'`src/isynth/channel_synth.cpp
+
+src/isynth/nli_bin-channel_synth.obj: src/isynth/channel_synth.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/isynth/nli_bin-channel_synth.obj -MD -MP -MF src/isynth/$(DEPDIR)/nli_bin-channel_synth.Tpo -c -o src/isynth/nli_bin-channel_synth.obj `if test -f 'src/isynth/channel_synth.cpp'; then $(CYGPATH_W) 'src/isynth/channel_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/isynth/channel_synth.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/isynth/$(DEPDIR)/nli_bin-channel_synth.Tpo src/isynth/$(DEPDIR)/nli_bin-channel_synth.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/isynth/channel_synth.cpp' object='src/isynth/nli_bin-channel_synth.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/isynth/nli_bin-channel_synth.obj `if test -f 'src/isynth/channel_synth.cpp'; then $(CYGPATH_W) 'src/isynth/channel_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/isynth/channel_synth.cpp'; fi`
 
 src/isynth/nli_bin-method_context.o: src/isynth/method_context.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/isynth/nli_bin-method_context.o -MD -MP -MF src/isynth/$(DEPDIR)/nli_bin-method_context.Tpo -c -o src/isynth/nli_bin-method_context.o `test -f 'src/isynth/method_context.cpp' || echo '$(srcdir)/'`src/isynth/method_context.cpp

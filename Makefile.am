@@ -70,6 +70,7 @@ dfg_SOURCES = \
 isynth_SOURCES= \
  src/isynth/common.h \
  src/isynth/isynth.cpp src/isynth/isynth.h \
+ src/isynth/channel_synth.cpp src/isynth/channel_synth.h \
  src/isynth/method_context.cpp src/isynth/method_context.h \
  src/isynth/method_expander.cpp src/isynth/method_expander.h \
  src/isynth/method_synth.cpp src/isynth/method_synth.h \

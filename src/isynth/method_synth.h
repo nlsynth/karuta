@@ -35,6 +35,7 @@ private:
   void SynthGoto(vm::Insn *insn);
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
   void SynthBitRange(vm::Insn *insn);
+  void SynthChannelAccess(vm::Insn *insn, bool is_write);
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);

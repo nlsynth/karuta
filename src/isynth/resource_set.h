@@ -11,6 +11,10 @@
 #include "iroha/i_design.h"
 #include "vm/opcode.h"
 
+#include <map>
+
+using std::map;
+
 namespace isynth {
 
 class ResourceSet {
@@ -24,6 +28,8 @@ public:
   IResource *GetOpResource(vm::OpCode op, IValueType &vt);
 
   IResource *GetImportedResource(vm::Method *method);
+  IResource *GetChannelResource(vm::Object *ch, bool is_write,
+				int data_width);
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -43,8 +49,9 @@ private:
   vector<ResourceEntry> resources_;
 
   vector<IResource *> imported_resources_;
+  map<vm::Object *, IResource *> channel_resources_;
 };
 
 }  // namespace isynth
 
-#endif  // _synth_resource_set_h_
+#endif  // _isynth_resource_set_h_

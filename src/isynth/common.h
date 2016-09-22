@@ -35,6 +35,7 @@ class ResourceParams;
 }  // namespace dfg
 
 namespace isynth {
+class ChannelSynth;
 class MethodContext;
 class MethodSynth;
 class ObjectSynth;

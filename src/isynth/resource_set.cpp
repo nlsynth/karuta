@@ -146,4 +146,31 @@ void ResourceSet::PopulateResourceDataType(int op, IValueType &vt,
   }
 }
 
+IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_write,
+					   int data_width) {
+  auto it = channel_resources_.find(obj);
+  if (it != channel_resources_.end()) {
+    return it->second;
+  }
+  string k;
+  if (is_write) {
+    k = resource::kChannelWrite;
+  } else {
+    k = resource::kChannelRead;
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), k);
+  IResource *res = new IResource(tab_, rc);
+  tab_->resources_.push_back(res);
+  channel_resources_[obj] = res;
+  IValueType vt;
+  vt.SetWidth(data_width);
+  if (is_write) {
+    res->input_types_.push_back(vt);
+  } else {
+    res->output_types_.push_back(vt);
+  }
+  return res;
+}
+
 }  // namespace isynth

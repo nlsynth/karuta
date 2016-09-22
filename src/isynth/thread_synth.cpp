@@ -9,8 +9,11 @@
 namespace isynth {
 
 ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
-			 const char *method_name, IModule *mod)
-  : obj_synth_(obj_synth), method_name_(method_name), mod_(mod), tab_(nullptr),
+			 const string &thread_name,
+			 const string &method_name, IModule *mod)
+  : obj_synth_(obj_synth),
+    thread_name_(thread_name), method_name_(method_name), mod_(mod),
+    tab_(nullptr),
     reg_name_index_(0) {
 }
 
@@ -20,6 +23,7 @@ ThreadSynth::~ThreadSynth() {
 
 bool ThreadSynth::Synth() {
   tab_ = new ITable(mod_);
+  tab_->SetName(thread_name_);
   resource_.reset(new ResourceSet(tab_));
   RequestMethod(method_name_);
   int num_synth;

@@ -15,7 +15,8 @@ namespace isynth {
 class ThreadSynth {
 public:
   ThreadSynth(ObjectSynth *obj_synth,
-	      const char *method_name, IModule *mod);
+	      const string &thread_name,
+	      const string &method_name, IModule *mod);
   virtual ~ThreadSynth();
 
   bool Synth();
@@ -29,6 +30,7 @@ public:
 
 private:
   ObjectSynth *obj_synth_;
+  const string thread_name_;
   const string method_name_;
   IModule *mod_;
   ITable *tab_;

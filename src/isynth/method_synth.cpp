@@ -7,11 +7,13 @@
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
 #include "iroha/i_design.h"
+#include "isynth/channel_synth.h"
 #include "isynth/thread_synth.h"
 #include "isynth/object_synth.h"
 #include "isynth/resource_set.h"
 #include "isynth/method_context.h"
 #include "status.h"
+#include "vm/channel.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -155,6 +157,12 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
     break;
   case vm::OP_BIT_RANGE:
     SynthBitRange(insn);
+    break;
+  case vm::OP_CHANNEL_WRITE:
+    SynthChannelAccess(insn, true);
+    break;
+  case vm::OP_CHANNEL_READ:
+    SynthChannelAccess(insn, false);
     break;
   default:
     CHECK(false) << "unknown insn:" << vm::OpCodeName(insn->op_);
@@ -350,6 +358,22 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
   } else {
     CHECK(false) << "member access is not yet implemented";
   }
+}
+
+void MethodSynth::SynthChannelAccess(vm::Insn *insn, bool is_write) {
+  vm::Object *obj = member_reg_to_obj_map_[insn->obj_reg_];
+  CHECK(vm::Channel::IsChannel(obj));
+  int width = vm::Channel::ChannelWidth(obj);
+  IResource *res = res_->GetChannelResource(obj, is_write, width);
+  IInsn *iinsn = new IInsn(res);
+  if (is_write) {
+    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+  } else {
+    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+  }
+  StateWrapper *w = AllocState();
+  w->state_->insns_.push_back(iinsn);
+  thr_synth_->GetObjectSynth()->GetChannelSynth()->AddChannel(obj, res);
 }
 
 void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {

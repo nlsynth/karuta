@@ -2,6 +2,7 @@
 
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
+#include "isynth/channel_synth.h"
 #include "isynth/object_synth.h"
 
 // WIP: this has copying from synth/ and huge amount of duplication.
@@ -22,10 +23,14 @@ bool ISynth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
     params->SetModuleNamePrefix(prefix + "_");
   }
 
-  ObjectSynth o(vm, obj, "main", design.get());
+  ChannelSynth channel;
+
+  ObjectSynth o(vm, obj, "main", design.get(), &channel);
   if (!o.Synth()) {
     return false;
   }
+
+  channel.Resolve(design.get());
 
   DesignTool::Validate(design.get());
 
