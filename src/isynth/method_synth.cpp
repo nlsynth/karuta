@@ -149,6 +149,10 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   case vm::OP_LOR:
     SynthBinCalcExpr(insn);
     break;
+  case vm::OP_LSHIFT:
+  case vm::OP_RSHIFT:
+    SynthShiftExpr(insn);
+    break;
   case vm::OP_CONCAT:
     SynthConcat(insn);
     break;
@@ -367,6 +371,24 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
     iinsn->outputs_.push_back(res_reg);
     w->state_->insns_.push_back(iinsn);
   }
+}
+
+void MethodSynth::SynthShiftExpr(vm::Insn *insn) {
+  CHECK(insn->src_regs_[1]->type_.is_const_);
+  int shift_count = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_);
+  IValueType vt;
+  IResource *shifter = res_->GetOpResource(insn->op_, vt);
+  IInsn *iinsn = new IInsn(shifter);
+  iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+  iinsn->inputs_.push_back(DesignTool::AllocConstNum(tab_, 32, shift_count));
+  iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+  if (insn->op_ == vm::OP_LSHIFT) {
+    iinsn->SetOperand("left");
+  } else {
+    iinsn->SetOperand("right");
+  }
+  StateWrapper *w = AllocState();
+  w->state_->insns_.push_back(iinsn);
 }
 
 void MethodSynth::SynthGoto(vm::Insn *insn) {

@@ -128,7 +128,8 @@ IResource *ResourceSet::GetOpResource(vm::OpCode op, IValueType &vt) {
   }
   // Use default type value as the key.
   IValueType key_vt;
-  if (!(op == vm::OP_CONCAT || op == vm::OP_BIT_RANGE)) {
+  if (!(op == vm::OP_CONCAT || op == vm::OP_BIT_RANGE ||
+	op == vm::OP_LSHIFT || op == vm::OP_RSHIFT)) {
     key_vt = vt;
   }
   for (auto &res : resources_) {
@@ -163,6 +164,8 @@ string ResourceSet::GetResourceClassName(vm::OpCode op) {
   case vm::OP_XOR: return resource::kBitXor;
   case vm::OP_CONCAT: return resource::kBitConcat;
   case vm::OP_BIT_RANGE: return resource::kBitSel;
+  case vm::OP_LSHIFT: return resource::kShift;
+  case vm::OP_RSHIFT: return resource::kShift;
   default:
     CHECK(false) << "unknown resource type: " << vm::OpCodeName(op);
   }
