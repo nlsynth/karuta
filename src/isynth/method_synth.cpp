@@ -396,7 +396,7 @@ void MethodSynth::SynthChannelAccess(vm::Insn *insn, bool is_write) {
   IResource *res = res_->GetChannelResource(obj, is_write, width);
   IInsn *iinsn = new IInsn(res);
   if (is_write) {
-    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
   } else {
     iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
   }

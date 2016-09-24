@@ -45,8 +45,11 @@ module test_tb;
 `endif
 
   mod_main m(.clk(clk), .rst(rst)
-`ifdef NLI_RAM
+`ifdef NLI_RAM1
 , .addr_o(addr), .write_en_o(write_en), .data_o(wdata), .data_i(rdata)
+`endif
+`ifdef NLI_RAM2
+, .sram_addr(addr), .sram_wdata_en(write_en), .sram_wdata(wdata), .sram_rdata(rdata)
 `endif
   );
 

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# Copyright Yusuke Tabata 2007-2010
+# Copyright Yusuke Tabata 2007-2016
 
 
 import os
@@ -165,14 +165,28 @@ class NLITest():
     def GetVerilogCompileCommand(self, fn, test_bin_fn):
         ifh = open(fn, "r")
         has_mem_if = False
+        has_iroha_mem_if = False
+        has_iroha_sram = False
         for line in ifh:
             m = re.search("EXTERNAL_RAM", line)
             if m:
                 has_mem_if = True
+            m = re.search("sram_addr", line)
+            if m:
+                has_iroha_mem_if = True
+            m = re.search("SRAM_", line)
+            if m:
+                has_iroha_sram = True
         cmd = (verilog_compiler + " -o " + test_bin_fn + " " +
                fn + " " + test_tb_top + " -I../lib")
+        if has_iroha_sram:
+            has_iroha_mem_if = False
         if has_mem_if:
             cmd += " -D NLI_RAM"
+            cmd += " -D NLI_RAM1"
+        if has_iroha_mem_if:
+            cmd += " -D NLI_RAM"
+            cmd += " -D NLI_RAM2"
         return cmd
 
     def CheckVerilog(self, fn, summary, exp_info):
