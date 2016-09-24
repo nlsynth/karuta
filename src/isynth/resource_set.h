@@ -28,6 +28,8 @@ public:
   IResource *GetOpResource(vm::OpCode op, IValueType &vt);
 
   IResource *GetImportedResource(vm::Method *method);
+  IResource *GetExternalArrayResource();
+  IResource *GetInternalArrayResource(vm::Object *obj);
   IResource *GetChannelResource(vm::Object *ch, bool is_write,
 				int data_width);
 
@@ -38,6 +40,7 @@ private:
   ITable *tab_;
   IResource *assign_;
   IResource *br_;
+  IResource *mem_if_;
   IResource *pseudo_;
 
   class ResourceEntry {
@@ -49,6 +52,7 @@ private:
   vector<ResourceEntry> resources_;
 
   vector<IResource *> imported_resources_;
+  map<vm::Object *, IResource *> array_resources_;
   map<vm::Object *, IResource *> channel_resources_;
 };
 

@@ -5,7 +5,9 @@
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
+#include "vm/array_wrapper.h"
 #include "vm/insn.h"
+#include "vm/int_array.h"
 #include "vm/method.h"
 
 namespace isynth {
@@ -13,6 +15,7 @@ namespace isynth {
 ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   assign_ = nullptr;
   pseudo_ = nullptr;
+  mem_if_ = nullptr;
   br_ = DesignTool::GetOneResource(tab, resource::kTransition);
 }
 
@@ -71,6 +74,41 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   args.clear();
   args.push_back("req");
   iparams->SetValues(resource::kEmbeddedModuleReq, args);
+  return res;
+}
+
+IResource *ResourceSet::GetExternalArrayResource() {
+  if (mem_if_ == nullptr) {
+    mem_if_ = DesignTool::CreateArrayResource(tab_, 32, 32, true, true);
+  }
+  return mem_if_;
+}
+
+IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {
+  CHECK(vm::ArrayWrapper::IsIntArray(obj));
+  auto it = array_resources_.find(obj);
+  if (it != array_resources_.end()) {
+    return it->second;
+  }
+  vm::IntArray *memory = vm::ArrayWrapper::GetIntArray(obj);
+  int address_bits;
+  for (address_bits = 0; (1 << address_bits) < (int)memory->GetLength();
+       ++address_bits) {
+    // do nothing here.
+  }
+  int data_bits = numeric::Width::GetWidth(memory->GetWidth());
+  IResource *res =
+    DesignTool::CreateArrayResource(tab_, address_bits, data_bits, false, true);
+  if (memory->GetLength() > 0) {
+    IDesign *design = tab_->GetModule()->GetDesign();
+    IArrayImage *image = new IArrayImage(design);
+    design->array_images_.push_back(image);
+    for (int i = 0; i < memory->GetLength(); ++i) {
+      image->values_.push_back(numeric::Numeric::GetInt(memory->Read(i)));
+    }
+    res->GetArray()->SetArrayImage(image);
+  }
+  array_resources_[obj] = res;
   return res;
 }
 

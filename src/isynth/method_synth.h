@@ -34,6 +34,7 @@ private:
   void SynthBinCalcExpr(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
+  void SynthArrayAccess(vm::Insn *insn, bool is_write, bool is_memory);
   void SynthBitRange(vm::Insn *insn);
   void SynthChannelAccess(vm::Insn *insn, bool is_write);
   void SynthConcat(vm::Insn *insn);

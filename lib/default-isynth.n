@@ -2,8 +2,13 @@
 // Adding __ prefix so that users can overwrite the original one.
 print("default-isynth.n");
 
+// Kludge to run a regression test.
+def Kernel.enable_wire_insn() {
+}
+
 def Kernel.compile() {
   __compile("");
+  __compile("array_to_mem");
 }
 
 def Kernel.__print(int v)
