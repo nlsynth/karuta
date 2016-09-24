@@ -51,6 +51,7 @@ bool MethodSynth::Synth() {
 				    method);
   EmitEntryInsn(method);
   StateWrapper *last = nullptr;
+  // mapping from vm::insn index to state index.
   map<int, int> state_index;
   state_index[0] = context_->states_.size();
   for (size_t i = 0; i < method->insns_.size(); ++i) {
@@ -132,6 +133,9 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
     break;
   case vm::OP_GOTO:
     SynthGoto(insn);
+    break;
+  case vm::OP_IF:
+    SynthIf(insn);
     break;
   case vm::OP_ADD:
   case vm::OP_SUB:
@@ -258,6 +262,14 @@ void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
   }
 }
 
+void MethodSynth::SynthIf(vm::Insn *insn) {
+  StateWrapper *sw = AllocState();
+  sw->vm_insn_ = insn;
+  IInsn *iinsn = DesignUtil::GetTransitionInsn(sw->state_);
+  IRegister *cond_reg = FindLocalVarRegister(insn->src_regs_[0]);
+  iinsn->inputs_.push_back(cond_reg);
+}
+
 void MethodSynth::SynthConcat(vm::Insn *insn) {
   IValueType vt;
   IResource *concat = res_->GetOpResource(vm::OP_CONCAT, vt);
@@ -321,12 +333,25 @@ IRegister *MethodSynth::FindArgRegister(int nth, fe::VarDecl *arg_decl) {
 }
 
 void MethodSynth::ResolveJumps() {
+  int sw_idx = 0;
   for (auto &sw : context_->states_) {
-    if (sw->vm_insn_ && sw->vm_insn_->op_ == vm::OP_GOTO) {
-      IState *st = vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
-      CHECK(st) << "couldn't resolve goto" << sw->vm_insn_->jump_target_;
-      DesignTool::AddNextState(sw->state_, st);
+    if (sw->vm_insn_) {
+      if (sw->vm_insn_->op_ == vm::OP_GOTO) {
+	IState *st = vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
+	CHECK(st) << "couldn't resolve goto" << sw->vm_insn_->jump_target_;
+	DesignTool::AddNextState(sw->state_, st);
+      }
+      if (sw->vm_insn_->op_ == vm::OP_IF) {
+	// next, jump_target
+	IState *next_st = context_->states_[sw_idx + 1]->state_;
+	IState *target_st =
+	  vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
+	IInsn *tr_insn = DesignUtil::FindTransitionInsn(sw->state_);
+	tr_insn->target_states_.push_back(target_st);
+	tr_insn->target_states_.push_back(next_st);
+      }
     }
+    ++sw_idx;
   }
 }
 

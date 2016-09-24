@@ -33,6 +33,7 @@ private:
   void SynthFuncallDone(vm::Insn *insn);
   void SynthBinCalcExpr(vm::Insn *insn);
   void SynthShiftExpr(vm::Insn *insn);
+  void SynthIf(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
   void SynthArrayAccess(vm::Insn *insn, bool is_write, bool is_memory);
