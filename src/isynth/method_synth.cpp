@@ -438,9 +438,35 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     IRegister *reg = DesignTool::AllocConstNum(tab_, 0, value->enum_val_.val);
     local_reg_map_[insn->dst_regs_[0]] = reg;
   } else if (value->type_ == vm::Value::OBJECT) {
-    CHECK(false) << "member object access is not yet implemented";
+    CHECK(!is_store);
+    member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
   } else {
-    CHECK(false) << "member access is not yet implemented";
+    IRegister *reg = member_name_reg_map_[sym_cstr(insn->label_)];
+    if (!reg) {
+      string name = sym_cstr(insn->label_);
+      name = "m_" + name;
+      reg = thr_synth_->AllocRegister(name);
+      IValue iv;
+      iv.value_ = numeric::Numeric::GetInt(value->num_);
+      reg->SetInitialValue(iv);
+      int w = 0;
+      if (value->type_ == vm::Value::NUM) {
+	w = numeric::Width::GetWidth(value->num_.type);
+      }
+      reg->value_type_.SetWidth(w);
+      member_name_reg_map_[sym_cstr(insn->label_)] = reg;
+    }
+    IResource *assign = res_->AssignResource();
+    IInsn *iinsn = new IInsn(assign);
+    if (!is_store) {
+      iinsn->inputs_.push_back(reg);
+      iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+    } else {
+      iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+      iinsn->outputs_.push_back(reg);
+    }
+    StateWrapper *sw = AllocState();
+    sw->state_->insns_.push_back(iinsn);
   }
 }
 

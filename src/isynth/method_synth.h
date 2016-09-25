@@ -56,6 +56,7 @@ private:
   map<vm::Register *, IRegister *> local_reg_map_;
   map<vm::Register *, sym_t> orig_name_map_;
   map<vm::Register *, vm::Object *> member_reg_to_obj_map_;
+  map<string, IRegister *> member_name_reg_map_;
 
   map<int, StateWrapper *> vm_insn_state_map_;
 
