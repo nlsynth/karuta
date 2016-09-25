@@ -40,7 +40,6 @@ private:
   MethodContext *root_method_;
   ThreadSynth *thread_;
   ITable *tab_;
-  int reg_name_index_;
 };
 
 }  // namespace isynth

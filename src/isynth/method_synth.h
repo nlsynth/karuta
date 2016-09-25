@@ -60,7 +60,8 @@ private:
   map<int, StateWrapper *> vm_insn_state_map_;
 
   IRegister *FindLocalVarRegister(vm::Register *vreg);
-  IRegister *FindArgRegister(int nth, fe::VarDecl *arg_decl);
+  IRegister *FindArgRegister(vm::Method *method, int nth,
+			     fe::VarDecl *arg_decl);
   StateWrapper *AllocState();
   void ResolveJumps();
   void LinkStates();

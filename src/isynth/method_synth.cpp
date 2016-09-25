@@ -313,13 +313,14 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   if (vreg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     w = 0;
   }
-  ireg = DesignTool::AllocRegister(tab_, name + method_name_,
-				   w);
+  ireg = thr_synth_->AllocRegister(name + method_name_);
+  ireg->value_type_.SetWidth(w);
   local_reg_map_[vreg] = ireg;
   return ireg;
 }
 
-IRegister *MethodSynth::FindArgRegister(int nth, fe::VarDecl *arg_decl) {
+IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
+					fe::VarDecl *arg_decl) {
   int w = 0;
   if (arg_decl->type == sym_bool) {
     w = 0;
@@ -329,7 +330,14 @@ IRegister *MethodSynth::FindArgRegister(int nth, fe::VarDecl *arg_decl) {
     CHECK(false);
   }
   string reg_name(sym_cstr(arg_decl->name_expr->sym_));
-  return DesignTool::AllocRegister(tab_, reg_name, w);
+  IRegister *reg = thr_synth_->AllocRegister(reg_name);
+  reg->value_type_.SetWidth(w);
+  // Add as a local variable if this isn't a native method.
+  if (method->parse_tree_ &&
+      !method->parse_tree_->imported_resource_) {
+    local_reg_map_[method->method_regs_[nth]] = reg;
+  }
+  return reg;
 }
 
 void MethodSynth::ResolveJumps() {
@@ -489,12 +497,13 @@ void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
 void MethodSynth::EmitEntryInsn(vm::Method *method) {
   IResource *pseudo = res_->PseudoResource();
   context_->method_insn_ = new IInsn(pseudo);
+  context_->method_insn_->SetOperand("method_entry");
   fe::VarDeclSet *args = method->parse_tree_->args_;
   int num_args = 0;
   if (args) {
     num_args = args->decls.size();
     for (size_t i = 0; i < args->decls.size(); ++i) {
-      IRegister *ireg = FindArgRegister(i, args->decls[i]);
+      IRegister *ireg = FindArgRegister(method, i, args->decls[i]);
       context_->method_insn_->inputs_.push_back(ireg);
     }
   }
