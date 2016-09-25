@@ -40,6 +40,7 @@ private:
   void SynthBitRange(vm::Insn *insn);
   void SynthChannelAccess(vm::Insn *insn, bool is_write);
   void SynthConcat(vm::Insn *insn);
+  void SynthPreIncDec(vm::Insn *insn);
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);

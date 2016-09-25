@@ -160,6 +160,10 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   case vm::OP_CONCAT:
     SynthConcat(insn);
     break;
+  case vm::OP_PRE_DEC:
+  case vm::OP_PRE_INC:
+    SynthPreIncDec(insn);
+    break;
   case vm::OP_MEMBER_READ:
     SynthMemberAccess(insn, false);
     break;
@@ -229,6 +233,22 @@ void MethodSynth::SynthLoadObj(vm::Insn *insn) {
     // loading "this" obj.
     member_reg_to_obj_map_[insn->dst_regs_[0]] = obj_;
   }
+}
+
+void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
+  IValueType vt;
+  InsnToCalcValueType(insn, &vt);
+  IResource *res = res_->GetOpResource(insn->op_ == vm::OP_PRE_INC ?
+				       vm::OP_ADD : vm::OP_SUB,
+				       vt);
+  IInsn *iinsn = new IInsn(res);
+  IRegister *reg = FindLocalVarRegister(insn->src_regs_[0]);
+  iinsn->inputs_.push_back(reg);
+  int w = reg->value_type_.GetWidth();
+  iinsn->inputs_.push_back(DesignTool::AllocConstNum(tab_, w, 1));
+  iinsn->outputs_.push_back(reg);
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
 }
 
 void MethodSynth::SynthFuncall(vm::Insn *insn) {
