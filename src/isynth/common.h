@@ -42,6 +42,14 @@ class ObjectSynth;
 class ThreadSynth;
 class ResourceSet;
 class StateWrapper;
+
+struct SubObjCall {
+  IInsn *call_insn;
+  vm::Object *callee_obj;
+  string callee_func;
+  string callee_obj_name;
+};
+
 }  // namespace isynth
 
 #endif  // _isynth_common_h_

@@ -16,6 +16,7 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   assign_ = nullptr;
   pseudo_ = nullptr;
   mem_if_ = nullptr;
+  task_entry_ = nullptr;
   br_ = DesignTool::GetOneResource(tab, resource::kTransition);
 }
 
@@ -212,6 +213,13 @@ IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_write,
     res->output_types_.push_back(vt);
   }
   return res;
+}
+
+IResource *ResourceSet::GetSubModuleTaskResource() {
+  if (task_entry_ == nullptr) {
+    task_entry_ = DesignTool::CreateTaskResource(tab_);
+  }
+  return task_entry_;
 }
 
 }  // namespace isynth

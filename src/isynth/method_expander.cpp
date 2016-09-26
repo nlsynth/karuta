@@ -9,9 +9,12 @@
 
 namespace isynth {
 
-MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth)
+MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
+			       vector<SubObjCall> *sub_obj_calls)
   : root_method_(root), thread_(thread_synth),
-    tab_(thread_synth->GetITable()) {
+    tab_(thread_synth->GetITable()),
+    sub_obj_calls_(sub_obj_calls)
+{
 }
 
 bool MethodExpander::Expand() {
@@ -27,8 +30,8 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   map<IState *, IState *> st_copy_map;
   map<IRegister *, IRegister *> reg_copy_map;
   // Copy registers.
-  for (auto &s : method->states_) {
-    IState *ost = s->state_;
+  for (auto &sw : method->states_) {
+    IState *ost = sw->state_;
     IState *nst = new IState(ost->GetTable());
     st_copy_map[ost] = nst;
     for (IInsn *insn : ost->insns_) {
@@ -43,6 +46,7 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
     tab_->states_.push_back(nst);
     CopyState(st, st_copy_map, reg_copy_map, nst);
   }
+  CollectSubObjCalls(method);
   ExpandCalleeStates(method, st_copy_map, reg_copy_map);
   // Add registers.
   for (auto it : reg_copy_map) {
@@ -63,11 +67,28 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   return p;
 }
 
+void MethodExpander::CollectSubObjCalls(MethodContext *method) {
+  IResource *pseudo = thread_->GetResourceSet()->PseudoResource();
+  for (StateWrapper *sw : method->states_) {
+    if (sw->callee_vm_obj_ != nullptr) {
+      SubObjCall call;
+      call.call_insn = DesignUtil::FindInsnByResource(sw->state_, pseudo);
+      call.callee_obj = sw->callee_vm_obj_;
+      call.callee_func = sw->func_name_;
+      call.callee_obj_name = sw->obj_name_;
+      sub_obj_calls_->push_back(call);
+    }
+  }
+}
+
 void MethodExpander::ExpandCalleeStates(MethodContext *method,
 					map<IState *, IState *> &st_map,
 					map<IRegister *, IRegister *> &reg_map) {
   for (StateWrapper *sw : method->states_) {
     if (sw->func_name_.empty()) {
+      continue;
+    }
+    if (sw->callee_vm_obj_ != nullptr) {
       continue;
     }
     MethodContext *callee = thread_->GetMethodContext(sw->func_name_);

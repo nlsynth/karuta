@@ -20,7 +20,8 @@ public:
 
 class MethodExpander {
 public:
-  MethodExpander(MethodContext *root, ThreadSynth *thread_synth);
+  MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
+		 vector<SubObjCall> *sub_obj_calls);
 
   bool Expand();
 
@@ -36,10 +37,12 @@ private:
   void ExpandCalleeStates(MethodContext *method,
 			  map<IState *, IState *> &st_map,
 			  map<IRegister *, IRegister *> &reg_map);
+  void CollectSubObjCalls(MethodContext *method);
 
   MethodContext *root_method_;
   ThreadSynth *thread_;
   ITable *tab_;
+  vector<SubObjCall> *sub_obj_calls_;
 };
 
 }  // namespace isynth

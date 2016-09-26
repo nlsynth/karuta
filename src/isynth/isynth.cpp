@@ -25,7 +25,8 @@ bool ISynth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
 
   ChannelSynth channel;
 
-  ObjectSynth o(vm, obj, "main", design.get(), &channel);
+  vector<string> no_task;
+  ObjectSynth o(vm, obj, "main", no_task, design.get(), &channel);
   if (!o.Synth()) {
     return false;
   }

@@ -77,6 +77,12 @@ MethodContext *MethodSynth::GetContext() {
   return context_.get();
 }
 
+void MethodSynth::InjectTaskEntry(IState *st) {
+  IResource *res = res_->GetSubModuleTaskResource();
+  IInsn *iinsn = new IInsn(res);
+  st->insns_.push_back(iinsn);
+}
+
 void MethodSynth::SynthNativeMethod(vm::Method *method) {
   sym_t name = sym_lookup(method->AlternativeImplementation());
   vm::Value *value = obj_->LookupValue(name, false);
@@ -257,12 +263,19 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   if (insn->obj_reg_) {
     callee_obj = member_reg_to_obj_map_[insn->obj_reg_];
   }
-  if (insn->obj_reg_ && callee_obj != obj_) {
-    CHECK(false) << "Sub module call is not yet implemented";
-  }
   StateWrapper *sw = AllocState();
   sw->func_name_ = string(sym_cstr(func_name));
-  thr_synth_->RequestMethod(sw->func_name_);
+  if (insn->obj_reg_ && callee_obj != obj_) {
+    // Sub object call.
+    sw->callee_vm_obj_ = callee_obj;
+    vector<sym_t> names;
+    obj_->LookupMemberNames(callee_obj, &names);
+    CHECK(names.size() > 0);
+    sw->obj_name_ = string(sym_cstr(names[0]));
+  } else {
+    // Normal call.
+    thr_synth_->RequestMethod(sw->func_name_);
+  }
 
   IInsn *iinsn = new IInsn(res_->PseudoResource());
   sw->state_->insns_.push_back(iinsn);

@@ -14,6 +14,7 @@ ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
   : obj_synth_(obj_synth),
     thread_name_(thread_name), method_name_(method_name), mod_(mod),
     tab_(nullptr),
+    is_task_(false),
     reg_name_index_(0) {
 }
 
@@ -38,20 +39,28 @@ bool ThreadSynth::Synth() {
 	new MethodSynth(this, it.first, tab_, resource_.get());
       if (!m->Synth()) {
 	Status::os(Status::USER) << "Failed to synthesize thread: "
-				 << method_name_;
+				 << thread_name_ << "." << method_name_;
 	MessageFlush::Get(Status::USER);
 	return false;
       }
       methods_[it.first] = m;
+      break;
     }
   } while (num_synth > 0);
 
   MethodSynth *root_method = methods_[method_name_];
-  MethodExpander expander(root_method->GetContext(), this);
+  MethodExpander expander(root_method->GetContext(), this, &sub_obj_calls_);
   expander.Expand();
+  if (is_task_) {
+    root_method->InjectTaskEntry(tab_->GetInitialState());
+  }
 
   mod_->tables_.push_back(tab_);
   return true;
+}
+
+void ThreadSynth::SetIsTask(bool is_task) {
+  is_task_ = is_task;
 }
 
 void ThreadSynth::RequestMethod(const string &m) {
@@ -92,6 +101,10 @@ IRegister *ThreadSynth::AllocRegister(const string &prefix) {
   used_reg_names_.insert(n);
   IRegister *reg = new IRegister(tab_, n);
   return reg;
+}
+
+vector<SubObjCall> &ThreadSynth::GetSubObjCalls() {
+  return sub_obj_calls_;
 }
 
 }  // namespace isynth

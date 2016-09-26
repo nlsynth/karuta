@@ -14,6 +14,9 @@ public:
   MethodContext *callee_method_;
   string func_name_;
   vm::Insn *vm_insn_;
+  // for sub obj task call.
+  string obj_name_;
+  vm::Object *callee_vm_obj_;
 };
 
 class MethodContext {

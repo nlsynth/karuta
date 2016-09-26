@@ -32,6 +32,7 @@ public:
   IResource *GetInternalArrayResource(vm::Object *obj);
   IResource *GetChannelResource(vm::Object *ch, bool is_write,
 				int data_width);
+  IResource *GetSubModuleTaskResource();
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -42,6 +43,7 @@ private:
   IResource *br_;
   IResource *mem_if_;
   IResource *pseudo_;
+  IResource *task_entry_;
 
   class ResourceEntry {
   public:

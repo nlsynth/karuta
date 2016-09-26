@@ -20,6 +20,7 @@ public:
   virtual ~ThreadSynth();
 
   bool Synth();
+  void SetIsTask(bool is_task);
   ObjectSynth *GetObjectSynth();
   void RequestMethod(const string &m);
   void AddName(const string &n);
@@ -27,13 +28,16 @@ public:
   MethodContext *GetMethodContext(const string &m);
   ResourceSet *GetResourceSet();
   ITable *GetITable();
+  vector<SubObjCall> &GetSubObjCalls();
 
 private:
   ObjectSynth *obj_synth_;
   const string thread_name_;
   const string method_name_;
+  vector<SubObjCall> sub_obj_calls_;
   IModule *mod_;
   ITable *tab_;
+  bool is_task_;
   std::unique_ptr<ResourceSet> resource_;
   map<string, MethodSynth *> methods_;
   int reg_name_index_;

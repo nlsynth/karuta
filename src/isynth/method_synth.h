@@ -18,6 +18,7 @@ public:
 
   bool Synth();
   MethodContext *GetContext();
+  void InjectTaskEntry(IState *st);
 
 private:
   void SynthNativeMethod(vm::Method *method);
