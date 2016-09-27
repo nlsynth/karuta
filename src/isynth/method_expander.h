@@ -37,7 +37,8 @@ private:
   void ExpandCalleeStates(MethodContext *method,
 			  map<IState *, IState *> &st_map,
 			  map<IRegister *, IRegister *> &reg_map);
-  void CollectSubObjCalls(MethodContext *method);
+  void CollectSubObjCalls(MethodContext *method,
+			  map<IState *, IState *> &st_map);
 
   MethodContext *root_method_;
   ThreadSynth *thread_;

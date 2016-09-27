@@ -32,11 +32,12 @@ bool ObjectSynth::Synth() {
       return false;
     }
   }
-  ProcessSubModuleCalls();
+  CollectSubModuleCalls();
   for (auto *member_obj : member_objs_) {
     member_obj->Synth();
     member_obj->GetIModule()->SetParentModule(mod_);
   }
+  ResolveSubModuleCalls();
 
   design_->modules_.push_back(mod_);
   return true;
@@ -71,7 +72,7 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   }
 }
 
-void ObjectSynth::ProcessSubModuleCalls() {
+void ObjectSynth::CollectSubModuleCalls() {
   map<vm::Object *, string> obj_names;
   map<vm::Object *, set<string> > callees;
   for (auto *thr : threads_) {
@@ -91,6 +92,31 @@ void ObjectSynth::ProcessSubModuleCalls() {
 		      design_, channel_);
     member_objs_.push_back(obj);
   }
+}
+
+void ObjectSynth::ResolveSubModuleCalls() {
+  map<vm::Object *, ObjectSynth *> synth_map;
+  for (auto *o : member_objs_) {
+    synth_map[o->GetObject()] = o;
+  }
+  for (auto *thr : threads_) {
+    vector<SubObjCall> &calls = thr->GetSubObjCalls();
+    for (auto &c : calls) {
+      ObjectSynth *callee_osynth = synth_map[c.callee_obj];
+      ThreadSynth *callee_thr = callee_osynth->GetThreadByName(c.callee_func);
+      ITable *callee_table = callee_thr->GetITable();
+      ThreadSynth::InjectSubModuleCall(c.call_state, c.call_insn, callee_table);
+    }
+  }
+}
+
+ThreadSynth *ObjectSynth::GetThreadByName(const string &name) {
+  for (auto *thr : threads_) {
+    if (thr->GetMethodName() == name) {
+      return thr;
+    }
+  }
+  return nullptr;
 }
 
 IModule *ObjectSynth::GetIModule() {

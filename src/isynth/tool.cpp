@@ -21,4 +21,15 @@ IState *Tool::GetNextState(IState *st) {
   return insn->target_states_[0];
 }
 
+IResource *Tool::FindOrCreateSubModuleTaskCallResource(ITable *caller,
+						       ITable *callee) {
+  for (IResource *res : caller->resources_) {
+    if (resource::IsSubModuleTaskCall(*res->GetClass()) &&
+	res->GetCalleeTable() == callee) {
+      return res;
+    }
+  }
+  return DesignTool::CreateSubModuleTaskCallResource(caller, callee);
+}
+
 }  // namespace isynth

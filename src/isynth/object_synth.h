@@ -19,10 +19,12 @@ public:
   vm::Object *GetObject() const;
   ChannelSynth *GetChannelSynth() const;
   IModule *GetIModule();
+  ThreadSynth *GetThreadByName(const string &name);
 
 private:
   void CollectThreads(IModule *mod);
-  void ProcessSubModuleCalls();
+  void CollectSubModuleCalls();
+  void ResolveSubModuleCalls();
 
   vm::VM *vm_;
   vm::Object *obj_;

@@ -29,6 +29,9 @@ public:
   ResourceSet *GetResourceSet();
   ITable *GetITable();
   vector<SubObjCall> &GetSubObjCalls();
+  const string &GetMethodName();
+  static void InjectSubModuleCall(IState *st, IInsn *insn,
+				  ITable *callee_tab);
 
 private:
   ObjectSynth *obj_synth_;

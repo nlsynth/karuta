@@ -11,6 +11,8 @@ class Tool {
 public:
   static void SetNextState(IState *cur, IState *next);
   static IState *GetNextState(IState *st);
+  static IResource *FindOrCreateSubModuleTaskCallResource(ITable *caller,
+							  ITable *callee);
 };
 
 }  // namespace isynth

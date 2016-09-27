@@ -4,6 +4,7 @@
 #include "isynth/method_synth.h"
 #include "iroha/i_design.h"
 #include "isynth/resource_set.h"
+#include "isynth/tool.h"
 #include "status.h"
 
 namespace isynth {
@@ -105,6 +106,19 @@ IRegister *ThreadSynth::AllocRegister(const string &prefix) {
 
 vector<SubObjCall> &ThreadSynth::GetSubObjCalls() {
   return sub_obj_calls_;
+}
+
+const string &ThreadSynth::GetMethodName() {
+  return method_name_;
+}
+
+void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *insn,
+				      ITable *callee_tab) {
+  ITable *caller_tab = st->GetTable();
+  IResource *call_res = Tool::FindOrCreateSubModuleTaskCallResource(caller_tab,
+								    callee_tab);
+  IInsn *iinsn = new IInsn(call_res);
+  st->insns_.push_back(iinsn);
 }
 
 }  // namespace isynth

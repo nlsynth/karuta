@@ -46,7 +46,7 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
     tab_->states_.push_back(nst);
     CopyState(st, st_copy_map, reg_copy_map, nst);
   }
-  CollectSubObjCalls(method);
+  CollectSubObjCalls(method, st_copy_map);
   ExpandCalleeStates(method, st_copy_map, reg_copy_map);
   // Add registers.
   for (auto it : reg_copy_map) {
@@ -67,12 +67,15 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   return p;
 }
 
-void MethodExpander::CollectSubObjCalls(MethodContext *method) {
+void MethodExpander::CollectSubObjCalls(MethodContext *method,
+					map<IState *, IState *> &st_map) {
   IResource *pseudo = thread_->GetResourceSet()->PseudoResource();
   for (StateWrapper *sw : method->states_) {
     if (sw->callee_vm_obj_ != nullptr) {
       SubObjCall call;
-      call.call_insn = DesignUtil::FindInsnByResource(sw->state_, pseudo);
+      IState *st = st_map[sw->state_];
+      call.call_insn = DesignUtil::FindInsnByResource(st, pseudo);
+      call.call_state = st;
       call.callee_obj = sw->callee_vm_obj_;
       call.callee_func = sw->func_name_;
       call.callee_obj_name = sw->obj_name_;
