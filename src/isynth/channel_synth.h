@@ -17,6 +17,7 @@ public:
   void Resolve(IDesign *design);
 
 private:
+  // obj to pair of (reader, writer)
   map<vm::Object *, pair<IResource *, IResource *> > channels_;
 };
 

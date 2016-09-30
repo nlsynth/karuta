@@ -1,6 +1,7 @@
 #include "isynth/channel_synth.h"
 
 #include "iroha/iroha.h"
+#include "vm/channel.h"
 
 namespace isynth {
 
@@ -27,6 +28,16 @@ void ChannelSynth::Resolve(IDesign *design) {
     if (p.second != nullptr) {
       ic->SetWriter(p.second);
     }
+    iroha::ResourceParams *params = ic->GetParams();
+    vector<string> v(1);
+    vm::Object *obj = c.first;
+    string name = vm::Channel::ChannelName(obj);
+    v[0] = "channel_" + name + "_data";
+    params->SetValues(resource::kChannelDataPort, v);
+    v[0] = "channel_" + name + "_en";
+    params->SetValues(resource::kChannelEnPort, v);
+    v[0] = "channel_" + name + "_ack";
+    params->SetValues(resource::kChannelAckPort, v);
   }
 }
 
