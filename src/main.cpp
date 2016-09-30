@@ -249,7 +249,6 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("output_marker", NULL);
   parser->RegisterValueFlag("module_prefix", NULL);
   parser->RegisterBoolFlag("z", NULL);
-  parser->RegisterBoolFlag("zz", NULL);
   if (!parser->Parse(argc, argv)) {
     exit(0);
   }
@@ -287,7 +286,6 @@ int Main::main(int argc, char **argv) {
   StaticInitializer::RunInitializers();
   Env::SetArgv0(argv[0]);
   Env::SetUseISynth(args.GetBoolFlag("z", false));
-  Env::SetUseIroha(args.GetBoolFlag("zz", false));
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
   }

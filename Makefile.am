@@ -80,7 +80,6 @@ isynth_SOURCES= \
  src/isynth/tool.cpp src/isynth/tool.h
 
 synth_SOURCES = \
- src/synth/iroha_dumper.cpp src/synth/iroha_dumper.h \
  src/synth/interface.cpp src/synth/interface.h \
  src/synth/resource_set.cpp src/synth/resource_set.h \
  src/synth/synth.cpp src/synth/synth.h \

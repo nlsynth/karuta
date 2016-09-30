@@ -16,7 +16,6 @@
 #include "opt/opt_context.h"
 #include "pool.h"
 #include "synth/channel_synth.h"
-#include "synth/iroha_dumper.h"
 #include "synth/object_synth.h"
 #include "vm/dmodule_wrapper.h"
 #include "vm/object.h"
@@ -83,15 +82,9 @@ bool Synth::Compile(const string &phase) {
   }
 
   if (!phase.empty()) {
-    if (Env::GetUseIroha()) {
-      if (RunIrohaOpt(phase, obj_)) {
-	return false;
-      }
-    } else {
-      DModule *mod = vm::DModuleWrapper::GetDModule(value->object_);
-      opt::ModuleOptimizeStat::Optimize(mod, phase, "");
-      mod->GetOptimizeContext()->WriteDumpIndex();
-    }
+    DModule *mod = vm::DModuleWrapper::GetDModule(value->object_);
+    opt::ModuleOptimizeStat::Optimize(mod, phase, "");
+    mod->GetOptimizeContext()->WriteDumpIndex();
   }
   return true;
 }
@@ -115,12 +108,6 @@ DModule *Synth::SynthModule() {
   obj_synth.ExpandFunctions();
   module->GetOptimizeContext()->DumpIntermediateModule(NULL, "expanded");
 
-  if (Env::GetUseIroha()) {
-    string path = IrPath(obj_);
-    if (!path.empty()) {
-      IrohaDumper::Dump(module, path);
-    }
-  }
   // Let obj_synth be deleted.
 
   return module;
@@ -151,7 +138,7 @@ bool Synth::Synthesize(vm::VM *vm, const string &phase, vm::Object *obj) {
 }
 
 void Synth::WriteHdl(const string &fn, vm::Object *obj) {
-  if (Env::GetUseIroha() || Env::GetUseISynth()) {
+  if (Env::GetUseISynth()) {
     string lang = "-v";
     if (Util::IsHtmlFileName(fn)) {
       lang = "-h";

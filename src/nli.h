@@ -38,8 +38,6 @@ public:
   static const string &GetModulePrefix();
   static void SetArgv0(const string &c);
   static const string &GetArgv0();
-  static void SetUseIroha(bool useIroha);
-  static bool GetUseIroha();
   static void SetUseISynth(bool useISynth);
   static bool GetUseISynth();
 
