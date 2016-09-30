@@ -33,6 +33,7 @@ private:
   void SynthFuncall(vm::Insn *insn);
   void SynthFuncallDone(vm::Insn *insn);
   void SynthBinCalcExpr(vm::Insn *insn);
+  void SynthBitInv(vm::Insn *insn);
   void SynthShiftExpr(vm::Insn *insn);
   void SynthIf(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);

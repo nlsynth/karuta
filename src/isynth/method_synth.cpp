@@ -191,6 +191,10 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   case vm::OP_BIT_RANGE:
     SynthBitRange(insn);
     break;
+  case vm::OP_BIT_INV:
+  case vm::OP_LOGIC_INV:
+    SynthBitInv(insn);
+    break;
   case vm::OP_CHANNEL_WRITE:
     SynthChannelAccess(insn, true);
     break;
@@ -333,6 +337,12 @@ void MethodSynth::SynthBitRange(vm::Insn *insn) {
   iinsn->inputs_.push_back(DesignTool::AllocConstNum(tab_, 32, lsb));
   iinsn->outputs_.push_back(res);
   sw->state_->insns_.push_back(iinsn);
+}
+
+void MethodSynth::SynthBitInv(vm::Insn *insn) {
+  IRegister *src = FindLocalVarRegister(insn->src_regs_[0]);
+  IRegister *res = FindLocalVarRegister(insn->dst_regs_[0]);
+  GenNeg(src, res);
 }
 
 IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
