@@ -121,7 +121,7 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     CHECK(StringWrapper::IsString(args[0].object_));
     phase = StringWrapper::String(args[0].object_);
   }
-  if (Env::GetUseISynth()) {
+  if (!Env::GetUseDFG()) {
     if (phase.empty()) {
       isynth::ISynth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
     } else {

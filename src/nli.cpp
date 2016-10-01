@@ -12,7 +12,7 @@ string Env::output_marker_;
 string Env::module_prefix_;
 bool Env::sandbox_mode_;
 string Env::argv0_;
-bool Env::use_isynth_;
+bool Env::use_dfg_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -186,11 +186,11 @@ const string &Env::GetArgv0() {
   return argv0_;
 }
 
-void Env::SetUseISynth(bool useISynth) {
-  use_isynth_ = useISynth;
+void Env::SetUseDFG(bool useDfg) {
+  use_dfg_ = useDfg;
 }
 
-bool Env::GetUseISynth() {
-  return use_isynth_;
+bool Env::GetUseDFG() {
+  return use_dfg_;
 }
 

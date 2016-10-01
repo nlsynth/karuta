@@ -1,5 +1,5 @@
 // default script
-print("default.n loaded");
+print("default-dfg.n loaded");
 
 // launched
 bool Kernel.__use_ssa = true;

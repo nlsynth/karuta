@@ -1,6 +1,6 @@
 // Native methods.
 // Adding __ prefix so that users can overwrite the original one.
-print("default-isynth.n");
+print("default-isynth.n loaded");
 
 // Kludge to run a regression test.
 def Kernel.enable_wire_insn() {

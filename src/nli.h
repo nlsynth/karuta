@@ -38,8 +38,8 @@ public:
   static const string &GetModulePrefix();
   static void SetArgv0(const string &c);
   static const string &GetArgv0();
-  static void SetUseISynth(bool useISynth);
-  static bool GetUseISynth();
+  static void SetUseDFG(bool useDfg);
+  static bool GetUseDFG();
 
 private:
   static const char *nli_dir_;
@@ -48,8 +48,7 @@ private:
   static bool sandbox_mode_;
   static string module_prefix_;
   static string argv0_;
-  static bool use_iroha_;
-  static bool use_isynth_;
+  static bool use_dfg_;
 };
 
 class Util {

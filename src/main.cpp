@@ -285,7 +285,7 @@ int Main::main(int argc, char **argv) {
   iroha::Iroha::Init();
   StaticInitializer::RunInitializers();
   Env::SetArgv0(argv[0]);
-  Env::SetUseISynth(args.GetBoolFlag("z", false));
+  Env::SetUseDFG(args.GetBoolFlag("z", false));
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
   }

@@ -138,7 +138,13 @@ bool Synth::Synthesize(vm::VM *vm, const string &phase, vm::Object *obj) {
 }
 
 void Synth::WriteHdl(const string &fn, vm::Object *obj) {
-  if (Env::GetUseISynth()) {
+  if (Env::GetUseDFG()) {
+    vm::Value *value =
+      obj->LookupValue(sym_lookup(kCompiledModule), false);
+    CHECK(value);
+    writer::Writer::WriteModule(vm::DModuleWrapper::GetDModule(value->object_),
+				fn);
+  } else {
     string lang = "-v";
     if (Util::IsHtmlFileName(fn)) {
       lang = "-h";
@@ -149,12 +155,6 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
     Env::GetOutputPath(fn.c_str(), &ofn);
     string arg = lang + " -s -o " + ofn;
     RunIroha(obj, arg);
-  } else {
-    vm::Value *value =
-      obj->LookupValue(sym_lookup(kCompiledModule), false);
-    CHECK(value);
-    writer::Writer::WriteModule(vm::DModuleWrapper::GetDModule(value->object_),
-				fn);
   }
 }
 
