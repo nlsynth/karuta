@@ -22,9 +22,11 @@ public:
   ResourceSet(ITable *tab);
   ~ResourceSet();
 
+  IResource *AssertResource();
   IResource *AssignResource();
   IResource *BranchResource();
   IResource *PseudoResource();
+  IResource *PrintResource();
   IResource *GetOpResource(vm::OpCode op, IValueType &vt);
 
   IResource *GetImportedResource(vm::Method *method);
@@ -39,8 +41,10 @@ private:
   void PopulateResourceDataType(int op, IValueType &vt, IResource *res);
 
   ITable *tab_;
+  IResource *assert_;
   IResource *assign_;
   IResource *br_;
+  IResource *print_;
   IResource *mem_if_;
   IResource *pseudo_;
   IResource *task_entry_;

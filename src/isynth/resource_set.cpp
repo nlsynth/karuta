@@ -18,9 +18,17 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   mem_if_ = nullptr;
   task_entry_ = nullptr;
   br_ = DesignTool::GetOneResource(tab, resource::kTransition);
+  print_ = nullptr;
 }
 
 ResourceSet::~ResourceSet() {
+}
+
+IResource *ResourceSet::AssertResource() {
+  if (!assert_) {
+    assert_ = DesignTool::GetOneResource(tab_, resource::kAssert);
+  }
+  return assert_;
 }
 
 IResource *ResourceSet::AssignResource() {
@@ -39,6 +47,13 @@ IResource *ResourceSet::PseudoResource() {
     pseudo_ = DesignTool::GetOneResource(tab_, resource::kPseudo);
   }
   return pseudo_;
+}
+
+IResource *ResourceSet::PrintResource() {
+  if (!print_) {
+    print_ = DesignTool::GetOneResource(tab_, resource::kPrint);
+  }
+  return print_;
 }
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {

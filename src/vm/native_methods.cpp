@@ -208,9 +208,14 @@ void Method::InstallNativeRootObjectMethods(VM *vm, Object *obj) {
 
 void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
-  InstallNativeMethodWithAltImpl(vm, obj, "assert", &NativeMethods::Assert, rets, "__assert");
-  InstallNativeMethodWithAltImpl(vm, obj, "print", &NativeMethods::Print, rets, "__print");
   InstallNativeMethodWithAltImpl(vm, obj, "wait", &NativeMethods::Wait, rets, "__wait");
+  if (Env::GetUseDFG()) {
+    InstallNativeMethodWithAltImpl(vm, obj, "assert", &NativeMethods::Assert, rets, "__assert");
+    InstallNativeMethodWithAltImpl(vm, obj, "print", &NativeMethods::Print, rets, "__print");
+  } else {
+    InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
+    InstallNativeMethod(vm, obj, "assert", &NativeMethods::Assert, rets);
+  }
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);

@@ -21,7 +21,7 @@ public:
   void InjectTaskEntry(IState *st);
 
 private:
-  void SynthNativeMethod(vm::Method *method);
+  void SynthNativeImplMethod(vm::Method *method);
   void SynthEmbeddedMethod(vm::Method *method);
 
   void SynthInsn(vm::Insn *insn);
@@ -43,6 +43,7 @@ private:
   void SynthChannelAccess(vm::Insn *insn, bool is_write);
   void SynthConcat(vm::Insn *insn);
   void SynthPreIncDec(vm::Insn *insn);
+  void SynthNative(vm::Insn *insn);
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);

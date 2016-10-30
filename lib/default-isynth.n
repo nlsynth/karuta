@@ -10,25 +10,3 @@ def Kernel.compile() {
   __compile("");
   __compile("array_to_mem");
 }
-
-def Kernel.__print(int v)
-  [
-    resource = "print",
-    verilog="nli_print.v",
-    file="copy",
-    module="print"
-  ] {
-  printf("print=%d", v);
-}
-
-def Kernel.__assert(bool a)
-  [
-    resource = "assert",
-    verilog="nli_assert.v",
-    file="copy",
-    module="assert"
-  ] {
-  if (!a) {
-    print("assertion failed");
-  }
-}

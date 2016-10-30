@@ -43,7 +43,7 @@ bool MethodSynth::Synth() {
   }
   vm::Method *method = value->method_;
   if (!method->parse_tree_) {
-    SynthNativeMethod(method);
+    SynthNativeImplMethod(method);
     return true;
   }
   compiler::Compiler::CompileMethod(vm_, obj_,
@@ -83,7 +83,7 @@ void MethodSynth::InjectTaskEntry(IState *st) {
   st->insns_.push_back(iinsn);
 }
 
-void MethodSynth::SynthNativeMethod(vm::Method *method) {
+void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
   sym_t name = sym_lookup(method->AlternativeImplementation());
   vm::Value *value = obj_->LookupValue(name, false);
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(name);
@@ -261,8 +261,32 @@ void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
   sw->state_->insns_.push_back(iinsn);
 }
 
+void MethodSynth::SynthNative(vm::Insn *insn) {
+  IInsn *iinsn;
+  if (insn->label_ == sym_lookup("print")) {
+    iinsn = new IInsn(res_->PrintResource());
+  } else if (insn->label_ == sym_lookup("assert")) {
+    iinsn = new IInsn(res_->AssertResource());
+  } else {
+    CHECK(false);
+  }
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
+  for (vm::Register *arg : insn->src_regs_) {
+    IRegister *iarg = FindLocalVarRegister(arg);
+    iinsn->inputs_.push_back(iarg);
+  }
+}
+
 void MethodSynth::SynthFuncall(vm::Insn *insn) {
   sym_t func_name = insn->label_;
+  if (!Env::GetUseDFG()) {
+    if (func_name == sym_lookup("print") ||
+	func_name == sym_lookup("assert")) {
+      SynthNative(insn);
+      return;
+    }
+  }
   vm::Object *callee_obj = nullptr;
   if (insn->obj_reg_) {
     callee_obj = member_reg_to_obj_map_[insn->obj_reg_];
