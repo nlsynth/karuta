@@ -71,7 +71,7 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   IResource *res =
     DesignTool::CreateEmbedResource(tab_, name, fn);
   iroha::ResourceParams *iparams = res->GetParams();
-  // Assumes print() for now.
+
   vector<string> args;
   fe::VarDeclSet *a = method->parse_tree_->args_;
   if (a) {
@@ -90,6 +90,12 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   args.clear();
   args.push_back("req");
   iparams->SetValues(resource::kEmbeddedModuleReq, args);
+  string ack = dparams->GetAckPinName();
+  if (!ack.empty()) {
+    args.clear();
+    args.push_back(ack);
+    iparams->SetValues(resource::kEmbeddedModuleAck, args);
+  }
   return res;
 }
 

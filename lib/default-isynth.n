@@ -10,3 +10,13 @@ def Kernel.compile() {
   __compile("");
   __compile("array_to_mem");
 }
+
+def Kernel.__wait(int cycles)
+  [
+    resource = "wait_cycles",
+    verilog = "nli_wait.v",
+    ack = "ack",
+    file= "copy",
+    module= "wait_cycles"
+  ] {
+}
