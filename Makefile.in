@@ -119,16 +119,7 @@ am__v_lt_1 =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__objects_1 = src/compiler/nli_bin-compiler.$(OBJEXT)
-am__objects_2 = src/dfg/nli_bin-dfg.$(OBJEXT) \
-	src/dfg/nli_bin-dfg_util.$(OBJEXT) \
-	src/dfg/nli_bin-dfg_dump.$(OBJEXT) \
-	src/dfg/nli_bin-d_graph.$(OBJEXT) \
-	src/dfg/nli_bin-d_graph_annotation.$(OBJEXT) \
-	src/dfg/nli_bin-d_graph_util.$(OBJEXT) \
-	src/dfg/nli_bin-d_insn.$(OBJEXT) \
-	src/dfg/nli_bin-d_module.$(OBJEXT) \
-	src/dfg/nli_bin-d_resource.$(OBJEXT) \
-	src/dfg/nli_bin-resource_params.$(OBJEXT)
+am__objects_2 = src/dfg/nli_bin-resource_params.$(OBJEXT)
 am__objects_3 = src/fe/nli_bin-nodecode.$(OBJEXT) \
 	src/fe/nli_bin-fe.$(OBJEXT) src/fe/nli_bin-common.$(OBJEXT) \
 	src/fe/nli_bin-builder.$(OBJEXT) \
@@ -138,25 +129,7 @@ am__objects_3 = src/fe/nli_bin-nodecode.$(OBJEXT) \
 	src/fe/nli_bin-stmt.$(OBJEXT) src/fe/nli_bin-method.$(OBJEXT) \
 	src/fe/nli_bin-var_decl.$(OBJEXT)
 am__objects_4 = src/numeric/nli_bin-numeric.$(OBJEXT)
-am__objects_5 = src/opt/nli_bin-opt.$(OBJEXT) \
-	src/opt/nli_bin-opt_context.$(OBJEXT) \
-	src/opt/nli_bin-opt_phase.$(OBJEXT) \
-	src/opt/nli_bin-basic_block.$(OBJEXT) \
-	src/opt/nli_bin-constant_insn.$(OBJEXT) \
-	src/opt/nli_bin-dfc.$(OBJEXT) \
-	src/opt/nli_bin-dominator.$(OBJEXT) \
-	src/opt/nli_bin-misc.$(OBJEXT) \
-	src/opt/nli_bin-temp_var.$(OBJEXT) \
-	src/opt/nli_bin-reg_share.$(OBJEXT) \
-	src/opt/nli_bin-resource_alloc.$(OBJEXT) \
-	src/opt/nli_bin-resource_annotation.$(OBJEXT) \
-	src/opt/nli_bin-ssa.$(OBJEXT) \
-	src/opt/nli_bin-ssa_assorted.$(OBJEXT) \
-	src/opt/nli_bin-ssa_cleaner.$(OBJEXT) \
-	src/opt/nli_bin-ssa_converter.$(OBJEXT) \
-	src/opt/nli_bin-ssa_misc.$(OBJEXT) \
-	src/opt/nli_bin-wire_insn.$(OBJEXT)
-am__objects_6 = src/isynth/nli_bin-isynth.$(OBJEXT) \
+am__objects_5 = src/isynth/nli_bin-isynth.$(OBJEXT) \
 	src/isynth/nli_bin-channel_synth.$(OBJEXT) \
 	src/isynth/nli_bin-method_context.$(OBJEXT) \
 	src/isynth/nli_bin-method_expander.$(OBJEXT) \
@@ -165,14 +138,8 @@ am__objects_6 = src/isynth/nli_bin-isynth.$(OBJEXT) \
 	src/isynth/nli_bin-resource_set.$(OBJEXT) \
 	src/isynth/nli_bin-thread_synth.$(OBJEXT) \
 	src/isynth/nli_bin-tool.$(OBJEXT)
-am__objects_7 = src/synth/nli_bin-interface.$(OBJEXT) \
-	src/synth/nli_bin-resource_set.$(OBJEXT) \
-	src/synth/nli_bin-synth.$(OBJEXT) \
-	src/synth/nli_bin-channel_synth.$(OBJEXT) \
-	src/synth/nli_bin-method_synth.$(OBJEXT) \
-	src/synth/nli_bin-object_synth.$(OBJEXT) \
-	src/synth/nli_bin-thread_synth.$(OBJEXT)
-am__objects_8 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
+am__objects_6 = src/synth/nli_bin-synth.$(OBJEXT)
+am__objects_7 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-opcode.$(OBJEXT) \
 	src/vm/nli_bin-int_array.$(OBJEXT) \
 	src/vm/nli_bin-channel.$(OBJEXT) \
@@ -189,28 +156,13 @@ am__objects_8 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-thread.$(OBJEXT) \
 	src/vm/nli_bin-thread_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-vm.$(OBJEXT)
-am__objects_9 = src/writer/nli_bin-writer.$(OBJEXT) \
-	src/writer/nli_bin-writer_util.$(OBJEXT) \
-	src/writer/nli_bin-module_template.$(OBJEXT) \
-	src/writer/nli_bin-vl_writer.$(OBJEXT) \
-	src/writer/nli_bin-vl_module.$(OBJEXT) \
-	src/writer/nli_bin-vl_channel.$(OBJEXT) \
-	src/writer/nli_bin-vl_graph.$(OBJEXT) \
-	src/writer/nli_bin-vl_state.$(OBJEXT) \
-	src/writer/nli_bin-vl_util.$(OBJEXT) \
-	src/writer/nli_bin-cc_writer.$(OBJEXT) \
-	src/writer/nli_bin-cc_class.$(OBJEXT) \
-	src/writer/nli_bin-cc_graph.$(OBJEXT) \
-	src/writer/nli_bin-cc_module.$(OBJEXT) \
-	src/writer/nli_bin-cc_state.$(OBJEXT)
 am_nli_bin_OBJECTS = src/nli_bin-main.$(OBJEXT) \
 	src/nli_bin-nli.$(OBJEXT) src/nli_bin-initializer.$(OBJEXT) \
 	src/nli_bin-dump_stream.$(OBJEXT) \
 	src/nli_bin-logging.$(OBJEXT) src/nli_bin-status.$(OBJEXT) \
 	src/nli_bin-sym.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9)
+	$(am__objects_6) $(am__objects_7)
 nli_bin_OBJECTS = $(am_nli_bin_OBJECTS)
 nli_bin_DEPENDENCIES = libparse.la iroha/libiroha.la
 nli_bin_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -551,37 +503,7 @@ fe_SOURCES = \
 numeric_SOURCES = \
  src/numeric/numeric.cpp src/numeric/numeric.h
 
-opt_SOURCES = \
- src/opt/opt.cpp src/opt/opt.h \
- src/opt/opt_context.cpp src/opt/opt_context.h \
- src/opt/opt_phase.cpp src/opt/opt_phase.h \
- src/opt/constants.h \
- src/opt/basic_block.cpp src/opt/basic_block.h \
- src/opt/constant_insn.cpp src/opt/constant_insn.h \
- src/opt/dfc.cpp src/opt/dfc.h \
- src/opt/dominator.cpp src/opt/dominator.h \
- src/opt/misc.cpp src/opt/misc.h \
- src/opt/temp_var.cpp src/opt/temp_var.h \
- src/opt/reg_share.cpp src/opt/reg_share.h \
- src/opt/resource_alloc.cpp src/opt/resource_alloc.h \
- src/opt/resource_annotation.cpp src/opt/resource_annotation.h \
- src/opt/ssa.cpp src/opt/ssa.h \
- src/opt/ssa_assorted.cpp src/opt/ssa_assorted.h \
- src/opt/ssa_cleaner.cpp src/opt/ssa_cleaner.h \
- src/opt/ssa_converter.cpp src/opt/ssa_converter.h \
- src/opt/ssa_misc.cpp src/opt/ssa_misc.h \
- src/opt/wire_insn.cpp src/opt/wire_insn.h
-
 dfg_SOURCES = \
- src/dfg/dfg.cpp src/dfg/dfg.h \
- src/dfg/dfg_util.cpp src/dfg/dfg_util.h \
- src/dfg/dfg_dump.cpp src/dfg/dfg_dump.h \
- src/dfg/d_graph.cpp src/dfg/d_graph.h \
- src/dfg/d_graph_annotation.cpp src/dfg/d_graph_annotation.h \
- src/dfg/d_graph_util.cpp src/dfg/d_graph_util.h \
- src/dfg/d_insn.cpp src/dfg/d_insn.h \
- src/dfg/d_module.cpp src/dfg/d_module.h \
- src/dfg/d_resource.cpp src/dfg/d_resource.h \
  src/dfg/resource_params.cpp src/dfg/resource_params.h
 
 isynth_SOURCES = \
@@ -597,13 +519,7 @@ isynth_SOURCES = \
  src/isynth/tool.cpp src/isynth/tool.h
 
 synth_SOURCES = \
- src/synth/interface.cpp src/synth/interface.h \
- src/synth/resource_set.cpp src/synth/resource_set.h \
- src/synth/synth.cpp src/synth/synth.h \
- src/synth/channel_synth.cpp src/synth/channel_synth.h \
- src/synth/method_synth.cpp src/synth/method_synth.h \
- src/synth/object_synth.cpp src/synth/object_synth.h \
- src/synth/thread_synth.cpp src/synth/thread_synth.h
+ src/synth/synth.cpp src/synth/synth.h
 
 vm_SOURCES = \
  src/vm/array_wrapper.cpp src/vm/array_wrapper.h \
@@ -626,22 +542,6 @@ vm_SOURCES = \
  src/vm/thread_wrapper.cpp src/vm/thread_wrapper.h \
  src/vm/vm.cpp src/vm/vm.h
 
-writer_SOURCES = \
- src/writer/writer.cpp src/writer/writer.h \
- src/writer/writer_util.cpp src/writer/writer_util.h \
- src/writer/module_template.cpp src/writer/module_template.h \
- src/writer/vl_writer.cpp src/writer/vl_writer.h \
- src/writer/vl_module.cpp src/writer/vl_module.h \
- src/writer/vl_channel.cpp src/writer/vl_channel.h \
- src/writer/vl_graph.cpp src/writer/vl_graph.h \
- src/writer/vl_state.cpp src/writer/vl_state.h \
- src/writer/vl_util.cpp src/writer/vl_util.h \
- src/writer/cc_writer.cpp src/writer/cc_writer.h \
- src/writer/cc_class.cpp src/writer/cc_class.h \
- src/writer/cc_graph.cpp src/writer/cc_graph.h \
- src/writer/cc_module.cpp src/writer/cc_module.h \
- src/writer/cc_state.cpp src/writer/cc_state.h
-
 nli_bin_SOURCES = \
  src/main.cpp \
  src/nli.cpp src/nli.h src/pool.h src/stl_util.h \
@@ -654,11 +554,9 @@ nli_bin_SOURCES = \
  $(dfg_SOURCES) \
  $(fe_SOURCES) \
  $(numeric_SOURCES) \
- $(opt_SOURCES) \
  $(isynth_SOURCES) \
  $(synth_SOURCES) \
- $(vm_SOURCES) \
- $(writer_SOURCES)
+ $(vm_SOURCES)
 
 nli_bin_LDADD = libparse.la iroha/libiroha.la
 nli_bin_YFLAGS = -d -g
@@ -811,24 +709,6 @@ src/dfg/$(am__dirstamp):
 src/dfg/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/dfg/$(DEPDIR)
 	@: > src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-dfg.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-dfg_util.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-dfg_dump.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-d_graph.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-d_graph_annotation.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-d_graph_util.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-d_insn.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-d_module.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-d_resource.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
 src/dfg/nli_bin-resource_params.$(OBJEXT): src/dfg/$(am__dirstamp) \
 	src/dfg/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-nodecode.$(OBJEXT): src/fe/$(am__dirstamp) \
@@ -861,48 +741,6 @@ src/numeric/$(DEPDIR)/$(am__dirstamp):
 	@: > src/numeric/$(DEPDIR)/$(am__dirstamp)
 src/numeric/nli_bin-numeric.$(OBJEXT): src/numeric/$(am__dirstamp) \
 	src/numeric/$(DEPDIR)/$(am__dirstamp)
-src/opt/$(am__dirstamp):
-	@$(MKDIR_P) src/opt
-	@: > src/opt/$(am__dirstamp)
-src/opt/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) src/opt/$(DEPDIR)
-	@: > src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-opt.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-opt_context.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-opt_phase.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-basic_block.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-constant_insn.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-dfc.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-dominator.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-misc.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-temp_var.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-reg_share.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-resource_alloc.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-resource_annotation.$(OBJEXT):  \
-	src/opt/$(am__dirstamp) src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-ssa.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-ssa_assorted.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-ssa_cleaner.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-ssa_converter.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-ssa_misc.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
-src/opt/nli_bin-wire_insn.$(OBJEXT): src/opt/$(am__dirstamp) \
-	src/opt/$(DEPDIR)/$(am__dirstamp)
 src/isynth/$(am__dirstamp):
 	@$(MKDIR_P) src/isynth
 	@: > src/isynth/$(am__dirstamp)
@@ -936,19 +774,7 @@ src/synth/$(am__dirstamp):
 src/synth/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/synth/$(DEPDIR)
 	@: > src/synth/$(DEPDIR)/$(am__dirstamp)
-src/synth/nli_bin-interface.$(OBJEXT): src/synth/$(am__dirstamp) \
-	src/synth/$(DEPDIR)/$(am__dirstamp)
-src/synth/nli_bin-resource_set.$(OBJEXT): src/synth/$(am__dirstamp) \
-	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-synth.$(OBJEXT): src/synth/$(am__dirstamp) \
-	src/synth/$(DEPDIR)/$(am__dirstamp)
-src/synth/nli_bin-channel_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
-	src/synth/$(DEPDIR)/$(am__dirstamp)
-src/synth/nli_bin-method_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
-	src/synth/$(DEPDIR)/$(am__dirstamp)
-src/synth/nli_bin-object_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
-	src/synth/$(DEPDIR)/$(am__dirstamp)
-src/synth/nli_bin-thread_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/vm/$(am__dirstamp):
 	@$(MKDIR_P) src/vm
@@ -994,41 +820,6 @@ src/vm/nli_bin-thread_wrapper.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
 src/vm/nli_bin-vm.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
-src/writer/$(am__dirstamp):
-	@$(MKDIR_P) src/writer
-	@: > src/writer/$(am__dirstamp)
-src/writer/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) src/writer/$(DEPDIR)
-	@: > src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-writer.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-writer_util.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-module_template.$(OBJEXT):  \
-	src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-vl_writer.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-vl_module.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-vl_channel.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-vl_graph.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-vl_state.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-vl_util.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-cc_writer.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-cc_class.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-cc_graph.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-cc_module.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
-src/writer/nli_bin-cc_state.$(OBJEXT): src/writer/$(am__dirstamp) \
-	src/writer/$(DEPDIR)/$(am__dirstamp)
 
 nli-bin$(EXEEXT): $(nli_bin_OBJECTS) $(nli_bin_DEPENDENCIES) $(EXTRA_nli_bin_DEPENDENCIES) 
 	@rm -f nli-bin$(EXEEXT)
@@ -1043,10 +834,8 @@ mostlyclean-compile:
 	-rm -f src/fe/*.lo
 	-rm -f src/isynth/*.$(OBJEXT)
 	-rm -f src/numeric/*.$(OBJEXT)
-	-rm -f src/opt/*.$(OBJEXT)
 	-rm -f src/synth/*.$(OBJEXT)
 	-rm -f src/vm/*.$(OBJEXT)
-	-rm -f src/writer/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -1059,15 +848,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-sym.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/compiler/$(DEPDIR)/nli_bin-compiler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-d_graph.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-d_graph_annotation.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-d_graph_util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-d_insn.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-d_module.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-d_resource.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-dfg.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-dfg_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-resource_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/libparse_la-parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-builder.Po@am__quote@
@@ -1091,31 +871,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/isynth/$(DEPDIR)/nli_bin-thread_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/isynth/$(DEPDIR)/nli_bin-tool.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/numeric/$(DEPDIR)/nli_bin-numeric.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-basic_block.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-constant_insn.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-dfc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-dominator.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-misc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-opt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-opt_context.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-opt_phase.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-reg_share.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-resource_alloc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-resource_annotation.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-ssa.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-ssa_assorted.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-ssa_cleaner.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-ssa_converter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-ssa_misc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-temp_var.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/opt/$(DEPDIR)/nli_bin-wire_insn.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-channel_synth.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-interface.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-method_synth.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-object_synth.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-resource_set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-synth.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-thread_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-array_wrapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-channel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-dmodule_wrapper.Po@am__quote@
@@ -1135,20 +891,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-thread_wrapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-value.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-vm.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_class.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_graph.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_module.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_state.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-cc_writer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-module_template.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_channel.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_graph.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_module.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_state.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-vl_writer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-writer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/writer/$(DEPDIR)/nli_bin-writer_util.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1285,132 +1027,6 @@ src/compiler/nli_bin-compiler.obj: src/compiler/compiler.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/compiler/compiler.cpp' object='src/compiler/nli_bin-compiler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/compiler/nli_bin-compiler.obj `if test -f 'src/compiler/compiler.cpp'; then $(CYGPATH_W) 'src/compiler/compiler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/compiler/compiler.cpp'; fi`
-
-src/dfg/nli_bin-dfg.o: src/dfg/dfg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-dfg.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-dfg.Tpo -c -o src/dfg/nli_bin-dfg.o `test -f 'src/dfg/dfg.cpp' || echo '$(srcdir)/'`src/dfg/dfg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-dfg.Tpo src/dfg/$(DEPDIR)/nli_bin-dfg.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/dfg.cpp' object='src/dfg/nli_bin-dfg.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-dfg.o `test -f 'src/dfg/dfg.cpp' || echo '$(srcdir)/'`src/dfg/dfg.cpp
-
-src/dfg/nli_bin-dfg.obj: src/dfg/dfg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-dfg.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-dfg.Tpo -c -o src/dfg/nli_bin-dfg.obj `if test -f 'src/dfg/dfg.cpp'; then $(CYGPATH_W) 'src/dfg/dfg.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/dfg.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-dfg.Tpo src/dfg/$(DEPDIR)/nli_bin-dfg.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/dfg.cpp' object='src/dfg/nli_bin-dfg.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-dfg.obj `if test -f 'src/dfg/dfg.cpp'; then $(CYGPATH_W) 'src/dfg/dfg.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/dfg.cpp'; fi`
-
-src/dfg/nli_bin-dfg_util.o: src/dfg/dfg_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-dfg_util.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-dfg_util.Tpo -c -o src/dfg/nli_bin-dfg_util.o `test -f 'src/dfg/dfg_util.cpp' || echo '$(srcdir)/'`src/dfg/dfg_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-dfg_util.Tpo src/dfg/$(DEPDIR)/nli_bin-dfg_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/dfg_util.cpp' object='src/dfg/nli_bin-dfg_util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-dfg_util.o `test -f 'src/dfg/dfg_util.cpp' || echo '$(srcdir)/'`src/dfg/dfg_util.cpp
-
-src/dfg/nli_bin-dfg_util.obj: src/dfg/dfg_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-dfg_util.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-dfg_util.Tpo -c -o src/dfg/nli_bin-dfg_util.obj `if test -f 'src/dfg/dfg_util.cpp'; then $(CYGPATH_W) 'src/dfg/dfg_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/dfg_util.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-dfg_util.Tpo src/dfg/$(DEPDIR)/nli_bin-dfg_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/dfg_util.cpp' object='src/dfg/nli_bin-dfg_util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-dfg_util.obj `if test -f 'src/dfg/dfg_util.cpp'; then $(CYGPATH_W) 'src/dfg/dfg_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/dfg_util.cpp'; fi`
-
-src/dfg/nli_bin-dfg_dump.o: src/dfg/dfg_dump.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-dfg_dump.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Tpo -c -o src/dfg/nli_bin-dfg_dump.o `test -f 'src/dfg/dfg_dump.cpp' || echo '$(srcdir)/'`src/dfg/dfg_dump.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Tpo src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/dfg_dump.cpp' object='src/dfg/nli_bin-dfg_dump.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-dfg_dump.o `test -f 'src/dfg/dfg_dump.cpp' || echo '$(srcdir)/'`src/dfg/dfg_dump.cpp
-
-src/dfg/nli_bin-dfg_dump.obj: src/dfg/dfg_dump.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-dfg_dump.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Tpo -c -o src/dfg/nli_bin-dfg_dump.obj `if test -f 'src/dfg/dfg_dump.cpp'; then $(CYGPATH_W) 'src/dfg/dfg_dump.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/dfg_dump.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Tpo src/dfg/$(DEPDIR)/nli_bin-dfg_dump.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/dfg_dump.cpp' object='src/dfg/nli_bin-dfg_dump.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-dfg_dump.obj `if test -f 'src/dfg/dfg_dump.cpp'; then $(CYGPATH_W) 'src/dfg/dfg_dump.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/dfg_dump.cpp'; fi`
-
-src/dfg/nli_bin-d_graph.o: src/dfg/d_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_graph.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_graph.Tpo -c -o src/dfg/nli_bin-d_graph.o `test -f 'src/dfg/d_graph.cpp' || echo '$(srcdir)/'`src/dfg/d_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_graph.Tpo src/dfg/$(DEPDIR)/nli_bin-d_graph.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_graph.cpp' object='src/dfg/nli_bin-d_graph.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_graph.o `test -f 'src/dfg/d_graph.cpp' || echo '$(srcdir)/'`src/dfg/d_graph.cpp
-
-src/dfg/nli_bin-d_graph.obj: src/dfg/d_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_graph.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_graph.Tpo -c -o src/dfg/nli_bin-d_graph.obj `if test -f 'src/dfg/d_graph.cpp'; then $(CYGPATH_W) 'src/dfg/d_graph.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_graph.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_graph.Tpo src/dfg/$(DEPDIR)/nli_bin-d_graph.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_graph.cpp' object='src/dfg/nli_bin-d_graph.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_graph.obj `if test -f 'src/dfg/d_graph.cpp'; then $(CYGPATH_W) 'src/dfg/d_graph.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_graph.cpp'; fi`
-
-src/dfg/nli_bin-d_graph_annotation.o: src/dfg/d_graph_annotation.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_graph_annotation.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_graph_annotation.Tpo -c -o src/dfg/nli_bin-d_graph_annotation.o `test -f 'src/dfg/d_graph_annotation.cpp' || echo '$(srcdir)/'`src/dfg/d_graph_annotation.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_graph_annotation.Tpo src/dfg/$(DEPDIR)/nli_bin-d_graph_annotation.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_graph_annotation.cpp' object='src/dfg/nli_bin-d_graph_annotation.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_graph_annotation.o `test -f 'src/dfg/d_graph_annotation.cpp' || echo '$(srcdir)/'`src/dfg/d_graph_annotation.cpp
-
-src/dfg/nli_bin-d_graph_annotation.obj: src/dfg/d_graph_annotation.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_graph_annotation.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_graph_annotation.Tpo -c -o src/dfg/nli_bin-d_graph_annotation.obj `if test -f 'src/dfg/d_graph_annotation.cpp'; then $(CYGPATH_W) 'src/dfg/d_graph_annotation.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_graph_annotation.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_graph_annotation.Tpo src/dfg/$(DEPDIR)/nli_bin-d_graph_annotation.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_graph_annotation.cpp' object='src/dfg/nli_bin-d_graph_annotation.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_graph_annotation.obj `if test -f 'src/dfg/d_graph_annotation.cpp'; then $(CYGPATH_W) 'src/dfg/d_graph_annotation.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_graph_annotation.cpp'; fi`
-
-src/dfg/nli_bin-d_graph_util.o: src/dfg/d_graph_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_graph_util.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_graph_util.Tpo -c -o src/dfg/nli_bin-d_graph_util.o `test -f 'src/dfg/d_graph_util.cpp' || echo '$(srcdir)/'`src/dfg/d_graph_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_graph_util.Tpo src/dfg/$(DEPDIR)/nli_bin-d_graph_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_graph_util.cpp' object='src/dfg/nli_bin-d_graph_util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_graph_util.o `test -f 'src/dfg/d_graph_util.cpp' || echo '$(srcdir)/'`src/dfg/d_graph_util.cpp
-
-src/dfg/nli_bin-d_graph_util.obj: src/dfg/d_graph_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_graph_util.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_graph_util.Tpo -c -o src/dfg/nli_bin-d_graph_util.obj `if test -f 'src/dfg/d_graph_util.cpp'; then $(CYGPATH_W) 'src/dfg/d_graph_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_graph_util.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_graph_util.Tpo src/dfg/$(DEPDIR)/nli_bin-d_graph_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_graph_util.cpp' object='src/dfg/nli_bin-d_graph_util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_graph_util.obj `if test -f 'src/dfg/d_graph_util.cpp'; then $(CYGPATH_W) 'src/dfg/d_graph_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_graph_util.cpp'; fi`
-
-src/dfg/nli_bin-d_insn.o: src/dfg/d_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_insn.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_insn.Tpo -c -o src/dfg/nli_bin-d_insn.o `test -f 'src/dfg/d_insn.cpp' || echo '$(srcdir)/'`src/dfg/d_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_insn.Tpo src/dfg/$(DEPDIR)/nli_bin-d_insn.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_insn.cpp' object='src/dfg/nli_bin-d_insn.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_insn.o `test -f 'src/dfg/d_insn.cpp' || echo '$(srcdir)/'`src/dfg/d_insn.cpp
-
-src/dfg/nli_bin-d_insn.obj: src/dfg/d_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_insn.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_insn.Tpo -c -o src/dfg/nli_bin-d_insn.obj `if test -f 'src/dfg/d_insn.cpp'; then $(CYGPATH_W) 'src/dfg/d_insn.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_insn.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_insn.Tpo src/dfg/$(DEPDIR)/nli_bin-d_insn.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_insn.cpp' object='src/dfg/nli_bin-d_insn.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_insn.obj `if test -f 'src/dfg/d_insn.cpp'; then $(CYGPATH_W) 'src/dfg/d_insn.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_insn.cpp'; fi`
-
-src/dfg/nli_bin-d_module.o: src/dfg/d_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_module.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_module.Tpo -c -o src/dfg/nli_bin-d_module.o `test -f 'src/dfg/d_module.cpp' || echo '$(srcdir)/'`src/dfg/d_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_module.Tpo src/dfg/$(DEPDIR)/nli_bin-d_module.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_module.cpp' object='src/dfg/nli_bin-d_module.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_module.o `test -f 'src/dfg/d_module.cpp' || echo '$(srcdir)/'`src/dfg/d_module.cpp
-
-src/dfg/nli_bin-d_module.obj: src/dfg/d_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_module.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_module.Tpo -c -o src/dfg/nli_bin-d_module.obj `if test -f 'src/dfg/d_module.cpp'; then $(CYGPATH_W) 'src/dfg/d_module.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_module.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_module.Tpo src/dfg/$(DEPDIR)/nli_bin-d_module.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_module.cpp' object='src/dfg/nli_bin-d_module.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_module.obj `if test -f 'src/dfg/d_module.cpp'; then $(CYGPATH_W) 'src/dfg/d_module.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_module.cpp'; fi`
-
-src/dfg/nli_bin-d_resource.o: src/dfg/d_resource.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_resource.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_resource.Tpo -c -o src/dfg/nli_bin-d_resource.o `test -f 'src/dfg/d_resource.cpp' || echo '$(srcdir)/'`src/dfg/d_resource.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_resource.Tpo src/dfg/$(DEPDIR)/nli_bin-d_resource.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_resource.cpp' object='src/dfg/nli_bin-d_resource.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_resource.o `test -f 'src/dfg/d_resource.cpp' || echo '$(srcdir)/'`src/dfg/d_resource.cpp
-
-src/dfg/nli_bin-d_resource.obj: src/dfg/d_resource.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-d_resource.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-d_resource.Tpo -c -o src/dfg/nli_bin-d_resource.obj `if test -f 'src/dfg/d_resource.cpp'; then $(CYGPATH_W) 'src/dfg/d_resource.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_resource.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-d_resource.Tpo src/dfg/$(DEPDIR)/nli_bin-d_resource.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/d_resource.cpp' object='src/dfg/nli_bin-d_resource.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-d_resource.obj `if test -f 'src/dfg/d_resource.cpp'; then $(CYGPATH_W) 'src/dfg/d_resource.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/d_resource.cpp'; fi`
 
 src/dfg/nli_bin-resource_params.o: src/dfg/resource_params.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-resource_params.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo -c -o src/dfg/nli_bin-resource_params.o `test -f 'src/dfg/resource_params.cpp' || echo '$(srcdir)/'`src/dfg/resource_params.cpp
@@ -1594,258 +1210,6 @@ src/numeric/nli_bin-numeric.obj: src/numeric/numeric.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/numeric/nli_bin-numeric.obj `if test -f 'src/numeric/numeric.cpp'; then $(CYGPATH_W) 'src/numeric/numeric.cpp'; else $(CYGPATH_W) '$(srcdir)/src/numeric/numeric.cpp'; fi`
 
-src/opt/nli_bin-opt.o: src/opt/opt.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-opt.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-opt.Tpo -c -o src/opt/nli_bin-opt.o `test -f 'src/opt/opt.cpp' || echo '$(srcdir)/'`src/opt/opt.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-opt.Tpo src/opt/$(DEPDIR)/nli_bin-opt.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/opt.cpp' object='src/opt/nli_bin-opt.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-opt.o `test -f 'src/opt/opt.cpp' || echo '$(srcdir)/'`src/opt/opt.cpp
-
-src/opt/nli_bin-opt.obj: src/opt/opt.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-opt.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-opt.Tpo -c -o src/opt/nli_bin-opt.obj `if test -f 'src/opt/opt.cpp'; then $(CYGPATH_W) 'src/opt/opt.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/opt.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-opt.Tpo src/opt/$(DEPDIR)/nli_bin-opt.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/opt.cpp' object='src/opt/nli_bin-opt.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-opt.obj `if test -f 'src/opt/opt.cpp'; then $(CYGPATH_W) 'src/opt/opt.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/opt.cpp'; fi`
-
-src/opt/nli_bin-opt_context.o: src/opt/opt_context.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-opt_context.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-opt_context.Tpo -c -o src/opt/nli_bin-opt_context.o `test -f 'src/opt/opt_context.cpp' || echo '$(srcdir)/'`src/opt/opt_context.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-opt_context.Tpo src/opt/$(DEPDIR)/nli_bin-opt_context.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/opt_context.cpp' object='src/opt/nli_bin-opt_context.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-opt_context.o `test -f 'src/opt/opt_context.cpp' || echo '$(srcdir)/'`src/opt/opt_context.cpp
-
-src/opt/nli_bin-opt_context.obj: src/opt/opt_context.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-opt_context.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-opt_context.Tpo -c -o src/opt/nli_bin-opt_context.obj `if test -f 'src/opt/opt_context.cpp'; then $(CYGPATH_W) 'src/opt/opt_context.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/opt_context.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-opt_context.Tpo src/opt/$(DEPDIR)/nli_bin-opt_context.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/opt_context.cpp' object='src/opt/nli_bin-opt_context.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-opt_context.obj `if test -f 'src/opt/opt_context.cpp'; then $(CYGPATH_W) 'src/opt/opt_context.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/opt_context.cpp'; fi`
-
-src/opt/nli_bin-opt_phase.o: src/opt/opt_phase.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-opt_phase.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-opt_phase.Tpo -c -o src/opt/nli_bin-opt_phase.o `test -f 'src/opt/opt_phase.cpp' || echo '$(srcdir)/'`src/opt/opt_phase.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-opt_phase.Tpo src/opt/$(DEPDIR)/nli_bin-opt_phase.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/opt_phase.cpp' object='src/opt/nli_bin-opt_phase.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-opt_phase.o `test -f 'src/opt/opt_phase.cpp' || echo '$(srcdir)/'`src/opt/opt_phase.cpp
-
-src/opt/nli_bin-opt_phase.obj: src/opt/opt_phase.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-opt_phase.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-opt_phase.Tpo -c -o src/opt/nli_bin-opt_phase.obj `if test -f 'src/opt/opt_phase.cpp'; then $(CYGPATH_W) 'src/opt/opt_phase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/opt_phase.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-opt_phase.Tpo src/opt/$(DEPDIR)/nli_bin-opt_phase.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/opt_phase.cpp' object='src/opt/nli_bin-opt_phase.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-opt_phase.obj `if test -f 'src/opt/opt_phase.cpp'; then $(CYGPATH_W) 'src/opt/opt_phase.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/opt_phase.cpp'; fi`
-
-src/opt/nli_bin-basic_block.o: src/opt/basic_block.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-basic_block.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-basic_block.Tpo -c -o src/opt/nli_bin-basic_block.o `test -f 'src/opt/basic_block.cpp' || echo '$(srcdir)/'`src/opt/basic_block.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-basic_block.Tpo src/opt/$(DEPDIR)/nli_bin-basic_block.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/basic_block.cpp' object='src/opt/nli_bin-basic_block.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-basic_block.o `test -f 'src/opt/basic_block.cpp' || echo '$(srcdir)/'`src/opt/basic_block.cpp
-
-src/opt/nli_bin-basic_block.obj: src/opt/basic_block.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-basic_block.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-basic_block.Tpo -c -o src/opt/nli_bin-basic_block.obj `if test -f 'src/opt/basic_block.cpp'; then $(CYGPATH_W) 'src/opt/basic_block.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/basic_block.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-basic_block.Tpo src/opt/$(DEPDIR)/nli_bin-basic_block.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/basic_block.cpp' object='src/opt/nli_bin-basic_block.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-basic_block.obj `if test -f 'src/opt/basic_block.cpp'; then $(CYGPATH_W) 'src/opt/basic_block.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/basic_block.cpp'; fi`
-
-src/opt/nli_bin-constant_insn.o: src/opt/constant_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-constant_insn.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-constant_insn.Tpo -c -o src/opt/nli_bin-constant_insn.o `test -f 'src/opt/constant_insn.cpp' || echo '$(srcdir)/'`src/opt/constant_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-constant_insn.Tpo src/opt/$(DEPDIR)/nli_bin-constant_insn.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/constant_insn.cpp' object='src/opt/nli_bin-constant_insn.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-constant_insn.o `test -f 'src/opt/constant_insn.cpp' || echo '$(srcdir)/'`src/opt/constant_insn.cpp
-
-src/opt/nli_bin-constant_insn.obj: src/opt/constant_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-constant_insn.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-constant_insn.Tpo -c -o src/opt/nli_bin-constant_insn.obj `if test -f 'src/opt/constant_insn.cpp'; then $(CYGPATH_W) 'src/opt/constant_insn.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/constant_insn.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-constant_insn.Tpo src/opt/$(DEPDIR)/nli_bin-constant_insn.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/constant_insn.cpp' object='src/opt/nli_bin-constant_insn.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-constant_insn.obj `if test -f 'src/opt/constant_insn.cpp'; then $(CYGPATH_W) 'src/opt/constant_insn.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/constant_insn.cpp'; fi`
-
-src/opt/nli_bin-dfc.o: src/opt/dfc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-dfc.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-dfc.Tpo -c -o src/opt/nli_bin-dfc.o `test -f 'src/opt/dfc.cpp' || echo '$(srcdir)/'`src/opt/dfc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-dfc.Tpo src/opt/$(DEPDIR)/nli_bin-dfc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/dfc.cpp' object='src/opt/nli_bin-dfc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-dfc.o `test -f 'src/opt/dfc.cpp' || echo '$(srcdir)/'`src/opt/dfc.cpp
-
-src/opt/nli_bin-dfc.obj: src/opt/dfc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-dfc.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-dfc.Tpo -c -o src/opt/nli_bin-dfc.obj `if test -f 'src/opt/dfc.cpp'; then $(CYGPATH_W) 'src/opt/dfc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/dfc.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-dfc.Tpo src/opt/$(DEPDIR)/nli_bin-dfc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/dfc.cpp' object='src/opt/nli_bin-dfc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-dfc.obj `if test -f 'src/opt/dfc.cpp'; then $(CYGPATH_W) 'src/opt/dfc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/dfc.cpp'; fi`
-
-src/opt/nli_bin-dominator.o: src/opt/dominator.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-dominator.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-dominator.Tpo -c -o src/opt/nli_bin-dominator.o `test -f 'src/opt/dominator.cpp' || echo '$(srcdir)/'`src/opt/dominator.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-dominator.Tpo src/opt/$(DEPDIR)/nli_bin-dominator.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/dominator.cpp' object='src/opt/nli_bin-dominator.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-dominator.o `test -f 'src/opt/dominator.cpp' || echo '$(srcdir)/'`src/opt/dominator.cpp
-
-src/opt/nli_bin-dominator.obj: src/opt/dominator.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-dominator.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-dominator.Tpo -c -o src/opt/nli_bin-dominator.obj `if test -f 'src/opt/dominator.cpp'; then $(CYGPATH_W) 'src/opt/dominator.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/dominator.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-dominator.Tpo src/opt/$(DEPDIR)/nli_bin-dominator.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/dominator.cpp' object='src/opt/nli_bin-dominator.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-dominator.obj `if test -f 'src/opt/dominator.cpp'; then $(CYGPATH_W) 'src/opt/dominator.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/dominator.cpp'; fi`
-
-src/opt/nli_bin-misc.o: src/opt/misc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-misc.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-misc.Tpo -c -o src/opt/nli_bin-misc.o `test -f 'src/opt/misc.cpp' || echo '$(srcdir)/'`src/opt/misc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-misc.Tpo src/opt/$(DEPDIR)/nli_bin-misc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/misc.cpp' object='src/opt/nli_bin-misc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-misc.o `test -f 'src/opt/misc.cpp' || echo '$(srcdir)/'`src/opt/misc.cpp
-
-src/opt/nli_bin-misc.obj: src/opt/misc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-misc.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-misc.Tpo -c -o src/opt/nli_bin-misc.obj `if test -f 'src/opt/misc.cpp'; then $(CYGPATH_W) 'src/opt/misc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/misc.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-misc.Tpo src/opt/$(DEPDIR)/nli_bin-misc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/misc.cpp' object='src/opt/nli_bin-misc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-misc.obj `if test -f 'src/opt/misc.cpp'; then $(CYGPATH_W) 'src/opt/misc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/misc.cpp'; fi`
-
-src/opt/nli_bin-temp_var.o: src/opt/temp_var.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-temp_var.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-temp_var.Tpo -c -o src/opt/nli_bin-temp_var.o `test -f 'src/opt/temp_var.cpp' || echo '$(srcdir)/'`src/opt/temp_var.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-temp_var.Tpo src/opt/$(DEPDIR)/nli_bin-temp_var.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/temp_var.cpp' object='src/opt/nli_bin-temp_var.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-temp_var.o `test -f 'src/opt/temp_var.cpp' || echo '$(srcdir)/'`src/opt/temp_var.cpp
-
-src/opt/nli_bin-temp_var.obj: src/opt/temp_var.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-temp_var.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-temp_var.Tpo -c -o src/opt/nli_bin-temp_var.obj `if test -f 'src/opt/temp_var.cpp'; then $(CYGPATH_W) 'src/opt/temp_var.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/temp_var.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-temp_var.Tpo src/opt/$(DEPDIR)/nli_bin-temp_var.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/temp_var.cpp' object='src/opt/nli_bin-temp_var.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-temp_var.obj `if test -f 'src/opt/temp_var.cpp'; then $(CYGPATH_W) 'src/opt/temp_var.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/temp_var.cpp'; fi`
-
-src/opt/nli_bin-reg_share.o: src/opt/reg_share.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-reg_share.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-reg_share.Tpo -c -o src/opt/nli_bin-reg_share.o `test -f 'src/opt/reg_share.cpp' || echo '$(srcdir)/'`src/opt/reg_share.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-reg_share.Tpo src/opt/$(DEPDIR)/nli_bin-reg_share.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/reg_share.cpp' object='src/opt/nli_bin-reg_share.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-reg_share.o `test -f 'src/opt/reg_share.cpp' || echo '$(srcdir)/'`src/opt/reg_share.cpp
-
-src/opt/nli_bin-reg_share.obj: src/opt/reg_share.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-reg_share.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-reg_share.Tpo -c -o src/opt/nli_bin-reg_share.obj `if test -f 'src/opt/reg_share.cpp'; then $(CYGPATH_W) 'src/opt/reg_share.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/reg_share.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-reg_share.Tpo src/opt/$(DEPDIR)/nli_bin-reg_share.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/reg_share.cpp' object='src/opt/nli_bin-reg_share.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-reg_share.obj `if test -f 'src/opt/reg_share.cpp'; then $(CYGPATH_W) 'src/opt/reg_share.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/reg_share.cpp'; fi`
-
-src/opt/nli_bin-resource_alloc.o: src/opt/resource_alloc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-resource_alloc.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-resource_alloc.Tpo -c -o src/opt/nli_bin-resource_alloc.o `test -f 'src/opt/resource_alloc.cpp' || echo '$(srcdir)/'`src/opt/resource_alloc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-resource_alloc.Tpo src/opt/$(DEPDIR)/nli_bin-resource_alloc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/resource_alloc.cpp' object='src/opt/nli_bin-resource_alloc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-resource_alloc.o `test -f 'src/opt/resource_alloc.cpp' || echo '$(srcdir)/'`src/opt/resource_alloc.cpp
-
-src/opt/nli_bin-resource_alloc.obj: src/opt/resource_alloc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-resource_alloc.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-resource_alloc.Tpo -c -o src/opt/nli_bin-resource_alloc.obj `if test -f 'src/opt/resource_alloc.cpp'; then $(CYGPATH_W) 'src/opt/resource_alloc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/resource_alloc.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-resource_alloc.Tpo src/opt/$(DEPDIR)/nli_bin-resource_alloc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/resource_alloc.cpp' object='src/opt/nli_bin-resource_alloc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-resource_alloc.obj `if test -f 'src/opt/resource_alloc.cpp'; then $(CYGPATH_W) 'src/opt/resource_alloc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/resource_alloc.cpp'; fi`
-
-src/opt/nli_bin-resource_annotation.o: src/opt/resource_annotation.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-resource_annotation.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-resource_annotation.Tpo -c -o src/opt/nli_bin-resource_annotation.o `test -f 'src/opt/resource_annotation.cpp' || echo '$(srcdir)/'`src/opt/resource_annotation.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-resource_annotation.Tpo src/opt/$(DEPDIR)/nli_bin-resource_annotation.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/resource_annotation.cpp' object='src/opt/nli_bin-resource_annotation.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-resource_annotation.o `test -f 'src/opt/resource_annotation.cpp' || echo '$(srcdir)/'`src/opt/resource_annotation.cpp
-
-src/opt/nli_bin-resource_annotation.obj: src/opt/resource_annotation.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-resource_annotation.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-resource_annotation.Tpo -c -o src/opt/nli_bin-resource_annotation.obj `if test -f 'src/opt/resource_annotation.cpp'; then $(CYGPATH_W) 'src/opt/resource_annotation.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/resource_annotation.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-resource_annotation.Tpo src/opt/$(DEPDIR)/nli_bin-resource_annotation.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/resource_annotation.cpp' object='src/opt/nli_bin-resource_annotation.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-resource_annotation.obj `if test -f 'src/opt/resource_annotation.cpp'; then $(CYGPATH_W) 'src/opt/resource_annotation.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/resource_annotation.cpp'; fi`
-
-src/opt/nli_bin-ssa.o: src/opt/ssa.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa.Tpo -c -o src/opt/nli_bin-ssa.o `test -f 'src/opt/ssa.cpp' || echo '$(srcdir)/'`src/opt/ssa.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa.Tpo src/opt/$(DEPDIR)/nli_bin-ssa.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa.cpp' object='src/opt/nli_bin-ssa.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa.o `test -f 'src/opt/ssa.cpp' || echo '$(srcdir)/'`src/opt/ssa.cpp
-
-src/opt/nli_bin-ssa.obj: src/opt/ssa.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa.Tpo -c -o src/opt/nli_bin-ssa.obj `if test -f 'src/opt/ssa.cpp'; then $(CYGPATH_W) 'src/opt/ssa.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa.Tpo src/opt/$(DEPDIR)/nli_bin-ssa.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa.cpp' object='src/opt/nli_bin-ssa.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa.obj `if test -f 'src/opt/ssa.cpp'; then $(CYGPATH_W) 'src/opt/ssa.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa.cpp'; fi`
-
-src/opt/nli_bin-ssa_assorted.o: src/opt/ssa_assorted.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_assorted.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_assorted.Tpo -c -o src/opt/nli_bin-ssa_assorted.o `test -f 'src/opt/ssa_assorted.cpp' || echo '$(srcdir)/'`src/opt/ssa_assorted.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_assorted.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_assorted.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_assorted.cpp' object='src/opt/nli_bin-ssa_assorted.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_assorted.o `test -f 'src/opt/ssa_assorted.cpp' || echo '$(srcdir)/'`src/opt/ssa_assorted.cpp
-
-src/opt/nli_bin-ssa_assorted.obj: src/opt/ssa_assorted.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_assorted.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_assorted.Tpo -c -o src/opt/nli_bin-ssa_assorted.obj `if test -f 'src/opt/ssa_assorted.cpp'; then $(CYGPATH_W) 'src/opt/ssa_assorted.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_assorted.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_assorted.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_assorted.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_assorted.cpp' object='src/opt/nli_bin-ssa_assorted.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_assorted.obj `if test -f 'src/opt/ssa_assorted.cpp'; then $(CYGPATH_W) 'src/opt/ssa_assorted.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_assorted.cpp'; fi`
-
-src/opt/nli_bin-ssa_cleaner.o: src/opt/ssa_cleaner.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_cleaner.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_cleaner.Tpo -c -o src/opt/nli_bin-ssa_cleaner.o `test -f 'src/opt/ssa_cleaner.cpp' || echo '$(srcdir)/'`src/opt/ssa_cleaner.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_cleaner.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_cleaner.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_cleaner.cpp' object='src/opt/nli_bin-ssa_cleaner.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_cleaner.o `test -f 'src/opt/ssa_cleaner.cpp' || echo '$(srcdir)/'`src/opt/ssa_cleaner.cpp
-
-src/opt/nli_bin-ssa_cleaner.obj: src/opt/ssa_cleaner.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_cleaner.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_cleaner.Tpo -c -o src/opt/nli_bin-ssa_cleaner.obj `if test -f 'src/opt/ssa_cleaner.cpp'; then $(CYGPATH_W) 'src/opt/ssa_cleaner.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_cleaner.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_cleaner.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_cleaner.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_cleaner.cpp' object='src/opt/nli_bin-ssa_cleaner.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_cleaner.obj `if test -f 'src/opt/ssa_cleaner.cpp'; then $(CYGPATH_W) 'src/opt/ssa_cleaner.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_cleaner.cpp'; fi`
-
-src/opt/nli_bin-ssa_converter.o: src/opt/ssa_converter.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_converter.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_converter.Tpo -c -o src/opt/nli_bin-ssa_converter.o `test -f 'src/opt/ssa_converter.cpp' || echo '$(srcdir)/'`src/opt/ssa_converter.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_converter.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_converter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_converter.cpp' object='src/opt/nli_bin-ssa_converter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_converter.o `test -f 'src/opt/ssa_converter.cpp' || echo '$(srcdir)/'`src/opt/ssa_converter.cpp
-
-src/opt/nli_bin-ssa_converter.obj: src/opt/ssa_converter.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_converter.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_converter.Tpo -c -o src/opt/nli_bin-ssa_converter.obj `if test -f 'src/opt/ssa_converter.cpp'; then $(CYGPATH_W) 'src/opt/ssa_converter.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_converter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_converter.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_converter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_converter.cpp' object='src/opt/nli_bin-ssa_converter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_converter.obj `if test -f 'src/opt/ssa_converter.cpp'; then $(CYGPATH_W) 'src/opt/ssa_converter.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_converter.cpp'; fi`
-
-src/opt/nli_bin-ssa_misc.o: src/opt/ssa_misc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_misc.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_misc.Tpo -c -o src/opt/nli_bin-ssa_misc.o `test -f 'src/opt/ssa_misc.cpp' || echo '$(srcdir)/'`src/opt/ssa_misc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_misc.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_misc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_misc.cpp' object='src/opt/nli_bin-ssa_misc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_misc.o `test -f 'src/opt/ssa_misc.cpp' || echo '$(srcdir)/'`src/opt/ssa_misc.cpp
-
-src/opt/nli_bin-ssa_misc.obj: src/opt/ssa_misc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-ssa_misc.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-ssa_misc.Tpo -c -o src/opt/nli_bin-ssa_misc.obj `if test -f 'src/opt/ssa_misc.cpp'; then $(CYGPATH_W) 'src/opt/ssa_misc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_misc.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-ssa_misc.Tpo src/opt/$(DEPDIR)/nli_bin-ssa_misc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/ssa_misc.cpp' object='src/opt/nli_bin-ssa_misc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-ssa_misc.obj `if test -f 'src/opt/ssa_misc.cpp'; then $(CYGPATH_W) 'src/opt/ssa_misc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/ssa_misc.cpp'; fi`
-
-src/opt/nli_bin-wire_insn.o: src/opt/wire_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-wire_insn.o -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-wire_insn.Tpo -c -o src/opt/nli_bin-wire_insn.o `test -f 'src/opt/wire_insn.cpp' || echo '$(srcdir)/'`src/opt/wire_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-wire_insn.Tpo src/opt/$(DEPDIR)/nli_bin-wire_insn.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/wire_insn.cpp' object='src/opt/nli_bin-wire_insn.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-wire_insn.o `test -f 'src/opt/wire_insn.cpp' || echo '$(srcdir)/'`src/opt/wire_insn.cpp
-
-src/opt/nli_bin-wire_insn.obj: src/opt/wire_insn.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/opt/nli_bin-wire_insn.obj -MD -MP -MF src/opt/$(DEPDIR)/nli_bin-wire_insn.Tpo -c -o src/opt/nli_bin-wire_insn.obj `if test -f 'src/opt/wire_insn.cpp'; then $(CYGPATH_W) 'src/opt/wire_insn.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/wire_insn.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/opt/$(DEPDIR)/nli_bin-wire_insn.Tpo src/opt/$(DEPDIR)/nli_bin-wire_insn.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/opt/wire_insn.cpp' object='src/opt/nli_bin-wire_insn.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/opt/nli_bin-wire_insn.obj `if test -f 'src/opt/wire_insn.cpp'; then $(CYGPATH_W) 'src/opt/wire_insn.cpp'; else $(CYGPATH_W) '$(srcdir)/src/opt/wire_insn.cpp'; fi`
-
 src/isynth/nli_bin-isynth.o: src/isynth/isynth.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/isynth/nli_bin-isynth.o -MD -MP -MF src/isynth/$(DEPDIR)/nli_bin-isynth.Tpo -c -o src/isynth/nli_bin-isynth.o `test -f 'src/isynth/isynth.cpp' || echo '$(srcdir)/'`src/isynth/isynth.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/isynth/$(DEPDIR)/nli_bin-isynth.Tpo src/isynth/$(DEPDIR)/nli_bin-isynth.Po
@@ -1972,34 +1336,6 @@ src/isynth/nli_bin-tool.obj: src/isynth/tool.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/isynth/nli_bin-tool.obj `if test -f 'src/isynth/tool.cpp'; then $(CYGPATH_W) 'src/isynth/tool.cpp'; else $(CYGPATH_W) '$(srcdir)/src/isynth/tool.cpp'; fi`
 
-src/synth/nli_bin-interface.o: src/synth/interface.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-interface.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-interface.Tpo -c -o src/synth/nli_bin-interface.o `test -f 'src/synth/interface.cpp' || echo '$(srcdir)/'`src/synth/interface.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-interface.Tpo src/synth/$(DEPDIR)/nli_bin-interface.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/interface.cpp' object='src/synth/nli_bin-interface.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-interface.o `test -f 'src/synth/interface.cpp' || echo '$(srcdir)/'`src/synth/interface.cpp
-
-src/synth/nli_bin-interface.obj: src/synth/interface.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-interface.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-interface.Tpo -c -o src/synth/nli_bin-interface.obj `if test -f 'src/synth/interface.cpp'; then $(CYGPATH_W) 'src/synth/interface.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/interface.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-interface.Tpo src/synth/$(DEPDIR)/nli_bin-interface.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/interface.cpp' object='src/synth/nli_bin-interface.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-interface.obj `if test -f 'src/synth/interface.cpp'; then $(CYGPATH_W) 'src/synth/interface.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/interface.cpp'; fi`
-
-src/synth/nli_bin-resource_set.o: src/synth/resource_set.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-resource_set.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-resource_set.Tpo -c -o src/synth/nli_bin-resource_set.o `test -f 'src/synth/resource_set.cpp' || echo '$(srcdir)/'`src/synth/resource_set.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-resource_set.Tpo src/synth/$(DEPDIR)/nli_bin-resource_set.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/resource_set.cpp' object='src/synth/nli_bin-resource_set.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-resource_set.o `test -f 'src/synth/resource_set.cpp' || echo '$(srcdir)/'`src/synth/resource_set.cpp
-
-src/synth/nli_bin-resource_set.obj: src/synth/resource_set.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-resource_set.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-resource_set.Tpo -c -o src/synth/nli_bin-resource_set.obj `if test -f 'src/synth/resource_set.cpp'; then $(CYGPATH_W) 'src/synth/resource_set.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/resource_set.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-resource_set.Tpo src/synth/$(DEPDIR)/nli_bin-resource_set.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/resource_set.cpp' object='src/synth/nli_bin-resource_set.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-resource_set.obj `if test -f 'src/synth/resource_set.cpp'; then $(CYGPATH_W) 'src/synth/resource_set.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/resource_set.cpp'; fi`
-
 src/synth/nli_bin-synth.o: src/synth/synth.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-synth.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-synth.Tpo -c -o src/synth/nli_bin-synth.o `test -f 'src/synth/synth.cpp' || echo '$(srcdir)/'`src/synth/synth.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-synth.Tpo src/synth/$(DEPDIR)/nli_bin-synth.Po
@@ -2013,62 +1349,6 @@ src/synth/nli_bin-synth.obj: src/synth/synth.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/synth.cpp' object='src/synth/nli_bin-synth.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-synth.obj `if test -f 'src/synth/synth.cpp'; then $(CYGPATH_W) 'src/synth/synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/synth.cpp'; fi`
-
-src/synth/nli_bin-channel_synth.o: src/synth/channel_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-channel_synth.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-channel_synth.Tpo -c -o src/synth/nli_bin-channel_synth.o `test -f 'src/synth/channel_synth.cpp' || echo '$(srcdir)/'`src/synth/channel_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-channel_synth.Tpo src/synth/$(DEPDIR)/nli_bin-channel_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/channel_synth.cpp' object='src/synth/nli_bin-channel_synth.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-channel_synth.o `test -f 'src/synth/channel_synth.cpp' || echo '$(srcdir)/'`src/synth/channel_synth.cpp
-
-src/synth/nli_bin-channel_synth.obj: src/synth/channel_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-channel_synth.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-channel_synth.Tpo -c -o src/synth/nli_bin-channel_synth.obj `if test -f 'src/synth/channel_synth.cpp'; then $(CYGPATH_W) 'src/synth/channel_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/channel_synth.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-channel_synth.Tpo src/synth/$(DEPDIR)/nli_bin-channel_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/channel_synth.cpp' object='src/synth/nli_bin-channel_synth.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-channel_synth.obj `if test -f 'src/synth/channel_synth.cpp'; then $(CYGPATH_W) 'src/synth/channel_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/channel_synth.cpp'; fi`
-
-src/synth/nli_bin-method_synth.o: src/synth/method_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-method_synth.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-method_synth.Tpo -c -o src/synth/nli_bin-method_synth.o `test -f 'src/synth/method_synth.cpp' || echo '$(srcdir)/'`src/synth/method_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-method_synth.Tpo src/synth/$(DEPDIR)/nli_bin-method_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/method_synth.cpp' object='src/synth/nli_bin-method_synth.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-method_synth.o `test -f 'src/synth/method_synth.cpp' || echo '$(srcdir)/'`src/synth/method_synth.cpp
-
-src/synth/nli_bin-method_synth.obj: src/synth/method_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-method_synth.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-method_synth.Tpo -c -o src/synth/nli_bin-method_synth.obj `if test -f 'src/synth/method_synth.cpp'; then $(CYGPATH_W) 'src/synth/method_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/method_synth.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-method_synth.Tpo src/synth/$(DEPDIR)/nli_bin-method_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/method_synth.cpp' object='src/synth/nli_bin-method_synth.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-method_synth.obj `if test -f 'src/synth/method_synth.cpp'; then $(CYGPATH_W) 'src/synth/method_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/method_synth.cpp'; fi`
-
-src/synth/nli_bin-object_synth.o: src/synth/object_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-object_synth.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-object_synth.Tpo -c -o src/synth/nli_bin-object_synth.o `test -f 'src/synth/object_synth.cpp' || echo '$(srcdir)/'`src/synth/object_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-object_synth.Tpo src/synth/$(DEPDIR)/nli_bin-object_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/object_synth.cpp' object='src/synth/nli_bin-object_synth.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-object_synth.o `test -f 'src/synth/object_synth.cpp' || echo '$(srcdir)/'`src/synth/object_synth.cpp
-
-src/synth/nli_bin-object_synth.obj: src/synth/object_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-object_synth.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-object_synth.Tpo -c -o src/synth/nli_bin-object_synth.obj `if test -f 'src/synth/object_synth.cpp'; then $(CYGPATH_W) 'src/synth/object_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/object_synth.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-object_synth.Tpo src/synth/$(DEPDIR)/nli_bin-object_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/object_synth.cpp' object='src/synth/nli_bin-object_synth.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-object_synth.obj `if test -f 'src/synth/object_synth.cpp'; then $(CYGPATH_W) 'src/synth/object_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/object_synth.cpp'; fi`
-
-src/synth/nli_bin-thread_synth.o: src/synth/thread_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-thread_synth.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-thread_synth.Tpo -c -o src/synth/nli_bin-thread_synth.o `test -f 'src/synth/thread_synth.cpp' || echo '$(srcdir)/'`src/synth/thread_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-thread_synth.Tpo src/synth/$(DEPDIR)/nli_bin-thread_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/thread_synth.cpp' object='src/synth/nli_bin-thread_synth.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-thread_synth.o `test -f 'src/synth/thread_synth.cpp' || echo '$(srcdir)/'`src/synth/thread_synth.cpp
-
-src/synth/nli_bin-thread_synth.obj: src/synth/thread_synth.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-thread_synth.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-thread_synth.Tpo -c -o src/synth/nli_bin-thread_synth.obj `if test -f 'src/synth/thread_synth.cpp'; then $(CYGPATH_W) 'src/synth/thread_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/thread_synth.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-thread_synth.Tpo src/synth/$(DEPDIR)/nli_bin-thread_synth.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/thread_synth.cpp' object='src/synth/nli_bin-thread_synth.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-thread_synth.obj `if test -f 'src/synth/thread_synth.cpp'; then $(CYGPATH_W) 'src/synth/thread_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/thread_synth.cpp'; fi`
 
 src/vm/nli_bin-array_wrapper.o: src/vm/array_wrapper.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/vm/nli_bin-array_wrapper.o -MD -MP -MF src/vm/$(DEPDIR)/nli_bin-array_wrapper.Tpo -c -o src/vm/nli_bin-array_wrapper.o `test -f 'src/vm/array_wrapper.cpp' || echo '$(srcdir)/'`src/vm/array_wrapper.cpp
@@ -2335,202 +1615,6 @@ src/vm/nli_bin-vm.obj: src/vm/vm.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/vm/vm.cpp' object='src/vm/nli_bin-vm.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/vm/nli_bin-vm.obj `if test -f 'src/vm/vm.cpp'; then $(CYGPATH_W) 'src/vm/vm.cpp'; else $(CYGPATH_W) '$(srcdir)/src/vm/vm.cpp'; fi`
-
-src/writer/nli_bin-writer.o: src/writer/writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-writer.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-writer.Tpo -c -o src/writer/nli_bin-writer.o `test -f 'src/writer/writer.cpp' || echo '$(srcdir)/'`src/writer/writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-writer.Tpo src/writer/$(DEPDIR)/nli_bin-writer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/writer.cpp' object='src/writer/nli_bin-writer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-writer.o `test -f 'src/writer/writer.cpp' || echo '$(srcdir)/'`src/writer/writer.cpp
-
-src/writer/nli_bin-writer.obj: src/writer/writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-writer.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-writer.Tpo -c -o src/writer/nli_bin-writer.obj `if test -f 'src/writer/writer.cpp'; then $(CYGPATH_W) 'src/writer/writer.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/writer.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-writer.Tpo src/writer/$(DEPDIR)/nli_bin-writer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/writer.cpp' object='src/writer/nli_bin-writer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-writer.obj `if test -f 'src/writer/writer.cpp'; then $(CYGPATH_W) 'src/writer/writer.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/writer.cpp'; fi`
-
-src/writer/nli_bin-writer_util.o: src/writer/writer_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-writer_util.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo -c -o src/writer/nli_bin-writer_util.o `test -f 'src/writer/writer_util.cpp' || echo '$(srcdir)/'`src/writer/writer_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo src/writer/$(DEPDIR)/nli_bin-writer_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/writer_util.cpp' object='src/writer/nli_bin-writer_util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-writer_util.o `test -f 'src/writer/writer_util.cpp' || echo '$(srcdir)/'`src/writer/writer_util.cpp
-
-src/writer/nli_bin-writer_util.obj: src/writer/writer_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-writer_util.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo -c -o src/writer/nli_bin-writer_util.obj `if test -f 'src/writer/writer_util.cpp'; then $(CYGPATH_W) 'src/writer/writer_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/writer_util.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-writer_util.Tpo src/writer/$(DEPDIR)/nli_bin-writer_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/writer_util.cpp' object='src/writer/nli_bin-writer_util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-writer_util.obj `if test -f 'src/writer/writer_util.cpp'; then $(CYGPATH_W) 'src/writer/writer_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/writer_util.cpp'; fi`
-
-src/writer/nli_bin-module_template.o: src/writer/module_template.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-module_template.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-module_template.Tpo -c -o src/writer/nli_bin-module_template.o `test -f 'src/writer/module_template.cpp' || echo '$(srcdir)/'`src/writer/module_template.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-module_template.Tpo src/writer/$(DEPDIR)/nli_bin-module_template.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/module_template.cpp' object='src/writer/nli_bin-module_template.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-module_template.o `test -f 'src/writer/module_template.cpp' || echo '$(srcdir)/'`src/writer/module_template.cpp
-
-src/writer/nli_bin-module_template.obj: src/writer/module_template.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-module_template.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-module_template.Tpo -c -o src/writer/nli_bin-module_template.obj `if test -f 'src/writer/module_template.cpp'; then $(CYGPATH_W) 'src/writer/module_template.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/module_template.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-module_template.Tpo src/writer/$(DEPDIR)/nli_bin-module_template.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/module_template.cpp' object='src/writer/nli_bin-module_template.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-module_template.obj `if test -f 'src/writer/module_template.cpp'; then $(CYGPATH_W) 'src/writer/module_template.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/module_template.cpp'; fi`
-
-src/writer/nli_bin-vl_writer.o: src/writer/vl_writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_writer.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_writer.Tpo -c -o src/writer/nli_bin-vl_writer.o `test -f 'src/writer/vl_writer.cpp' || echo '$(srcdir)/'`src/writer/vl_writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_writer.Tpo src/writer/$(DEPDIR)/nli_bin-vl_writer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_writer.cpp' object='src/writer/nli_bin-vl_writer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_writer.o `test -f 'src/writer/vl_writer.cpp' || echo '$(srcdir)/'`src/writer/vl_writer.cpp
-
-src/writer/nli_bin-vl_writer.obj: src/writer/vl_writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_writer.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_writer.Tpo -c -o src/writer/nli_bin-vl_writer.obj `if test -f 'src/writer/vl_writer.cpp'; then $(CYGPATH_W) 'src/writer/vl_writer.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_writer.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_writer.Tpo src/writer/$(DEPDIR)/nli_bin-vl_writer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_writer.cpp' object='src/writer/nli_bin-vl_writer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_writer.obj `if test -f 'src/writer/vl_writer.cpp'; then $(CYGPATH_W) 'src/writer/vl_writer.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_writer.cpp'; fi`
-
-src/writer/nli_bin-vl_module.o: src/writer/vl_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_module.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_module.Tpo -c -o src/writer/nli_bin-vl_module.o `test -f 'src/writer/vl_module.cpp' || echo '$(srcdir)/'`src/writer/vl_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_module.Tpo src/writer/$(DEPDIR)/nli_bin-vl_module.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_module.cpp' object='src/writer/nli_bin-vl_module.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_module.o `test -f 'src/writer/vl_module.cpp' || echo '$(srcdir)/'`src/writer/vl_module.cpp
-
-src/writer/nli_bin-vl_module.obj: src/writer/vl_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_module.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_module.Tpo -c -o src/writer/nli_bin-vl_module.obj `if test -f 'src/writer/vl_module.cpp'; then $(CYGPATH_W) 'src/writer/vl_module.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_module.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_module.Tpo src/writer/$(DEPDIR)/nli_bin-vl_module.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_module.cpp' object='src/writer/nli_bin-vl_module.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_module.obj `if test -f 'src/writer/vl_module.cpp'; then $(CYGPATH_W) 'src/writer/vl_module.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_module.cpp'; fi`
-
-src/writer/nli_bin-vl_channel.o: src/writer/vl_channel.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_channel.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_channel.Tpo -c -o src/writer/nli_bin-vl_channel.o `test -f 'src/writer/vl_channel.cpp' || echo '$(srcdir)/'`src/writer/vl_channel.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_channel.Tpo src/writer/$(DEPDIR)/nli_bin-vl_channel.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_channel.cpp' object='src/writer/nli_bin-vl_channel.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_channel.o `test -f 'src/writer/vl_channel.cpp' || echo '$(srcdir)/'`src/writer/vl_channel.cpp
-
-src/writer/nli_bin-vl_channel.obj: src/writer/vl_channel.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_channel.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_channel.Tpo -c -o src/writer/nli_bin-vl_channel.obj `if test -f 'src/writer/vl_channel.cpp'; then $(CYGPATH_W) 'src/writer/vl_channel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_channel.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_channel.Tpo src/writer/$(DEPDIR)/nli_bin-vl_channel.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_channel.cpp' object='src/writer/nli_bin-vl_channel.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_channel.obj `if test -f 'src/writer/vl_channel.cpp'; then $(CYGPATH_W) 'src/writer/vl_channel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_channel.cpp'; fi`
-
-src/writer/nli_bin-vl_graph.o: src/writer/vl_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_graph.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_graph.Tpo -c -o src/writer/nli_bin-vl_graph.o `test -f 'src/writer/vl_graph.cpp' || echo '$(srcdir)/'`src/writer/vl_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_graph.Tpo src/writer/$(DEPDIR)/nli_bin-vl_graph.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_graph.cpp' object='src/writer/nli_bin-vl_graph.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_graph.o `test -f 'src/writer/vl_graph.cpp' || echo '$(srcdir)/'`src/writer/vl_graph.cpp
-
-src/writer/nli_bin-vl_graph.obj: src/writer/vl_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_graph.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_graph.Tpo -c -o src/writer/nli_bin-vl_graph.obj `if test -f 'src/writer/vl_graph.cpp'; then $(CYGPATH_W) 'src/writer/vl_graph.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_graph.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_graph.Tpo src/writer/$(DEPDIR)/nli_bin-vl_graph.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_graph.cpp' object='src/writer/nli_bin-vl_graph.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_graph.obj `if test -f 'src/writer/vl_graph.cpp'; then $(CYGPATH_W) 'src/writer/vl_graph.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_graph.cpp'; fi`
-
-src/writer/nli_bin-vl_state.o: src/writer/vl_state.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_state.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_state.Tpo -c -o src/writer/nli_bin-vl_state.o `test -f 'src/writer/vl_state.cpp' || echo '$(srcdir)/'`src/writer/vl_state.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_state.Tpo src/writer/$(DEPDIR)/nli_bin-vl_state.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_state.cpp' object='src/writer/nli_bin-vl_state.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_state.o `test -f 'src/writer/vl_state.cpp' || echo '$(srcdir)/'`src/writer/vl_state.cpp
-
-src/writer/nli_bin-vl_state.obj: src/writer/vl_state.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_state.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_state.Tpo -c -o src/writer/nli_bin-vl_state.obj `if test -f 'src/writer/vl_state.cpp'; then $(CYGPATH_W) 'src/writer/vl_state.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_state.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_state.Tpo src/writer/$(DEPDIR)/nli_bin-vl_state.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_state.cpp' object='src/writer/nli_bin-vl_state.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_state.obj `if test -f 'src/writer/vl_state.cpp'; then $(CYGPATH_W) 'src/writer/vl_state.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_state.cpp'; fi`
-
-src/writer/nli_bin-vl_util.o: src/writer/vl_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_util.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_util.Tpo -c -o src/writer/nli_bin-vl_util.o `test -f 'src/writer/vl_util.cpp' || echo '$(srcdir)/'`src/writer/vl_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_util.Tpo src/writer/$(DEPDIR)/nli_bin-vl_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_util.cpp' object='src/writer/nli_bin-vl_util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_util.o `test -f 'src/writer/vl_util.cpp' || echo '$(srcdir)/'`src/writer/vl_util.cpp
-
-src/writer/nli_bin-vl_util.obj: src/writer/vl_util.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-vl_util.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-vl_util.Tpo -c -o src/writer/nli_bin-vl_util.obj `if test -f 'src/writer/vl_util.cpp'; then $(CYGPATH_W) 'src/writer/vl_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_util.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-vl_util.Tpo src/writer/$(DEPDIR)/nli_bin-vl_util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/vl_util.cpp' object='src/writer/nli_bin-vl_util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-vl_util.obj `if test -f 'src/writer/vl_util.cpp'; then $(CYGPATH_W) 'src/writer/vl_util.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/vl_util.cpp'; fi`
-
-src/writer/nli_bin-cc_writer.o: src/writer/cc_writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_writer.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_writer.Tpo -c -o src/writer/nli_bin-cc_writer.o `test -f 'src/writer/cc_writer.cpp' || echo '$(srcdir)/'`src/writer/cc_writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_writer.Tpo src/writer/$(DEPDIR)/nli_bin-cc_writer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_writer.cpp' object='src/writer/nli_bin-cc_writer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_writer.o `test -f 'src/writer/cc_writer.cpp' || echo '$(srcdir)/'`src/writer/cc_writer.cpp
-
-src/writer/nli_bin-cc_writer.obj: src/writer/cc_writer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_writer.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_writer.Tpo -c -o src/writer/nli_bin-cc_writer.obj `if test -f 'src/writer/cc_writer.cpp'; then $(CYGPATH_W) 'src/writer/cc_writer.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_writer.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_writer.Tpo src/writer/$(DEPDIR)/nli_bin-cc_writer.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_writer.cpp' object='src/writer/nli_bin-cc_writer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_writer.obj `if test -f 'src/writer/cc_writer.cpp'; then $(CYGPATH_W) 'src/writer/cc_writer.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_writer.cpp'; fi`
-
-src/writer/nli_bin-cc_class.o: src/writer/cc_class.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_class.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_class.Tpo -c -o src/writer/nli_bin-cc_class.o `test -f 'src/writer/cc_class.cpp' || echo '$(srcdir)/'`src/writer/cc_class.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_class.Tpo src/writer/$(DEPDIR)/nli_bin-cc_class.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_class.cpp' object='src/writer/nli_bin-cc_class.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_class.o `test -f 'src/writer/cc_class.cpp' || echo '$(srcdir)/'`src/writer/cc_class.cpp
-
-src/writer/nli_bin-cc_class.obj: src/writer/cc_class.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_class.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_class.Tpo -c -o src/writer/nli_bin-cc_class.obj `if test -f 'src/writer/cc_class.cpp'; then $(CYGPATH_W) 'src/writer/cc_class.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_class.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_class.Tpo src/writer/$(DEPDIR)/nli_bin-cc_class.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_class.cpp' object='src/writer/nli_bin-cc_class.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_class.obj `if test -f 'src/writer/cc_class.cpp'; then $(CYGPATH_W) 'src/writer/cc_class.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_class.cpp'; fi`
-
-src/writer/nli_bin-cc_graph.o: src/writer/cc_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_graph.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_graph.Tpo -c -o src/writer/nli_bin-cc_graph.o `test -f 'src/writer/cc_graph.cpp' || echo '$(srcdir)/'`src/writer/cc_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_graph.Tpo src/writer/$(DEPDIR)/nli_bin-cc_graph.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_graph.cpp' object='src/writer/nli_bin-cc_graph.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_graph.o `test -f 'src/writer/cc_graph.cpp' || echo '$(srcdir)/'`src/writer/cc_graph.cpp
-
-src/writer/nli_bin-cc_graph.obj: src/writer/cc_graph.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_graph.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_graph.Tpo -c -o src/writer/nli_bin-cc_graph.obj `if test -f 'src/writer/cc_graph.cpp'; then $(CYGPATH_W) 'src/writer/cc_graph.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_graph.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_graph.Tpo src/writer/$(DEPDIR)/nli_bin-cc_graph.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_graph.cpp' object='src/writer/nli_bin-cc_graph.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_graph.obj `if test -f 'src/writer/cc_graph.cpp'; then $(CYGPATH_W) 'src/writer/cc_graph.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_graph.cpp'; fi`
-
-src/writer/nli_bin-cc_module.o: src/writer/cc_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_module.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_module.Tpo -c -o src/writer/nli_bin-cc_module.o `test -f 'src/writer/cc_module.cpp' || echo '$(srcdir)/'`src/writer/cc_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_module.Tpo src/writer/$(DEPDIR)/nli_bin-cc_module.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_module.cpp' object='src/writer/nli_bin-cc_module.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_module.o `test -f 'src/writer/cc_module.cpp' || echo '$(srcdir)/'`src/writer/cc_module.cpp
-
-src/writer/nli_bin-cc_module.obj: src/writer/cc_module.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_module.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_module.Tpo -c -o src/writer/nli_bin-cc_module.obj `if test -f 'src/writer/cc_module.cpp'; then $(CYGPATH_W) 'src/writer/cc_module.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_module.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_module.Tpo src/writer/$(DEPDIR)/nli_bin-cc_module.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_module.cpp' object='src/writer/nli_bin-cc_module.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_module.obj `if test -f 'src/writer/cc_module.cpp'; then $(CYGPATH_W) 'src/writer/cc_module.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_module.cpp'; fi`
-
-src/writer/nli_bin-cc_state.o: src/writer/cc_state.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_state.o -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo -c -o src/writer/nli_bin-cc_state.o `test -f 'src/writer/cc_state.cpp' || echo '$(srcdir)/'`src/writer/cc_state.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo src/writer/$(DEPDIR)/nli_bin-cc_state.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_state.cpp' object='src/writer/nli_bin-cc_state.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_state.o `test -f 'src/writer/cc_state.cpp' || echo '$(srcdir)/'`src/writer/cc_state.cpp
-
-src/writer/nli_bin-cc_state.obj: src/writer/cc_state.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/writer/nli_bin-cc_state.obj -MD -MP -MF src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo -c -o src/writer/nli_bin-cc_state.obj `if test -f 'src/writer/cc_state.cpp'; then $(CYGPATH_W) 'src/writer/cc_state.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_state.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/writer/$(DEPDIR)/nli_bin-cc_state.Tpo src/writer/$(DEPDIR)/nli_bin-cc_state.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/writer/cc_state.cpp' object='src/writer/nli_bin-cc_state.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/writer/nli_bin-cc_state.obj `if test -f 'src/writer/cc_state.cpp'; then $(CYGPATH_W) 'src/writer/cc_state.cpp'; else $(CYGPATH_W) '$(srcdir)/src/writer/cc_state.cpp'; fi`
 
 .ypp.cpp:
 	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h `echo $@ | $(am__yacc_c2h)` y.output $*.output -- $(YACCCOMPILE)
@@ -2911,14 +1995,10 @@ distclean-generic:
 	-rm -f src/isynth/$(am__dirstamp)
 	-rm -f src/numeric/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/numeric/$(am__dirstamp)
-	-rm -f src/opt/$(DEPDIR)/$(am__dirstamp)
-	-rm -f src/opt/$(am__dirstamp)
 	-rm -f src/synth/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/synth/$(am__dirstamp)
 	-rm -f src/vm/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/vm/$(am__dirstamp)
-	-rm -f src/writer/$(DEPDIR)/$(am__dirstamp)
-	-rm -f src/writer/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -2932,7 +2012,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-libtool \
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/dfg/$(DEPDIR) src/fe/$(DEPDIR) src/isynth/$(DEPDIR) src/numeric/$(DEPDIR) src/opt/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR) src/writer/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/dfg/$(DEPDIR) src/fe/$(DEPDIR) src/isynth/$(DEPDIR) src/numeric/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-libtool distclean-tags
@@ -2980,7 +2060,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/dfg/$(DEPDIR) src/fe/$(DEPDIR) src/isynth/$(DEPDIR) src/numeric/$(DEPDIR) src/opt/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR) src/writer/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/dfg/$(DEPDIR) src/fe/$(DEPDIR) src/isynth/$(DEPDIR) src/numeric/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

@@ -19,25 +19,11 @@ namespace synth {
 
 class Synth {
 public:
-  Synth(vm::VM *vm, vm::Object *obj);
-
-  bool Compile(const string &phase);
-
-  static bool Synthesize(vm::VM *vm, const string &phase, vm::Object *obj);
   static void WriteHdl(const string &fn, vm::Object *obj);
   static int RunIroha(vm::Object *obj, const string &args);
   static int RunIrohaOpt(const string &pass, vm::Object *obj);
   static string IrPath(vm::Object *obj);
-
-private:
-  DModule *SynthModule();
-  void SetDumpFileName(DModule *module);
-  void SetSynthParams(DModule *module);
-
   static string GetIrohaCommand(vm::Object *obj);
-
-  vm::VM *vm_;
-  vm::Object *obj_;
 };
 
 }  // namespace synth

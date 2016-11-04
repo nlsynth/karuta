@@ -34,37 +34,7 @@ fe_SOURCES = \
 numeric_SOURCES = \
  src/numeric/numeric.cpp src/numeric/numeric.h
 
-opt_SOURCES = \
- src/opt/opt.cpp src/opt/opt.h \
- src/opt/opt_context.cpp src/opt/opt_context.h \
- src/opt/opt_phase.cpp src/opt/opt_phase.h \
- src/opt/constants.h \
- src/opt/basic_block.cpp src/opt/basic_block.h \
- src/opt/constant_insn.cpp src/opt/constant_insn.h \
- src/opt/dfc.cpp src/opt/dfc.h \
- src/opt/dominator.cpp src/opt/dominator.h \
- src/opt/misc.cpp src/opt/misc.h \
- src/opt/temp_var.cpp src/opt/temp_var.h \
- src/opt/reg_share.cpp src/opt/reg_share.h \
- src/opt/resource_alloc.cpp src/opt/resource_alloc.h \
- src/opt/resource_annotation.cpp src/opt/resource_annotation.h \
- src/opt/ssa.cpp src/opt/ssa.h \
- src/opt/ssa_assorted.cpp src/opt/ssa_assorted.h \
- src/opt/ssa_cleaner.cpp src/opt/ssa_cleaner.h \
- src/opt/ssa_converter.cpp src/opt/ssa_converter.h \
- src/opt/ssa_misc.cpp src/opt/ssa_misc.h \
- src/opt/wire_insn.cpp src/opt/wire_insn.h
-
 dfg_SOURCES = \
- src/dfg/dfg.cpp src/dfg/dfg.h \
- src/dfg/dfg_util.cpp src/dfg/dfg_util.h \
- src/dfg/dfg_dump.cpp src/dfg/dfg_dump.h \
- src/dfg/d_graph.cpp src/dfg/d_graph.h \
- src/dfg/d_graph_annotation.cpp src/dfg/d_graph_annotation.h \
- src/dfg/d_graph_util.cpp src/dfg/d_graph_util.h \
- src/dfg/d_insn.cpp src/dfg/d_insn.h \
- src/dfg/d_module.cpp src/dfg/d_module.h \
- src/dfg/d_resource.cpp src/dfg/d_resource.h \
  src/dfg/resource_params.cpp src/dfg/resource_params.h
 
 isynth_SOURCES= \
@@ -80,13 +50,7 @@ isynth_SOURCES= \
  src/isynth/tool.cpp src/isynth/tool.h
 
 synth_SOURCES = \
- src/synth/interface.cpp src/synth/interface.h \
- src/synth/resource_set.cpp src/synth/resource_set.h \
- src/synth/synth.cpp src/synth/synth.h \
- src/synth/channel_synth.cpp src/synth/channel_synth.h \
- src/synth/method_synth.cpp src/synth/method_synth.h \
- src/synth/object_synth.cpp src/synth/object_synth.h \
- src/synth/thread_synth.cpp src/synth/thread_synth.h
+ src/synth/synth.cpp src/synth/synth.h
 
 vm_SOURCES = \
  src/vm/array_wrapper.cpp src/vm/array_wrapper.h \
@@ -109,22 +73,6 @@ vm_SOURCES = \
  src/vm/thread_wrapper.cpp src/vm/thread_wrapper.h \
  src/vm/vm.cpp src/vm/vm.h
 
-writer_SOURCES = \
- src/writer/writer.cpp src/writer/writer.h \
- src/writer/writer_util.cpp src/writer/writer_util.h \
- src/writer/module_template.cpp src/writer/module_template.h \
- src/writer/vl_writer.cpp src/writer/vl_writer.h \
- src/writer/vl_module.cpp src/writer/vl_module.h \
- src/writer/vl_channel.cpp src/writer/vl_channel.h \
- src/writer/vl_graph.cpp src/writer/vl_graph.h \
- src/writer/vl_state.cpp src/writer/vl_state.h \
- src/writer/vl_util.cpp src/writer/vl_util.h \
- src/writer/cc_writer.cpp src/writer/cc_writer.h \
- src/writer/cc_class.cpp src/writer/cc_class.h \
- src/writer/cc_graph.cpp src/writer/cc_graph.h \
- src/writer/cc_module.cpp src/writer/cc_module.h \
- src/writer/cc_state.cpp src/writer/cc_state.h
-
 nli_bin_SOURCES = \
  src/main.cpp \
  src/nli.cpp src/nli.h src/pool.h src/stl_util.h \
@@ -137,11 +85,9 @@ nli_bin_SOURCES = \
  $(dfg_SOURCES) \
  $(fe_SOURCES) \
  $(numeric_SOURCES) \
- $(opt_SOURCES) \
  $(isynth_SOURCES) \
  $(synth_SOURCES) \
- $(vm_SOURCES) \
- $(writer_SOURCES)
+ $(vm_SOURCES)
 
 
 nli_bin_LDADD = libparse.la iroha/libiroha.la

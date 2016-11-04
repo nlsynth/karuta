@@ -20,7 +20,6 @@
 #include <string>
 #include <map>
 
-#include "dfg/dfg.h"
 #include "fe/fe.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
@@ -85,8 +84,7 @@ void Main::PrintUsage() {
        << "   --root [path]\n"
        << "   --timeout [ms]\n"
        << "   --vanilla\n"
-       << "   --version\n"
-       << "   -z\n";
+       << "   --version\n";
   exit(0);
 }
 
@@ -281,11 +279,9 @@ int Main::main(int argc, char **argv) {
 
   // Actually initialize modules and params.
   ::sym_table_init();
-  dfg::DFG::Init();
   iroha::Iroha::Init();
   StaticInitializer::RunInitializers();
   Env::SetArgv0(argv[0]);
-  Env::SetUseDFG(args.GetBoolFlag("z", false));
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
   }

@@ -5,8 +5,6 @@
 #include "isynth/channel_synth.h"
 #include "isynth/object_synth.h"
 
-// WIP: this has copying from synth/ and huge amount of duplication.
-
 using namespace iroha;
 
 namespace isynth {

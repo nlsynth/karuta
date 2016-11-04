@@ -12,7 +12,6 @@ string Env::output_marker_;
 string Env::module_prefix_;
 bool Env::sandbox_mode_;
 string Env::argv0_;
-bool Env::use_dfg_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -185,12 +184,3 @@ void Env::SetArgv0(const string &c) {
 const string &Env::GetArgv0() {
   return argv0_;
 }
-
-void Env::SetUseDFG(bool useDfg) {
-  use_dfg_ = useDfg;
-}
-
-bool Env::GetUseDFG() {
-  return use_dfg_;
-}
-

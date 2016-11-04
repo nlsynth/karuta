@@ -38,8 +38,6 @@ public:
   static const string &GetModulePrefix();
   static void SetArgv0(const string &c);
   static const string &GetArgv0();
-  static void SetUseDFG(bool useDfg);
-  static bool GetUseDFG();
 
 private:
   static const char *nli_dir_;

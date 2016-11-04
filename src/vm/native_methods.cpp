@@ -121,17 +121,10 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     CHECK(StringWrapper::IsString(args[0].object_));
     phase = StringWrapper::String(args[0].object_);
   }
-  if (!Env::GetUseDFG()) {
-    if (phase.empty()) {
-      isynth::ISynth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
-    } else {
-      synth::Synth::RunIrohaOpt(phase, obj);
-    }
-    return;
-  }
-  if (!synth::Synth::Synthesize(thr->GetVM(), phase, obj)) {
-    Status::os(Status::USER) << "Compile failed";
-    thr->UserError();
+  if (phase.empty()) {
+    isynth::ISynth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
+  } else {
+    synth::Synth::RunIrohaOpt(phase, obj);
   }
 }
 
@@ -209,13 +202,8 @@ void Method::InstallNativeRootObjectMethods(VM *vm, Object *obj) {
 void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   InstallNativeMethodWithAltImpl(vm, obj, "wait", &NativeMethods::Wait, rets, "__wait");
-  if (Env::GetUseDFG()) {
-    InstallNativeMethodWithAltImpl(vm, obj, "assert", &NativeMethods::Assert, rets, "__assert");
-    InstallNativeMethodWithAltImpl(vm, obj, "print", &NativeMethods::Print, rets, "__print");
-  } else {
-    InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
-    InstallNativeMethod(vm, obj, "assert", &NativeMethods::Assert, rets);
-  }
+  InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
+  InstallNativeMethod(vm, obj, "assert", &NativeMethods::Assert, rets);
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);

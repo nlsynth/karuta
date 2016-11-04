@@ -280,12 +280,10 @@ void MethodSynth::SynthNative(vm::Insn *insn) {
 
 void MethodSynth::SynthFuncall(vm::Insn *insn) {
   sym_t func_name = insn->label_;
-  if (!Env::GetUseDFG()) {
-    if (func_name == sym_lookup("print") ||
-	func_name == sym_lookup("assert")) {
-      SynthNative(insn);
-      return;
-    }
+  if (func_name == sym_lookup("print") ||
+      func_name == sym_lookup("assert")) {
+    SynthNative(insn);
+    return;
   }
   vm::Object *callee_obj = nullptr;
   if (insn->obj_reg_) {

@@ -119,11 +119,7 @@ void FE::Run(bool vanilla, const vector<string>& files) {
 
   vm::VM vm;
   if (!vanilla) {
-    if (Env::GetUseDFG()) {
-      RunFile("default-dfg.n", &vm);
-    } else {
-      RunFile("default-isynth.n", &vm);
-    }
+    RunFile("default-isynth.n", &vm);
   }
   for (size_t i = 0; i < files.size(); ++i) {
     RunFile(files[i], &vm);
