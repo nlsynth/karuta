@@ -1,10 +1,10 @@
 // -*- C++ -*-
-#ifndef _isynth_method_context_h_
-#define _isynth_method_context_h_
+#ifndef _synth_method_context_h_
+#define _synth_method_context_h_
 
-#include "isynth/common.h"
+#include "synth/common.h"
 
-namespace isynth {
+namespace synth {
 
 class StateWrapper {
 public:
@@ -33,6 +33,6 @@ private:
   MethodSynth *synth_;
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_method_context_h_
+#endif  // _synth_method_context_h_

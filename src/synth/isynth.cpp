@@ -1,13 +1,13 @@
-#include "isynth/isynth.h"
+#include "synth/isynth.h"
 
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
-#include "isynth/channel_synth.h"
-#include "isynth/object_synth.h"
+#include "synth/channel_synth.h"
+#include "synth/object_synth.h"
 
 using namespace iroha;
 
-namespace isynth {
+namespace synth {
 
 bool ISynth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
   std::unique_ptr<IDesign> design(new IDesign());
@@ -42,4 +42,4 @@ bool ISynth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
   return true;
 }
 
-}  // namespace isynth
+}  // namespace synth

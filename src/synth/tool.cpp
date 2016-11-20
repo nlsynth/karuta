@@ -1,8 +1,8 @@
-#include "isynth/tool.h"
+#include "synth/tool.h"
 
 #include "iroha/iroha.h"
 
-namespace isynth {
+namespace synth {
 
 void Tool::SetNextState(IState *cur, IState *next) {
   IInsn *tr_insn = DesignUtil::GetTransitionInsn(cur);
@@ -32,4 +32,4 @@ IResource *Tool::FindOrCreateSubModuleTaskCallResource(ITable *caller,
   return DesignTool::CreateSubModuleTaskCallResource(caller, callee);
 }
 
-}  // namespace isynth
+}  // namespace synth

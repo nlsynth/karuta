@@ -1,14 +1,14 @@
 // -*- C++ -*-
-#ifndef _isynth_method_expander_h_
-#define _isynth_method_expander_h_
+#ifndef _synth_method_expander_h_
+#define _synth_method_expander_h_
 
-#include "isynth/common.h"
+#include "synth/common.h"
 
 #include <map>
 
 using std::map;
 
-namespace isynth {
+namespace synth {
 
 class CalleeInfo {
 public:
@@ -46,6 +46,6 @@ private:
   vector<SubObjCall> *sub_obj_calls_;
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_method_expander_h_
+#endif  // _synth_method_expander_h_

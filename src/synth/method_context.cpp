@@ -1,8 +1,8 @@
-#include "isynth/method_context.h"
+#include "synth/method_context.h"
 
-#include "isynth/method_synth.h"
+#include "synth/method_synth.h"
 
-namespace isynth {
+namespace synth {
 
 StateWrapper::StateWrapper()
   : state_(nullptr), callee_method_(nullptr),
@@ -24,4 +24,4 @@ StateWrapper *MethodContext::LastState() {
   return nullptr;
 }
 
-}  // namespace isynth
+}  // namespace synth

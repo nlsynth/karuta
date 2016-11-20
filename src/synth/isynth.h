@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _isynth_isynth_h_
-#define _isynth_isynth_h_
+#ifndef _synth_isynth_h_
+#define _synth_isynth_h_
 
 #include "nli.h"
 
@@ -9,13 +9,13 @@ class Object;
 class VM;
 }  // namespace vm
 
-namespace isynth {
+namespace synth {
 
 class ISynth {
 public:
   static bool Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn);
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_isynth_h_
+#endif  // _synth_isynth_h_

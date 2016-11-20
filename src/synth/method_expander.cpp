@@ -1,13 +1,13 @@
-#include "isynth/method_expander.h"
+#include "synth/method_expander.h"
 
 #include "iroha/iroha.h"
 #include "iroha/i_design.h"
-#include "isynth/method_context.h"
-#include "isynth/resource_set.h"
-#include "isynth/thread_synth.h"
-#include "isynth/tool.h"
+#include "synth/method_context.h"
+#include "synth/resource_set.h"
+#include "synth/thread_synth.h"
+#include "synth/tool.h"
 
-namespace isynth {
+namespace synth {
 
 MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
 			       vector<SubObjCall> *sub_obj_calls)
@@ -175,4 +175,4 @@ void MethodExpander::BuildRegCopy(IRegister *reg,
   reg_map[reg] = nreg;
 }
 
-}  // namespace isynth
+}  // namespace synth

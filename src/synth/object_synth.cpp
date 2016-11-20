@@ -1,11 +1,11 @@
-#include "isynth/object_synth.h"
+#include "synth/object_synth.h"
 
 #include "iroha/i_design.h"
-#include "isynth/thread_synth.h"
+#include "synth/thread_synth.h"
 #include "status.h"
 #include "vm/thread_wrapper.h"
 
-namespace isynth {
+namespace synth {
 
 ObjectSynth::ObjectSynth(vm::VM *vm, vm::Object *obj,
 			 const char *object_name,
@@ -123,4 +123,4 @@ IModule *ObjectSynth::GetIModule() {
   return mod_;
 }
 
-}  // namespace isynth
+}  // namespace synth

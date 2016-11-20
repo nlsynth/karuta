@@ -1,10 +1,10 @@
 // -*- C++ -*-
-#ifndef _isynth_tool_h_
-#define _isynth_tool_h_
+#ifndef _synth_tool_h_
+#define _synth_tool_h_
 
-#include "isynth/common.h"
+#include "synth/common.h"
 
-namespace isynth {
+namespace synth {
 
 // Some of methods might be moved to DesignTool.
 class Tool {
@@ -15,6 +15,6 @@ public:
 							  ITable *callee);
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_method_context_h_
+#endif  // _synth_method_context_h_

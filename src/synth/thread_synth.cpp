@@ -1,13 +1,13 @@
-#include "isynth/thread_synth.h"
+#include "synth/thread_synth.h"
 
-#include "isynth/method_expander.h"
-#include "isynth/method_synth.h"
+#include "synth/method_expander.h"
+#include "synth/method_synth.h"
 #include "iroha/i_design.h"
-#include "isynth/resource_set.h"
-#include "isynth/tool.h"
+#include "synth/resource_set.h"
+#include "synth/tool.h"
 #include "status.h"
 
-namespace isynth {
+namespace synth {
 
 ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 			 const string &thread_name,
@@ -121,4 +121,4 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *insn,
   st->insns_.push_back(iinsn);
 }
 
-}  // namespace isynth
+}  // namespace synth

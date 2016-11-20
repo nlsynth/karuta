@@ -37,20 +37,18 @@ numeric_SOURCES = \
 dfg_SOURCES = \
  src/dfg/resource_params.cpp src/dfg/resource_params.h
 
-isynth_SOURCES= \
- src/isynth/common.h \
- src/isynth/isynth.cpp src/isynth/isynth.h \
- src/isynth/channel_synth.cpp src/isynth/channel_synth.h \
- src/isynth/method_context.cpp src/isynth/method_context.h \
- src/isynth/method_expander.cpp src/isynth/method_expander.h \
- src/isynth/method_synth.cpp src/isynth/method_synth.h \
- src/isynth/object_synth.cpp src/isynth/object_synth.h \
- src/isynth/resource_set.cpp src/isynth/resource_set.h \
- src/isynth/thread_synth.cpp src/isynth/thread_synth.h \
- src/isynth/tool.cpp src/isynth/tool.h
-
-synth_SOURCES = \
- src/synth/synth.cpp src/synth/synth.h
+synth_SOURCES= \
+ src/synth/common.h \
+ src/synth/synth.cpp src/synth/synth.h \
+ src/synth/isynth.cpp src/synth/isynth.h \
+ src/synth/channel_synth.cpp src/synth/channel_synth.h \
+ src/synth/method_context.cpp src/synth/method_context.h \
+ src/synth/method_expander.cpp src/synth/method_expander.h \
+ src/synth/method_synth.cpp src/synth/method_synth.h \
+ src/synth/object_synth.cpp src/synth/object_synth.h \
+ src/synth/resource_set.cpp src/synth/resource_set.h \
+ src/synth/thread_synth.cpp src/synth/thread_synth.h \
+ src/synth/tool.cpp src/synth/tool.h
 
 vm_SOURCES = \
  src/vm/array_wrapper.cpp src/vm/array_wrapper.h \
@@ -85,7 +83,6 @@ nli_bin_SOURCES = \
  $(dfg_SOURCES) \
  $(fe_SOURCES) \
  $(numeric_SOURCES) \
- $(isynth_SOURCES) \
  $(synth_SOURCES) \
  $(vm_SOURCES)
 

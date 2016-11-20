@@ -1,4 +1,4 @@
-#include "isynth/resource_set.h"
+#include "synth/resource_set.h"
 
 #include "iroha/iroha.h"
 #include "dfg/resource_params.h"
@@ -10,7 +10,7 @@
 #include "vm/int_array.h"
 #include "vm/method.h"
 
-namespace isynth {
+namespace synth {
 
 ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   assign_ = nullptr;
@@ -243,4 +243,4 @@ IResource *ResourceSet::GetSubModuleTaskResource() {
   return task_entry_;
 }
 
-}  // namespace isynth
+}  // namespace synth

@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _isynth_common_h_
-#define _isynth_common_h_
+#ifndef _synth_common_h_
+#define _synth_common_h_
 
 #include "nli.h"
 
@@ -34,7 +34,7 @@ namespace dfg {
 class ResourceParams;
 }  // namespace dfg
 
-namespace isynth {
+namespace synth {
 class ChannelSynth;
 class MethodContext;
 class MethodSynth;
@@ -51,6 +51,6 @@ struct SubObjCall {
   string callee_obj_name;
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_common_h_
+#endif  // _synth_common_h_

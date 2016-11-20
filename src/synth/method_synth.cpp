@@ -1,4 +1,4 @@
-#include "isynth/method_synth.h"
+#include "synth/method_synth.h"
 
 #include "compiler/compiler.h"
 #include "dfg/resource_params.h"
@@ -7,11 +7,11 @@
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
 #include "iroha/i_design.h"
-#include "isynth/channel_synth.h"
-#include "isynth/thread_synth.h"
-#include "isynth/object_synth.h"
-#include "isynth/resource_set.h"
-#include "isynth/method_context.h"
+#include "synth/channel_synth.h"
+#include "synth/thread_synth.h"
+#include "synth/object_synth.h"
+#include "synth/resource_set.h"
+#include "synth/method_context.h"
 #include "status.h"
 #include "vm/channel.h"
 #include "vm/insn.h"
@@ -20,7 +20,7 @@
 #include "vm/register.h"
 #include "vm/value.h"
 
-namespace isynth {
+namespace synth {
 
 MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 			 const string &method_name, ITable *tab,
@@ -628,4 +628,4 @@ void MethodSynth::InsnToCalcValueType(vm::Insn *insn, IValueType *vt) {
   }
 }
 
-}  // namespace isynth
+}  // namespace synth

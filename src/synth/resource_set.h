@@ -2,10 +2,10 @@
 //
 // Manages per table resource objects.
 
-#ifndef _isynth_resource_set_h_
-#define _isynth_resource_set_h_
+#ifndef _synth_resource_set_h_
+#define _synth_resource_set_h_
 
-#include "isynth/common.h"
+#include "synth/common.h"
 
 // for IValueType
 #include "iroha/i_design.h"
@@ -15,7 +15,7 @@
 
 using std::map;
 
-namespace isynth {
+namespace synth {
 
 class ResourceSet {
 public:
@@ -62,6 +62,6 @@ private:
   map<vm::Object *, IResource *> channel_resources_;
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_resource_set_h_
+#endif  // _synth_resource_set_h_

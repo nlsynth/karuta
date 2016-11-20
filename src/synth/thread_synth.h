@@ -1,8 +1,8 @@
 // -*- C++ -*-
-#ifndef _isynth_thread_synth_h_
-#define _isynth_thread_synth_h_
+#ifndef _synth_thread_synth_h_
+#define _synth_thread_synth_h_
 
-#include "isynth/common.h"
+#include "synth/common.h"
 
 #include <map>
 #include <set>
@@ -10,7 +10,7 @@
 using std::map;
 using std::set;
 
-namespace isynth {
+namespace synth {
 
 class ThreadSynth {
 public:
@@ -47,6 +47,6 @@ private:
   set<string> used_reg_names_;
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_thread_synth_h_
+#endif  // _synth_thread_synth_h_

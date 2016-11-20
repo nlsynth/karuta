@@ -1,14 +1,14 @@
 // -*- C++ -*-
-#ifndef _isynth_method_synth_h_
-#define _isynth_method_synth_h_
+#ifndef _synth_method_synth_h_
+#define _synth_method_synth_h_
 
-#include "isynth/common.h"
+#include "synth/common.h"
 
 #include <map>
 
 using std::map;
 
-namespace isynth {
+namespace synth {
 
 class MethodSynth {
 public:
@@ -73,6 +73,6 @@ private:
   void InsnToCalcValueType(vm::Insn *insn, IValueType *vt);
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_method_synth_h_
+#endif  // _synth_method_synth_h_

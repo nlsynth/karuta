@@ -1,10 +1,10 @@
 // -*- C++ -*-
-#ifndef _isynth_object_synth_h_
-#define _isynth_object_synth_h_
+#ifndef _synth_object_synth_h_
+#define _synth_object_synth_h_
 
-#include "isynth/common.h"
+#include "synth/common.h"
 
-namespace isynth {
+namespace synth {
 
 class ObjectSynth {
 public:
@@ -37,6 +37,6 @@ private:
   vector<ObjectSynth *> member_objs_;
 };
 
-}  // namespace isynth
+}  // namespace synth
 
-#endif  // _isynth_object_synth_h_
+#endif  // _synth_object_synth_h_

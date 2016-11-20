@@ -1,9 +1,9 @@
-#include "isynth/channel_synth.h"
+#include "synth/channel_synth.h"
 
 #include "iroha/iroha.h"
 #include "vm/channel.h"
 
-namespace isynth {
+namespace synth {
 
 void ChannelSynth::AddChannel(vm::Object *ch_obj, IResource *res) {
   pair<IResource *, IResource *> rw = channels_[ch_obj];
@@ -41,4 +41,4 @@ void ChannelSynth::Resolve(IDesign *design) {
   }
 }
 
-}  // namespace isynth
+}  // namespace synth

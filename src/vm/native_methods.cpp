@@ -4,8 +4,8 @@
 
 #include "dfg/resource_params.h"
 #include "pool.h"
-#include "isynth/isynth.h"
 #include "status.h"
+#include "synth/isynth.h"
 #include "synth/synth.h"
 #include "vm/channel.h"
 #include "vm/method.h"
@@ -92,13 +92,13 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
   }
 }
 
-void NativeMethods::ISynth(Thread *thr, Object *obj,
+void NativeMethods::Synth(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
       !StringWrapper::IsString(args[0].object_)) {
   }
-  isynth::ISynth::Synthesize(thr->GetVM(), obj,
-			     StringWrapper::String(args[0].object_));
+  synth::ISynth::Synthesize(thr->GetVM(), obj,
+			    StringWrapper::String(args[0].object_));
 }
 
 void NativeMethods::SetMemberString(Thread *thr, const char *name,
@@ -122,7 +122,7 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     phase = StringWrapper::String(args[0].object_);
   }
   if (phase.empty()) {
-    isynth::ISynth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
+    synth::ISynth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
   } else {
     synth::Synth::RunIrohaOpt(phase, obj);
   }
@@ -211,7 +211,7 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "setIROutput", &NativeMethods::SetIROutput, rets);
   InstallNativeMethod(vm, obj, "setIrohaPath", &NativeMethods::SetIrohaPath, rets);
   InstallNativeMethod(vm, obj, "runIroha", &NativeMethods::RunIroha, rets);
-  InstallNativeMethod(vm, obj, "iSynth", &NativeMethods::ISynth, rets);
+  InstallNativeMethod(vm, obj, "synth", &NativeMethods::Synth, rets);
   InstallNativeMethod(vm, obj, "setSynthParam",
 		      &NativeMethods::SetSynthParam, rets);
   InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
