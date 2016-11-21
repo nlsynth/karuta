@@ -19,6 +19,7 @@ namespace synth {
 
 class Synth {
 public:
+  static bool Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn);
   static void WriteHdl(const string &fn, vm::Object *obj);
   static int RunIroha(vm::Object *obj, const string &args);
   static int RunIrohaOpt(const string &pass, vm::Object *obj);

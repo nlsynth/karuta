@@ -5,7 +5,6 @@
 #include "dfg/resource_params.h"
 #include "pool.h"
 #include "status.h"
-#include "synth/isynth.h"
 #include "synth/synth.h"
 #include "vm/channel.h"
 #include "vm/method.h"
@@ -97,8 +96,8 @@ void NativeMethods::Synth(Thread *thr, Object *obj,
   if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
       !StringWrapper::IsString(args[0].object_)) {
   }
-  synth::ISynth::Synthesize(thr->GetVM(), obj,
-			    StringWrapper::String(args[0].object_));
+  synth::Synth::Synthesize(thr->GetVM(), obj,
+			   StringWrapper::String(args[0].object_));
 }
 
 void NativeMethods::SetMemberString(Thread *thr, const char *name,
@@ -122,7 +121,7 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     phase = StringWrapper::String(args[0].object_);
   }
   if (phase.empty()) {
-    synth::ISynth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
+    synth::Synth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
   } else {
     synth::Synth::RunIrohaOpt(phase, obj);
   }

@@ -40,7 +40,6 @@ dfg_SOURCES = \
 synth_SOURCES= \
  src/synth/common.h \
  src/synth/synth.cpp src/synth/synth.h \
- src/synth/isynth.cpp src/synth/isynth.h \
  src/synth/channel_synth.cpp src/synth/channel_synth.h \
  src/synth/method_context.cpp src/synth/method_context.h \
  src/synth/method_expander.cpp src/synth/method_expander.h \
