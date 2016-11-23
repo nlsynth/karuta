@@ -6,10 +6,9 @@
 
 #include "numeric/numeric.h"
 
-namespace dfg {
+namespace synth {
 class ResourceParams;
-}  // namespace dfg
-using namespace dfg;
+}  // namespace synth
 
 namespace vm {
 
@@ -63,7 +62,7 @@ public:
   // for ENUM_TYPE
   const EnumType *enum_type_;
   // for RESOURCE_PARAMS
-  dfg::ResourceParams *resource_params_;
+  synth::ResourceParams *resource_params_;
   Object *object_;
   IntArray *local_int_array_;
 };

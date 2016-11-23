@@ -1,10 +1,10 @@
 #include "synth/resource_set.h"
 
 #include "iroha/iroha.h"
-#include "dfg/resource_params.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
+#include "synth/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/insn.h"
 #include "vm/int_array.h"
@@ -57,7 +57,7 @@ IResource *ResourceSet::PrintResource() {
 }
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
-  dfg::ResourceParams *dparams =
+  synth::ResourceParams *dparams =
     method->parse_tree_->imported_resource_;
 
   string name = dparams->GetResourceName();

@@ -1,7 +1,7 @@
 #include "vm/object.h"
 
 #include "dump_stream.h"
-#include "dfg/resource_params.h"
+#include "synth/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
@@ -79,7 +79,7 @@ Object *Object::Clone(VM *vm) {
     }
     if (value.type_ == Value::RESOURCE_PARAMS) {
       value.resource_params_ =
-	dfg::ResourceParams::Copy(value.resource_params_);
+	synth::ResourceParams::Copy(value.resource_params_);
     }
   }
   return new_obj;

@@ -1,10 +1,10 @@
 // -*- C++ -*-
-#ifndef _dfg_resource_params_h_
-#define _dfg_resource_params_h_
+#ifndef _synth_resource_params_h_
+#define _synth_resource_params_h_
 
 #include "nli.h"
 
-namespace dfg {
+namespace synth {
 
 class ResourceParamValue;
 class ResourceParamValueSet;
@@ -71,7 +71,7 @@ private:
   vector<ResourceParams_pin> pins_;
 };
 
-}  // namespace dfg
-using namespace dfg;
+}  // namespace synth
+using namespace synth;
 
-#endif  // _dfg_resource_params_h_
+#endif  // _synth_resource_params_h_

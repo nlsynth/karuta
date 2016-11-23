@@ -7,7 +7,7 @@
 #include "fe/nodecode.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
-#include "dfg/resource_params.h"
+#include "synth/resource_params.h"
 
 namespace fe {
 
@@ -44,7 +44,7 @@ void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
 
 void Emitter::SetImportedResource(ResourceParamValueSet *params) {
   MethodDecl &decl = CurrentMethod();
-  decl.method_->imported_resource_ = dfg::Importer::Import(params);
+  decl.method_->imported_resource_ = synth::Importer::Import(params);
   fe::VarDeclSet *args = decl.method_->args_;
   if (args) {
     for (size_t i = 0; i < args->decls.size(); ++i) {

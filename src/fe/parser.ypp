@@ -8,7 +8,7 @@
 #include "fe/nodecode.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
-#include "dfg/resource_params.h"
+#include "synth/resource_params.h"
 
 extern int yylex();
 extern void yyerror(const char *msg);
@@ -94,22 +94,22 @@ input : {
 }
 
 IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
-  $$ = dfg::Importer::BuildStrParam($1, $4);
+  $$ = synth::Importer::BuildStrParam($1, $4);
 } | IMPORT_PARAM_HEAD ',' STR {
-  dfg::Importer::AddStrParam($1, $3);
+  synth::Importer::AddStrParam($1, $3);
   $$ = $1;
 }
 
 IMPORT_PARAM : SYM K_ASSIGN STR {
-  $$ = dfg::Importer::BuildStrParam($1, $3);
+  $$ = synth::Importer::BuildStrParam($1, $3);
 } | IMPORT_PARAM_HEAD ')' {
   $$ = $1;
 }
 
 IMPORT_PARAM_LIST : IMPORT_PARAM {
-  $$ = dfg::Importer::BuildParamSet(NULL, $1);
+  $$ = synth::Importer::BuildParamSet(NULL, $1);
 } | IMPORT_PARAM_LIST ',' IMPORT_PARAM {
-  $$ = dfg::Importer::BuildParamSet($1, $3);
+  $$ = synth::Importer::BuildParamSet($1, $3);
 }
 
 IMPORT_SPEC : {

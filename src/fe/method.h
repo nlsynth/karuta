@@ -4,9 +4,9 @@
 
 #include "nli.h"
 
-namespace dfg {
+namespace synth {
 class ResourceParams;
-}  // namespace dfg
+}  // namespace synth
 class DumpStream;
 
 namespace fe {
@@ -23,7 +23,7 @@ public:
   vector<Stmt*> stmts_;
   VarDeclSet *args_;
   VarDeclSet *returns_;
-  dfg::ResourceParams *imported_resource_;
+  synth::ResourceParams *imported_resource_;
 };
 
 }  // namespace fe

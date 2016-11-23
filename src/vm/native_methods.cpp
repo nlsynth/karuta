@@ -2,9 +2,9 @@
 
 #include <stdlib.h>
 
-#include "dfg/resource_params.h"
 #include "pool.h"
 #include "status.h"
+#include "synth/resource_params.h"
 #include "synth/synth.h"
 #include "vm/channel.h"
 #include "vm/method.h"

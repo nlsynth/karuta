@@ -4,9 +4,10 @@
 
 #include "nli.h"
 
-namespace dfg {
+namespace synth {
 class DModule;
-}  // namespace dfg
+}  // namespace synth
+using namespace synth;
 
 namespace vm {
 
@@ -16,8 +17,8 @@ class VM;
 class DModuleWrapper {
 public:
   static bool IsDModule(Object *obj);
-  static Object *NewDModuleWrapper(VM *vm, dfg::DModule *module);
-  static dfg::DModule *GetDModule(Object *obj);
+  static Object *NewDModuleWrapper(VM *vm, synth::DModule *module);
+  static synth::DModule *GetDModule(Object *obj);
 };
 
 

@@ -34,8 +34,6 @@ fe_SOURCES = \
 numeric_SOURCES = \
  src/numeric/numeric.cpp src/numeric/numeric.h
 
-dfg_SOURCES = \
- src/dfg/resource_params.cpp src/dfg/resource_params.h
 
 synth_SOURCES= \
  src/synth/common.h \
@@ -45,6 +43,7 @@ synth_SOURCES= \
  src/synth/method_expander.cpp src/synth/method_expander.h \
  src/synth/method_synth.cpp src/synth/method_synth.h \
  src/synth/object_synth.cpp src/synth/object_synth.h \
+ src/synth/resource_params.cpp src/synth/resource_params.h \
  src/synth/resource_set.cpp src/synth/resource_set.h \
  src/synth/thread_synth.cpp src/synth/thread_synth.h \
  src/synth/tool.cpp src/synth/tool.h
@@ -79,7 +78,6 @@ nli_bin_SOURCES = \
  src/status.cpp src/status.h \
  src/sym.cpp src/sym.h \
  $(compiler_SOURCES) \
- $(dfg_SOURCES) \
  $(fe_SOURCES) \
  $(numeric_SOURCES) \
  $(synth_SOURCES) \

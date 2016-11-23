@@ -1,7 +1,6 @@
 #include "synth/method_synth.h"
 
 #include "compiler/compiler.h"
-#include "dfg/resource_params.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
@@ -10,6 +9,7 @@
 #include "synth/channel_synth.h"
 #include "synth/thread_synth.h"
 #include "synth/object_synth.h"
+#include "synth/resource_params.h"
 #include "synth/resource_set.h"
 #include "synth/method_context.h"
 #include "status.h"

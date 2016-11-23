@@ -10,12 +10,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "dfg/resource_params.h"
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "pool.h"
 #include "synth/channel_synth.h"
 #include "synth/object_synth.h"
+#include "synth/resource_params.h"
 #include "vm/dmodule_wrapper.h"
 #include "vm/object.h"
 #include "vm/string_wrapper.h"

@@ -4,12 +4,6 @@
 
 #include "nli.h"
 
-namespace dfg {
-class DGraph;
-class DModule;
-}  // namespace dfg
-using namespace dfg;
-
 namespace vm {
 class Object;
 class VM;

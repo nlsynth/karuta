@@ -119,8 +119,7 @@ am__v_lt_1 =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__objects_1 = src/compiler/nli_bin-compiler.$(OBJEXT)
-am__objects_2 = src/dfg/nli_bin-resource_params.$(OBJEXT)
-am__objects_3 = src/fe/nli_bin-nodecode.$(OBJEXT) \
+am__objects_2 = src/fe/nli_bin-nodecode.$(OBJEXT) \
 	src/fe/nli_bin-fe.$(OBJEXT) src/fe/nli_bin-common.$(OBJEXT) \
 	src/fe/nli_bin-builder.$(OBJEXT) \
 	src/fe/nli_bin-emitter.$(OBJEXT) \
@@ -128,17 +127,18 @@ am__objects_3 = src/fe/nli_bin-nodecode.$(OBJEXT) \
 	src/fe/nli_bin-expr.$(OBJEXT) src/fe/nli_bin-scanner.$(OBJEXT) \
 	src/fe/nli_bin-stmt.$(OBJEXT) src/fe/nli_bin-method.$(OBJEXT) \
 	src/fe/nli_bin-var_decl.$(OBJEXT)
-am__objects_4 = src/numeric/nli_bin-numeric.$(OBJEXT)
-am__objects_5 = src/synth/nli_bin-synth.$(OBJEXT) \
+am__objects_3 = src/numeric/nli_bin-numeric.$(OBJEXT)
+am__objects_4 = src/synth/nli_bin-synth.$(OBJEXT) \
 	src/synth/nli_bin-channel_synth.$(OBJEXT) \
 	src/synth/nli_bin-method_context.$(OBJEXT) \
 	src/synth/nli_bin-method_expander.$(OBJEXT) \
 	src/synth/nli_bin-method_synth.$(OBJEXT) \
 	src/synth/nli_bin-object_synth.$(OBJEXT) \
+	src/synth/nli_bin-resource_params.$(OBJEXT) \
 	src/synth/nli_bin-resource_set.$(OBJEXT) \
 	src/synth/nli_bin-thread_synth.$(OBJEXT) \
 	src/synth/nli_bin-tool.$(OBJEXT)
-am__objects_6 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
+am__objects_5 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-opcode.$(OBJEXT) \
 	src/vm/nli_bin-int_array.$(OBJEXT) \
 	src/vm/nli_bin-channel.$(OBJEXT) \
@@ -160,8 +160,7 @@ am_nli_bin_OBJECTS = src/nli_bin-main.$(OBJEXT) \
 	src/nli_bin-dump_stream.$(OBJEXT) \
 	src/nli_bin-logging.$(OBJEXT) src/nli_bin-status.$(OBJEXT) \
 	src/nli_bin-sym.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6)
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 nli_bin_OBJECTS = $(am_nli_bin_OBJECTS)
 nli_bin_DEPENDENCIES = libparse.la iroha/libiroha.la
 nli_bin_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -502,9 +501,6 @@ fe_SOURCES = \
 numeric_SOURCES = \
  src/numeric/numeric.cpp src/numeric/numeric.h
 
-dfg_SOURCES = \
- src/dfg/resource_params.cpp src/dfg/resource_params.h
-
 synth_SOURCES = \
  src/synth/common.h \
  src/synth/synth.cpp src/synth/synth.h \
@@ -513,6 +509,7 @@ synth_SOURCES = \
  src/synth/method_expander.cpp src/synth/method_expander.h \
  src/synth/method_synth.cpp src/synth/method_synth.h \
  src/synth/object_synth.cpp src/synth/object_synth.h \
+ src/synth/resource_params.cpp src/synth/resource_params.h \
  src/synth/resource_set.cpp src/synth/resource_set.h \
  src/synth/thread_synth.cpp src/synth/thread_synth.h \
  src/synth/tool.cpp src/synth/tool.h
@@ -547,7 +544,6 @@ nli_bin_SOURCES = \
  src/status.cpp src/status.h \
  src/sym.cpp src/sym.h \
  $(compiler_SOURCES) \
- $(dfg_SOURCES) \
  $(fe_SOURCES) \
  $(numeric_SOURCES) \
  $(synth_SOURCES) \
@@ -698,14 +694,6 @@ src/compiler/$(DEPDIR)/$(am__dirstamp):
 	@: > src/compiler/$(DEPDIR)/$(am__dirstamp)
 src/compiler/nli_bin-compiler.$(OBJEXT): src/compiler/$(am__dirstamp) \
 	src/compiler/$(DEPDIR)/$(am__dirstamp)
-src/dfg/$(am__dirstamp):
-	@$(MKDIR_P) src/dfg
-	@: > src/dfg/$(am__dirstamp)
-src/dfg/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) src/dfg/$(DEPDIR)
-	@: > src/dfg/$(DEPDIR)/$(am__dirstamp)
-src/dfg/nli_bin-resource_params.$(OBJEXT): src/dfg/$(am__dirstamp) \
-	src/dfg/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-nodecode.$(OBJEXT): src/fe/$(am__dirstamp) \
 	src/fe/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-fe.$(OBJEXT): src/fe/$(am__dirstamp) \
@@ -754,6 +742,8 @@ src/synth/nli_bin-method_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-object_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
+src/synth/nli_bin-resource_params.$(OBJEXT):  \
+	src/synth/$(am__dirstamp) src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-resource_set.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-thread_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
@@ -813,7 +803,6 @@ mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f src/*.$(OBJEXT)
 	-rm -f src/compiler/*.$(OBJEXT)
-	-rm -f src/dfg/*.$(OBJEXT)
 	-rm -f src/fe/*.$(OBJEXT)
 	-rm -f src/fe/*.lo
 	-rm -f src/numeric/*.$(OBJEXT)
@@ -831,7 +820,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-sym.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/compiler/$(DEPDIR)/nli_bin-compiler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/dfg/$(DEPDIR)/nli_bin-resource_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/libparse_la-parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-builder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-common.Po@am__quote@
@@ -850,6 +838,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-method_expander.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-method_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-object_synth.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-resource_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-resource_set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-thread_synth.Po@am__quote@
@@ -1009,20 +998,6 @@ src/compiler/nli_bin-compiler.obj: src/compiler/compiler.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/compiler/compiler.cpp' object='src/compiler/nli_bin-compiler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/compiler/nli_bin-compiler.obj `if test -f 'src/compiler/compiler.cpp'; then $(CYGPATH_W) 'src/compiler/compiler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/compiler/compiler.cpp'; fi`
-
-src/dfg/nli_bin-resource_params.o: src/dfg/resource_params.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-resource_params.o -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo -c -o src/dfg/nli_bin-resource_params.o `test -f 'src/dfg/resource_params.cpp' || echo '$(srcdir)/'`src/dfg/resource_params.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo src/dfg/$(DEPDIR)/nli_bin-resource_params.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/resource_params.cpp' object='src/dfg/nli_bin-resource_params.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-resource_params.o `test -f 'src/dfg/resource_params.cpp' || echo '$(srcdir)/'`src/dfg/resource_params.cpp
-
-src/dfg/nli_bin-resource_params.obj: src/dfg/resource_params.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/dfg/nli_bin-resource_params.obj -MD -MP -MF src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo -c -o src/dfg/nli_bin-resource_params.obj `if test -f 'src/dfg/resource_params.cpp'; then $(CYGPATH_W) 'src/dfg/resource_params.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/resource_params.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/dfg/$(DEPDIR)/nli_bin-resource_params.Tpo src/dfg/$(DEPDIR)/nli_bin-resource_params.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/dfg/resource_params.cpp' object='src/dfg/nli_bin-resource_params.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/dfg/nli_bin-resource_params.obj `if test -f 'src/dfg/resource_params.cpp'; then $(CYGPATH_W) 'src/dfg/resource_params.cpp'; else $(CYGPATH_W) '$(srcdir)/src/dfg/resource_params.cpp'; fi`
 
 src/fe/nli_bin-nodecode.o: src/fe/nodecode.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/fe/nli_bin-nodecode.o -MD -MP -MF src/fe/$(DEPDIR)/nli_bin-nodecode.Tpo -c -o src/fe/nli_bin-nodecode.o `test -f 'src/fe/nodecode.cpp' || echo '$(srcdir)/'`src/fe/nodecode.cpp
@@ -1275,6 +1250,20 @@ src/synth/nli_bin-object_synth.obj: src/synth/object_synth.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/object_synth.cpp' object='src/synth/nli_bin-object_synth.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-object_synth.obj `if test -f 'src/synth/object_synth.cpp'; then $(CYGPATH_W) 'src/synth/object_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/object_synth.cpp'; fi`
+
+src/synth/nli_bin-resource_params.o: src/synth/resource_params.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-resource_params.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-resource_params.Tpo -c -o src/synth/nli_bin-resource_params.o `test -f 'src/synth/resource_params.cpp' || echo '$(srcdir)/'`src/synth/resource_params.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-resource_params.Tpo src/synth/$(DEPDIR)/nli_bin-resource_params.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/resource_params.cpp' object='src/synth/nli_bin-resource_params.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-resource_params.o `test -f 'src/synth/resource_params.cpp' || echo '$(srcdir)/'`src/synth/resource_params.cpp
+
+src/synth/nli_bin-resource_params.obj: src/synth/resource_params.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-resource_params.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-resource_params.Tpo -c -o src/synth/nli_bin-resource_params.obj `if test -f 'src/synth/resource_params.cpp'; then $(CYGPATH_W) 'src/synth/resource_params.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/resource_params.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-resource_params.Tpo src/synth/$(DEPDIR)/nli_bin-resource_params.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/resource_params.cpp' object='src/synth/nli_bin-resource_params.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-resource_params.obj `if test -f 'src/synth/resource_params.cpp'; then $(CYGPATH_W) 'src/synth/resource_params.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/resource_params.cpp'; fi`
 
 src/synth/nli_bin-resource_set.o: src/synth/resource_set.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-resource_set.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-resource_set.Tpo -c -o src/synth/nli_bin-resource_set.o `test -f 'src/synth/resource_set.cpp' || echo '$(srcdir)/'`src/synth/resource_set.cpp
@@ -1955,8 +1944,6 @@ distclean-generic:
 	-rm -f src/$(am__dirstamp)
 	-rm -f src/compiler/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/compiler/$(am__dirstamp)
-	-rm -f src/dfg/$(DEPDIR)/$(am__dirstamp)
-	-rm -f src/dfg/$(am__dirstamp)
 	-rm -f src/fe/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/fe/$(am__dirstamp)
 	-rm -f src/numeric/$(DEPDIR)/$(am__dirstamp)
@@ -1978,7 +1965,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-libtool \
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/dfg/$(DEPDIR) src/fe/$(DEPDIR) src/numeric/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/fe/$(DEPDIR) src/numeric/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-libtool distclean-tags
@@ -2026,7 +2013,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/dfg/$(DEPDIR) src/fe/$(DEPDIR) src/numeric/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/compiler/$(DEPDIR) src/fe/$(DEPDIR) src/numeric/$(DEPDIR) src/synth/$(DEPDIR) src/vm/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

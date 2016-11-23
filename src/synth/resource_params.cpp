@@ -1,4 +1,4 @@
-#include "dfg/resource_params.h"
+#include "synth/resource_params.h"
 
 #include <iostream>
 #include <list>
@@ -10,7 +10,7 @@
 static sym_t sym_resource, sym_file, sym_copy, sym_verilog;
 static sym_t sym_module, sym_clock, sym_reset;
 
-namespace dfg {
+namespace synth {
 
 static Pool<ResourceParams> resource_params_pool;
 
@@ -254,4 +254,5 @@ void Importer::Init() {
 }
 
 STATIC_INITIALIZER(importer , Importer::Init());
-}  // namespace dfg
+}  // namespace synth
+

@@ -1,6 +1,6 @@
 #include "vm/value.h"
 
-#include "dfg/resource_params.h"
+#include "synth/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"

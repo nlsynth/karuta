@@ -8,9 +8,9 @@ namespace numeric {
 class Width;
 }  // namespace numeric
 
-namespace dfg {
+namespace synth {
 class ResourceParamValueSet;
-}  // namespace dfg
+}  // namespace synth
 
 namespace fe {
 
@@ -32,7 +32,7 @@ public:
   static MethodDecl EndFunction();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
-  static void SetImportedResource(dfg::ResourceParamValueSet *params);
+  static void SetImportedResource(synth::ResourceParamValueSet *params);
   static void BeginBlock();
   static void EndBlock();
   static void EmitNop();

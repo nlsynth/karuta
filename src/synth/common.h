@@ -30,9 +30,9 @@ class Register;
 class VM;
 }  // namespace vm
 
-namespace dfg {
+namespace synth {
 class ResourceParams;
-}  // namespace dfg
+}  // namespace synth
 
 namespace synth {
 class ChannelSynth;
