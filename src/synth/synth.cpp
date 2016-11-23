@@ -1,8 +1,8 @@
 // Front end of the synthesizer.
 //
 //  Synth
-//  -> ObjectSynth DModule
-//     -> ThreadSynth DModule, DGraph, DResource
+//  -> ObjectSynth IModule
+//     -> ThreadSynth ITable, IResource
 //         -> MethodSynth
 //
 #include "synth/synth.h"
@@ -16,7 +16,6 @@
 #include "synth/channel_synth.h"
 #include "synth/object_synth.h"
 #include "synth/resource_params.h"
-#include "vm/dmodule_wrapper.h"
 #include "vm/object.h"
 #include "vm/string_wrapper.h"
 
