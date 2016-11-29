@@ -39,9 +39,6 @@ void Value::Dump(ostream &os) const {
     os << "resource_params: ";
     resource_params_->Dump(os);
     break;
-  case DMODULE:
-    os << "dmodule";
-    break;
   case OBJECT:
     if (StringWrapper::IsString(object_)) {
       os << StringWrapper::String(object_);
@@ -74,7 +71,6 @@ const char *Value::TypeName(ValueType type) {
      {METHOD, "method"},
      {ENUM_ITEM, "enum_item"},
      {ENUM_TYPE, "enum_type"},
-     {DMODULE, "dmodule"},
      {OBJECT, "object"},
      {INT_ARRAY, "int_array"},
      {OBJECT_ARRAY, "array"}};

@@ -44,7 +44,6 @@ public:
     RESOURCE_PARAMS,
 
     // In object_.
-    DMODULE,
     OBJECT,
     INT_ARRAY,
     OBJECT_ARRAY,
