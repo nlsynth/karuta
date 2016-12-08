@@ -21,15 +21,15 @@ IState *Tool::GetNextState(IState *st) {
   return insn->target_states_[0];
 }
 
-IResource *Tool::FindOrCreateSubModuleTaskCallResource(ITable *caller,
-						       ITable *callee) {
+IResource *Tool::FindOrCreateTaskCallResource(ITable *caller,
+					      ITable *callee) {
   for (IResource *res : caller->resources_) {
-    if (resource::IsSubModuleTaskCall(*res->GetClass()) &&
+    if (resource::IsTaskCall(*res->GetClass()) &&
 	res->GetCalleeTable() == callee) {
       return res;
     }
   }
-  return DesignTool::CreateSubModuleTaskCallResource(caller, callee);
+  return DesignTool::CreateTaskCallResource(caller, callee);
 }
 
 }  // namespace synth

@@ -115,8 +115,8 @@ const string &ThreadSynth::GetMethodName() {
 void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *insn,
 				      ITable *callee_tab) {
   ITable *caller_tab = st->GetTable();
-  IResource *call_res = Tool::FindOrCreateSubModuleTaskCallResource(caller_tab,
-								    callee_tab);
+  IResource *call_res = Tool::FindOrCreateTaskCallResource(caller_tab,
+							   callee_tab);
   IInsn *iinsn = new IInsn(call_res);
   st->insns_.push_back(iinsn);
 }
