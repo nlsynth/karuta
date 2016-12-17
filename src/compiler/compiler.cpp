@@ -394,11 +394,7 @@ void Compiler::CompileChannelDecl(fe::Stmt *stmt) {
 void Compiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
 				     vm::OpCode op, vm::Register *initial_val) {
   CHECK(IsTopLevel());
-  sym_t obj_name = var_expr->args_->sym_;
-  vm::Register *obj_reg = LookupLocalVar(obj_name);
-  if (!obj_reg) {
-    obj_reg = EmitLoadObj(obj_name);
-  }
+  vm::Register *obj_reg = CompilePathHead(var_expr);
   // Object manipulation. do in the executor.
   vm::Insn *insn = new vm::Insn;
   insn->op_ = op;
