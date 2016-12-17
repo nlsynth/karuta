@@ -923,19 +923,22 @@ void Compiler::CompileFuncDecl(fe::Stmt *stmt) {
 }
 
 vm::Register *Compiler::CompilePathHead(fe::Expr *path_elem) {
-  vm::Register *obj_reg;
-  if (path_elem->type_ == fe::EXPR_ELM_REF){
-    obj_reg = LookupLocalVar(path_elem->args_->sym_);
-    if (obj_reg) {
-      return obj_reg;
+  if (path_elem->type_ == fe::EXPR_SYM) {
+    return EmitLoadObj(nullptr);
+  }
+  return TraverseMemberPath(path_elem->args_);
+}
+
+vm::Register *Compiler::TraverseMemberPath(fe::Expr *path_elem) {
+  if (path_elem->type_ == fe::EXPR_SYM) {
+    vm::Register *obj_reg = LookupLocalVar(path_elem->sym_);
+    if (obj_reg == nullptr) {
+      obj_reg = EmitLoadObj(path_elem->sym_);
     }
+    return obj_reg;
   }
-  if (path_elem->type_ == fe::EXPR_ELM_REF) {
-    obj_reg = EmitLoadObj(path_elem->args_->sym_);
-  } else {
-    obj_reg = EmitLoadObj(NULL);
-  }
-  return obj_reg;
+  vm::Register *obj_reg = TraverseMemberPath(path_elem->args_);
+  return EmitMemberLoad(obj_reg, path_elem->sym_);
 }
 
 vm::Register *Compiler::CompileFuncallExpr(fe::Expr *expr) {
@@ -1015,6 +1018,16 @@ vm::Register *Compiler::EmitLoadObj(sym_t label) {
   return obj_reg;
 }
 
+vm::Register *Compiler::EmitMemberLoad(vm::Register *obj_reg, sym_t m) {
+  vm::Insn *insn = new vm::Insn;
+  insn->src_regs_.push_back(obj_reg);
+  insn->op_ = vm::OP_MEMBER_READ;
+  insn->label_ = m;
+  vm::Register *value_reg = AllocRegister();
+  insn->dst_regs_.push_back(value_reg);
+  EmitInsn(insn);
+  return value_reg;
+}
 
 bool Compiler::IsTopLevel() const {
   return method_->is_toplevel_;

@@ -104,10 +104,12 @@ private:
   void SimpleAssign(vm::Register *src, vm::Register *dst);
   vm::Register *GetNthReturnRegister(int nth);
   vm::Register *CompilePathHead(fe::Expr *path_expr);
+  vm::Register *TraverseMemberPath(fe::Expr *e);
   vm::Register *UpdateModifyOp(fe::NodeCode type, fe::Expr *lhs_expr,
 			       vm::Register *rhs_reg);
   int InsnIndexFromLabel(sym_t label);
   vm::Register *EmitLoadObj(sym_t label);
+  vm::Register *EmitMemberLoad(vm::Register *obj_reg, sym_t m);
   bool IsTopLevel() const;
   vm::Value::ValueType GetVariableType(sym_t name);
 
