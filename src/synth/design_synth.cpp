@@ -25,9 +25,9 @@ bool DesignSynth::Synth() {
     params->SetModuleNamePrefix(prefix + "_");
   }
 
-  ObjectSynth o(obj_, this);
-  o.SetName("main");
-  if (!o.Synth()) {
+  ObjectSynth *o = GetObjectSynth(obj_);
+  o->SetName("main");
+  if (!o->Synth()) {
     return false;
   }
 
@@ -50,6 +50,16 @@ ChannelSynth *DesignSynth::GetChannelSynth() {
 
 IDesign *DesignSynth::GetIDesign() {
   return i_design_.get();
+}
+
+ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
+  auto it = obj_synth_map_.find(obj);
+  if (it != obj_synth_map_.end()) {
+    return it->second;
+  }
+  ObjectSynth *osynth = new ObjectSynth(obj, this);
+  obj_synth_map_[obj] = osynth;
+  return osynth;
 }
 
 }  // namespace synth

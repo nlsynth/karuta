@@ -90,8 +90,7 @@ void ObjectSynth::CollectSubModuleCalls() {
     }
   }
   for (auto it : callees) {
-    ObjectSynth *obj =
-      new ObjectSynth(it.first, design_synth_);
+    ObjectSynth *obj = design_synth_->GetObjectSynth(it.first);
     obj->SetName(obj_names[it.first].c_str());
     for (auto &callee_func_name : it.second) {
       obj->AddEntryName(callee_func_name);
@@ -101,14 +100,11 @@ void ObjectSynth::CollectSubModuleCalls() {
 }
 
 void ObjectSynth::ResolveSubModuleCalls() {
-  map<vm::Object *, ObjectSynth *> synth_map;
-  for (auto *o : member_objs_) {
-    synth_map[o->GetObject()] = o;
-  }
   for (auto *thr : threads_) {
     vector<SubObjCall> &calls = thr->GetSubObjCalls();
     for (auto &c : calls) {
-      ObjectSynth *callee_osynth = synth_map[c.callee_obj];
+      ObjectSynth *callee_osynth =
+	design_synth_->GetObjectSynth(c.callee_obj);
       ThreadSynth *callee_thr = callee_osynth->GetThreadByName(c.callee_func);
       ITable *callee_table = callee_thr->GetITable();
       ThreadSynth::InjectSubModuleCall(c.call_state, c.call_insn, callee_table);
