@@ -1,19 +1,20 @@
 #include "synth/object_synth.h"
 
 #include "iroha/i_design.h"
+#include "synth/design_synth.h"
 #include "synth/thread_synth.h"
 #include "status.h"
 #include "vm/thread_wrapper.h"
 
 namespace synth {
 
-ObjectSynth::ObjectSynth(vm::VM *vm, vm::Object *obj,
+ObjectSynth::ObjectSynth(vm::Object *obj,
 			 const char *object_name,
 			 const vector<string> &task_entries,
-			 IDesign *design, ChannelSynth *channel)
-  : vm_(vm), obj_(obj), obj_name_(object_name),
+			 DesignSynth *design_synth)
+  : obj_(obj), obj_name_(object_name),
     task_entries_(task_entries),
-    design_(design), channel_(channel), mod_(nullptr) {
+    design_synth_(design_synth), mod_(nullptr) {
 }
 
 ObjectSynth::~ObjectSynth() {
@@ -21,7 +22,7 @@ ObjectSynth::~ObjectSynth() {
 }
 
 bool ObjectSynth::Synth() {
-  mod_ = new IModule(design_, obj_name_);
+  mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
 
   CollectThreads(mod_);
 
@@ -39,7 +40,7 @@ bool ObjectSynth::Synth() {
   }
   ResolveSubModuleCalls();
 
-  design_->modules_.push_back(mod_);
+  design_synth_->GetIDesign()->modules_.push_back(mod_);
   return true;
 }
 
@@ -52,7 +53,7 @@ vm::Object *ObjectSynth::GetObject() const {
 }
 
 ChannelSynth *ObjectSynth::GetChannelSynth() const {
-  return channel_;
+  return design_synth_->GetChannelSynth();
 }
 
 void ObjectSynth::CollectThreads(IModule *mod) {
@@ -88,8 +89,8 @@ void ObjectSynth::CollectSubModuleCalls() {
       entries.push_back(callee_func_name);
     }
     ObjectSynth *obj =
-      new ObjectSynth(vm_, it.first, obj_names[it.first].c_str(), entries,
-		      design_, channel_);
+      new ObjectSynth(it.first, obj_names[it.first].c_str(), entries,
+		      design_synth_);
     member_objs_.push_back(obj);
   }
 }

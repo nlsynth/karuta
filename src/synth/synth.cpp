@@ -1,8 +1,9 @@
 // Front end of the synthesizer.
 //
 //  Synth
-//  -> ObjectSynth IModule
-//     -> ThreadSynth ITable, IResource
+//    DesignSynth IDesign
+//    -> ObjectSynth IModule
+//       -> ThreadSynth ITable, IResource
 //         -> MethodSynth
 //
 #include "synth/synth.h"
@@ -10,45 +11,21 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "pool.h"
-#include "synth/channel_synth.h"
-#include "synth/object_synth.h"
-#include "synth/resource_params.h"
+#include "synth/design_synth.h"
 #include "vm/object.h"
 #include "vm/string_wrapper.h"
 
 namespace synth {
 
 bool Synth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
-  std::unique_ptr<IDesign> design(new IDesign());
-
-  // Libraries of neon light assumes positive reset.
-  iroha::ResourceParams *params = design->GetParams();
-  params->SetResetPolarity(true);
-
-  const string &prefix = Env::GetModulePrefix();
-  if (!prefix.empty()) {
-    params->SetModuleNamePrefix(prefix + "_");
-  }
-
-  ChannelSynth channel;
-
-  vector<string> no_task;
-  ObjectSynth o(vm, obj, "main", no_task, design.get(), &channel);
-  if (!o.Synth()) {
+  DesignSynth design_synth(vm, obj);
+  if (!design_synth.Synth()) {
     return false;
   }
 
-  channel.Resolve(design.get());
-
-  DesignTool::Validate(design.get());
-
-  iroha::OptAPI *optimizer = iroha::Iroha::CreateOptimizer(design.get());
-  optimizer->ApplyPhase("clean_pseudo_resource");
-
-  WriterAPI *writer = Iroha::CreateWriter(design.get());
+  WriterAPI *writer = Iroha::CreateWriter(design_synth.GetIDesign());
   writer->SetLanguage("");
   writer->Write(ofn);
   return true;
@@ -70,7 +47,8 @@ string Synth::IrPath(vm::Object *obj) {
 
 string Synth::GetIrohaCommand(vm::Object *obj) {
   vm::Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
-  if (!cmd || cmd->type_ != vm::Value::OBJECT || !vm::StringWrapper::IsString(cmd->object_)) {
+  if (!cmd || cmd->type_ != vm::Value::OBJECT ||
+      !vm::StringWrapper::IsString(cmd->object_)) {
     return Env::GetArgv0();
   }
   return vm::StringWrapper::String(cmd->object_);

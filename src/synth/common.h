@@ -36,6 +36,7 @@ class ResourceParams;
 
 namespace synth {
 class ChannelSynth;
+class DesignSynth;
 class MethodContext;
 class MethodSynth;
 class ObjectSynth;

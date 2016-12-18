@@ -8,9 +8,9 @@ namespace synth {
 
 class ObjectSynth {
 public:
-  ObjectSynth(vm::VM *vm, vm::Object *obj, const char *object_name,
+  ObjectSynth(vm::Object *obj, const char *object_name,
 	      const vector<string> &task_entries,
-	      IDesign *design, ChannelSynth *channel);
+	      DesignSynth *design_synth);
   virtual ~ObjectSynth();
 
   bool Synth();
@@ -30,8 +30,7 @@ private:
   vm::Object *obj_;
   const string obj_name_;
   vector<string> task_entries_;
-  IDesign *design_;
-  ChannelSynth *channel_;
+  DesignSynth *design_synth_;
   IModule *mod_;
   vector<ThreadSynth *> threads_;
   vector<ObjectSynth *> member_objs_;
