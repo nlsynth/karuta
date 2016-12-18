@@ -4,15 +4,18 @@
 
 #include "synth/common.h"
 
+#include <set>
+
 namespace synth {
 
 class ObjectSynth {
 public:
-  ObjectSynth(vm::Object *obj, const char *object_name,
-	      const vector<string> &task_entries,
+  ObjectSynth(vm::Object *obj,
 	      DesignSynth *design_synth);
   virtual ~ObjectSynth();
 
+  void SetName(const char *name);
+  void AddEntryName(const string &task_entry);
   bool Synth();
 
   vm::VM *GetVM() const;
@@ -26,10 +29,9 @@ private:
   void CollectSubModuleCalls();
   void ResolveSubModuleCalls();
 
-  vm::VM *vm_;
   vm::Object *obj_;
-  const string obj_name_;
-  vector<string> task_entries_;
+  string obj_name_;
+  std::set<string> task_entries_;
   DesignSynth *design_synth_;
   IModule *mod_;
   vector<ThreadSynth *> threads_;

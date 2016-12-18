@@ -25,8 +25,8 @@ bool DesignSynth::Synth() {
     params->SetModuleNamePrefix(prefix + "_");
   }
 
-  vector<string> no_task;
-  ObjectSynth o(obj_, "main", no_task, this);
+  ObjectSynth o(obj_, this);
+  o.SetName("main");
   if (!o.Synth()) {
     return false;
   }

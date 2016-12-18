@@ -9,11 +9,8 @@
 namespace synth {
 
 ObjectSynth::ObjectSynth(vm::Object *obj,
-			 const char *object_name,
-			 const vector<string> &task_entries,
 			 DesignSynth *design_synth)
-  : obj_(obj), obj_name_(object_name),
-    task_entries_(task_entries),
+  : obj_(obj),
     design_synth_(design_synth), mod_(nullptr) {
 }
 
@@ -21,7 +18,16 @@ ObjectSynth::~ObjectSynth() {
   STLDeleteValues(&threads_);
 }
 
+void ObjectSynth::SetName(const char *name) {
+  obj_name_ = string(name);
+}
+
+void ObjectSynth::AddEntryName(const string &task_entry) {
+  task_entries_.insert(task_entry);
+}
+
 bool ObjectSynth::Synth() {
+  CHECK(!obj_name_.empty());
   mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
 
   CollectThreads(mod_);
@@ -45,7 +51,7 @@ bool ObjectSynth::Synth() {
 }
 
 vm::VM *ObjectSynth::GetVM() const {
-  return vm_;
+  return design_synth_->GetVM();
 }
 
 vm::Object *ObjectSynth::GetObject() const {
@@ -84,13 +90,12 @@ void ObjectSynth::CollectSubModuleCalls() {
     }
   }
   for (auto it : callees) {
-    vector<string> entries;
-    for (auto &callee_func_name : it.second) {
-      entries.push_back(callee_func_name);
-    }
     ObjectSynth *obj =
-      new ObjectSynth(it.first, obj_names[it.first].c_str(), entries,
-		      design_synth_);
+      new ObjectSynth(it.first, design_synth_);
+    obj->SetName(obj_names[it.first].c_str());
+    for (auto &callee_func_name : it.second) {
+      obj->AddEntryName(callee_func_name);
+    }
     member_objs_.push_back(obj);
   }
 }
