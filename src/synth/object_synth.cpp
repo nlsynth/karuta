@@ -18,8 +18,12 @@ ObjectSynth::~ObjectSynth() {
   STLDeleteValues(&threads_);
 }
 
-void ObjectSynth::SetName(const char *name) {
+void ObjectSynth::Prepare(const char *name) {
   obj_name_ = string(name);
+  if (mod_ == nullptr) {
+    mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
+    design_synth_->GetIDesign()->modules_.push_back(mod_);
+  }
 }
 
 void ObjectSynth::AddEntryName(const string &task_entry) {
@@ -28,7 +32,6 @@ void ObjectSynth::AddEntryName(const string &task_entry) {
 
 bool ObjectSynth::Synth() {
   CHECK(!obj_name_.empty());
-  mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
 
   CollectThreads(mod_);
 
@@ -40,13 +43,6 @@ bool ObjectSynth::Synth() {
     }
   }
   CollectSubModuleCalls();
-  for (auto *member_obj : member_objs_) {
-    member_obj->Synth();
-    member_obj->GetIModule()->SetParentModule(mod_);
-  }
-  ResolveSubModuleCalls();
-
-  design_synth_->GetIDesign()->modules_.push_back(mod_);
   return true;
 }
 
@@ -91,11 +87,11 @@ void ObjectSynth::CollectSubModuleCalls() {
   }
   for (auto it : callees) {
     ObjectSynth *obj = design_synth_->GetObjectSynth(it.first);
-    obj->SetName(obj_names[it.first].c_str());
+    obj->Prepare(obj_names[it.first].c_str());
     for (auto &callee_func_name : it.second) {
       obj->AddEntryName(callee_func_name);
     }
-    member_objs_.push_back(obj);
+    design_synth_->AddChildObjSynth(this, obj);
   }
 }
 

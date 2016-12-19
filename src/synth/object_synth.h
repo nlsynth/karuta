@@ -14,9 +14,10 @@ public:
 	      DesignSynth *design_synth);
   virtual ~ObjectSynth();
 
-  void SetName(const char *name);
+  void Prepare(const char *name);
   void AddEntryName(const string &task_entry);
   bool Synth();
+  void ResolveSubModuleCalls();
 
   vm::VM *GetVM() const;
   vm::Object *GetObject() const;
@@ -27,7 +28,6 @@ public:
 private:
   void CollectThreads(IModule *mod);
   void CollectSubModuleCalls();
-  void ResolveSubModuleCalls();
 
   vm::Object *obj_;
   string obj_name_;
@@ -35,7 +35,6 @@ private:
   DesignSynth *design_synth_;
   IModule *mod_;
   vector<ThreadSynth *> threads_;
-  vector<ObjectSynth *> member_objs_;
 };
 
 }  // namespace synth

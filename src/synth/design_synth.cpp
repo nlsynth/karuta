@@ -26,9 +26,10 @@ bool DesignSynth::Synth() {
   }
 
   ObjectSynth *o = GetObjectSynth(obj_);
-  o->SetName("main");
-  if (!o->Synth()) {
-    return false;
+  o->Prepare("main");
+  SynthObjRec(o);
+  for (auto it : obj_synth_map_) {
+    it.second->ResolveSubModuleCalls();
   }
 
   channel_synth_->Resolve(i_design_.get());
@@ -60,6 +61,23 @@ ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
   ObjectSynth *osynth = new ObjectSynth(obj, this);
   obj_synth_map_[obj] = osynth;
   return osynth;
+}
+
+bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {
+  if (!osynth->Synth()) {
+    return false;
+  }
+  for (ObjectSynth *child : obj_child_map_[osynth]) {
+    if (!child->Synth()) {
+      return false;
+    }
+    child->GetIModule()->SetParentModule(osynth->GetIModule());
+  }
+  return true;
+}
+
+void DesignSynth::AddChildObjSynth(ObjectSynth *parent, ObjectSynth *child) {
+  obj_child_map_[parent].insert(child);
 }
 
 }  // namespace synth

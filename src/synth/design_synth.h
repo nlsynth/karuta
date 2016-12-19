@@ -5,6 +5,7 @@
 #include "synth/common.h"
 
 #include <map>
+#include <set>
 
 namespace synth {
 
@@ -19,13 +20,17 @@ public:
   ChannelSynth *GetChannelSynth();
   IDesign *GetIDesign();
   ObjectSynth *GetObjectSynth(vm::Object *obj);
+  void AddChildObjSynth(ObjectSynth *parent, ObjectSynth *child);
 
 private:
+  bool SynthObjRec(ObjectSynth *osynth);
+
   vm::VM *vm_;
   vm::Object *obj_;
   std::unique_ptr<ChannelSynth> channel_synth_;
   std::unique_ptr<IDesign> i_design_;
   std::map<vm::Object *, ObjectSynth *> obj_synth_map_;
+  std::map<ObjectSynth *, std::set<ObjectSynth *> > obj_child_map_;
 };
 
 }  // namespace synth
