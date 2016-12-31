@@ -2,7 +2,7 @@
 #ifndef _synth_method_synth_h_
 #define _synth_method_synth_h_
 
-#include "synth/common.h"
+#include "synth/insn_walker.h"
 
 #include <map>
 
@@ -10,7 +10,7 @@ using std::map;
 
 namespace synth {
 
-class MethodSynth {
+class MethodSynth : public InsnWalker {
 public:
   MethodSynth(ThreadSynth *thr_synth,
 	      const string &method_name, ITable *tab, ResourceSet *res);
@@ -52,14 +52,10 @@ private:
   const string method_name_;
   ITable *tab_;
   ResourceSet *res_;
-  vm::VM *vm_;
-  vm::Object *obj_;
   std::unique_ptr<MethodContext> context_;
 
   // VM -> Iroha mapping.
   map<vm::Register *, IRegister *> local_reg_map_;
-  map<vm::Register *, sym_t> orig_name_map_;
-  map<vm::Register *, vm::Object *> member_reg_to_obj_map_;
   map<string, IRegister *> member_name_reg_map_;
 
   map<int, StateWrapper *> vm_insn_state_map_;

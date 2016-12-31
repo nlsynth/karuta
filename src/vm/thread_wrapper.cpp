@@ -30,7 +30,8 @@ void ThreadWrapper::Run(VM *vm, Object *obj) {
   vector<ThreadEntry> methods;
   GetThreadMethods(obj, &methods);
   for (size_t i = 0; i < methods.size(); ++i) {
-    Value *method_value = obj->LookupValue(sym_lookup(methods[i].method_name.c_str()), false);
+    Value *method_value =
+      obj->LookupValue(sym_lookup(methods[i].method_name.c_str()), false);
     CHECK(method_value && method_value->type_ == Value::METHOD);
     vm->AddThreadFromMethod(NULL, obj, method_value->method_);
   }
@@ -48,7 +49,8 @@ void ThreadWrapper::GetThreadMethods(Object *obj,
     if (member_obj->ObjectTypeKey() != kThreadObjectKey) {
       continue;
     }
-    ThreadWrapperData *data = (ThreadWrapperData *)member_obj->object_specific_.get();
+    ThreadWrapperData *data =
+      (ThreadWrapperData *)member_obj->object_specific_.get();
     ThreadEntry entry = data->entry;
     entry.thread_name = string(sym_cstr(it->first));
     methods->push_back(entry);

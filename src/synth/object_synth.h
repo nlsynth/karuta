@@ -18,6 +18,7 @@ public:
   void AddEntryName(const string &task_entry);
   bool Synth();
   void ResolveSubModuleCalls();
+  DesignSynth *GetDesignSynth();
 
   vm::VM *GetVM() const;
   vm::Object *GetObject() const;

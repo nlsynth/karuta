@@ -40,8 +40,10 @@ synth_SOURCES= \
  src/synth/synth.cpp src/synth/synth.h \
  src/synth/channel_synth.cpp src/synth/channel_synth.h \
  src/synth/design_synth.cpp src/synth/design_synth.h \
+ src/synth/insn_walker.cpp src/synth/insn_walker.h \
  src/synth/method_context.cpp src/synth/method_context.h \
  src/synth/method_expander.cpp src/synth/method_expander.h \
+ src/synth/method_scanner.cpp src/synth/method_scanner.h \
  src/synth/method_synth.cpp src/synth/method_synth.h \
  src/synth/object_synth.cpp src/synth/object_synth.h \
  src/synth/resource_params.cpp src/synth/resource_params.h \

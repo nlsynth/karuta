@@ -20,10 +20,13 @@ ObjectSynth::~ObjectSynth() {
 
 void ObjectSynth::Prepare(const char *name) {
   obj_name_ = string(name);
-  if (mod_ == nullptr) {
-    mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
-    design_synth_->GetIDesign()->modules_.push_back(mod_);
+  // This method can be called multiple times, if multiple callers depend
+  // on this object.
+  if (mod_ != nullptr) {
+    return;
   }
+  mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
+  design_synth_->GetIDesign()->modules_.push_back(mod_);
 }
 
 void ObjectSynth::AddEntryName(const string &task_entry) {
@@ -36,13 +39,12 @@ bool ObjectSynth::Synth() {
   CollectThreads(mod_);
 
   for (auto *thr : threads_) {
-    if (!thr->Synth()) {
+    if (!thr->Scan() || !thr->Synth()) {
       Status::os(Status::USER) << "Failed to synthesize object: " << obj_name_;
       MessageFlush::Get(Status::USER);
       return false;
     }
   }
-  CollectSubModuleCalls();
   return true;
 }
 
@@ -75,26 +77,6 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   }
 }
 
-void ObjectSynth::CollectSubModuleCalls() {
-  map<vm::Object *, string> obj_names;
-  map<vm::Object *, set<string> > callees;
-  for (auto *thr : threads_) {
-    vector<SubObjCall> &calls = thr->GetSubObjCalls();
-    for (auto &c : calls) {
-      callees[c.callee_obj].insert(c.callee_func);
-      obj_names[c.callee_obj] = c.callee_obj_name;
-    }
-  }
-  for (auto it : callees) {
-    ObjectSynth *obj = design_synth_->GetObjectSynth(it.first);
-    obj->Prepare(obj_names[it.first].c_str());
-    for (auto &callee_func_name : it.second) {
-      obj->AddEntryName(callee_func_name);
-    }
-    design_synth_->AddChildObjSynth(this, obj);
-  }
-}
-
 void ObjectSynth::ResolveSubModuleCalls() {
   for (auto *thr : threads_) {
     vector<SubObjCall> &calls = thr->GetSubObjCalls();
@@ -119,6 +101,10 @@ ThreadSynth *ObjectSynth::GetThreadByName(const string &name) {
 
 IModule *ObjectSynth::GetIModule() {
   return mod_;
+}
+
+DesignSynth *ObjectSynth::GetDesignSynth() {
+  return design_synth_;
 }
 
 }  // namespace synth

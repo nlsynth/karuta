@@ -49,7 +49,6 @@ struct SubObjCall {
   IState *call_state;
   vm::Object *callee_obj;
   string callee_func;
-  string callee_obj_name;
 };
 
 }  // namespace synth

@@ -1,6 +1,7 @@
 #include "synth/thread_synth.h"
 
 #include "synth/method_expander.h"
+#include "synth/method_scanner.h"
 #include "synth/method_synth.h"
 #include "iroha/i_design.h"
 #include "synth/resource_set.h"
@@ -23,31 +24,47 @@ ThreadSynth::~ThreadSynth() {
   STLDeleteSecondElements(&methods_);
 }
 
-bool ThreadSynth::Synth() {
+bool ThreadSynth::Scan() {
   tab_ = new ITable(mod_);
   tab_->SetName(thread_name_);
   resource_.reset(new ResourceSet(tab_));
   RequestMethod(method_name_);
-  int num_synth;
+  int num_scan;
+  set<string> scanned;
   do {
-    num_synth = 0;
-    for (auto it : methods_) {
-      if (it.second != nullptr) {
+    num_scan = 0;
+    for (auto &n : method_names_) {
+      if (scanned.find(n) != scanned.end()) {
 	continue;
       }
-      num_synth++;
-      MethodSynth *m =
-	new MethodSynth(this, it.first, tab_, resource_.get());
-      if (!m->Synth()) {
-	Status::os(Status::USER) << "Failed to synthesize thread: "
+      ++num_scan;
+      MethodScanner ms(this, n);
+      if (!ms.Scan()) {
+	Status::os(Status::USER) << "Failed to scan thread: "
 				 << thread_name_ << "." << method_name_;
 	MessageFlush::Get(Status::USER);
 	return false;
       }
-      methods_[it.first] = m;
+      scanned.insert(n);
       break;
     }
-  } while (num_synth > 0);
+  } while (num_scan > 0);
+
+  return true;
+}
+
+bool ThreadSynth::Synth() {
+  for (const string &s : method_names_) {
+    methods_[s] = new MethodSynth(this, s, tab_, resource_.get());
+  }
+  for (auto it : methods_) {
+    if (!it.second->Synth()) {
+      Status::os(Status::USER) << "Failed to synthesize thread: "
+			       << thread_name_ << "." << method_name_;
+      MessageFlush::Get(Status::USER);
+      return false;
+    }
+  }
 
   MethodSynth *root_method = methods_[method_name_];
   MethodExpander expander(root_method->GetContext(), this, &sub_obj_calls_);
@@ -65,10 +82,7 @@ void ThreadSynth::SetIsTask(bool is_task) {
 }
 
 void ThreadSynth::RequestMethod(const string &m) {
-  if (methods_.find(m) != methods_.end()) {
-    return;
-  }
-  methods_[m] = nullptr;
+  method_names_.insert(m);
 }
 
 MethodContext *ThreadSynth::GetMethodContext(const string &m) {

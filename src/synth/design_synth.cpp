@@ -67,7 +67,7 @@ bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {
   if (!osynth->Synth()) {
     return false;
   }
-  for (ObjectSynth *child : obj_child_map_[osynth]) {
+  for (ObjectSynth *child : obj_children_map_[osynth]) {
     if (!child->Synth()) {
       return false;
     }
@@ -77,7 +77,7 @@ bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {
 }
 
 void DesignSynth::AddChildObjSynth(ObjectSynth *parent, ObjectSynth *child) {
-  obj_child_map_[parent].insert(child);
+  obj_children_map_[parent].insert(child);
 }
 
 }  // namespace synth

@@ -1,6 +1,5 @@
 #include "synth/method_synth.h"
 
-#include "compiler/compiler.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
@@ -25,10 +24,9 @@ namespace synth {
 MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 			 const string &method_name, ITable *tab,
 			 ResourceSet *res)
-  : thr_synth_(thr_synth), method_name_(method_name), tab_(tab), res_(res) {
+  : InsnWalker(thr_synth), thr_synth_(thr_synth), method_name_(method_name),
+    tab_(tab), res_(res) {
   context_.reset(new MethodContext(this));
-  vm_ = thr_synth->GetObjectSynth()->GetVM();
-  obj_ = thr_synth->GetObjectSynth()->GetObject();
 }
 
 MethodSynth::~MethodSynth() {
@@ -36,19 +34,12 @@ MethodSynth::~MethodSynth() {
 
 bool MethodSynth::Synth() {
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
-  if (!value || value->type_ != vm::Value::METHOD) {
-    Status::os(Status::USER) << "Failed to find method: " << method_name_;
-    MessageFlush::Get(Status::USER);
-    return false;
-  }
   vm::Method *method = value->method_;
-  if (!method->parse_tree_) {
+  if (method->parse_tree_ == nullptr) {
     SynthNativeImplMethod(method);
     return true;
   }
-  compiler::Compiler::CompileMethod(vm_, obj_,
-				    method->parse_tree_,
-				    method);
+
   EmitEntryInsn(method);
   StateWrapper *last = nullptr;
   // mapping from vm::insn index to state index.
@@ -232,17 +223,7 @@ void MethodSynth::SynthAssign(vm::Insn *insn) {
 }
 
 void MethodSynth::SynthLoadObj(vm::Insn *insn) {
-  if (insn->label_) {
-    vm::Value *value = obj_->LookupValue(insn->label_, false);
-    // Can be OBJECT, INT_ARRAY, OBJECT_ARRAY.
-    vm::Object *member = value->object_;
-    CHECK(member);
-    member_reg_to_obj_map_[insn->dst_regs_[0]] = member;
-    orig_name_map_[insn->dst_regs_[0]] = insn->label_;
-  } else {
-    // loading "this" obj.
-    member_reg_to_obj_map_[insn->dst_regs_[0]] = obj_;
-  }
+  InsnWalker::LoadObj(insn);
 }
 
 void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
@@ -279,28 +260,21 @@ void MethodSynth::SynthNative(vm::Insn *insn) {
 }
 
 void MethodSynth::SynthFuncall(vm::Insn *insn) {
-  sym_t func_name = insn->label_;
-  if (func_name == sym_lookup("print") ||
-      func_name == sym_lookup("assert")) {
+  if (IsNativeFuncall(insn)) {
     SynthNative(insn);
     return;
   }
-  vm::Object *callee_obj = nullptr;
-  if (insn->obj_reg_) {
-    callee_obj = member_reg_to_obj_map_[insn->obj_reg_];
-  }
+  vm::Object *callee_obj = GetCalleeObject(insn);
   StateWrapper *sw = AllocState();
+  sym_t func_name = insn->label_;
   sw->func_name_ = string(sym_cstr(func_name));
-  if (insn->obj_reg_ && callee_obj != obj_) {
+  if (IsSubObjCall(insn)) {
     // Sub object call.
     sw->callee_vm_obj_ = callee_obj;
     vector<sym_t> names;
     obj_->LookupMemberNames(callee_obj, &names);
     CHECK(names.size() > 0);
     sw->obj_name_ = string(sym_cstr(names[0]));
-  } else {
-    // Normal call.
-    thr_synth_->RequestMethod(sw->func_name_);
   }
 
   IInsn *iinsn = new IInsn(res_->PseudoResource());
@@ -495,6 +469,7 @@ void MethodSynth::SynthGoto(vm::Insn *insn) {
 }
 
 void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
+  InsnWalker::MaybeLoadMemberObject(insn);
   vm::Value *value = obj_->LookupValue(insn->label_, false);
   CHECK(value) << "member not found";
   if (value->is_const_) {
@@ -503,8 +478,8 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     IRegister *reg = DesignTool::AllocConstNum(tab_, 0, value->enum_val_.val);
     local_reg_map_[insn->dst_regs_[0]] = reg;
   } else if (value->type_ == vm::Value::OBJECT) {
+    // processed in MaybeLoadMemberObject()
     CHECK(!is_store);
-    member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
   } else {
     IRegister *reg = member_name_reg_map_[sym_cstr(insn->label_)];
     if (!reg) {

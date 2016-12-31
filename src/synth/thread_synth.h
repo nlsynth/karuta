@@ -20,6 +20,7 @@ public:
   virtual ~ThreadSynth();
 
   bool Synth();
+  bool Scan();
   void SetIsTask(bool is_task);
   ObjectSynth *GetObjectSynth();
   void RequestMethod(const string &m);
@@ -43,6 +44,7 @@ private:
   bool is_task_;
   std::unique_ptr<ResourceSet> resource_;
   map<string, MethodSynth *> methods_;
+  set<string> method_names_;
   int reg_name_index_;
   set<string> used_reg_names_;
 };

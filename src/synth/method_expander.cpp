@@ -78,7 +78,6 @@ void MethodExpander::CollectSubObjCalls(MethodContext *method,
       call.call_state = st;
       call.callee_obj = sw->callee_vm_obj_;
       call.callee_func = sw->func_name_;
-      call.callee_obj_name = sw->obj_name_;
       sub_obj_calls_->push_back(call);
     }
   }

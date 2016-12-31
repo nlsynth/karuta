@@ -152,7 +152,7 @@ ResourceParamValue *ResourceParams::LookupParam(sym_t key) {
       return param;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 string ResourceParams::GetResourceName() {
