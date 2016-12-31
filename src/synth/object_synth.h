@@ -14,8 +14,9 @@ public:
 	      DesignSynth *design_synth);
   virtual ~ObjectSynth();
 
-  void Prepare(const char *name);
+  void Prepare(const char *name, bool is_root);
   void AddEntryName(const string &task_entry);
+  bool Scan(bool *ok);
   bool Synth();
   void ResolveSubModuleCalls();
   DesignSynth *GetDesignSynth();
@@ -32,10 +33,11 @@ private:
 
   vm::Object *obj_;
   string obj_name_;
-  std::set<string> task_entries_;
   DesignSynth *design_synth_;
   IModule *mod_;
+  bool is_root_;
   vector<ThreadSynth *> threads_;
+  std::set<ThreadSynth *> scanned_threads_;
 };
 
 }  // namespace synth

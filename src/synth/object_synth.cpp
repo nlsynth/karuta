@@ -11,14 +11,14 @@ namespace synth {
 ObjectSynth::ObjectSynth(vm::Object *obj,
 			 DesignSynth *design_synth)
   : obj_(obj),
-    design_synth_(design_synth), mod_(nullptr) {
+    design_synth_(design_synth), mod_(nullptr), is_root_(false) {
 }
 
 ObjectSynth::~ObjectSynth() {
   STLDeleteValues(&threads_);
 }
 
-void ObjectSynth::Prepare(const char *name) {
+void ObjectSynth::Prepare(const char *name, bool is_root) {
   obj_name_ = string(name);
   // This method can be called multiple times, if multiple callers depend
   // on this object.
@@ -27,19 +27,39 @@ void ObjectSynth::Prepare(const char *name) {
   }
   mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
   design_synth_->GetIDesign()->modules_.push_back(mod_);
+  is_root_ = is_root;
+  CollectThreads(mod_);
 }
 
 void ObjectSynth::AddEntryName(const string &task_entry) {
-  task_entries_.insert(task_entry);
+  ThreadSynth *th =
+    new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), mod_);
+  th->SetIsTask(true);
+  threads_.push_back(th);
+}
+
+bool ObjectSynth::Scan(bool *ok) {
+  CHECK(!obj_name_.empty());
+  *ok = true;
+  int num_scanned = 0;
+  for (auto *thr : threads_) {
+    if (scanned_threads_.find(thr) != scanned_threads_.end()) {
+      continue;
+    }
+    if (!thr->Scan()) {
+      *ok = false;
+      return false;
+    }
+    scanned_threads_.insert(thr);
+    ++num_scanned;
+  }
+  // scanned threads may have added new dependencies.
+  return num_scanned > 0;
 }
 
 bool ObjectSynth::Synth() {
-  CHECK(!obj_name_.empty());
-
-  CollectThreads(mod_);
-
   for (auto *thr : threads_) {
-    if (!thr->Scan() || !thr->Synth()) {
+    if (!thr->Synth()) {
       Status::os(Status::USER) << "Failed to synthesize object: " << obj_name_;
       MessageFlush::Get(Status::USER);
       return false;
@@ -64,16 +84,11 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   vector<vm::ThreadWrapper::ThreadEntry> thread_entries;
   vm::ThreadWrapper::GetThreadMethods(obj_, &thread_entries);
 
-  if (thread_entries.size() == 0 && task_entries_.size() == 0) {
+  if (thread_entries.size() == 0 && is_root_) {
     threads_.push_back(new ThreadSynth(this, "main", "main", mod));
   }
   for (auto &te : thread_entries) {
     threads_.push_back(new ThreadSynth(this, te.thread_name.c_str(), te.method_name.c_str(), mod));
-  }
-  for (auto &te : task_entries_) {
-    ThreadSynth *th = new ThreadSynth(this, te.c_str(), te.c_str(), mod);
-    th->SetIsTask(true);
-    threads_.push_back(th);
   }
 }
 

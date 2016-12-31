@@ -26,8 +26,13 @@ bool DesignSynth::Synth() {
   }
 
   ObjectSynth *o = GetObjectSynth(obj_);
-  o->Prepare("main");
-  SynthObjRec(o);
+  o->Prepare("main", true);
+  if (!ScanObjs()) {
+    return false;
+  }
+  if (!SynthObjRec(o)) {
+    return false;
+  }
   for (auto it : obj_synth_map_) {
     it.second->ResolveSubModuleCalls();
   }
@@ -61,6 +66,24 @@ ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
   ObjectSynth *osynth = new ObjectSynth(obj, this);
   obj_synth_map_[obj] = osynth;
   return osynth;
+}
+
+bool DesignSynth::ScanObjs() {
+  int num_scan;
+  // Loop until every objects don't request rescan.
+  do {
+    num_scan = 0;
+    for (auto it : obj_synth_map_) {
+      bool ok = true;
+      if (it.second->Scan(&ok)) {
+	++num_scan;
+      }
+      if (!ok) {
+	return false;
+      }
+    }
+  } while (num_scan > 0);
+  return true;
 }
 
 bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {

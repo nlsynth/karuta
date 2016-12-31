@@ -24,6 +24,7 @@ public:
 
 private:
   bool SynthObjRec(ObjectSynth *osynth);
+  bool ScanObjs();
 
   vm::VM *vm_;
   vm::Object *obj_;
