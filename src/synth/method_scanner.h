@@ -16,6 +16,8 @@ private:
   void ScanInsn(vm::Insn *insn);
 
   void Funcall(vm::Insn *insn);
+  void MemberAccess(vm::Insn *insn);
+  void ArrayAccess(vm::Insn *insn);
 
   ThreadSynth *thr_synth_;
   vm::Method *method_;

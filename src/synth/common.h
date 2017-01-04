@@ -28,6 +28,7 @@ class Method;
 class Object;
 class Register;
 class VM;
+class Value;
 }  // namespace vm
 
 namespace synth {
@@ -43,6 +44,7 @@ class ObjectSynth;
 class ThreadSynth;
 class ResourceSet;
 class StateWrapper;
+class SharedResourceSet;
 
 struct SubObjCall {
   IInsn *call_insn;

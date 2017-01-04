@@ -10,6 +10,7 @@
 #include "synth/object_synth.h"
 #include "synth/resource_params.h"
 #include "synth/resource_set.h"
+#include "synth/shared_resource_set.h"
 #include "synth/method_context.h"
 #include "status.h"
 #include "vm/channel.h"
@@ -473,6 +474,7 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
   vm::Value *value = obj_->LookupValue(insn->label_, false);
   CHECK(value) << "member not found";
   if (value->is_const_) {
+    // assuming only bool type for now.
     CHECK(!is_store);
     CHECK(value->type_ == vm::Value::ENUM_ITEM);
     IRegister *reg = DesignTool::AllocConstNum(tab_, 0, value->enum_val_.val);
@@ -481,33 +483,41 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     // processed in MaybeLoadMemberObject()
     CHECK(!is_store);
   } else {
-    IRegister *reg = member_name_reg_map_[sym_cstr(insn->label_)];
-    if (!reg) {
-      string name = sym_cstr(insn->label_);
-      name = "m_" + name;
-      reg = thr_synth_->AllocRegister(name);
-      IValue iv;
-      iv.value_ = numeric::Numeric::GetInt(value->num_);
-      reg->SetInitialValue(iv);
-      int w = 0;
-      if (value->type_ == vm::Value::NUM) {
-	w = numeric::Width::GetWidth(value->num_.type);
-      }
-      reg->value_type_.SetWidth(w);
-      member_name_reg_map_[sym_cstr(insn->label_)] = reg;
-    }
-    IResource *assign = res_->AssignResource();
-    IInsn *iinsn = new IInsn(assign);
-    if (!is_store) {
-      iinsn->inputs_.push_back(reg);
-      iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
-    } else {
-      iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
-      iinsn->outputs_.push_back(reg);
-    }
-    StateWrapper *sw = AllocState();
-    sw->state_->insns_.push_back(iinsn);
+    SynthMemberRegAccess(insn, value, is_store);
   }
+}
+
+void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
+				       bool is_store) {
+  IRegister *reg = member_name_reg_map_[sym_cstr(insn->label_)];
+  if (!reg) {
+    string name = sym_cstr(insn->label_);
+    name = "m_" + name;
+    reg = thr_synth_->AllocRegister(name);
+    IValue iv;
+    iv.value_ = numeric::Numeric::GetInt(value->num_);
+    reg->SetInitialValue(iv);
+    int w = 0;
+    if (value->type_ == vm::Value::NUM) {
+      w = numeric::Width::GetWidth(value->num_.type);
+    }
+    reg->value_type_.SetWidth(w);
+    member_name_reg_map_[sym_cstr(insn->label_)] = reg;
+  }
+  SharedResource *sres =
+    shared_resource_set_->GetBySlotName(obj_, insn->label_);
+  CHECK(sres->accessors_.size() < 2) << "access from multiple threads";
+  IResource *assign = res_->AssignResource();
+  IInsn *iinsn = new IInsn(assign);
+  if (!is_store) {
+    iinsn->inputs_.push_back(reg);
+    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+  } else {
+    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+    iinsn->outputs_.push_back(reg);
+  }
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
 }
 
 void MethodSynth::SynthChannelAccess(vm::Insn *insn, bool is_write) {
@@ -535,6 +545,9 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
     res = res_->GetExternalArrayResource();
   } else {
     res = res_->GetInternalArrayResource(array_obj);
+    SharedResource *sres =
+      shared_resource_set_->GetByObj(array_obj);
+    CHECK(sres->accessors_.size() < 2) << "access from multiple threads";
   }
   IInsn *iinsn = new IInsn(res);
   // index

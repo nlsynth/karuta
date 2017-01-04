@@ -4,6 +4,7 @@
 #include "status.h"
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
+#include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
 #include "vm/method.h"
@@ -47,6 +48,14 @@ void MethodScanner::ScanInsn(vm::Insn *insn) {
     break;
   case vm::OP_MEMBER_READ:
     InsnWalker::MaybeLoadMemberObject(insn);
+    MemberAccess(insn);
+    break;
+  case vm::OP_MEMBER_WRITE:
+    MemberAccess(insn);
+    break;
+  case vm::OP_ARRAY_READ:
+  case vm::OP_ARRAY_WRITE:
+    ArrayAccess(insn);
     break;
   default:
     break;
@@ -72,6 +81,16 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     // Normal method call.
     thr_synth_->RequestMethod(string(sym_cstr(insn->label_)));
   }
+}
+
+void MethodScanner::MemberAccess(vm::Insn *insn) {
+  shared_resource_set_->AddMemberAccessor(thr_synth_, insn->label_, insn);
+}
+
+void MethodScanner::ArrayAccess(vm::Insn *insn) {
+  vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
+  CHECK(array_obj);
+  shared_resource_set_->AddObjectAccessor(thr_synth_, array_obj, insn);
 }
 
 }  // namespace synth

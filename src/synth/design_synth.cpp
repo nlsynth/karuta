@@ -3,6 +3,7 @@
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "synth/channel_synth.h"
+#include "synth/shared_resource_set.h"
 #include "synth/object_synth.h"
 
 namespace synth {
@@ -10,6 +11,7 @@ namespace synth {
 DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj) : vm_(vm), obj_(obj) {
   channel_synth_.reset(new ChannelSynth);
   i_design_.reset(new IDesign);
+  shared_resources_.reset(new SharedResourceSet);
 }
 
 DesignSynth::~DesignSynth() {
@@ -30,6 +32,7 @@ bool DesignSynth::Synth() {
   if (!ScanObjs()) {
     return false;
   }
+  shared_resources_->ResolveResourceTypes();
   if (!SynthObjRec(o)) {
     return false;
   }
@@ -66,6 +69,10 @@ ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
   ObjectSynth *osynth = new ObjectSynth(obj, this);
   obj_synth_map_[obj] = osynth;
   return osynth;
+}
+
+SharedResourceSet *DesignSynth::GetSharedResourceSet() {
+  return shared_resources_.get();
 }
 
 bool DesignSynth::ScanObjs() {

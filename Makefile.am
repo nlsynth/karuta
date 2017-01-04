@@ -46,6 +46,7 @@ synth_SOURCES= \
  src/synth/method_scanner.cpp src/synth/method_scanner.h \
  src/synth/method_synth.cpp src/synth/method_synth.h \
  src/synth/object_synth.cpp src/synth/object_synth.h \
+ src/synth/shared_resource_set.cpp src/synth/shared_resource_set.h \
  src/synth/resource_params.cpp src/synth/resource_params.h \
  src/synth/resource_set.cpp src/synth/resource_set.h \
  src/synth/thread_synth.cpp src/synth/thread_synth.h \

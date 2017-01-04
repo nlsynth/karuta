@@ -1,6 +1,8 @@
 #include "synth/insn_walker.h"
 
+#include "synth/design_synth.h"
 #include "synth/object_synth.h"
+#include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
 #include "vm/object.h"
@@ -11,6 +13,8 @@ namespace synth {
 InsnWalker::InsnWalker(ThreadSynth *thr_synth) {
   vm_ = thr_synth->GetObjectSynth()->GetVM();
   obj_ = thr_synth->GetObjectSynth()->GetObject();
+  DesignSynth *ds = thr_synth->GetObjectSynth()->GetDesignSynth();
+  shared_resource_set_ = ds->GetSharedResourceSet();
 }
 
 void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {

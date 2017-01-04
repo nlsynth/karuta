@@ -24,6 +24,7 @@ protected:
 
   vm::VM *vm_;
   vm::Object *obj_;
+  SharedResourceSet *shared_resource_set_;
   map<vm::Register *, vm::Object *> member_reg_to_obj_map_;
 };
 
