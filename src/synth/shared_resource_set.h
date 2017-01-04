@@ -19,7 +19,8 @@ public:
 
   set<ThreadSynth *> readers_;
   set<ThreadSynth *> writers_;
-  vector<ThreadSynth *> accessors_;
+  vector<ThreadSynth *> ordered_accessors_;
+  set<ThreadSynth *> accessors_;
   ThreadSynth *owner_;
 };
 

@@ -32,7 +32,7 @@ void SharedResourceSet::ResolveResourceTypes() {
 }
 
 void SharedResourceSet::ResolveSharedResource(SharedResource *res) {
-  for (ThreadSynth *thr : res->accessors_) {
+  for (ThreadSynth *thr : res->ordered_accessors_) {
     if (res->owner_ != nullptr) {
       res->owner_ = thr;
     }
@@ -43,7 +43,8 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, sym_t name,
 					  vm::Insn *insn) {
   SharedResource *res = GetBySlotName(thr->GetObjectSynth()->GetObject(),
 				      name);
-  res->accessors_.push_back(thr);
+  res->ordered_accessors_.push_back(thr);
+  res->accessors_.insert(thr);
   if (insn->op_ == vm::OP_MEMBER_READ) {
     res->readers_.insert(thr);
   }
@@ -55,7 +56,8 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, sym_t name,
 void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
 					  vm::Insn *insn) {
   SharedResource *res = GetByObj(obj);
-  res->accessors_.push_back(thr);
+  res->ordered_accessors_.push_back(thr);
+  res->accessors_.insert(thr);
   if (insn->op_ == vm::OP_ARRAY_READ) {
     res->readers_.insert(thr);
   }
