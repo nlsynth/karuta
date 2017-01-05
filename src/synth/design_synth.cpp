@@ -29,13 +29,16 @@ bool DesignSynth::Synth() {
 
   ObjectSynth *o = GetObjectSynth(obj_);
   o->Prepare("main", true);
+  // Pass 1: Scan.
   if (!ScanObjs()) {
     return false;
   }
   shared_resources_->ResolveResourceTypes();
+  // Pass 2: Synth.
   if (!SynthObjRec(o)) {
     return false;
   }
+  shared_resources_->ResolveResourceAccessors();
   for (auto it : obj_synth_map_) {
     it.second->ResolveSubModuleCalls();
   }

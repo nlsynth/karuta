@@ -17,11 +17,16 @@ public:
   SharedResource();
   ~SharedResource();
 
+  void AddOwnerResource(IResource *res);
+  void AddAccessorResource(IResource *res);
+
   set<ThreadSynth *> readers_;
   set<ThreadSynth *> writers_;
   vector<ThreadSynth *> ordered_accessors_;
   set<ThreadSynth *> accessors_;
   ThreadSynth *owner_;
+  IResource *owner_res_;
+  set<IResource *> accessor_resources_;
 };
 
 class SharedResourceSet {
@@ -29,6 +34,7 @@ public:
   ~SharedResourceSet();
 
   void ResolveResourceTypes();
+  void ResolveResourceAccessors();
 
   // NUM
   void AddMemberAccessor(ThreadSynth *thr, sym_t name, vm::Insn *insn);
@@ -40,6 +46,7 @@ public:
 
 private:
   void ResolveSharedResource(SharedResource *res);
+  void ResolveSharedResourceAccessor(SharedResource *sres);
 
   map<vm::Object *, SharedResource *> obj_resources_;
   map<vm::Object *, map<sym_t, SharedResource *> > value_resources_;

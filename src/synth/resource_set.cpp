@@ -56,6 +56,37 @@ IResource *ResourceSet::PrintResource() {
   return print_;
 }
 
+IResource *ResourceSet::GetMemberSharedReg(sym_t name) {
+  auto it = member_shared_reg_.find(name);
+  if (it != member_shared_reg_.end()) {
+    return it->second;
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  resource::kSharedReg);
+  IResource *res = new IResource(tab_, rc);
+  tab_->resources_.push_back(res);
+  member_shared_reg_[name] = res;
+  return res;
+}
+
+IResource *ResourceSet::GetMemberSharedRegAccessor(sym_t name, bool is_write) {
+  auto &m = is_write ? member_shared_reg_writer_ : member_shared_reg_reader_;
+  auto it = m.find(name);
+  if (it != m.end()) {
+    return it->second;
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  (is_write ?
+				   resource::kSharedRegWriter :
+				   resource::kSharedRegReader));
+  IResource *res = new IResource(tab_, rc);
+  tab_->resources_.push_back(res);
+  m[name] = res;
+  return res;
+}
+
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   synth::ResourceParams *dparams =
     method->parse_tree_->imported_resource_;

@@ -39,6 +39,7 @@ private:
   void SynthGoto(vm::Insn *insn);
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
   void SynthMemberRegAccess(vm::Insn *insn, vm::Value *value, bool is_store);
+  void SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value, bool is_store);
   void SynthArrayAccess(vm::Insn *insn, bool is_write, bool is_memory);
   void SynthBitRange(vm::Insn *insn);
   void SynthChannelAccess(vm::Insn *insn, bool is_write);

@@ -483,7 +483,13 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     // processed in MaybeLoadMemberObject()
     CHECK(!is_store);
   } else {
-    SynthMemberRegAccess(insn, value, is_store);
+    SharedResource *sres =
+      shared_resource_set_->GetBySlotName(obj_, insn->label_);
+    if (sres->accessors_.size() > 1) {
+      SynthMemberSharedRegAccess(insn, value, is_store);
+    } else {
+      SynthMemberRegAccess(insn, value, is_store);
+    }
   }
 }
 
@@ -504,17 +510,44 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
     reg->value_type_.SetWidth(w);
     member_name_reg_map_[sym_cstr(insn->label_)] = reg;
   }
-  SharedResource *sres =
-    shared_resource_set_->GetBySlotName(obj_, insn->label_);
-  CHECK(sres->accessors_.size() < 2) << "access from multiple threads";
   IResource *assign = res_->AssignResource();
   IInsn *iinsn = new IInsn(assign);
-  if (!is_store) {
-    iinsn->inputs_.push_back(reg);
-    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
-  } else {
+  if (is_store) {
     iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
     iinsn->outputs_.push_back(reg);
+  } else {
+    iinsn->inputs_.push_back(reg);
+    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+  }
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
+}
+
+void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
+					     bool is_store) {
+  vm::Register *vm_reg;
+  if (is_store) {
+    vm_reg = insn->src_regs_[0];
+  } else {
+    vm_reg = insn->dst_regs_[0];
+  }
+  SharedResource *sres =
+    shared_resource_set_->GetBySlotName(obj_, insn->label_);
+  IResource *res;
+  if (sres->owner_ == thr_synth_) {
+    res = res_->GetMemberSharedReg(insn->label_);
+    sres->AddOwnerResource(res);
+    // TODO: set width.
+  } else {
+    res = res_->GetMemberSharedRegAccessor(insn->label_, is_store);
+    sres->AddAccessorResource(res);
+  }
+  IInsn *iinsn = new IInsn(res);
+  IRegister *ireg = FindLocalVarRegister(vm_reg);
+  if (is_store) {
+    iinsn->inputs_.push_back(ireg);
+  } else {
+    iinsn->outputs_.push_back(ireg);
   }
   StateWrapper *sw = AllocState();
   sw->state_->insns_.push_back(iinsn);

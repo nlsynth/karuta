@@ -35,6 +35,8 @@ public:
   IResource *GetChannelResource(vm::Object *ch, bool is_write,
 				int data_width);
   IResource *GetSubModuleTaskResource();
+  IResource *GetMemberSharedReg(sym_t name);
+  IResource *GetMemberSharedRegAccessor(sym_t name, bool is_write);
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -60,6 +62,9 @@ private:
   vector<IResource *> imported_resources_;
   map<vm::Object *, IResource *> array_resources_;
   map<vm::Object *, IResource *> channel_resources_;
+  map<sym_t, IResource *> member_shared_reg_;
+  map<sym_t, IResource *> member_shared_reg_writer_;
+  map<sym_t, IResource *> member_shared_reg_reader_;
 };
 
 }  // namespace synth

@@ -44,6 +44,7 @@ class ObjectSynth;
 class ThreadSynth;
 class ResourceSet;
 class StateWrapper;
+class SharedResource;
 class SharedResourceSet;
 
 struct SubObjCall {

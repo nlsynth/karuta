@@ -1,15 +1,24 @@
 #include "synth/shared_resource_set.h"
 
+#include "iroha/i_design.h"
 #include "synth/object_synth.h"
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
 
 namespace synth {
 
-SharedResource::SharedResource() : owner_(nullptr) {
+SharedResource::SharedResource() : owner_(nullptr), owner_res_(nullptr) {
 }
 
 SharedResource::~SharedResource() {
+}
+
+void SharedResource::AddOwnerResource(IResource *res) {
+  owner_res_ = res;
+}
+
+void SharedResource::AddAccessorResource(IResource *res) {
+  accessor_resources_.insert(res);
 }
 
 SharedResourceSet::~SharedResourceSet() {
@@ -31,11 +40,28 @@ void SharedResourceSet::ResolveResourceTypes() {
   }
 }
 
+void SharedResourceSet::ResolveResourceAccessors() {
+  for (auto it : obj_resources_) {
+    ResolveSharedResource(it.second);
+  }
+  for (auto it : value_resources_) {
+    for (auto jt : it.second) {
+      ResolveSharedResource(jt.second);
+    }
+  }
+}
+
 void SharedResourceSet::ResolveSharedResource(SharedResource *res) {
   for (ThreadSynth *thr : res->ordered_accessors_) {
-    if (res->owner_ != nullptr) {
+    if (res->owner_ == nullptr) {
       res->owner_ = thr;
     }
+  }
+}
+
+void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
+  for (IResource *res : sres->accessor_resources_) {
+    res->SetSharedRegister(sres->owner_res_);
   }
 }
 
