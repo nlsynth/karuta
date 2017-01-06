@@ -42,11 +42,11 @@ void SharedResourceSet::ResolveResourceTypes() {
 
 void SharedResourceSet::ResolveResourceAccessors() {
   for (auto it : obj_resources_) {
-    ResolveSharedResource(it.second);
+    ResolveSharedResourceAccessor(it.second);
   }
   for (auto it : value_resources_) {
     for (auto jt : it.second) {
-      ResolveSharedResource(jt.second);
+      ResolveSharedResourceAccessor(jt.second);
     }
   }
 }

@@ -4,7 +4,6 @@
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
-#include "iroha/i_design.h"
 #include "synth/channel_synth.h"
 #include "synth/thread_synth.h"
 #include "synth/object_synth.h"
@@ -537,7 +536,9 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
   if (sres->owner_ == thr_synth_) {
     res = res_->GetMemberSharedReg(insn->label_);
     sres->AddOwnerResource(res);
-    // TODO: set width.
+    int w = numeric::Width::GetWidth(value->num_.type);
+    auto *params = res->GetParams();
+    params->SetWidth(w);
   } else {
     res = res_->GetMemberSharedRegAccessor(insn->label_, is_store);
     sres->AddAccessorResource(res);
