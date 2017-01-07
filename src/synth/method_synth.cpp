@@ -524,26 +524,26 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
 
 void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
 					     bool is_store) {
+  SharedResource *sres =
+    shared_resource_set_->GetBySlotName(obj_, insn->label_);
+  IResource *res;
+  if (sres->owner_ == thr_synth_) {
+    res = res_->GetMemberSharedReg(insn->label_, true, is_store);
+    sres->AddOwnerResource(res);
+    int w = numeric::Width::GetWidth(value->num_.type);
+    auto *params = res->GetParams();
+    params->SetWidth(w);
+  } else {
+    res = res_->GetMemberSharedReg(insn->label_, false, is_store);
+    sres->AddAccessorResource(res);
+  }
+  IInsn *iinsn = new IInsn(res);
   vm::Register *vm_reg;
   if (is_store) {
     vm_reg = insn->src_regs_[0];
   } else {
     vm_reg = insn->dst_regs_[0];
   }
-  SharedResource *sres =
-    shared_resource_set_->GetBySlotName(obj_, insn->label_);
-  IResource *res;
-  if (sres->owner_ == thr_synth_) {
-    res = res_->GetMemberSharedReg(insn->label_);
-    sres->AddOwnerResource(res);
-    int w = numeric::Width::GetWidth(value->num_.type);
-    auto *params = res->GetParams();
-    params->SetWidth(w);
-  } else {
-    res = res_->GetMemberSharedRegAccessor(insn->label_, is_store);
-    sres->AddAccessorResource(res);
-  }
-  IInsn *iinsn = new IInsn(res);
   IRegister *ireg = FindLocalVarRegister(vm_reg);
   if (is_store) {
     iinsn->inputs_.push_back(ireg);
@@ -578,10 +578,13 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
   if (is_memory) {
     res = res_->GetExternalArrayResource();
   } else {
-    res = res_->GetInternalArrayResource(array_obj);
     SharedResource *sres =
       shared_resource_set_->GetByObj(array_obj);
-    CHECK(sres->accessors_.size() < 2) << "access from multiple threads";
+    if (sres->accessors_.size() >= 2) {
+      SynthSharedArrayAccess(insn, is_write);
+      return;
+    }
+    res = res_->GetInternalArrayResource(array_obj);
   }
   IInsn *iinsn = new IInsn(res);
   // index
@@ -594,6 +597,31 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
   }
   StateWrapper *w = AllocState();
   w->state_->insns_.push_back(iinsn);
+}
+
+void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
+  vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
+  SharedResource *sres =
+    shared_resource_set_->GetByObj(array_obj);
+  IResource *res = nullptr;
+  if (sres->owner_ == thr_synth_) {
+    res = res_->GetSharedArray(array_obj, true, false);
+    sres->AddOwnerResource(res);
+  } else {
+    res = res_->GetSharedArray(array_obj, false, is_write);
+    sres->AddAccessorResource(res);
+  }
+  IInsn *iinsn = new IInsn(res);
+  // index
+  iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+  // value
+  if (is_write) {
+    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
+  } else {
+    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+  }
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
 }
 
 void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {

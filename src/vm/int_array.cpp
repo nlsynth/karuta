@@ -27,6 +27,7 @@ public:
   virtual numeric::Number Read(int addr);
   virtual long long GetLength() const;
   virtual const numeric::Width *GetWidth() const;
+  virtual int GetAddressWidth() const;
 
 private:
   npage *find_page(int addr);
@@ -87,6 +88,15 @@ long long IntArrayImpl::GetLength() const {
 
 const numeric::Width *IntArrayImpl::GetWidth() const {
   return width_;
+}
+
+int IntArrayImpl::GetAddressWidth() const {
+  int address_bits;
+  for (address_bits = 0; (1 << address_bits) < size_;
+       ++address_bits) {
+    // do nothing here.
+  }
+  return address_bits;
 }
 
 npage *IntArrayImpl::find_page(int addr) {

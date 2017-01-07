@@ -41,6 +41,7 @@ private:
   void SynthMemberRegAccess(vm::Insn *insn, vm::Value *value, bool is_store);
   void SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value, bool is_store);
   void SynthArrayAccess(vm::Insn *insn, bool is_write, bool is_memory);
+  void SynthSharedArrayAccess(vm::Insn *insn, bool is_write);
   void SynthBitRange(vm::Insn *insn);
   void SynthChannelAccess(vm::Insn *insn, bool is_write);
   void SynthConcat(vm::Insn *insn);

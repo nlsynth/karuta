@@ -16,6 +16,7 @@ public:
   virtual numeric::Number Read(int addr) = 0;
   virtual long long GetLength() const = 0;
   virtual const numeric::Width *GetWidth() const = 0;
+  virtual int GetAddressWidth() const = 0;
 };
 
 }  // namespace vm

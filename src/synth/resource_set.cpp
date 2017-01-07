@@ -56,34 +56,61 @@ IResource *ResourceSet::PrintResource() {
   return print_;
 }
 
-IResource *ResourceSet::GetMemberSharedReg(sym_t name) {
-  auto it = member_shared_reg_.find(name);
-  if (it != member_shared_reg_.end()) {
+IResource *ResourceSet::GetMemberSharedReg(sym_t name, bool is_owner,
+					   bool is_write) {
+  map<sym_t, IResource *> *m;
+  const char *n;
+  if (is_owner) {
+    n = resource::kSharedReg;
+    m = &member_shared_reg_;
+  } else {
+    n = is_write ?
+      resource::kSharedRegWriter : resource::kSharedRegReader;
+    m = is_write ? &member_shared_reg_writer_ : &member_shared_reg_reader_;
+  }
+  auto it = m->find(name);
+  if (it != m->end()) {
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  resource::kSharedReg);
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   tab_->resources_.push_back(res);
-  member_shared_reg_[name] = res;
+  (*m)[name] = res;
   return res;
 }
 
-IResource *ResourceSet::GetMemberSharedRegAccessor(sym_t name, bool is_write) {
-  auto &m = is_write ? member_shared_reg_writer_ : member_shared_reg_reader_;
-  auto it = m.find(name);
-  if (it != m.end()) {
+IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
+				       bool is_write) {
+  CHECK(vm::ArrayWrapper::IsIntArray(obj));
+  map<vm::Object *, IResource *> *m;
+  const char *n;
+  if (is_owner) {
+    m = &shared_array_;
+    n = resource::kSharedMemory;
+  } else {
+    m = is_write ? &shared_array_writer_ : &shared_array_reader_;
+    n = is_write ?
+      resource::kSharedMemoryWriter : resource::kSharedMemoryReader;
+  }
+  auto it = m->find(obj);
+  if (it != m->end()) {
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  (is_write ?
-				   resource::kSharedRegWriter :
-				   resource::kSharedRegReader));
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
+  if (is_owner) {
+    vm::IntArray *memory = vm::ArrayWrapper::GetIntArray(obj);
+    int address_bits = memory->GetAddressWidth();
+    int data_bits = numeric::Width::GetWidth(memory->GetWidth());
+    IValueType data_type;
+    data_type.SetWidth(data_bits);
+    IArray *array = new IArray(res, address_bits, data_type, false, true);
+    res->SetArray(array);
+  }
   tab_->resources_.push_back(res);
-  m[name] = res;
+  (*m)[obj] = res;
   return res;
 }
 
@@ -144,11 +171,7 @@ IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {
     return it->second;
   }
   vm::IntArray *memory = vm::ArrayWrapper::GetIntArray(obj);
-  int address_bits;
-  for (address_bits = 0; (1 << address_bits) < (int)memory->GetLength();
-       ++address_bits) {
-    // do nothing here.
-  }
+  int address_bits = memory->GetAddressWidth();
   int data_bits = numeric::Width::GetWidth(memory->GetWidth());
   IResource *res =
     DesignTool::CreateArrayResource(tab_, address_bits, data_bits, false, true);
