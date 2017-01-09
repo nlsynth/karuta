@@ -1,15 +1,13 @@
-#! /usr/bin/python2
+#! /usr/bin/python3
 
-# HTTP server for Neon Light (This assumes Python2 for now)
+# HTTP server for Neon Light
 
-import CGIHTTPServer
-import BaseHTTPServer
+import http.server
 import os
-import shutil
-import sys
-import urllib
-import urlparse
+import socketserver
 import tempfile
+import urllib
+
 
 import nli_wrapper
 
@@ -30,7 +28,7 @@ def scrape_version():
     return nli_version
 
 
-class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
+class NliServerHandler(http.server.CGIHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/o/'):
             return self.ServeOutput()
@@ -38,7 +36,7 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        qs = urlparse.parse_qs(urlparse.urlparse(self.path).query)
+        qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         nli_wrapper.Render(self.wfile, False, qs)
 
     def do_POST(self):
@@ -57,12 +55,12 @@ class NliServerHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         self.end_headers()
 
         for line in open(fn, 'r'):
-            self.wfile.write(line)
+            self.wfile.write(bytes(line, 'utf-8'))
 
 if __name__ == '__main__':
     os.environ['NLI_VERSION'] = scrape_version()
     os.environ['NLI_BINARY'] = nli_interpreter
     os.environ['NLI_TEMP'] = tmpdir
     print(os.getenv('NLI_VERSION'))
-    httpd = BaseHTTPServer.HTTPServer(('0.0.0.0', 8000), NliServerHandler)
+    httpd = socketserver.TCPServer(("0.0.0.0", 8000), NliServerHandler)
     httpd.serve_forever()

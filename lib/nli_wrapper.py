@@ -1,4 +1,5 @@
-#! /usr/bin/python2
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
 
 # This file can be invoked either
 #  (1) import-ed from nli_server and serve GET method.
@@ -259,6 +260,12 @@ def GetRunID():
 def GetMarker(runid):
     return 'marker:' + runid + ':'
 
+def Write(ofh, s):
+    if __name__ == '__main__':
+        ofh.write(s)
+    else:
+        ofh.write(bytes(s, 'utf-8'))
+
 def CopyOutput(ifh, marker, runid, ofh):
     for line in ifh:
         if line.find(marker) == 0:
@@ -269,10 +276,10 @@ def CopyOutput(ifh, marker, runid, ofh):
         else:
             line = xml.sax.saxutils.escape(line)
             line = line.replace('\n', '<br>')
-        ofh.write(line + '\n')
+        Write(ofh, line + '\n')
 
 def ShowPreviousOutput(ofh, runid):
-    ofh.write('PREVIOUS OUTPUT:<br>\n')
+    Write(ofh, 'PREVIOUS OUTPUT:<br>\n')
     rundir = GetRunDir(runid)
     outputfn = rundir + '/output'
     marker = GetMarker(runid)
@@ -311,7 +318,7 @@ def RunNLI(ofh, src):
 
 def RenderExampleOptions(ofh, qs):
     temp = []
-    for key, value in EXAMPLES.iteritems():
+    for key, value in EXAMPLES.items():
         temp.append([key, value])
     s = sorted(temp, key=lambda k: (k[1])['i'])
     for v in s:
@@ -322,9 +329,9 @@ def RenderExampleOptions(ofh, qs):
             selected = 'selected'
         else:
             selected = ''
-        ofh.write('''
+        Write(ofh, ('''
 <option value="%s" %s>%s</option>
-        ''' % (key, selected, value['n']))
+        ''' % (key, selected, value['n'])))
 
 def Render(ofh, is_post, qs):
     prev_runid = None
@@ -344,10 +351,10 @@ def Render(ofh, is_post, qs):
 
     version = os.getenv('NLI_VERSION')
 
-    ofh.write(
-'''<html><head><title>Neon Light</title></head><body>%s<br>\n''' % version)
+    s = '''<html><head><title>Neon Light</title></head><body>%s<br>\n''' % version
+    Write(ofh, s)
 
-    ofh.write(
+    Write(ofh,
 '''<form id="src" method="POST" action="">
 <textarea name="s" cols=100 rows=20>
 %s
@@ -356,26 +363,26 @@ def Render(ofh, is_post, qs):
 </form>
 ''' % xml.sax.saxutils.escape(src))
 
-    ofh.write(
+    Write(ofh,
 '''<form id="example" method="GET" action="">
 <select name="e">''')
     RenderExampleOptions(ofh, qs)
-    ofh.write('''
+    Write(ofh, '''
 </select>
 <input type="submit" value="Load code">
 </form>
-''')
+    ''')
     if prev_runid:
         ShowPreviousOutput(ofh, prev_runid)
 
     if is_post:
         RunNLI(ofh, src)
-    ofh.write('</body></html>')
+    Write(ofh, '</body></html>')
 
     ofh.flush()
 
 
 if __name__ == '__main__':
     # For POST method.
-    print "Content-type: text/html\n\n"
+    print("Content-type: text/html\n\n")
     Render(sys.stdout, True, {})
