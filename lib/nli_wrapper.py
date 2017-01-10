@@ -6,12 +6,11 @@
 #  (2) executed from POST handler in nli_server.
 
 import cgi
+import html
 import os
 import sys
 import tempfile
 import time
-# use html package when I migrate to python 3.x
-import xml.sax.saxutils
 
 # Key: Example key (query parameter 'e')
 # Value: Example
@@ -270,11 +269,11 @@ def CopyOutput(ifh, marker, runid, ofh):
     for line in ifh:
         if line.find(marker) == 0:
             line = line[len(marker):-1]
-            line = xml.sax.saxutils.escape(line)
+            line = html.escape(line)
             line = ('<a href="/o/' + runid + '/' + line + '">' +
                     line + '</a><br>')
         else:
-            line = xml.sax.saxutils.escape(line)
+            line = html.escape(line)
             line = line.replace('\n', '<br>')
         Write(ofh, line + '\n')
 
@@ -361,7 +360,7 @@ def Render(ofh, is_post, qs):
 </textarea>
 <input type="submit" value="Run">
 </form>
-''' % xml.sax.saxutils.escape(src))
+''' % html.escape(src))
 
     Write(ofh,
 '''<form id="example" method="GET" action="">
