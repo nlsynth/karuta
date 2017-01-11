@@ -2,9 +2,10 @@
 
 # HTTP server for Neon Light
 
-import http.server
+from http.server import CGIHTTPRequestHandler
+from http.server import HTTPServer
 import os
-import socketserver
+from socketserver import ThreadingMixIn
 import tempfile
 import urllib
 
@@ -28,7 +29,7 @@ def scrape_version():
     return nli_version
 
 
-class NliServerHandler(http.server.CGIHTTPRequestHandler):
+class NliServerHandler(CGIHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/o/'):
             return self.ServeOutput()
@@ -57,10 +58,13 @@ class NliServerHandler(http.server.CGIHTTPRequestHandler):
         for line in open(fn, 'r'):
             self.wfile.write(bytes(line, 'utf-8'))
 
+class ThreadingServer(ThreadingMixIn, HTTPServer):
+    pass
+
 if __name__ == '__main__':
     os.environ['NLI_VERSION'] = scrape_version()
     os.environ['NLI_BINARY'] = nli_interpreter
     os.environ['NLI_TEMP'] = tmpdir
     print(os.getenv('NLI_VERSION'))
-    httpd = http.server.HTTPServer(("0.0.0.0", 8000), NliServerHandler)
+    httpd = ThreadingServer(("0.0.0.0", 8000), NliServerHandler)
     httpd.serve_forever()
