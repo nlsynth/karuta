@@ -591,7 +591,7 @@ vm::Register *Compiler::CompileArrayRef(fe::Expr *expr) {
     // Local array
     insn->src_regs_.push_back(array_reg);
   } else {
-    insn->obj_reg_ = EmitLoadObj(expr->lhs_->sym_);
+    insn->obj_reg_ = EmitLoadPathObj(expr->lhs_);
   }
 
   EmitInsn(insn);
@@ -738,19 +738,22 @@ vm::Register *Compiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   insn->op_ = vm::OP_ARRAY_WRITE;
   // index
   vm::Register *index_reg = CompileExpr(lhs->rhs_);
-  insn->insn_expr_ = lhs->lhs_;
+  fe::Expr *array_expr = lhs->lhs_;
+  insn->insn_expr_ = array_expr;
 
-  vm::Value *value = obj_->LookupValue(lhs->lhs_->sym_, false);
-  if (!value) {
-    local_array = LookupLocalVar(lhs->lhs_->sym_);
-    CHECK(local_array || IsTopLevel()) << "undeclared local array";
+  if (array_expr->type_ == fe::EXPR_SYM) {
+    vm::Value *value = obj_->LookupValue(array_expr->sym_, false);
+    if (!value) {
+      local_array = LookupLocalVar(array_expr->sym_);
+      CHECK(local_array || IsTopLevel()) << "undeclared local array";
+    }
   }
   insn->src_regs_.push_back(index_reg);
   insn->src_regs_.push_back(rhs_reg);
   if (local_array) {
     insn->src_regs_.push_back(local_array);
   } else {
-    insn->obj_reg_ = EmitLoadObj(lhs->lhs_->sym_);
+    insn->obj_reg_ = EmitLoadPathObj(array_expr);
   }
   insn->dst_regs_.push_back(insn->src_regs_[1]);
   EmitInsn(insn);
@@ -1002,6 +1005,26 @@ int Compiler::InsnIndexFromLabel(sym_t label) {
   }
   CHECK(false);
   return -1;
+}
+
+vm::Register *Compiler::EmitLoadPathObj(fe::Expr *path_expr) {
+  vector<sym_t> elms;
+  for (fe::Expr *e = path_expr; e != nullptr; e = e->args_) {
+    elms.push_back(e->sym_);
+    if (e->type_ == fe::EXPR_SYM) {
+      break;
+    }
+  }
+  vm::Register *reg = nullptr;
+  for (int i = elms.size() - 1; i >= 0; --i) {
+    sym_t s = elms[i];
+    if (reg == nullptr) {
+      reg = EmitLoadObj(s);
+    } else {
+      reg = EmitMemberLoad(reg, s);
+    }
+  }
+  return reg;
 }
 
 vm::Register *Compiler::EmitLoadObj(sym_t label) {

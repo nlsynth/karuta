@@ -470,7 +470,14 @@ void MethodSynth::SynthGoto(vm::Insn *insn) {
 
 void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
   InsnWalker::MaybeLoadMemberObject(insn);
-  vm::Value *value = obj_->LookupValue(insn->label_, false);
+  vm::Object *obj;
+  if (is_store) {
+    obj = member_reg_to_obj_map_[insn->src_regs_[1]];
+  } else {
+    obj = member_reg_to_obj_map_[insn->src_regs_[0]];
+  }
+  CHECK(obj);
+  vm::Value *value = obj->LookupValue(insn->label_, false);
   CHECK(value) << "member not found";
   if (value->is_const_) {
     // assuming only bool type for now.
@@ -483,7 +490,7 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     CHECK(!is_store);
   } else {
     SharedResource *sres =
-      shared_resource_set_->GetBySlotName(obj_, insn->label_);
+      shared_resource_set_->GetBySlotName(obj, insn->label_);
     if (sres->accessors_.size() > 1) {
       SynthMemberSharedRegAccess(insn, value, is_store);
     } else {

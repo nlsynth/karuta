@@ -19,8 +19,13 @@ InsnWalker::InsnWalker(ThreadSynth *thr_synth) {
 
 void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
   if (insn->op_ == vm::OP_MEMBER_READ) {
-    vm::Value *value = obj_->LookupValue(insn->label_, false);
-    if (!value->is_const_ && value->type_ == vm::Value::OBJECT) {
+    vm::Object *obj = member_reg_to_obj_map_[insn->src_regs_[0]];
+    vm::Value *value = obj->LookupValue(insn->label_, false);
+    CHECK(value);
+    if (!value->is_const_ &&
+	(value->type_ == vm::Value::OBJECT ||
+	 value->type_ == vm::Value::INT_ARRAY ||
+	 value->type_ == vm::Value::OBJECT_ARRAY)) {
       member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
     }
   }
@@ -31,7 +36,7 @@ void InsnWalker::LoadObj(vm::Insn *insn) {
     vm::Value *value = obj_->LookupValue(insn->label_, false);
     // Can be OBJECT, INT_ARRAY, OBJECT_ARRAY.
     vm::Object *member = value->object_;
-    CHECK(member);
+    CHECK(member) << sym_cstr(insn->label_);
     member_reg_to_obj_map_[insn->dst_regs_[0]] = member;
   } else {
     // loading "this" obj.
