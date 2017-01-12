@@ -356,7 +356,7 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     rhs_val = CompileExpr(stmt->decl_->initial_val);
   }
 
-  if (var_expr->type_ == fe::EXPR_ELM_REF) {
+  if (var_expr->type_ == fe::EXPR_ELM_SYM_REF) {
     CHECK(IsTopLevel());
     if (rhs_val) {
       vm::InsnAnnotator::AnnotateByDecl(vm_, stmt->decl_, rhs_val);
@@ -381,13 +381,13 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
 void Compiler::CompileThreadDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->expr_->lhs_;
-  CHECK(var_expr->type_ == fe::EXPR_ELM_REF);
+  CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_THREAD_DECL, NULL);
 }
 
 void Compiler::CompileChannelDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->expr_;
-  CHECK(var_expr->type_ == fe::EXPR_ELM_REF);
+  CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_CHANNEL_DECL, NULL);
 }
                   
@@ -461,7 +461,7 @@ vm::Register *Compiler::CompileExpr(fe::Expr *expr) {
   if (expr->type_ == fe::BINOP_COMMA) {
     return CompileComma(expr);
   }
-  if (expr->type_ == fe::EXPR_ELM_REF) {
+  if (expr->type_ == fe::EXPR_ELM_SYM_REF) {
     return CompileElmRef(expr);
   }
   if (expr->type_ == fe::EXPR_TRI_TERM) {
@@ -716,7 +716,7 @@ vm::Register *Compiler::CompileAssign(fe::Expr *expr) {
 
   if (expr->lhs_->type_ == fe::UNIOP_REF) {
     return CompileAssignToUniopRef(insn, expr->lhs_, rhs_reg);
-  } else if (expr->lhs_->type_ == fe::EXPR_ELM_REF) {
+  } else if (expr->lhs_->type_ == fe::EXPR_ELM_SYM_REF) {
     return CompileAssignToElmRef(insn, expr->lhs_, rhs_reg);
   } else if (expr->lhs_->type_ == fe::BINOP_ARRAY_REF) {
     return CompileAssignToArray(insn, expr->lhs_, rhs_reg);

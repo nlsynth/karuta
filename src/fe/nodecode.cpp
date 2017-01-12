@@ -13,11 +13,12 @@ const char *NodeName(enum NodeCode node) {
     {EXPR_SYM, "sym"},
     {EXPR_NUM, "num"},
     {EXPR_STR, "str"},
-    {EXPR_ELM_REF, "elm_ref"},
+    {EXPR_ELM_SYM_REF, "elm_sym_ref"},
     {EXPR_FUNCALL, "funcall"},
     {EXPR_TRI_TERM, "tri_term"},
     {EXPR_BIT_RANGE, "bit_range"},
     {BINOP_COMMA, "comma"},
+    {BINOP_ELM_REF, "elm_ref"},
     {BINOP_ADD, "add"},
     {BINOP_SUB, "sub"},
     {BINOP_ASSIGN, "assign"},
@@ -83,6 +84,7 @@ const char *NodeName(enum NodeCode node) {
 bool IsBinOpNode(enum NodeCode node) {
   static set<NodeCode> codes = {
     BINOP_COMMA,
+    BINOP_ELM_REF,
     BINOP_ADD,
     BINOP_SUB,
     BINOP_ASSIGN,

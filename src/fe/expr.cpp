@@ -62,7 +62,7 @@ void Expr::Dump(DumpStream &ds) {
       ds.pop_indent();
     }
     break;
-  case EXPR_ELM_REF:
+  case EXPR_ELM_SYM_REF:
     ds.push_indent();
     args_->Dump(ds);
     ds.indent();

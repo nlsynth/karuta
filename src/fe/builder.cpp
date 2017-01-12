@@ -107,8 +107,8 @@ Expr *Builder::TriTerm(Expr *cond, Expr *lhs, Expr *rhs) {
   return expr;
 }
 
-Expr *Builder::ElmRefExpr(Expr *arg, sym_t sym) {
-  Expr *expr = NewExpr(EXPR_ELM_REF);
+Expr *Builder::ElmSymRefExpr(Expr *arg, sym_t sym) {
+  Expr *expr = NewExpr(EXPR_ELM_SYM_REF);
   expr->args_ = arg;
   expr->sym_ = sym;
   return expr;

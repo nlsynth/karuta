@@ -2680,7 +2680,7 @@ yyreduce:
   case 134:
 #line 476 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.expr) = Builder::ElmRefExpr((yyvsp[-2].expr), (yyvsp[0].sym));
+  (yyval.expr) = Builder::ElmSymRefExpr((yyvsp[-2].expr), (yyvsp[0].sym));
 }
 #line 2686 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;

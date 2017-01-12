@@ -474,7 +474,7 @@ EXPR : VAR {
 VAR : SYM {
   $$ = Builder::SymExpr($1);
 } | VAR '.' SYM {
-  $$ = Builder::ElmRefExpr($1, $3);
+  $$ = Builder::ElmSymRefExpr($1, $3);
 }
 
 FUNCALL_HEAD : VAR '(' {

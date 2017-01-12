@@ -28,7 +28,7 @@ class Builder {
   static Expr *IncDecExpr(Expr *expr, int op, bool is_post);
   static Expr *SignedExpr(int sign, Expr *arg);
   static Expr *TriTerm(Expr *cond, Expr *lhs, Expr *rhs);
-  static Expr *ElmRefExpr(Expr *expr, sym_t sym);
+  static Expr *ElmSymRefExpr(Expr *expr, sym_t sym);
   static Expr *LogicInvertExpr(Expr *expr);
   static Expr *BitInvertExpr(Expr *expr);
   static EnumDecl *EnumItemList(EnumDecl *decls, sym_t item);
