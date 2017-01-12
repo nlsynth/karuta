@@ -109,7 +109,7 @@ private:
 			       vm::Register *rhs_reg);
   int InsnIndexFromLabel(sym_t label);
   vm::Register *EmitLoadObj(sym_t label);
-  vm::Register *EmitLoadPathObj(fe::Expr *path_expr);
+  vm::Register *EmitLoadPathObj(fe::Expr *path_expr, bool incl_last);
   vm::Register *EmitMemberLoad(vm::Register *obj_reg, sym_t m);
   bool IsTopLevel() const;
   vm::Value::ValueType GetVariableType(sym_t name);

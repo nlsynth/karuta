@@ -591,7 +591,7 @@ vm::Register *Compiler::CompileArrayRef(fe::Expr *expr) {
     // Local array
     insn->src_regs_.push_back(array_reg);
   } else {
-    insn->obj_reg_ = EmitLoadPathObj(expr->lhs_);
+    insn->obj_reg_ = EmitLoadPathObj(expr->lhs_, true);
   }
 
   EmitInsn(insn);
@@ -678,9 +678,8 @@ void Compiler::SimpleAssign(vm::Register *src, vm::Register *dst) {
 }
 
 vm::Register *Compiler::CompileElmRef(fe::Expr *expr) {
-  CHECK(IsTopLevel());
   CHECK(expr->args_->type_ == fe::EXPR_SYM);
-  vm::Register *obj_reg = EmitLoadObj(expr->args_->sym_);
+  vm::Register *obj_reg = EmitLoadPathObj(expr, false);
 
   vm::Insn *ref_insn = new vm::Insn;
   ref_insn->op_ = vm::OP_MEMBER_READ;
@@ -753,7 +752,7 @@ vm::Register *Compiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   if (local_array) {
     insn->src_regs_.push_back(local_array);
   } else {
-    insn->obj_reg_ = EmitLoadPathObj(array_expr);
+    insn->obj_reg_ = EmitLoadPathObj(array_expr, true);
   }
   insn->dst_regs_.push_back(insn->src_regs_[1]);
   EmitInsn(insn);
@@ -763,10 +762,7 @@ vm::Register *Compiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 vm::Register *Compiler::CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
 					      vm::Register *rhs_reg) {
   CHECK(lhs->args_->type_ == fe::EXPR_SYM);
-  vm::Register *obj_reg = LookupLocalVar(lhs->args_->sym_);
-  if (!obj_reg) {
-    obj_reg = EmitLoadObj(lhs->args_->sym_);
-  }
+  vm::Register *obj_reg = EmitLoadPathObj(lhs, false);
 
   insn->op_ = vm::OP_MEMBER_WRITE;
   insn->label_ = lhs->sym_;
@@ -1007,7 +1003,7 @@ int Compiler::InsnIndexFromLabel(sym_t label) {
   return -1;
 }
 
-vm::Register *Compiler::EmitLoadPathObj(fe::Expr *path_expr) {
+vm::Register *Compiler::EmitLoadPathObj(fe::Expr *path_expr, bool incl_last) {
   vector<sym_t> elms;
   for (fe::Expr *e = path_expr; e != nullptr; e = e->args_) {
     elms.push_back(e->sym_);
@@ -1017,6 +1013,9 @@ vm::Register *Compiler::EmitLoadPathObj(fe::Expr *path_expr) {
   }
   vm::Register *reg = nullptr;
   for (int i = elms.size() - 1; i >= 0; --i) {
+    if (!incl_last && i == 0) {
+      break;
+    }
     sym_t s = elms[i];
     if (reg == nullptr) {
       reg = EmitLoadObj(s);
