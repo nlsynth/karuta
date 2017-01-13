@@ -73,7 +73,7 @@ void Compiler::SetByteCodeDebug(bool enable) {
 }
 
 Compiler::Compiler(vm::VM *vm, vm::Object *obj, const fe::Method *parse_tree)
-  : vm_(vm), obj_(obj), tree_(parse_tree), last_queued_insn_(NULL) {
+  : vm_(vm), obj_(obj), tree_(parse_tree), last_queued_insn_(nullptr) {
 }
 
 vm::Method *Compiler::Compile(vm::Method *method) {
@@ -197,7 +197,7 @@ void Compiler::SetupArgumentRegisters() {
   if (!tree_->args_) {
     return;
   }
-  SetupDeclSetRegisters(*tree_->args_, NULL);
+  SetupDeclSetRegisters(*tree_->args_, nullptr);
 }
 
 void Compiler::SetupReturnRegisters() {
@@ -333,7 +333,7 @@ void Compiler::CompileReturn(fe::Stmt *stmt) {
 
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_GOTO;
-  insn->insn_stmt_ = NULL;
+  insn->insn_stmt_ = nullptr;
   EmitInsn(insn);
 }
 
@@ -351,7 +351,7 @@ void Compiler::CompileIfStmt(fe::Stmt *stmt) {
 
 void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->decl_->name_expr;
-  vm::Register *rhs_val = NULL;
+  vm::Register *rhs_val = nullptr;
   if (stmt->decl_->initial_val) {
     rhs_val = CompileExpr(stmt->decl_->initial_val);
   }
@@ -382,13 +382,13 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 void Compiler::CompileThreadDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->expr_->lhs_;
   CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
-  CompileMemberDeclStmt(stmt, var_expr, vm::OP_THREAD_DECL, NULL);
+  CompileMemberDeclStmt(stmt, var_expr, vm::OP_THREAD_DECL, nullptr);
 }
 
 void Compiler::CompileChannelDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->expr_;
   CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
-  CompileMemberDeclStmt(stmt, var_expr, vm::OP_CHANNEL_DECL, NULL);
+  CompileMemberDeclStmt(stmt, var_expr, vm::OP_CHANNEL_DECL, nullptr);
 }
                   
 void Compiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
@@ -438,7 +438,7 @@ vm::Register *Compiler::CompileExpr(fe::Expr *expr) {
     return CompileSymExpr(expr);
   }
   if (expr->type_ == fe::EXPR_FUNCALL) {
-    return CompileFuncallExpr(expr);
+    return CompileFuncallExpr(nullptr, expr);
   }
   if (expr->type_ == fe::UNIOP_POST_INC ||
       expr->type_ == fe::UNIOP_POST_DEC) {
@@ -461,7 +461,7 @@ vm::Register *Compiler::CompileExpr(fe::Expr *expr) {
   if (expr->type_ == fe::BINOP_COMMA) {
     return CompileComma(expr);
   }
-  if (expr->type_ == fe::EXPR_ELM_SYM_REF) {
+  if (expr->type_ == fe::BINOP_ELM_REF) {
     return CompileElmRef(expr);
   }
   if (expr->type_ == fe::EXPR_TRI_TERM) {
@@ -499,7 +499,7 @@ vm::Register *Compiler::CompileExpr(fe::Expr *expr) {
       vm::Register *lhs = CompileExpr(expr->lhs_);
       vm::Register *rhs = CompileExpr(expr->rhs_);
       if (!lhs || !rhs) {
-	return NULL;
+	return nullptr;
       }
       insn->src_regs_.push_back(lhs);
       insn->src_regs_.push_back(rhs);
@@ -591,7 +591,7 @@ vm::Register *Compiler::CompileArrayRef(fe::Expr *expr) {
     // Local array
     insn->src_regs_.push_back(array_reg);
   } else {
-    insn->obj_reg_ = EmitLoadPathObj(expr->lhs_, true);
+    insn->obj_reg_ = CompileExpr(expr->lhs_);
   }
 
   EmitInsn(insn);
@@ -601,7 +601,7 @@ vm::Register *Compiler::CompileArrayRef(fe::Expr *expr) {
 vm::Register *Compiler::CompileComma(fe::Expr *expr) {
   vector<fe::Expr*> value_exprs;
   FlattenCommas(expr, &value_exprs);
-  vm::Register *reg = NULL;
+  vm::Register *reg = nullptr;
   for (size_t i = 0; i < value_exprs.size(); ++i) {
     reg = CompileExpr(value_exprs[i]);
   }
@@ -678,19 +678,24 @@ void Compiler::SimpleAssign(vm::Register *src, vm::Register *dst) {
 }
 
 vm::Register *Compiler::CompileElmRef(fe::Expr *expr) {
-  CHECK(expr->args_->type_ == fe::EXPR_SYM);
-  vm::Register *obj_reg = EmitLoadPathObj(expr, false);
-
-  vm::Insn *ref_insn = new vm::Insn;
-  ref_insn->op_ = vm::OP_MEMBER_READ;
-  ref_insn->insn_expr_ = expr;
-  ref_insn->label_ = expr->sym_;
-  vm::Register *res_reg = AllocRegister();
-  res_reg->orig_name_ = expr->sym_;
-  ref_insn->dst_regs_.push_back(res_reg);
-  ref_insn->src_regs_.push_back(obj_reg);
-  EmitInsn(ref_insn);
-  return res_reg;
+  vm::Register *obj_reg = CompileExpr(expr->lhs_);
+  fe::Expr *rhs = expr->rhs_;
+  if (rhs->type_ == fe::EXPR_SYM) {
+    vm::Insn *ref_insn = new vm::Insn;
+    ref_insn->op_ = vm::OP_MEMBER_READ;
+    ref_insn->insn_expr_ = expr;
+    ref_insn->label_ = expr->rhs_->sym_;
+    vm::Register *res_reg = AllocRegister();
+    res_reg->orig_name_ = expr->rhs_->sym_;
+    ref_insn->dst_regs_.push_back(res_reg);
+    ref_insn->src_regs_.push_back(obj_reg);
+    EmitInsn(ref_insn);
+    return res_reg;
+  } else if (rhs->type_ == fe::EXPR_FUNCALL) {
+    return CompileFuncallExpr(obj_reg, rhs);
+  }
+  CHECK(false);
+  return nullptr;
 }
 
 vm::Register *Compiler::CompileAssign(fe::Expr *expr) {
@@ -698,7 +703,7 @@ vm::Register *Compiler::CompileAssign(fe::Expr *expr) {
   // (x, y) = f(...)
   if (expr->rhs_->type_ == fe::EXPR_FUNCALL &&
       expr->lhs_->type_ == fe::BINOP_COMMA) {
-    return CompileMultiValueFuncall(expr->rhs_, expr->lhs_);
+    return CompileMultiValueFuncall(nullptr, expr->rhs_, expr->lhs_);
   }
 
   vm::Insn *insn = new vm::Insn;
@@ -706,7 +711,7 @@ vm::Register *Compiler::CompileAssign(fe::Expr *expr) {
   // RHS.
   vm::Register *rhs_reg = CompileExpr(expr->rhs_);
   if (!rhs_reg) {
-    return NULL;
+    return nullptr;
   }
   if (expr->type_ != fe::BINOP_ASSIGN) {
     // now rhs corresponds lhs op= rhs.
@@ -716,7 +721,7 @@ vm::Register *Compiler::CompileAssign(fe::Expr *expr) {
 
   if (expr->lhs_->type_ == fe::UNIOP_REF) {
     return CompileAssignToUniopRef(insn, expr->lhs_, rhs_reg);
-  } else if (expr->lhs_->type_ == fe::EXPR_ELM_SYM_REF) {
+  } else if (expr->lhs_->type_ == fe::BINOP_ELM_REF) {
     return CompileAssignToElmRef(insn, expr->lhs_, rhs_reg);
   } else if (expr->lhs_->type_ == fe::BINOP_ARRAY_REF) {
     return CompileAssignToArray(insn, expr->lhs_, rhs_reg);
@@ -733,7 +738,7 @@ vm::Register *Compiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   // SRC: INDEX RHS_REG {LOCAL_ARRAY}
   // DST: RHS_REG
   // OBJ: ARRAY
-  vm::Register *local_array = NULL;
+  vm::Register *local_array = nullptr;
   insn->op_ = vm::OP_ARRAY_WRITE;
   // index
   vm::Register *index_reg = CompileExpr(lhs->rhs_);
@@ -752,7 +757,11 @@ vm::Register *Compiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   if (local_array) {
     insn->src_regs_.push_back(local_array);
   } else {
-    insn->obj_reg_ = EmitLoadPathObj(array_expr, true);
+    if (array_expr->type_ == fe::EXPR_SYM) {
+      insn->obj_reg_ = EmitMemberLoad(EmitLoadObj(nullptr), array_expr->sym_);
+    } else {
+      insn->obj_reg_ = CompileElmRef(array_expr);
+    }
   }
   insn->dst_regs_.push_back(insn->src_regs_[1]);
   EmitInsn(insn);
@@ -761,15 +770,13 @@ vm::Register *Compiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 
 vm::Register *Compiler::CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
 					      vm::Register *rhs_reg) {
-  CHECK(lhs->args_->type_ == fe::EXPR_SYM);
-  vm::Register *obj_reg = EmitLoadPathObj(lhs, false);
-
+  vm::Register *lhs_obj = CompileExpr(lhs->lhs_);
+  CHECK(lhs->rhs_->type_ == fe::EXPR_SYM);
   insn->op_ = vm::OP_MEMBER_WRITE;
-  insn->label_ = lhs->sym_;
-  insn->obj_reg_ = obj_reg;
-
+  insn->label_ = lhs->rhs_->sym_;
+  insn->obj_reg_ = lhs_obj;
   insn->src_regs_.push_back(rhs_reg);
-  insn->src_regs_.push_back(obj_reg);
+  insn->src_regs_.push_back(lhs_obj);
   insn->dst_regs_.push_back(insn->src_regs_[0]);
   EmitInsn(insn);
   return insn->dst_regs_[0];
@@ -784,13 +791,13 @@ vm::Register *Compiler::CompileAssignToSym(vm::Insn *insn, fe::Expr *lhs,
   //  SRC: RHS_REG, OBJ_REG
   //  DST: RHS_REG
   vm::Register *lhs_reg = LookupLocalVar(lhs->sym_);
-  vm::Register *obj_reg = NULL;
+  vm::Register *obj_reg = nullptr;
   insn->label_ = lhs->sym_;
   if (lhs_reg) {
     insn->op_ = vm::OP_ASSIGN;
     insn->src_regs_.push_back(lhs_reg);
   } else {
-    obj_reg = EmitLoadObj(NULL);
+    obj_reg = EmitLoadObj(nullptr);
     insn->op_ = vm::OP_MEMBER_WRITE;
   }
   insn->src_regs_.push_back(rhs_reg);
@@ -830,7 +837,7 @@ vm::Register *Compiler::CompileRefLhsExpr(fe::Expr *lhs_expr, vm::Insn *insn) {
       insn->obj_reg_ = EmitLoadObj(lhs_expr->args_->sym_);
     }
     insn->label_ = name;
-    return NULL;
+    return nullptr;
   } else {
     // Determines if it is a channel or memory.
     vm::Value::ValueType type = GetVariableType(name);
@@ -874,7 +881,7 @@ vm::Register *Compiler::LookupLocalVar(sym_t name) {
       return reg;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 vm::Register *Compiler::CompileSymExpr(fe::Expr *expr) {
@@ -888,7 +895,7 @@ vm::Register *Compiler::CompileSymExpr(fe::Expr *expr) {
 }
 
 vm::Register *Compiler::CompileMemberSym(fe::Expr *expr) {
-  vm::Register *obj_reg = EmitLoadObj(NULL);
+  vm::Register *obj_reg = EmitLoadObj(nullptr);
 
   vm::Insn *ref_insn = new vm::Insn;
   ref_insn->src_regs_.push_back(obj_reg);
@@ -936,16 +943,21 @@ vm::Register *Compiler::TraverseMemberPath(fe::Expr *path_elem) {
   return EmitMemberLoad(obj_reg, path_elem->sym_);
 }
 
-vm::Register *Compiler::CompileFuncallExpr(fe::Expr *expr) {
-  return CompileMultiValueFuncall(expr, NULL);
+vm::Register *Compiler::CompileFuncallExpr(vm::Register *obj, fe::Expr *expr) {
+  return CompileMultiValueFuncall(obj, expr, nullptr);
 }
 
-vm::Register *Compiler::CompileMultiValueFuncall(fe::Expr *funcall,
+vm::Register *Compiler::CompileMultiValueFuncall(vm::Register *obj,
+						 fe::Expr *funcall,
 						 fe::Expr *lhs) {
   vm::Insn *call_insn = new vm::Insn;
   call_insn->op_ = vm::OP_FUNCALL;
   call_insn->insn_expr_ = funcall;
-  call_insn->obj_reg_ = CompilePathHead(funcall->func_);
+  if (obj == nullptr) {
+    call_insn->obj_reg_ = CompilePathHead(funcall->func_);
+  } else {
+    call_insn->obj_reg_ = obj;
+  }
   call_insn->label_ = funcall->func_->sym_;
 
   vector<fe::Expr*> args;
@@ -953,7 +965,7 @@ vm::Register *Compiler::CompileMultiValueFuncall(fe::Expr *funcall,
   for (size_t i = 0; i < args.size(); ++i) {
     vm::Register *reg = CompileExpr(args[i]);
     if (!reg) {
-      return NULL;
+      return nullptr;
     }
     call_insn->src_regs_.push_back(reg);
   }
@@ -972,7 +984,7 @@ vm::Register *Compiler::CompileMultiValueFuncall(fe::Expr *funcall,
       done_insn->dst_regs_.push_back(reg);
     }
     EmitInsn(done_insn);
-    return NULL;
+    return nullptr;
   } else {
     // This can be a dummy value, if the callee return void.
     vm::Register *reg = AllocRegister();
@@ -1001,29 +1013,6 @@ int Compiler::InsnIndexFromLabel(sym_t label) {
   }
   CHECK(false);
   return -1;
-}
-
-vm::Register *Compiler::EmitLoadPathObj(fe::Expr *path_expr, bool incl_last) {
-  vector<sym_t> elms;
-  for (fe::Expr *e = path_expr; e != nullptr; e = e->args_) {
-    elms.push_back(e->sym_);
-    if (e->type_ == fe::EXPR_SYM) {
-      break;
-    }
-  }
-  vm::Register *reg = nullptr;
-  for (int i = elms.size() - 1; i >= 0; --i) {
-    if (!incl_last && i == 0) {
-      break;
-    }
-    sym_t s = elms[i];
-    if (reg == nullptr) {
-      reg = EmitLoadObj(s);
-    } else {
-      reg = EmitMemberLoad(reg, s);
-    }
-  }
-  return reg;
 }
 
 vm::Register *Compiler::EmitLoadObj(sym_t label) {

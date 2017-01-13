@@ -107,7 +107,7 @@ IMPORT_PARAM : SYM K_ASSIGN STR {
 }
 
 IMPORT_PARAM_LIST : IMPORT_PARAM {
-  $$ = synth::Importer::BuildParamSet(NULL, $1);
+  $$ = synth::Importer::BuildParamSet(nullptr, $1);
 } | IMPORT_PARAM_LIST ',' IMPORT_PARAM {
   $$ = synth::Importer::BuildParamSet($1, $3);
 }
@@ -122,13 +122,13 @@ RETURN_TYPE : TYPE_NAME WIDTH_SPEC {
 }
 
 RETURN_TYPE_LIST : RETURN_TYPE {
- $$ = Builder::ReturnDeclList(NULL, $1);
+ $$ = Builder::ReturnDeclList(nullptr, $1);
 } | RETURN_TYPE_LIST ',' RETURN_TYPE {
  $$ = Builder::ReturnDeclList($1, $3);
 }
 
 RETURN_SPEC : {
-  $$ = Builder::ReturnDeclList(NULL, NULL);
+  $$ = Builder::ReturnDeclList(nullptr, nullptr);
 } | '(' RETURN_TYPE_LIST ')' {
   $$ = $2;
 }
@@ -154,9 +154,9 @@ STMT_LIST : {
 }
 
 MODIFIED_VAR : VAR {
-  $$ = Builder::ModifiedVar($1, false, NULL);
+  $$ = Builder::ModifiedVar($1, false, nullptr);
 } | '*' VAR {
-  $$ = Builder::ModifiedVar($2, true, NULL);
+  $$ = Builder::ModifiedVar($2, true, nullptr);
 } | '*' SYM VAR {
   $$ = Builder::ModifiedVar($3, true, $2);
 }
@@ -164,7 +164,6 @@ MODIFIED_VAR : VAR {
 VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
   $$ = Builder::BuildVarDecl($1, $2, $3);
 } | K_ENUM TYPE_NAME MODIFIED_VAR {
-//  $$ = NULL; // NstBuilder::BuildVarDecl($2, NULL, $3);
 } | ENUM_DECL MODIFIED_VAR {
 }
 
@@ -180,19 +179,18 @@ WIDTH_SPEC : {
 
 ARG_DECL : {
   /* no arguments */
-  $$ = NULL; // NstBuilder::ArgDeclList(NULL, NULL);
+  $$ = nullptr;
 } | ARG_DECL_LIST {
   $$ = $1;
 }
 
 ARG_DECL_LIST : VAR_DECL {
-  $$ = Builder::ArgDeclList(NULL, $1);
+  $$ = Builder::ArgDeclList(nullptr, $1);
 } | ARG_DECL_LIST ',' VAR_DECL {
   $$ = Builder::ArgDeclList($1, $3);
 } | ARG_DECL_LIST ',' MODIFIED_VAR {
   /* un-typed argument */
-  //  NstStmt *stmt = NstBuilder::BuildVarDecl(NULL, NULL, $3);
-  $$ = NULL; // NstBuilder::ArgDeclList($1, stmt);
+  $$ = nullptr;
 }
 
 ARRAY_SPEC : '[' ']' {
@@ -226,17 +224,17 @@ ARRAY_INITIALIZER : '{' ARRAY_ELM_LIST '}' {
 
 VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
   Builder::SetArrayLength($1, $2);
-  $$ = Builder::VarDeclList(NULL, $1);
+  $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL K_ASSIGN EXPR {
   $1->initial_val = $3;
-  $$ = Builder::VarDeclList(NULL, $1);
+  $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL ARRAY_SPEC K_ASSIGN ARRAY_INITIALIZER {
   Builder::SetArrayLength($1, $2);
   Builder::SetArrayInitializer($1, $4);
-  $$ = Builder::VarDeclList(NULL, $1);
+  $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL_STMT ',' MODIFIED_VAR {
   sym_t type = Builder::TypeNameFromVarDeclSet($1);
-  $$ = Builder::VarDeclList($1, Builder::BuildVarDecl(type, NULL, $3));
+  $$ = Builder::VarDeclList($1, Builder::BuildVarDecl(type, nullptr, $3));
 } | VAR_DECL_STMT ',' MODIFIED_VAR K_ASSIGN EXPR {
   $$ = Builder::VarDeclList($1, $3);
 }
@@ -262,13 +260,11 @@ STMT : ';' {
 } | ENUM_DECL ';' {
 } | STRUCT_DECL ';' {
 } | K_GOTO FUNCALL ';' {
-  // NstEmitter::EmitTransition($2);
 } | K_GOTO SYM ';' {
-  // NstEmitter::EmitGotoStmt($2);
 } | K_RETURN EXPR ';' {
   Emitter::EmitReturnStmt($2);
 } | K_RETURN ';' {
-  Emitter::EmitReturnStmt(NULL);
+  Emitter::EmitReturnStmt(nullptr);
 } | BLOCK {
 } | IF_STMT {
 } | FOR_STMT {
@@ -306,14 +302,14 @@ IF_WITH_ELSE : IF_COND_PART BLOCK K_ELSE {
 }
 
 IF_STMT : IF_COND_PART BLOCK {
-  $$ = NULL;
+  $$ = nullptr;
   Emitter::EmitLabel($1->label_f_);
   Emitter::EmitLabel($1->label_join_);
 } | IF_WITH_ELSE BLOCK {
-  $$ = NULL;
+  $$ = nullptr;
   Emitter::EmitLabel($1->label_join_);
 } | IF_WITH_ELSE IF_STMT {
-  $$ = NULL;
+  $$ = nullptr;
   Emitter::EmitLabel($1->label_join_);
 }
 
@@ -400,7 +396,7 @@ ENUM_DECL : K_ENUM VAR '{' ENUM_ITEM_LIST '}' {
 }
 
 ENUM_ITEM_LIST : SYM {
-  $$ = Builder::EnumItemList(NULL, $1);
+  $$ = Builder::EnumItemList(nullptr, $1);
 } | ENUM_ITEM_LIST ',' SYM {
   $$ = Builder::EnumItemList($1, $3);
 }
@@ -415,8 +411,8 @@ STRUCT_ELEMENT_LIST : VAR_DECL_STMT ';' {
 } | STRUCT_ELEMENT_LIST VAR_DECL_STMT ';' {
 }
 
-EXPR : VAR {
-  $$ = $1;
+EXPR : SYM {
+  $$ = Builder::SymExpr($1);
 } | '(' EXPR ')' {
   $$ = $2;
 } | EXPR '[' EXPR ']' {
@@ -425,6 +421,8 @@ EXPR : VAR {
   $$ = Builder::BitRangeRefExpr($1, $3, $5);
 } | EXPR ',' EXPR {
   $$ = Builder::BinopExpr($1, $3, BINOP_COMMA);
+} | EXPR '.' EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_ELM_REF);
 } | FUNCALL {
   $$ = $1;
 } | '!' EXPR {
@@ -477,8 +475,8 @@ VAR : SYM {
   $$ = Builder::ElmSymRefExpr($1, $3);
 }
 
-FUNCALL_HEAD : VAR '(' {
-  $$ = $1;
+FUNCALL_HEAD : SYM '(' {
+  $$ = Builder::SymExpr($1);
 }
 
 FUNCALL :  FUNCALL_HEAD ARG_LIST ')' {
@@ -486,7 +484,7 @@ FUNCALL :  FUNCALL_HEAD ARG_LIST ')' {
 }
 
 ARG_LIST : {
-  $$ = NULL;
+  $$ = nullptr;
 } | EXPR {
   $$ = $1;
 }

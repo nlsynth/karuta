@@ -64,8 +64,9 @@ private:
   vm::Register *CompileElmRef(fe::Expr *expr);
   vm::Register *CompileTriTerm(fe::Expr *expr);
   vm::Register *CompileRef(fe::Expr *expr);
-  vm::Register *CompileFuncallExpr(fe::Expr *expr);
-  vm::Register *CompileMultiValueFuncall(fe::Expr *funcall,
+  vm::Register *CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
+  vm::Register *CompileMultiValueFuncall(vm::Register *obj,
+					 fe::Expr *funcall,
 					 fe::Expr *lhs);
   void CompileFuncDecl(fe::Stmt *stmt);
   void CompileImportStmt(fe::Stmt *stmt);
@@ -109,7 +110,6 @@ private:
 			       vm::Register *rhs_reg);
   int InsnIndexFromLabel(sym_t label);
   vm::Register *EmitLoadObj(sym_t label);
-  vm::Register *EmitLoadPathObj(fe::Expr *path_expr, bool incl_last);
   vm::Register *EmitMemberLoad(vm::Register *obj_reg, sym_t m);
   bool IsTopLevel() const;
   vm::Value::ValueType GetVariableType(sym_t name);
