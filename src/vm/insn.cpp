@@ -9,8 +9,8 @@
 
 namespace vm {
 
-Insn::Insn() : obj_reg_(NULL), method_(NULL), jump_target_(-1), label_(NULL),
-	       insn_expr_(NULL), insn_stmt_(NULL) {
+Insn::Insn() : obj_reg_(nullptr), method_(nullptr), jump_target_(-1),
+	       label_(nullptr), insn_expr_(nullptr), insn_stmt_(nullptr) {
 }
 
 void Insn::Dump() const {

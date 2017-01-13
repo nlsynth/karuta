@@ -137,7 +137,7 @@ void ExecutorToplevel::ExecSpawn(MethodFrame *frame, Insn *insn) {
   Object *obj;
   Method *method = LookupMethod(frame, insn, &obj);
   CHECK(method) << "no method";
-  vm->AddThreadFromMethod(NULL, obj, method);
+  vm->AddThreadFromMethod(nullptr, obj, method);
 }
 
 void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,

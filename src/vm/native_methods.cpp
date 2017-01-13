@@ -138,7 +138,7 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
   Value *value = obj->LookupValue(sym_lookup("$synth_params"), true);
   if (value->type_ == Value::NONE) {
     value->type_ = Value::RESOURCE_PARAMS;
-    value->resource_params_ = Importer::Import(NULL);
+    value->resource_params_ = Importer::Import(nullptr);
   }
   value->resource_params_
     ->AddParam(StringWrapper::String(args[0].object_),
@@ -215,8 +215,6 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
 		      &NativeMethods::SetSynthParam, rets);
   InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
   InstallNativeMethod(vm, obj, "writeHdl", &NativeMethods::WriteHdl, rets);
-  // Depreacte this after 0.1.8.
-  InstallNativeMethod(vm, obj, "write_hdl", &NativeMethods::WriteHdl, rets);
 }
 
 void Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj, const char *name,
@@ -235,7 +233,7 @@ void Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj, const char *nam
 
 void Method::InstallNativeMethod(VM *vm, Object *obj, const char *name,
 				 method_func func, const vector<RegisterType> &types) {
-  InstallNativeMethodWithAltImpl(vm, obj, name, func, types, NULL);
+  InstallNativeMethodWithAltImpl(vm, obj, name, func, types, nullptr);
 }
 
 void Method::InstallEnvNativeMethods(VM *vm, Object *env) {
@@ -246,15 +244,15 @@ void Method::InstallEnvNativeMethods(VM *vm, Object *env) {
 }
 
 RegisterType Method::ObjectType() {
-  return RegisterType(Value::OBJECT, NULL, NULL, false);
+  return RegisterType(Value::OBJECT, nullptr, nullptr, false);
 }
 
 RegisterType Method::BoolType(VM *vm) {
-  return RegisterType(Value::ENUM_ITEM, vm->bool_type_.get(), NULL, false);
+  return RegisterType(Value::ENUM_ITEM, vm->bool_type_.get(), nullptr, false);
 }
 
 RegisterType Method::IntType(int w) {
-  return RegisterType(Value::NUM, NULL,
+  return RegisterType(Value::NUM, nullptr,
 		      numeric::Width::MakeInt(false, w, 0), false);
 }
 

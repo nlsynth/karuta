@@ -8,8 +8,8 @@
 namespace vm {
 
 Method::Method(bool is_toplevel) :
-  is_toplevel_(is_toplevel), method_fn_(NULL),
-  alt_impl_(NULL), parse_tree_(NULL) {
+  is_toplevel_(is_toplevel), method_fn_(nullptr),
+  alt_impl_(nullptr), parse_tree_(nullptr) {
 }
 
 Method::~Method() {

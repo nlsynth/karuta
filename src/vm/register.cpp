@@ -27,9 +27,9 @@ void RegisterType::Dump(DumpStream &ds) {
   }
 }
 
-Register::Register() : type_(Value::NONE, NULL, NULL, false),
-		       orig_name_(NULL),
-		       array_length_(-1), array_initializer_(NULL) {
+Register::Register() : type_(Value::NONE, nullptr, nullptr, false),
+		       orig_name_(nullptr),
+		       array_length_(-1), array_initializer_(nullptr) {
 }
 
 void Register::Dump() {

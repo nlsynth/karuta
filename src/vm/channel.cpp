@@ -17,7 +17,7 @@ static const char *kChannelObjectKey = "channel";
 class ChannelData : public ObjectSpecificData {
 public:
   ChannelData(int width, sym_t name) : width_(width), name_(sym_cstr(name)),
-				       blocking_thread_(NULL) {};
+				       blocking_thread_(nullptr) {};
   virtual ~ChannelData() {};
 
   virtual const char *ObjectTypeKey() {
@@ -96,13 +96,13 @@ void Channel::WriteValue(const Value &value, Object *obj) {
   pipe_data->values_.push_back(v);
   if (pipe_data->blocking_thread_) {
     pipe_data->blocking_thread_->Resume();
-    pipe_data->blocking_thread_ = NULL;
+    pipe_data->blocking_thread_ = nullptr;
   }
 }
 
 void Channel::BlockOnThis(Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
-  CHECK(pipe_data->blocking_thread_ == NULL);
+  CHECK(pipe_data->blocking_thread_ == nullptr);
   pipe_data->blocking_thread_ = thr;
 }
 

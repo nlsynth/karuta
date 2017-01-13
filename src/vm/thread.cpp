@@ -109,7 +109,7 @@ void Thread::SetReturnValueFromNativeMethod(const Value &value) {
 }
 
 bool Thread::IsRootThread() const {
-  return (parent_thread_ == NULL);
+  return (parent_thread_ == nullptr);
 }
 
 vector<MethodFrame*> &Thread::MethodStack() {
@@ -180,7 +180,7 @@ MethodFrame *Thread::CurrentMethodFrame() const {
 
 MethodFrame *Thread::ParentMethodFrame() const {
   if (method_stack_.size() < 2) {
-    return NULL;
+    return nullptr;
   }
   return method_stack_[method_stack_.size() - 2];
 }

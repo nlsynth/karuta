@@ -9,8 +9,8 @@
 
 namespace vm {
 
-Value::Value() : type_(NONE), is_const_(false), method_(NULL),
-		 object_(NULL), local_int_array_(NULL) {
+Value::Value() : type_(NONE), is_const_(false), method_(nullptr),
+		 object_(nullptr), local_int_array_(nullptr) {
 }
 
 void Value::Dump() const {

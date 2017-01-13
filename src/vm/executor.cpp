@@ -522,7 +522,7 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
 			       << sym_cstr(insn->label_);
     Status::Check(Status::USER);
     thr_->UserError();
-    return NULL;
+    return nullptr;
   }
   CHECK(value->type_ == Value::METHOD);
   value->method_ =

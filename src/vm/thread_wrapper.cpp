@@ -33,7 +33,7 @@ void ThreadWrapper::Run(VM *vm, Object *obj) {
     Value *method_value =
       obj->LookupValue(sym_lookup(methods[i].method_name.c_str()), false);
     CHECK(method_value && method_value->type_ == Value::METHOD);
-    vm->AddThreadFromMethod(NULL, obj, method_value->method_);
+    vm->AddThreadFromMethod(nullptr, obj, method_value->method_);
   }
 }
 

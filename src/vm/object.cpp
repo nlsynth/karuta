@@ -13,7 +13,7 @@ ObjectSpecificData::~ObjectSpecificData() {
 }
 
 const char *ObjectSpecificData::ObjectTypeKey() {
-  return NULL;
+  return nullptr;
 }
 
 void Object::Dump() {
@@ -25,7 +25,7 @@ const char *Object::ObjectTypeKey() {
   if (object_specific_.get()) {
     return object_specific_->ObjectTypeKey();
   }
-  return NULL;
+  return nullptr;
 }
 
 void Object::Dump(DumpStream &ds) {
@@ -52,7 +52,7 @@ Value *Object::LookupValue(sym_t name, bool cr) {
     return &it->second;
   }
   if (!cr) {
-    return NULL;
+    return nullptr;
   }
   return &(members_[name]);
 }
