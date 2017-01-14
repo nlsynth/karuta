@@ -284,7 +284,12 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
 void InsnAnnotator::AnnotateValueType(fe::VarDecl *decl, Value *value) {
   value->type_ = SymToType(decl->type);
   if (decl->array_length > -1) {
-    value->type_ = Value::INT_ARRAY;
+    if (value->type_ == Value::OBJECT) {
+      value->type_ = Value::OBJECT_ARRAY;
+    } else {
+      CHECK(value->type_ == Value::NUM);
+      value->type_ = Value::INT_ARRAY;
+    }
   }
   value->num_.type = decl->width;
 }

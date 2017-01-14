@@ -41,6 +41,7 @@ public:
   Object *CreateMemoryObject(const numeric::Width *width,
 			     int array_length,
 			     fe::ArrayInitializer *array_initializer);
+  Object *CreateObjectArray(int array_length);
 
   static IntArray *CreateIntArray(const numeric::Width *width,
 				  int array_length,

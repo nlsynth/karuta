@@ -46,6 +46,10 @@ Object *Executor::CreateMemoryObject(const numeric::Width *width,
   return obj;
 }
 
+Object *Executor::CreateObjectArray(int array_length) {
+  return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), array_length);
+}
+
 IntArray *Executor::CreateIntArray(const numeric::Width *width,
 				   int array_length,
 				   fe::ArrayInitializer *array_initializer) {
@@ -256,10 +260,16 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
   if (insn->obj_reg_) {
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
     CHECK(array_obj);
-    CHECK(ArrayWrapper::IsIntArray(array_obj));
-    IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-    frame->reg_values_[insn->dst_regs_[0]->id_].num_ = array->Read(index);
-    frame->reg_values_[insn->dst_regs_[0]->id_].num_.type = array->GetWidth();
+    Value &lhs = frame->reg_values_[insn->dst_regs_[0]->id_];
+    if (ArrayWrapper::IsIntArray(array_obj)) {
+      IntArray *array = ArrayWrapper::GetIntArray(array_obj);
+      lhs.num_ = array->Read(index);
+      lhs.num_.type = array->GetWidth();
+    } else {
+      CHECK(ArrayWrapper::IsObjectArray(array_obj));
+      lhs.object_ = ArrayWrapper::Get(array_obj, index);
+      lhs.type_ = Value::OBJECT;
+    }
   } else {
     // local array.
     CHECK(insn->src_regs_.size() == 2);
@@ -277,10 +287,16 @@ void Executor::ExecArrayWrite(MethodFrame *frame, Insn *insn) {
   if (insn->obj_reg_) {
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
     CHECK(array_obj);
-    CHECK(ArrayWrapper::IsIntArray(array_obj));
-    IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-    array->Write(index,
-		 frame->reg_values_[insn->src_regs_[1]->id_].num_);
+    if (ArrayWrapper::IsIntArray(array_obj)) {
+      IntArray *array = ArrayWrapper::GetIntArray(array_obj);
+      array->Write(index,
+		   frame->reg_values_[insn->src_regs_[1]->id_].num_);
+    } else {
+      CHECK(ArrayWrapper::IsObjectArray(array_obj));
+      CHECK(frame->reg_values_[insn->src_regs_[1]->id_].type_ == Value::OBJECT);
+      ArrayWrapper::Set(array_obj, index,
+			frame->reg_values_[insn->src_regs_[1]->id_].object_);
+    }
   } else {
     // local array.
     CHECK(insn->src_regs_.size() == 3);
@@ -514,8 +530,9 @@ bool Executor::ExecFuncall(MethodFrame *frame,
 
 Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
 			       Object **obj) {
-  CHECK(insn->obj_reg_->type_.value_type_ == Value::OBJECT);
-  *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
+  Value &obj_value = frame->reg_values_[insn->obj_reg_->id_];
+  CHECK(obj_value.type_ == Value::OBJECT);
+  *obj = obj_value.object_;
   Value *value = (*obj)->LookupValue(insn->label_, false);
   if (!value) {
     Status::os(Status::USER) << "method not found: "

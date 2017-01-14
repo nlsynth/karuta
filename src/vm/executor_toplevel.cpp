@@ -88,6 +88,9 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
     value->object_ = CreateMemoryObject(decl->width, decl->array_length,
 					decl->array_initializer);
   }
+  if (value->type_ == Value::OBJECT_ARRAY) {
+    value->object_ = CreateObjectArray(decl->array_length);
+  }
 }
 
 void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
@@ -200,12 +203,17 @@ void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
   if (insn->obj_reg_) {
     // Member array.
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
-    CHECK(ArrayWrapper::IsIntArray(array_obj));
-    IntArray *array = ArrayWrapper::GetIntArray(array_obj);
+    if (ArrayWrapper::IsIntArray(array_obj)) {
+      IntArray *array = ArrayWrapper::GetIntArray(array_obj);
 
-    const numeric::Width *width = array->GetWidth();
-    int dst_id = insn->dst_regs_[0]->id_;
-    method->method_regs_[dst_id]->type_.width_ = width;
+      const numeric::Width *width = array->GetWidth();
+      int dst_id = insn->dst_regs_[0]->id_;
+      method->method_regs_[dst_id]->type_.width_ = width;
+    } else {
+      CHECK(ArrayWrapper::IsObjectArray(array_obj));
+      int dst_id = insn->dst_regs_[0]->id_;
+      method->method_regs_[dst_id]->type_.value_type_ = Value::OBJECT;
+    }
   }
   Executor::ExecArrayWrite(frame, insn);
 }

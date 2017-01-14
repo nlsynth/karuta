@@ -90,13 +90,13 @@ Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
 
 Object *ArrayWrapper::Get(Object *obj, int nth) {
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
-  CHECK(nth > 0 && nth < (int)data->objs_.size());
+  CHECK(nth >= 0 && nth < (int)data->objs_.size());
   return data->objs_[nth];
 }
 
 void ArrayWrapper::Set(Object *obj, int nth, Object *elem) {
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
-  CHECK(nth > 0 && nth < (int)data->objs_.size());
+  CHECK(nth >= 0 && nth < (int)data->objs_.size());
   data->objs_[nth] = elem;
 }
 
