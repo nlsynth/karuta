@@ -53,6 +53,7 @@ synth_SOURCES= \
  src/synth/tool.cpp src/synth/tool.h
 
 vm_SOURCES = \
+ src/vm/common.h \
  src/vm/array_wrapper.cpp src/vm/array_wrapper.h \
  src/vm/opcode.cpp src/vm/opcode.h \
  src/vm/int_array.cpp src/vm/int_array.h \

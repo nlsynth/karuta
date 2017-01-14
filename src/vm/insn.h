@@ -2,21 +2,10 @@
 #ifndef _vm_insn_h_
 #define _vm_insn_h_
 
-#include "nli.h"
-
+#include "vm/common.h"
 #include "vm/opcode.h"
 
-class DumpStream;
-
-namespace fe {
-class Expr;
-class Stmt;
-}  // namespace fe
-
 namespace vm {
-
-class Register;
-class Method;
 
 class Insn {
 public:

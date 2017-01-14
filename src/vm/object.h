@@ -2,19 +2,14 @@
 #ifndef _vm_object_h_
 #define _vm_object_h_
 
-#include "nli.h"
+#include "vm/common.h"
 #include "vm/value.h"
 
 #include <map>
 
 using std::map;
 
-class DumpStream;
-
 namespace vm {
-
-class Object;
-class VM;
 
 class ObjectSpecificData {
 public:

@@ -2,12 +2,9 @@
 #ifndef _vm_string_wrapper_h_
 #define _vm_string_wrapper_h_
 
-#include "nli.h"
+#include "vm/common.h"
 
 namespace vm {
-
-class Object;
-class VM;
 
 class StringWrapper {
 public:

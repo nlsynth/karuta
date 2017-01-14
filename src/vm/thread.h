@@ -2,20 +2,9 @@
 #ifndef _vm_thread_h_
 #define _vm_thread_h_
 
-#include "nli.h"
-
-class DumpStream;
+#include "vm/common.h"
 
 namespace vm {
-
-class Executor;
-class ExecutorToplevel;
-class Insn;
-class Method;
-class MethodFrame;
-class Object;
-class Value;
-class VM;
 
 class Thread {
 public:

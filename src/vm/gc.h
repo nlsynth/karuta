@@ -2,13 +2,13 @@
 #ifndef _vm_gc_h_
 #define _vm_gc_h_
 
-#include "nli.h"
+#include "vm/common.h"
 
-#include "vm/vm.h"
+#include <set>
+
+using std::set;
 
 namespace vm {
-
-class MethodFrame;
 
 class GC {
 public:

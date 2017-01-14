@@ -2,22 +2,10 @@
 #ifndef _vm_method_h_
 #define _vm_method_h_
 
-#include "nli.h"
+#include "vm/common.h"
 #include "vm/register.h"  // for RegisterType
-#include "vm/value.h"
-
-class DumpStream;
-class Thread;
-
-namespace fe {
-class Method;
-}  // namespace fe
 
 namespace vm {
-
-class Insn;
-class Object;
-class VM;
 
 // This can be either native implementation or in N language.
 class Method {

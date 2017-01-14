@@ -2,24 +2,11 @@
 #ifndef _vm_register_h_
 #define _vm_register_h_
 
-#include "nli.h"
-
 #include "numeric/numeric.h"
+#include "vm/common.h"
 #include "vm/value.h"
 
-class DumpStream;
-
-namespace numeric {
-class Width;
-}  // namespace numeric
-
-namespace fe {
-class ArrayInitializer;
-}  // namespace fe
-
 namespace vm {
-
-class EnumType;
 
 class RegisterType {
 public:

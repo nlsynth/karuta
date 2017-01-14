@@ -2,19 +2,10 @@
 #ifndef _vm_value_h_
 #define _vm_value_h_
 
-#include "nli.h"
-
+#include "vm/common.h"
 #include "numeric/numeric.h"
 
-namespace synth {
-class ResourceParams;
-}  // namespace synth
-
 namespace vm {
-
-class IntArray;
-class Method;
-class Object;
 
 class EnumType {
 public:

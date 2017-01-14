@@ -2,14 +2,9 @@
 #ifndef _vm_thread_wrapper_h_
 #define _vm_thread_wrapper_h_
 
-#include "nli.h"
+#include "vm/common.h"
 
 namespace vm {
-
-class Object;
-class Method;
-class ThreadWrapperData;
-class VM;
 
 class ThreadWrapper {
 public:

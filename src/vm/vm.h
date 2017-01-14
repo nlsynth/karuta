@@ -2,25 +2,14 @@
 #ifndef _vm_vm_h_
 #define _vm_vm_h_
 
+#include "pool.h"
+#include "vm/common.h"
+
 #include <set>
 
 using std::set;
 
-#include "nli.h"
-
-#include "pool.h"
-
-namespace fe {
-class Expr;
-}  // namespace fe
-
 namespace vm {
-
-class IntArray;
-class EnumType;
-class Thread;
-class Method;
-class Object;
 
 class VM {
 public:

@@ -2,22 +2,10 @@
 #ifndef _vm_insn_annotator_h_
 #define _vm_insn_annotator_h_
 
-#include "nli.h"
+#include "vm/common.h"
 #include "vm/value.h"
 
-namespace fe {
-class VarDecl;
-class Stmt;
-}  // namespace fe
-
 namespace vm {
-
-class Insn;
-class Method;
-class Object;
-class Register;
-class Value;
-class VM;
 
 class InsnAnnotator {
 public:

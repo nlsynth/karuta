@@ -2,22 +2,10 @@
 #ifndef _vm_executor_h_
 #define _vm_executor_h_
 
-#include "nli.h"
+#include "vm/common.h"
 #include "vm/value.h"
 
-namespace fe {
-class ArrayInitializer;
-class Expr;
-class Method;
-}  // namespace fe
-
 namespace vm {
-
-class IntArray;
-class Insn;
-class Method;
-class Object;
-class Thread;
 
 class MethodFrame {
 public:

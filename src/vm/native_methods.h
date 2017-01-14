@@ -2,13 +2,10 @@
 #ifndef _vm_native_methods_h_
 #define _vm_native_methods_h_
 
-#include "nli.h"
+#include "vm/common.h"
 #include "vm/value.h"
 
 namespace vm {
-
-class Object;
-class Thread;
 
 class NativeMethods {
 public:

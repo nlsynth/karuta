@@ -2,17 +2,9 @@
 #ifndef _vm_array_wrapper_h_
 #define _vm_array_wrapper_h_
 
-#include "nli.h"
-
-namespace numeric {
-class Width;
-}  // namespace numeric
+#include "vm/common.h"
 
 namespace vm {
-
-class IntArray;
-class Object;
-class VM;
 
 class ArrayWrapper {
 public:

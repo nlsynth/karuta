@@ -2,14 +2,9 @@
 #ifndef _vm_channel_h_
 #define _vm_channel_h_
 
-#include "nli.h"
-#include "vm/value.h"
+#include "vm/common.h"
 
 namespace vm {
-
-class Object;
-class Thread;
-class VM;
 
 class Channel {
 public:
