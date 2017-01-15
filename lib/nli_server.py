@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 
-# HTTP server for Neon Light
+# Playground server for Neon Light
 
 from http.server import CGIHTTPRequestHandler
 from http.server import HTTPServer
@@ -37,8 +37,9 @@ class NliServerHandler(CGIHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
+        w = nli_wrapper.NliWrapper(False, self.wfile)
         qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
-        nli_wrapper.Render(self.wfile, False, qs)
+        w.Render(qs)
 
     def do_POST(self):
         # DIR, PATH

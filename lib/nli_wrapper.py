@@ -14,129 +14,37 @@ import time
 
 import nli_examples
 
-def GetExampleSource(qs):
-    tmpl = (qs.get('e', ['']))[0]
-    if not tmpl:
-        tmpl = ''
-    if tmpl in nli_examples.EXAMPLES:
-        e = nli_examples.EXAMPLES[tmpl]
-    else:
-        e = nli_examples.EXAMPLES['default']
-    return e['s']
+class NliWrapper(object):
+    def __init__(self, isCgi, ofh):
+        self.isCgi = isCgi
+        self.ofh = ofh
 
-def GetRunDir(runid):
-    workdir = os.getenv('NLI_TEMP')
-    return workdir + '/' + runid
+    def Render(self, qs):
+        ofh = self.ofh
+        prev_runid = None
+        if qs.get('r'):
+            prev_runid = qs.get('r')[0]
 
-def GetSourceFromRun(runid):
-    rundir = GetRunDir(runid)
-    srcfn = rundir + '/src'
-    src = ''
-    for line in open(srcfn, 'r'):
-        src += line
-    return src
-
-def GetRunID():
-    return 'run-' + str(time.time()) + '-' + str(os.getpid())
-
-def GetMarker(runid):
-    return 'marker:' + runid + ':'
-
-def Write(ofh, s):
-    if __name__ == '__main__':
-        ofh.write(s)
-    else:
-        ofh.write(bytes(s, 'utf-8'))
-
-def CopyOutput(ifh, marker, runid, ofh):
-    for line in ifh:
-        if line.find(marker) == 0:
-            line = line[len(marker):-1]
-            line = html.escape(line)
-            line = ('<a href="/o/' + runid + '/' + line + '">' +
-                    line + '</a><br>')
+        if self.isCgi:
+            form = cgi.FieldStorage()
         else:
-            line = html.escape(line)
-            line = line.replace('\n', '<br>')
-        Write(ofh, line + '\n')
-
-def ShowPreviousOutput(ofh, runid):
-    Write(ofh, 'PREVIOUS OUTPUT:<br>\n')
-    rundir = GetRunDir(runid)
-    outputfn = rundir + '/output'
-    marker = GetMarker(runid)
-    ifh = open(outputfn, 'r')
-    CopyOutput(ifh, marker, runid, ofh)
-
-def RunNLI(ofh, src):
-    bin = os.getenv('NLI_BINARY')
-    workdir = os.getenv('NLI_TEMP')
-    runid = GetRunID()
-    rundir = GetRunDir(runid)
-    os.mkdir(rundir)
-
-    srcf = rundir + '/src'
-    srcfh = open(srcf, 'w')
-    srcfh.write(src)
-    srcfh.close()
-
-    marker = GetMarker(runid)
-
-    outputfn = rundir + '/output'
-
-    cmd = (bin + ' --root=' + rundir + ' ' +
-           '--output_marker=' + marker + ' ' +
-           '--timeout=3000 ' +
-           srcf +
-           ' > ' + outputfn + ' 2>&1')
-    os.system(cmd)
-
-    ofh.write('<a href="/?r=' + runid +
-              '">Link to this run</a><br><br>')
-
-    ofh.write('OUTPUT:<br>\n')
-    ifh = open(outputfn, 'r')
-    CopyOutput(ifh, marker, runid, ofh)
-
-def RenderExampleOptions(ofh, qs):
-    temp = []
-    for key, value in nli_examples.EXAMPLES.items():
-        temp.append([key, value])
-    s = sorted(temp, key=lambda k: (k[1])['i'])
-    for v in s:
-        key = v[0]
-        value = v[1]
-        tmpl = (qs.get('e', ['']))[0]
-        if tmpl == key:
-            selected = 'selected'
+            form = {}
+        if 's' in form:
+            src = form['s'].value
+        elif prev_runid:
+            src = self.GetSourceFromRun(prev_runid)
         else:
-            selected = ''
-        Write(ofh, ('''
-<option value="%s" %s>%s</option>
-        ''' % (key, selected, value['n'])))
+            src = self.GetExampleSource(qs)
 
-def Render(ofh, is_post, qs):
-    prev_runid = None
-    if qs.get('r'):
-        prev_runid = qs.get('r')[0]
+        version = os.getenv('NLI_VERSION')
 
-    if is_post:
-        form = cgi.FieldStorage()
-    else:
-        form = {}
-    if 's' in form:
-        src = form['s'].value
-    elif prev_runid:
-        src = GetSourceFromRun(prev_runid)
-    else:
-        src = GetExampleSource(qs)
+        self.Write('''
+<html><head><title>Neon Light Playground</title></head><body>
+<h1>Neon Light Playground</h1>
+%s<br>\n
+''' % version)
 
-    version = os.getenv('NLI_VERSION')
-
-    s = '''<html><head><title>Neon Light</title></head><body>%s<br>\n''' % version
-    Write(ofh, s)
-
-    Write(ofh,
+        self.Write(
 '''<form id="src" method="POST" action="">
 <textarea name="s" cols=100 rows=20>
 %s
@@ -145,26 +53,128 @@ def Render(ofh, is_post, qs):
 </form>
 ''' % html.escape(src))
 
-    Write(ofh,
+        self.Write(
 '''<form id="example" method="GET" action="">
 <select name="e">''')
-    RenderExampleOptions(ofh, qs)
-    Write(ofh, '''
+        self.RenderExampleOptions(qs)
+        self.Write('''
 </select>
 <input type="submit" value="Load code">
 </form>
     ''')
-    if prev_runid:
-        ShowPreviousOutput(ofh, prev_runid)
+        if prev_runid:
+            self.ShowPreviousOutput(prev_runid)
 
-    if is_post:
-        RunNLI(ofh, src)
-    Write(ofh, '</body></html>')
+        if self.isCgi:
+            self.RunNLI(src)
+        self.Write('</body></html>')
 
-    ofh.flush()
+        self.ofh.flush()
 
+    def Write(self, s):
+        if self.isCgi:
+            self.ofh.write(s)
+        else:
+            # writes to network
+            self.ofh.write(bytes(s, 'utf-8'))
+
+    def RunNLI(self, src):
+        bin = os.getenv('NLI_BINARY')
+        workdir = os.getenv('NLI_TEMP')
+        runid = self.GetRunID()
+        rundir = self.GetRunDir(runid)
+        os.mkdir(rundir)
+
+        srcf = rundir + '/src'
+        srcfh = open(srcf, 'w')
+        srcfh.write(src)
+        srcfh.close()
+
+        marker = self.GetMarker(runid)
+
+        outputfn = rundir + '/output'
+
+        cmd = (bin + ' --root=' + rundir + ' ' +
+               '--output_marker=' + marker + ' ' +
+               '--timeout=3000 ' +
+               srcf +
+               ' > ' + outputfn + ' 2>&1')
+        os.system(cmd)
+
+        self.Write('<a href="/?r=' + runid +
+                  '">Link to this run</a><br><br>')
+
+        self.Write('OUTPUT:<br>\n')
+        ifh = open(outputfn, 'r')
+        self.CopyOutput(ifh, marker, runid)
+
+    def GetRunID(self):
+        return 'run-' + str(time.time()) + '-' + str(os.getpid())
+
+    def GetMarker(self, runid):
+        return 'marker:' + runid + ':'
+
+    def GetRunDir(self, runid):
+        workdir = os.getenv('NLI_TEMP')
+        return workdir + '/' + runid
+
+    def GetSourceFromRun(self, runid):
+        rundir = self.GetRunDir(runid)
+        srcfn = rundir + '/src'
+        src = ''
+        for line in open(srcfn, 'r'):
+            src += line
+        return src
+
+    def CopyOutput(self, ifh, marker, runid):
+        for line in ifh:
+            if line.find(marker) == 0:
+                line = line[len(marker):-1]
+                line = html.escape(line)
+                line = ('<a href="/o/' + runid + '/' + line + '">' +
+                        line + '</a><br>')
+            else:
+                line = html.escape(line)
+                line = line.replace('\n', '<br>')
+            self.Write(line + '\n')
+
+    def ShowPreviousOutput(self, runid):
+        self.Write('PREVIOUS OUTPUT:<br>\n')
+        rundir = self.GetRunDir(runid)
+        outputfn = rundir + '/output'
+        marker = self.GetMarker(runid)
+        ifh = open(outputfn, 'r')
+        self.CopyOutput(ifh, marker, runid)
+
+    def RenderExampleOptions(self, qs):
+        temp = []
+        for key, value in nli_examples.EXAMPLES.items():
+            temp.append([key, value])
+        s = sorted(temp, key=lambda k: (k[1])['i'])
+        for v in s:
+            key = v[0]
+            value = v[1]
+            tmpl = (qs.get('e', ['']))[0]
+            if tmpl == key:
+                selected = 'selected'
+            else:
+                selected = ''
+            self.Write('''
+<option value="%s" %s>%s</option>
+        ''' % (key, selected, value['n']))
+
+    def GetExampleSource(self, qs):
+        tmpl = (qs.get('e', ['']))[0]
+        if not tmpl:
+            tmpl = ''
+        if tmpl in nli_examples.EXAMPLES:
+            e = nli_examples.EXAMPLES[tmpl]
+        else:
+            e = nli_examples.EXAMPLES['default']
+        return e['s']
 
 if __name__ == '__main__':
     # For POST method.
     print("Content-type: text/html\n\n")
-    Render(sys.stdout, True, {})
+    w = NliWrapper(True, sys.stdout)
+    w.Render({})
