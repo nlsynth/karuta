@@ -105,7 +105,7 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   EmitNop();
   FlushPendingInsns();
   ResolveLabels();
-  vm::InsnAnnotator::Annotate(vm_, obj_, method_);
+  vm::InsnAnnotator::AnnotateMethod(vm_, obj_, method_);
   if (dbg_bytecode_) {
     method_->Dump();
   }

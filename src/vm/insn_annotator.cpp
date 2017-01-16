@@ -13,99 +13,103 @@
 
 namespace vm {
 
-void InsnAnnotator::Annotate(VM *vm, Object *obj, Method *method) {
-  AnnotateType(vm, obj, method);
-  AnnotateWidth(vm, obj, method);
+InsnAnnotator::InsnAnnotator(VM *vm, Object *obj, Method *method)
+  : vm_(vm), obj_(obj), method_(method) {
 }
 
-void InsnAnnotator::AnnotateType(VM *vm, Object *obj, Method *method) {
-  for (size_t i = 0; i < method->insns_.size(); ++i) {
-    Insn *insn = method->insns_[i];
-    if (insn->op_ == OP_NUM || insn->op_ == OP_ARRAY_READ) {
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	Value::NUM;
-    }
-    if (insn->op_ == OP_STR || insn->op_ == OP_LOAD_OBJ) {
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	Value::OBJECT;
-    }
-    if (insn->op_ == OP_GENERIC_READ || insn->op_ == OP_CHANNEL_READ ||
-	insn->op_ == OP_MEMORY_READ) {
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	Value::NUM;
-    }
-    if (insn->op_ == OP_GENERIC_WRITE || insn->op_ == OP_MEMORY_WRITE ||
-	insn->op_ == OP_CHANNEL_WRITE) {
-      // memory, array_ref
-      if (insn->src_regs_.size() == 2) {
-	insn->src_regs_[0]->type_.value_type_ = Value::NUM;
-	insn->src_regs_[1]->type_.value_type_ = Value::NUM;
-	method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	  Value::NUM;
-      } else {
-	// elm_ref
-      }
-    }
-    if (insn->op_ == OP_ASSIGN) {
-      CHECK(insn->src_regs_.size() == 2);
-      enum Value::ValueType value_type =
-	insn->src_regs_[1]->type_.value_type_;
-      if (value_type == Value::NONE) {
-	continue;
-      }
-      if (method->method_regs_[insn->dst_regs_[0]->id_]->orig_name_) {
-	continue;
-      }
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	value_type;
-      insn->src_regs_[0]->type_.value_type_ = value_type;
-    }
-    if (insn->op_ == OP_ADD || insn->op_ == OP_SUB ||
-	insn->op_ == OP_MUL ||
-	insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT ||
-	insn->op_ == OP_AND || insn->op_ == OP_OR ||
-	insn->op_ == OP_XOR || insn->op_ == OP_CONCAT ||
-	insn->op_ == OP_BIT_RANGE) {
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	insn->src_regs_[1]->type_.value_type_;
-      CHECK(insn->src_regs_[0]->type_.value_type_ ==
-	    insn->src_regs_[1]->type_.value_type_);
-    }
-    if (insn->op_ == OP_BIT_INV) {
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	insn->src_regs_[0]->type_.value_type_;
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.enum_type_ =
-	insn->src_regs_[0]->type_.enum_type_;
-    }
-    if (insn->op_ == OP_LOGIC_INV ||
-	insn->op_ == OP_LAND || insn->op_ == OP_LOR ||
-	insn->op_ == OP_GT || insn->op_ == OP_LT ||
-	insn->op_ == OP_GTE || insn->op_ == OP_LTE ||
-	insn->op_ == OP_EQ || insn->op_ == OP_NE) {
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	Value::ENUM_ITEM;
-      method->method_regs_[insn->dst_regs_[0]->id_]->type_.enum_type_ =
-	vm->bool_type_.get();
-    }
-    if (insn->op_ == OP_MEMBER_READ ||
-	insn->op_ == OP_MEMBER_WRITE) {
-      Value *value = obj->LookupValue(insn->label_, false);
-      if (value) {
-	method->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-	  value->type_;
-      }
-      // else, the type should be determined in the compiler.
-    }
+void InsnAnnotator::AnnotateMethod(VM *vm, Object *obj, Method *method) {
+  InsnAnnotator annotator(vm, obj, method);
+  annotator.DoAnnotate();
+}
+
+void InsnAnnotator::DoAnnotate() {
+  AnnotateType();
+  AnnotateWidth();
+}
+
+void InsnAnnotator::AnnotateType() {
+  for (size_t i = 0; i < method_->insns_.size(); ++i) {
+    Insn *insn = method_->insns_[i];
+    AnnotateInsnType(insn);
   }
 }
 
-void InsnAnnotator::AnnotateWidth(VM *vm, Object *obj,
-				  Method *method) {
-  AnnotateCalcWidth(vm, obj, method);
-  PropagateVarWidthAll(vm, obj, method);
+void InsnAnnotator::AnnotateInsnType(Insn *insn) {
+  if (insn->op_ == OP_NUM || insn->op_ == OP_ARRAY_READ) {
+    SetDstRegType(Value::NUM, insn, 0);
+  }
+  if (insn->op_ == OP_STR || insn->op_ == OP_LOAD_OBJ) {
+    SetDstRegType(Value::OBJECT, insn, 0);
+  }
+  if (insn->op_ == OP_GENERIC_READ || insn->op_ == OP_CHANNEL_READ ||
+      insn->op_ == OP_MEMORY_READ) {
+    SetDstRegType(Value::NUM, insn, 0);
+  }
+  if (insn->op_ == OP_GENERIC_WRITE || insn->op_ == OP_MEMORY_WRITE ||
+      insn->op_ == OP_CHANNEL_WRITE) {
+    // memory, array_ref
+    if (insn->src_regs_.size() == 2) {
+      insn->src_regs_[0]->type_.value_type_ = Value::NUM;
+      insn->src_regs_[1]->type_.value_type_ = Value::NUM;
+      SetDstRegType(Value::NUM, insn, 0);
+    } else {
+      // elm_ref
+    }
+  }
+  if (insn->op_ == OP_ASSIGN) {
+    CHECK(insn->src_regs_.size() == 2);
+    enum Value::ValueType value_type =
+      insn->src_regs_[1]->type_.value_type_;
+    if (value_type == Value::NONE) {
+      return;
+    }
+    if (method_->method_regs_[insn->dst_regs_[0]->id_]->orig_name_) {
+      return;
+    }
+    method_->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
+      value_type;
+    insn->src_regs_[0]->type_.value_type_ = value_type;
+  }
+  if (insn->op_ == OP_ADD || insn->op_ == OP_SUB ||
+      insn->op_ == OP_MUL ||
+      insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT ||
+      insn->op_ == OP_AND || insn->op_ == OP_OR ||
+      insn->op_ == OP_XOR || insn->op_ == OP_CONCAT ||
+      insn->op_ == OP_BIT_RANGE) {
+    SetDstRegType(insn->src_regs_[1]->type_.value_type_, insn, 0);
+    CHECK(insn->src_regs_[0]->type_.value_type_ ==
+	  insn->src_regs_[1]->type_.value_type_);
+  }
+  if (insn->op_ == OP_BIT_INV) {
+    SetDstRegType(insn->src_regs_[0]->type_.value_type_, insn, 0);
+    method_->method_regs_[insn->dst_regs_[0]->id_]->type_.enum_type_ =
+      insn->src_regs_[0]->type_.enum_type_;
+  }
+  if (insn->op_ == OP_LOGIC_INV ||
+      insn->op_ == OP_LAND || insn->op_ == OP_LOR ||
+      insn->op_ == OP_GT || insn->op_ == OP_LT ||
+      insn->op_ == OP_GTE || insn->op_ == OP_LTE ||
+      insn->op_ == OP_EQ || insn->op_ == OP_NE) {
+    SetDstRegType(Value::ENUM_ITEM, insn, 0);
+    method_->method_regs_[insn->dst_regs_[0]->id_]->type_.enum_type_ =
+      vm_->bool_type_.get();
+  }
+  if (insn->op_ == OP_MEMBER_READ ||
+      insn->op_ == OP_MEMBER_WRITE) {
+    Value *value = obj_->LookupValue(insn->label_, false);
+    if (value) {
+      SetDstRegType(value->type_, insn, 0);
+    }
+    // else, the type should be determined in the compiler.
+  }
+}
+
+void InsnAnnotator::AnnotateWidth() {
+  AnnotateCalcWidth(vm_, obj_, method_);
+  PropagateVarWidthAll(vm_, obj_, method_);
   // Enforces width of argument and return values after possible
   // over writes.
-  EnforceValueWidth(vm, obj, method);
+  EnforceValueWidth(vm_, obj_, method_);
 }
 
 
@@ -248,6 +252,7 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
 void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 				   Register *reg) {
   if (decl->array_length >= 0) {
+    CHECK(decl->type == sym_int);
     reg->type_.value_type_ = Value::INT_ARRAY;
     reg->array_length_ = decl->array_length;
     if (reg->array_length_ == 0 && decl->array_initializer) {
@@ -299,6 +304,11 @@ void InsnAnnotator::AnnotateByValue(Value *value, Register *reg) {
   if (value->type_ == Value::NUM) {
     reg->type_.width_ = value->num_.type;
   }
+}
+
+void InsnAnnotator::SetDstRegType(Value::ValueType vtype, Insn *insn, int idx) {
+  method_->method_regs_[insn->dst_regs_[idx]->id_]->type_.value_type_ =
+    vtype;
 }
 
 }  // namespace vm
