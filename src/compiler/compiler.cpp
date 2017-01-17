@@ -107,7 +107,10 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   ResolveLabels();
   vm::InsnAnnotator::AnnotateMethod(vm_, obj_, method_);
   if (dbg_bytecode_) {
-    method_->Dump();
+    // Top level result will be output after execution.
+    if (!method_->is_toplevel_) {
+      method_->Dump();
+    }
   }
 
   return method_;

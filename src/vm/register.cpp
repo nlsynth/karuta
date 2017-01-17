@@ -29,7 +29,8 @@ void RegisterType::Dump(DumpStream &ds) {
 
 Register::Register() : type_(Value::NONE, nullptr, nullptr, false),
 		       orig_name_(nullptr),
-		       array_length_(-1), array_initializer_(nullptr) {
+		       array_length_(-1), array_initializer_(nullptr),
+		       is_declared_type_(false) {
 }
 
 void Register::Dump() {
@@ -52,6 +53,33 @@ void Register::Dump(DumpStream &ds) {
       ds.os << "={...}";
     }
   }
+  if (is_declared_type_) {
+    ds.os << "!";
+  }
+}
+
+void Register::SetArrayLength(int array_length) {
+  array_length_ = array_length;
+}
+
+int Register::GetArrayLength() const {
+  return array_length_;
+}
+
+void Register::SetArrayInitializer(fe::ArrayInitializer *initializer) {
+  array_initializer_ = initializer;
+}
+
+fe::ArrayInitializer *Register::GetArrayInitializer() const {
+  return array_initializer_;
+}
+
+void Register::SetIsDeclaredType(bool is_declared_type) {
+  is_declared_type_ = is_declared_type;
+}
+
+bool Register::GetIsDeclaredType() const {
+  return is_declared_type_;
 }
 
 }  // namespace vm

@@ -63,11 +63,10 @@ void InsnAnnotator::AnnotateInsnType(Insn *insn) {
     if (value_type == Value::NONE) {
       return;
     }
-    if (method_->method_regs_[insn->dst_regs_[0]->id_]->orig_name_) {
+    if (insn->dst_regs_[0]->orig_name_) {
       return;
     }
-    method_->method_regs_[insn->dst_regs_[0]->id_]->type_.value_type_ =
-      value_type;
+    insn->dst_regs_[0]->type_.value_type_ = value_type;
     insn->src_regs_[0]->type_.value_type_ = value_type;
   }
   if (insn->op_ == OP_ADD || insn->op_ == OP_SUB ||
@@ -82,7 +81,7 @@ void InsnAnnotator::AnnotateInsnType(Insn *insn) {
   }
   if (insn->op_ == OP_BIT_INV) {
     SetDstRegType(insn->src_regs_[0]->type_.value_type_, insn, 0);
-    method_->method_regs_[insn->dst_regs_[0]->id_]->type_.enum_type_ =
+    insn->dst_regs_[0]->type_.enum_type_ =
       insn->src_regs_[0]->type_.enum_type_;
   }
   if (insn->op_ == OP_LOGIC_INV ||
@@ -91,7 +90,7 @@ void InsnAnnotator::AnnotateInsnType(Insn *insn) {
       insn->op_ == OP_GTE || insn->op_ == OP_LTE ||
       insn->op_ == OP_EQ || insn->op_ == OP_NE) {
     SetDstRegType(Value::ENUM_ITEM, insn, 0);
-    method_->method_regs_[insn->dst_regs_[0]->id_]->type_.enum_type_ =
+    insn->dst_regs_[0]->type_.enum_type_ =
       vm_->bool_type_.get();
   }
   if (insn->op_ == OP_MEMBER_READ ||
@@ -251,14 +250,15 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
 
 void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 				   Register *reg) {
+  reg->SetIsDeclaredType(true);
   if (decl->array_length >= 0) {
     CHECK(decl->type == sym_int);
     reg->type_.value_type_ = Value::INT_ARRAY;
-    reg->array_length_ = decl->array_length;
-    if (reg->array_length_ == 0 && decl->array_initializer) {
-      reg->array_length_ = decl->array_initializer->num_.size();
+    reg->SetArrayLength(decl->array_length);
+    if (reg->GetArrayLength() == 0 && decl->array_initializer) {
+      reg->SetArrayLength(decl->array_initializer->num_.size());
     }
-    reg->array_initializer_ = decl->array_initializer;
+    reg->SetArrayInitializer(decl->array_initializer);
   } else {
     reg->type_.value_type_ = SymToType(decl->type);
     if (decl->type == sym_bool) {
@@ -307,8 +307,9 @@ void InsnAnnotator::AnnotateByValue(Value *value, Register *reg) {
 }
 
 void InsnAnnotator::SetDstRegType(Value::ValueType vtype, Insn *insn, int idx) {
-  method_->method_regs_[insn->dst_regs_[idx]->id_]->type_.value_type_ =
-    vtype;
+  insn->dst_regs_[idx]->type_.value_type_ = vtype;
+  CHECK(insn->dst_regs_[idx] ==
+	method_->method_regs_[insn->dst_regs_[idx]->id_]);
 }
 
 }  // namespace vm
