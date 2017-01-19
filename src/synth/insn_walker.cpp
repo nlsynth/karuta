@@ -33,7 +33,13 @@ void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
 
 void InsnWalker::LoadObj(vm::Insn *insn) {
   if (insn->label_) {
-    vm::Value *value = obj_->LookupValue(insn->label_, false);
+    vm::Object *src_obj;
+    if (insn->obj_reg_) {
+      src_obj = member_reg_to_obj_map_[insn->obj_reg_];
+    } else {
+      src_obj = obj_;
+    }
+    vm::Value *value = src_obj->LookupValue(insn->label_, false);
     // Can be OBJECT, INT_ARRAY, OBJECT_ARRAY.
     vm::Object *member = value->object_;
     CHECK(member) << sym_cstr(insn->label_);

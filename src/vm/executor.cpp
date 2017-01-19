@@ -368,7 +368,13 @@ void Executor::ExecLoadObj(MethodFrame *frame, Insn *insn) {
   Value &dst_value = frame->reg_values_[insn->dst_regs_[0]->id_];
   Value *obj_value;
   if (insn->label_) {
-    obj_value = frame->obj_->LookupValue(insn->label_, false);
+    Object *src_obj;
+    if (insn->obj_reg_) {
+      src_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
+    } else {
+      src_obj = frame->obj_;
+    }
+    obj_value = src_obj->LookupValue(insn->label_, false);
     CHECK(obj_value) << "Failed to LoadObj: " << sym_cstr(insn->label_);
     CHECK(obj_value->type_ == Value::OBJECT ||
 	  obj_value->type_ == Value::INT_ARRAY ||
