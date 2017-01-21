@@ -24,6 +24,7 @@
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
 #include "nli.h"
+#include "numeric/numeric.h"
 #include "status.h"
 
 using std::map;
@@ -279,6 +280,7 @@ int Main::main(int argc, char **argv) {
 
   // Actually initialize modules and params.
   ::sym_table_init();
+  numeric::Numeric::Init();
   iroha::Iroha::Init();
   StaticInitializer::RunInitializers();
   Env::SetArgv0(argv[0]);

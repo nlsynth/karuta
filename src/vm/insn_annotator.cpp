@@ -11,6 +11,8 @@
 #include "vm/value.h"
 #include "vm/vm.h"
 
+using std::set;
+
 namespace vm {
 
 InsnAnnotator::InsnAnnotator(VM *vm, Object *obj, Method *method)
@@ -23,219 +25,211 @@ void InsnAnnotator::AnnotateMethod(VM *vm, Object *obj, Method *method) {
 }
 
 void InsnAnnotator::DoAnnotate() {
-  AnnotateType();
-  AnnotateWidth();
-}
-
-void InsnAnnotator::AnnotateType() {
-  for (size_t i = 0; i < method_->insns_.size(); ++i) {
-    Insn *insn = method_->insns_[i];
-    AnnotateInsnType(insn);
+  //AnnotateWidth();
+  if (!method_->is_toplevel_) {
+    ClearType();
   }
-}
-
-void InsnAnnotator::AnnotateInsnType(Insn *insn) {
-  if (insn->op_ == OP_NUM || insn->op_ == OP_ARRAY_READ) {
-    SetDstRegType(Value::NUM, insn, 0);
-  }
-  if (insn->op_ == OP_STR || insn->op_ == OP_LOAD_OBJ) {
-    SetDstRegType(Value::OBJECT, insn, 0);
-  }
-  if (insn->op_ == OP_GENERIC_READ || insn->op_ == OP_CHANNEL_READ ||
-      insn->op_ == OP_MEMORY_READ) {
-    SetDstRegType(Value::NUM, insn, 0);
-  }
-  if (insn->op_ == OP_GENERIC_WRITE || insn->op_ == OP_MEMORY_WRITE ||
-      insn->op_ == OP_CHANNEL_WRITE) {
-    // memory, array_ref
-    if (insn->src_regs_.size() == 2) {
-      insn->src_regs_[0]->type_.value_type_ = Value::NUM;
-      insn->src_regs_[1]->type_.value_type_ = Value::NUM;
-      SetDstRegType(Value::NUM, insn, 0);
-    } else {
-      // elm_ref
+  vector<Insn *> insns;
+  for (auto *insn : method_->insns_) {
+    if (!IsTyped(insn)) {
+      insns.push_back(insn);
     }
   }
+  int n;
+  do {
+    n = 0;
+    vector<Insn *> tmp_insns;
+    for (auto *insn : insns) {
+      TryType(insn);
+      if (IsTyped(insn)) {
+	++n;
+      } else {
+	tmp_insns.push_back(insn);
+      }
+    }
+    insns = tmp_insns;
+  } while (n > 0);
+  PropagateType();
+}
+
+void InsnAnnotator::PropagateType() {
+  // propagate dst to source.
+  set<Register *> source_regs;
+  for (auto *insn : method_->insns_) {
+    for (auto *reg : insn->dst_regs_) {
+      if (reg->GetIsDeclaredType()) {
+	source_regs.insert(reg);
+      }
+    }
+  }
+  set<Register *> processed_regs;
+  do {
+    set<Register *> propagated;
+    set<Register *> tmp_processed;
+    for (auto *insn : method_->insns_) {
+      bool b = false;
+      for (auto *reg : insn->dst_regs_) {
+	if (source_regs.find(reg) != source_regs.end() &&
+	    processed_regs.find(reg) == processed_regs.end()) {
+	  tmp_processed.insert(reg);
+	  b = true;
+	}
+      }
+      if (b) {
+	TryPropagate(insn, &propagated);
+      }
+    }
+    for (auto *reg : tmp_processed) {
+      processed_regs.insert(reg);
+    }
+    source_regs = propagated;
+  } while (source_regs.size() > 0);
+}
+
+void InsnAnnotator::TryPropagate(Insn *insn, set<Register *> *propagated) {
   if (insn->op_ == OP_ASSIGN) {
-    CHECK(insn->src_regs_.size() == 2);
-    enum Value::ValueType value_type =
-      insn->src_regs_[1]->type_.value_type_;
-    if (value_type == Value::NONE) {
-      return;
+    if (insn->dst_regs_[0]->GetIsDeclaredType() &&
+	insn->dst_regs_[0]->type_.value_type_ == Value::NUM &&
+	!insn->src_regs_[1]->GetIsDeclaredType()) {
+      propagated->insert(insn->src_regs_[1]);
+      insn->src_regs_[1]->type_.width_ =
+	insn->dst_regs_[0]->type_.width_;
     }
-    if (insn->dst_regs_[0]->orig_name_) {
-      return;
-    }
-    insn->dst_regs_[0]->type_.value_type_ = value_type;
-    insn->src_regs_[0]->type_.value_type_ = value_type;
-  }
-  if (insn->op_ == OP_ADD || insn->op_ == OP_SUB ||
-      insn->op_ == OP_MUL ||
-      insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT ||
-      insn->op_ == OP_AND || insn->op_ == OP_OR ||
-      insn->op_ == OP_XOR || insn->op_ == OP_CONCAT ||
-      insn->op_ == OP_BIT_RANGE) {
-    SetDstRegType(insn->src_regs_[1]->type_.value_type_, insn, 0);
-    CHECK(insn->src_regs_[0]->type_.value_type_ ==
-	  insn->src_regs_[1]->type_.value_type_);
   }
   if (insn->op_ == OP_BIT_INV) {
-    SetDstRegType(insn->src_regs_[0]->type_.value_type_, insn, 0);
-    insn->dst_regs_[0]->type_.enum_type_ =
-      insn->src_regs_[0]->type_.enum_type_;
+    if (!insn->src_regs_[0]->GetIsDeclaredType()) {
+      propagated->insert(insn->src_regs_[0]);
+      insn->src_regs_[0]->type_.width_ =
+	insn->dst_regs_[0]->type_.width_;
+    }
+  }
+}
+
+void InsnAnnotator::ClearType() {
+  for (auto *reg : method_->method_regs_) {
+    if (!reg->GetIsDeclaredType()) {
+      reg->type_.value_type_ = Value::NONE;
+      reg->type_.width_ = nullptr;
+    }
+  }
+}
+
+void InsnAnnotator::TryType(Insn *insn) {
+  if (insn->op_ == OP_LOAD_OBJ) {
+    if (insn->obj_reg_ == nullptr) {
+      objs_[insn->dst_regs_[0]] = obj_;
+    } else {
+      Value *obj_value = obj_->LookupValue(insn->label_, false);
+      CHECK(obj_value);
+      CHECK(obj_value->object_);
+      objs_[insn->dst_regs_[0]] = obj_value->object_;
+    }
+    insn->dst_regs_[0]->type_.value_type_ = Value::OBJECT;
+    return;
+  }
+  if (insn->op_ == OP_STR || insn->op_ == OP_NUM) {
+    // This may not happen because compiler should have assigned the type.
+    return;
+  }
+  if (insn->op_ == OP_ASSIGN) {
+    if (insn->src_regs_[0]->type_.value_type_ != Value::NONE) {
+      if (insn->dst_regs_[0]->GetIsDeclaredType()) {
+	CHECK(insn->dst_regs_[0]->type_.value_type_ ==
+	      insn->src_regs_[0]->type_.value_type_);
+      } else {
+	insn->dst_regs_[0]->type_ = insn->src_regs_[0]->type_;
+      }
+      return;
+    }
+  }
+  if (InsnType::IsNumCalculation(insn->op_) ||
+      insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT) {
+    if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
+	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
+      if (!insn->dst_regs_[0]->GetIsDeclaredType()) {
+	insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+	PropagateRegWidth(insn->src_regs_[0], insn->src_regs_[1],
+			  insn->dst_regs_[0]);
+      }
+      return;
+    }
+  }
+  if (insn->op_ == OP_CONCAT) {
+    if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
+	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
+      insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+      int w = numeric::Width::GetWidth(insn->src_regs_[0]->type_.width_) +
+	numeric::Width::GetWidth(insn->src_regs_[1]->type_.width_);
+      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
+      return;
+    }
+  }
+  if (insn->op_ == OP_BIT_RANGE) {
+    if (insn->src_regs_[0]->type_.value_type_ == Value::NUM) {
+      insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+      int w = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_) -
+	numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_) + 1;
+      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
+      return;
+    }
   }
   if (insn->op_ == OP_LOGIC_INV ||
       insn->op_ == OP_LAND || insn->op_ == OP_LOR ||
-      insn->op_ == OP_GT || insn->op_ == OP_LT ||
-      insn->op_ == OP_GTE || insn->op_ == OP_LTE ||
-      insn->op_ == OP_EQ || insn->op_ == OP_NE) {
-    SetDstRegType(Value::ENUM_ITEM, insn, 0);
+      InsnType::IsComparison(insn->op_)) {
+    insn->dst_regs_[0]->type_.value_type_ = Value::ENUM_ITEM;
     insn->dst_regs_[0]->type_.enum_type_ =
       vm_->bool_type_.get();
+    return;
+  }
+  if (insn->op_ == OP_BIT_INV) {
+    if (insn->src_regs_[0]->type_.value_type_ != Value::NONE) {
+      insn->dst_regs_[0]->type_.value_type_ =
+	insn->src_regs_[0]->type_.value_type_;
+      insn->dst_regs_[0]->type_.enum_type_ =
+	insn->src_regs_[0]->type_.enum_type_;
+      return;
+    }
+  }
+  if (insn->op_ == OP_FUNCALL) {
+    return;
+  }
+  if (insn->op_ == OP_FUNCALL_DONE) {
+    // TODO: Look up return type(s).
+    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+    insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, 32, 0);
+    return;
+  }
+  if (insn->op_ == OP_GENERIC_READ || insn->op_ == OP_CHANNEL_READ ||
+      insn->op_ == OP_MEMORY_READ) {
+    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+    return;
+  }
+  if (insn->op_ == OP_ARRAY_READ) {
+    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+    return;
   }
   if (insn->op_ == OP_MEMBER_READ ||
       insn->op_ == OP_MEMBER_WRITE) {
     Value *value = obj_->LookupValue(insn->label_, false);
     if (value) {
-      SetDstRegType(value->type_, insn, 0);
+      insn->dst_regs_[0]->type_.value_type_ = value->type_;
     }
     // else, the type should be determined in the compiler.
   }
 }
 
-void InsnAnnotator::AnnotateWidth() {
-  AnnotateCalcWidth(vm_, obj_, method_);
-  PropagateVarWidthAll(vm_, obj_, method_);
-  // Enforces width of argument and return values after possible
-  // over writes.
-  EnforceValueWidth(vm_, obj_, method_);
-}
-
-
-void InsnAnnotator::AnnotateCalcWidth(VM *vm, Object *obj, Method *method) {
-  // Literal numbers.
-  for (size_t i = 0; i < method->method_regs_.size(); ++i) {
-    Register *reg = method->method_regs_[i];
-    if (reg->type_.value_type_ == Value::NUM && reg->type_.is_const_) {
-      reg->type_.width_ =
-	numeric::Width::CommonWidth(numeric::Numeric::ValueWidth(reg->initial_num_),
-				    reg->type_.width_);
+bool InsnAnnotator::IsTyped(Insn *insn) {
+  for (Register *reg : insn->dst_regs_) {
+    if (reg->type_.value_type_ == Value::NONE) {
+      return false;
     }
   }
-  for (size_t i = 0; i < method->insns_.size(); ++i) {
-    Insn *insn = method->insns_[i];
-    // member access.
-    if (insn->op_ == OP_MEMBER_READ ||
-	insn->op_ == OP_MEMBER_WRITE) {
-      Value *value = obj->LookupValue(insn->label_, false);
-      if (!value) {
-	// determined in the compiler.
-	continue;
-      }
-      insn->dst_regs_[0]->type_.value_type_ = value->type_;
-      if (value->type_ == Value::NUM) {
-	if (insn->op_ == OP_MEMBER_WRITE) {
-	  insn->dst_regs_[0]->type_.width_ =
-	    numeric::Width::CommonWidth(insn->src_regs_[0]->type_.width_,
-					numeric::Width::DefaultInt());
-	} else {
-	  insn->dst_regs_[0]->type_.width_ = value->num_.type;
-	}
-      }
-    }
-    // propagates by assign.
-    if (insn->op_ == OP_ASSIGN) {
-      // src -> dst, rhs
-      PropagateRegWidth(insn->src_regs_[0],
-			insn->src_regs_[1],
-			insn->dst_regs_[0]);
-      PropagateRegWidth(insn->src_regs_[0],
-			insn->src_regs_[1],
-			insn->src_regs_[1]);
-    }
-    // propagate const -> dst
-    if ((insn->op_ == OP_ADD || insn->op_ == OP_SUB ||
-	 insn->op_ == OP_AND || insn->op_ == OP_OR ||
-	 insn->op_ == OP_XOR ||
-	 insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT ||
-	 insn->op_ == OP_MUL) &&
-	insn->src_regs_[0]->type_.value_type_ == Value::NUM) {
-      PropagateRegWidth(insn->src_regs_[0], insn->src_regs_[1],
-			insn->dst_regs_[0]);
-    }
-    if (insn->op_ == OP_BIT_RANGE) {
-      CHECK(insn->src_regs_[1]->type_.value_type_ == Value::NUM);
-      CHECK(insn->src_regs_[2]->type_.value_type_ == Value::NUM);
-      int w = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_) -
-	numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_) + 1;
-      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
-    }
-    if (insn->op_ == OP_CONCAT) {
-      CHECK(insn->src_regs_[0]->type_.value_type_ == Value::NUM);
-      CHECK(insn->src_regs_[1]->type_.value_type_ == Value::NUM);
-      int w = numeric::Width::GetWidth(insn->src_regs_[0]->type_.width_) +
-	numeric::Width::GetWidth(insn->src_regs_[1]->type_.width_);
-      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
+  for (Register *reg : insn->src_regs_) {
+    if (reg->type_.value_type_ == Value::NONE) {
+      return false;
     }
   }
-}
-
-void InsnAnnotator::PropagateVarWidthAll(VM *vm, Object *obj, Method *method) {
-  for (size_t i = 0; i < method->insns_.size(); ++i) {
-    Insn *insn = method->insns_[i];
-    PropagateDeclaredWidth(insn);
-  }
-}
-
-void InsnAnnotator::EnforceValueWidth(VM *vm, Object *obj,
-				      Method *method) {
-  int num_args = 0;
-  fe::VarDeclSet *args = method->parse_tree_->args_;
-  if (args) {
-    num_args = args->decls.size();
-    for (int i = 0; i < num_args; ++i) {
-      AnnotateByDecl(vm, args->decls[i], method->method_regs_[i]);
-    }
-  }
-  fe::VarDeclSet *rets = method->parse_tree_->returns_;
-  if (rets) {
-    for (size_t i = 0; i < rets->decls.size(); ++i) {
-      AnnotateByDecl(vm, rets->decls[i], method->method_regs_[num_args + i]);
-    }
-  }
-}
-
-void InsnAnnotator::PropagateDeclaredWidth(Insn *insn) {
-  if (insn->dst_regs_.size() != 1) {
-    // not support fow now.
-    return;
-  }
-  Register *dst = insn->dst_regs_[0];
-  if (InsnType::IsNumCalculation(insn->op_)) {
-    for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
-      Register *src = insn->src_regs_[i];
-      if (src->orig_name_) {
-	continue;
-      }
-      PropagateRegWidth(src, dst, src);
-    }
-  }
-  if (InsnType::IsNumCalculation(insn->op_) ||
-      InsnType::IsComparison(insn->op_)) {
-    for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
-      for (size_t j = 0; j < insn->src_regs_.size(); ++j) {
-	if (i == j) {
-	  continue;
-	}
-	Register *s1 = insn->src_regs_[i];
-	Register *s2 = insn->src_regs_[j];
-	if (s2->orig_name_) {
-	  continue;
-	}
-	PropagateRegWidth(s1, s2, s2);
-      }
-    }
-  }
+  return true;
 }
 
 void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,

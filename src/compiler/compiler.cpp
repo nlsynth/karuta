@@ -514,11 +514,17 @@ vm::Register *Compiler::CompileExpr(fe::Expr *expr) {
       reg->type_.value_type_ = vm::Value::NUM;
       reg->initial_num_ = expr->num_;
       reg->type_.is_const_ = true;
+      // TODO: Handle the width sepcified with the number.
+      // e.g. 32'd0
+      reg->type_.width_ = numeric::Numeric::ValueWidth(expr->num_);
+      reg->SetIsDeclaredType(true);
       insn->src_regs_.push_back(reg);
     }
     break;
   case vm::OP_STR:
     {
+      reg->type_.value_type_ = vm::Value::OBJECT;
+      reg->SetIsDeclaredType(true);
     }
     break;
   case vm::OP_BIT_INV:

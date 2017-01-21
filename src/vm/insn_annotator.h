@@ -5,6 +5,9 @@
 #include "vm/common.h"
 #include "vm/value.h"
 
+#include <map>
+#include <set>
+
 namespace vm {
 
 class InsnAnnotator {
@@ -23,23 +26,22 @@ public:
   static void AnnotateValueType(fe::VarDecl *decl, Value *value);
 
 private:
-  void AnnotateType();
-  void AnnotateWidth();
+  void ClearType();
 
-  void AnnotateInsnType(Insn *insn);
+  bool IsTyped(Insn *insn);
+  void TryType(Insn *insn);
+  void PropagateType();
+  void TryPropagate(Insn *insn, std::set<Register *> *propagated);
 
   void SetDstRegType(Value::ValueType vtype, Insn *insn, int idx);
 
-  static void AnnotateCalcWidth(VM *vm, Object *obj, Method *method);
-  static void EnforceValueWidth(VM *vm, Object *obj, Method *method);
-  static void PropagateVarWidthAll(VM *vm, Object *obj, Method *method);
   static void PropagateRegWidth(Register *src1, Register *src2, Register *dst);
   static Value::ValueType SymToType(sym_t sym);
-  static void PropagateDeclaredWidth(Insn *insn);
 
   VM *vm_;
   Object *obj_;
   Method *method_;
+  std::map<Register *, Object *> objs_;
 };
 
 }  // namespace vm

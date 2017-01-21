@@ -73,7 +73,8 @@ bool InsnType::IsComparison(int op) {
 
 bool InsnType::IsNumCalculation(int op) {
   if (op == OP_ADD || op == OP_SUB ||
-      op == OP_MUL) {
+      op == OP_MUL ||
+      op == OP_AND || op == OP_OR || op == OP_XOR) {
     return true;
   }
   return false;
