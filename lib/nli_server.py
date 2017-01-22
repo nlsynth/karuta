@@ -31,7 +31,7 @@ def scrape_version():
 
 
 def log_message(msg):
-    log_fh = open(log_fn, 'w+')
+    log_fh = open(log_fn, 'a')
     log_fh.write(msg)
     log_fh.close()
 
