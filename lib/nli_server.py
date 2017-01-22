@@ -12,9 +12,10 @@ import urllib
 
 import nli_wrapper
 
-tmpdir = '/tmp'
+workdir = '/tmp'
 nli_version = 'nli-0.0.0-unknown'
 nli_interpreter = '../nli'
+log_fn = workdir + '/nli.log'
 
 
 def scrape_version():
@@ -27,6 +28,12 @@ def scrape_version():
     nli_version = nli_version[:-1]
     os.unlink(tf)
     return nli_version
+
+
+def log_message(msg):
+    log_fh = open(log_fn, 'w+')
+    log_fh.write(msg)
+    log_fh.close()
 
 
 class NliServerHandler(CGIHTTPRequestHandler):
@@ -48,7 +55,11 @@ class NliServerHandler(CGIHTTPRequestHandler):
 
     def ServeOutput(self):
         p = self.path[3:]
-        fn = tmpdir + '/' + p
+        fn = workdir + '/' + p
+        if fn[-4:] == '.log':
+            self.send_response(404)
+            self.end_headers()
+            return
         self.send_response(200)
         if fn[-5:] == '.html':
             self.send_header('Content-type', 'text/html')
@@ -59,13 +70,20 @@ class NliServerHandler(CGIHTTPRequestHandler):
         for line in open(fn, 'r'):
             self.wfile.write(bytes(line, 'utf-8'))
 
+    def log_message(self, format, *args):
+        super().log_message(format, *args)
+        log_message("%s - - [%s] %s\n" %
+                    (self.address_string(),
+                     self.log_date_time_string(),
+                     format%args))
+
 class ThreadingServer(ThreadingMixIn, HTTPServer):
     pass
 
 if __name__ == '__main__':
     os.environ['NLI_VERSION'] = scrape_version()
     os.environ['NLI_BINARY'] = nli_interpreter
-    os.environ['NLI_TEMP'] = tmpdir
+    os.environ['NLI_WORK'] = workdir
     print(os.getenv('NLI_VERSION'))
     httpd = ThreadingServer(("0.0.0.0", 8000), NliServerHandler)
     httpd.serve_forever()

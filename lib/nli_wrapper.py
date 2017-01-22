@@ -6,6 +6,7 @@
 #  (2) executed from POST handler in nli_server.
 
 import cgi
+from datetime import datetime
 import html
 import os
 import sys
@@ -18,6 +19,8 @@ class NliWrapper(object):
     def __init__(self, isCgi, ofh):
         self.isCgi = isCgi
         self.ofh = ofh
+        self.runid = 'run-' + str(time.time()) + '-' + str(os.getpid())
+        self.workdir = os.getenv('NLI_WORK')
 
     def Render(self, qs):
         ofh = self.ofh
@@ -40,9 +43,9 @@ class NliWrapper(object):
 
         self.Write('''
 <html><head><title>Neon Light Playground</title></head><body>
-<h1>Neon Light Playground</h1>
-%s<br>\n
-''' % version)
+<h1>Neon Light Playground</h1>\n''')
+        self.Write('''%s ''' % version)
+        self.Write('''(<a href="https://github.com/nlsynth/nli">source code on github</a>)<br>\n''')
 
         self.Write(
 '''<form id="src" method="POST" action="">
@@ -80,19 +83,24 @@ class NliWrapper(object):
 
     def RunNLI(self, src):
         bin = os.getenv('NLI_BINARY')
-        workdir = os.getenv('NLI_TEMP')
         runid = self.GetRunID()
         rundir = self.GetRunDir(runid)
         os.mkdir(rundir)
 
-        srcf = rundir + '/src'
+        srcf = self.GetSourceFn(runid)
         srcfh = open(srcf, 'w')
         srcfh.write(src)
         srcfh.close()
 
+        logf = self.GetLogFn(runid)
+        logfh = open(logf, 'w')
+        logfh.write('Host: ' + str(os.environ['REMOTE_HOST']) + '\n')
+        logfh.write('Addr: ' + str(os.environ['REMOTE_ADDR']) + '\n')
+        logfh.write('Start: ' + str(datetime.now()) + '\n')
+
         marker = self.GetMarker(runid)
 
-        outputfn = rundir + '/output'
+        outputfn = self.GetOutputFn(runid)
 
         cmd = (bin + ' --root=' + rundir + ' ' +
                '--output_marker=' + marker + ' ' +
@@ -100,6 +108,9 @@ class NliWrapper(object):
                srcf +
                ' > ' + outputfn + ' 2>&1')
         os.system(cmd)
+        logfh.write('Cmd: ' + cmd + '\n')
+        logfh.write('End: ' + str(datetime.now()) + '\n')
+        logfh.close()
 
         self.Write('<a href="/?r=' + runid +
                   '">Link to this run</a><br><br>')
@@ -109,18 +120,17 @@ class NliWrapper(object):
         self.CopyOutput(ifh, marker, runid)
 
     def GetRunID(self):
-        return 'run-' + str(time.time()) + '-' + str(os.getpid())
+        return self.runid
 
     def GetMarker(self, runid):
         return 'marker:' + runid + ':'
 
     def GetRunDir(self, runid):
-        workdir = os.getenv('NLI_TEMP')
-        return workdir + '/' + runid
+        return self.workdir + '/' + runid
 
     def GetSourceFromRun(self, runid):
         rundir = self.GetRunDir(runid)
-        srcfn = rundir + '/src'
+        srcfn = self.GetSourceFn(runid)
         src = ''
         for line in open(srcfn, 'r'):
             src += line
@@ -140,11 +150,25 @@ class NliWrapper(object):
 
     def ShowPreviousOutput(self, runid):
         self.Write('PREVIOUS OUTPUT:<br>\n')
-        rundir = self.GetRunDir(runid)
-        outputfn = rundir + '/output'
+        outputfn = self.GetOutputFn(runid)
         marker = self.GetMarker(runid)
         ifh = open(outputfn, 'r')
         self.CopyOutput(ifh, marker, runid)
+
+    def GetOutputFn(self, runid):
+        # This should be reasonablly hard to predict so that bad program
+        # will not overwrite it.
+        # ditto for GetSourceFn() and GetLogFn()
+        rundir = self.GetRunDir(runid)
+        return rundir + '/' + runid + '.output'
+
+    def GetSourceFn(self, runid):
+        rundir = self.GetRunDir(runid)
+        return rundir + '/' + runid + '.src'
+
+    def GetLogFn(self, runid):
+        rundir = self.GetRunDir(runid)
+        return rundir + '/' + runid + '.log'
 
     def RenderExampleOptions(self, qs):
         temp = []
@@ -175,6 +199,6 @@ class NliWrapper(object):
 
 if __name__ == '__main__':
     # For POST method.
-    print("Content-type: text/html\n\n")
+    print('Content-type: text/html\n\n')
     w = NliWrapper(True, sys.stdout)
     w.Render({})
