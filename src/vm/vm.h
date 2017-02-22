@@ -34,6 +34,8 @@ public:
   Object *thread_object_;
   // prototype of string.
   Object *string_object_;
+  // prototype of array.
+  Object *array_object_;
   std::unique_ptr<EnumType> bool_type_;
 
 private:

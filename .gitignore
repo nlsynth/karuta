@@ -11,6 +11,7 @@ Makefile
 autom4te.cache/
 config.log
 config.status
+y.dot
 lib/nli
 libtool
 nli-bin

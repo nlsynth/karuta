@@ -106,6 +106,7 @@ void VM::InstallObjects() {
   channel_object_ = root_object_->Clone(this);
   thread_object_ = root_object_->Clone(this);
   string_object_ = root_object_->Clone(this);
+  array_object_ = root_object_->Clone(this);
 }
 
 IntArray *VM::GetDefaultMemory() {
