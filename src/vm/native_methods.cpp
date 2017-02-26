@@ -201,8 +201,11 @@ void Method::InstallNativeRootObjectMethods(VM *vm, Object *obj) {
 void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   InstallNativeMethodWithAltImpl(vm, obj, "wait", &NativeMethods::Wait, rets, "__wait");
-  InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
-  InstallNativeMethod(vm, obj, "assert", &NativeMethods::Assert, rets);
+  Method *m;
+  m = InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
+  m->SetHasSynth(true);
+  m = InstallNativeMethod(vm, obj, "assert", &NativeMethods::Assert, rets);
+  m->SetHasSynth(true);
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
@@ -217,10 +220,11 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "writeHdl", &NativeMethods::WriteHdl, rets);
 }
 
-void Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj, const char *name,
-					    method_func func,
-					    const vector<RegisterType> &types,
-					    const char *alt) {
+Method *Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
+					       const char *name,
+					       method_func func,
+					       const vector<RegisterType> &types,
+					       const char *alt) {
   Method *method = vm->NewMethod(false /* not toplevel */);
   method->method_fn_ = func;
   method->alt_impl_ = alt;
@@ -229,11 +233,13 @@ void Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj, const char *nam
   value.type_ = Value::METHOD;
   value.method_ = method;
   obj->InstallValue(sym_lookup(name), value);
+  return method;
 }
 
-void Method::InstallNativeMethod(VM *vm, Object *obj, const char *name,
-				 method_func func, const vector<RegisterType> &types) {
-  InstallNativeMethodWithAltImpl(vm, obj, name, func, types, nullptr);
+Method *Method::InstallNativeMethod(VM *vm, Object *obj, const char *name,
+				    method_func func,
+				    const vector<RegisterType> &types) {
+  return InstallNativeMethodWithAltImpl(vm, obj, name, func, types, nullptr);
 }
 
 void Method::InstallEnvNativeMethods(VM *vm, Object *env) {

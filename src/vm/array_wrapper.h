@@ -20,6 +20,9 @@ public:
   static Object *Get(Object *obj, int nth);
   static void Set(Object *obj, int nth, Object *elem);
   static IntArray *GetIntArray(Object *obj);
+
+  static void Load(Thread *thr, Object *obj, const vector<Value> &args);
+  static void InstallArrayMethods(VM *vm ,Object *obj);
 };
 
 }  // namespace vm

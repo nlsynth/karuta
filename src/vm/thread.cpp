@@ -51,7 +51,7 @@ void Thread::RunMethod() {
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
   Executor *executor;
-  if (method->is_toplevel_) {
+  if (method->IsTopLevel()) {
     executor = executor_toplevel_.get();
   } else {
     executor = executor_.get();
@@ -66,7 +66,7 @@ void Thread::RunMethod() {
   PassReturnValues();
   if (dbg_bytecode_) {
     // debug run time annotating.
-    if (method->is_toplevel_) {
+    if (method->IsTopLevel()) {
       DumpStream ds(cout);
       ds.os << "--post toplevel execution.\n";
       method->Dump();

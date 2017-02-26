@@ -87,4 +87,8 @@ void Value::SetBool(bool b) {
   }
 }
 
+bool Value::IsObjectType() const {
+  return type_ == OBJECT || type_ == INT_ARRAY || type_ == OBJECT_ARRAY;
+}
+
 }  // namespace vm

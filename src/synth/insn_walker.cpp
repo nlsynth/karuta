@@ -5,6 +5,7 @@
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
+#include "vm/method.h"
 #include "vm/object.h"
 #include "vm/value.h"
 
@@ -22,10 +23,7 @@ void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
     vm::Object *obj = member_reg_to_obj_map_[insn->src_regs_[0]];
     vm::Value *value = obj->LookupValue(insn->label_, false);
     CHECK(value);
-    if (!value->is_const_ &&
-	(value->type_ == vm::Value::OBJECT ||
-	 value->type_ == vm::Value::INT_ARRAY ||
-	 value->type_ == vm::Value::OBJECT_ARRAY)) {
+    if (!value->is_const_ && value->IsObjectType()) {
       member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
     }
   }
@@ -51,12 +49,15 @@ void InsnWalker::LoadObj(vm::Insn *insn) {
 }
 
 bool InsnWalker::IsNativeFuncall(vm::Insn *insn) {
-  sym_t func_name = insn->label_;
-  if (func_name == sym_lookup("print") ||
-      func_name == sym_lookup("assert")) {
-    return true;
+  vm::Object *obj = GetCalleeObject(insn);
+  if (obj == nullptr) {
+    obj = obj_;
   }
-  return false;
+  sym_t func_name = insn->label_;
+  vm::Value *value = obj->LookupValue(func_name, false);
+  CHECK(value != nullptr && value->type_ == vm::Value::METHOD);
+  vm::Method *method = value->method_;
+  return method->GetHasSynth();
 }
 
 vm::Object *InsnWalker::GetCalleeObject(vm::Insn *insn) {

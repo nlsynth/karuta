@@ -2,6 +2,7 @@
 
 #include "fe/expr.h"
 #include "status.h"
+#include "vm/array_wrapper.h"
 #include "vm/channel.h"
 #include "vm/gc.h"
 #include "vm/int_array.h"
@@ -107,6 +108,7 @@ void VM::InstallObjects() {
   thread_object_ = root_object_->Clone(this);
   string_object_ = root_object_->Clone(this);
   array_object_ = root_object_->Clone(this);
+  ArrayWrapper::InstallArrayMethods(this, array_object_);
 }
 
 IntArray *VM::GetDefaultMemory() {

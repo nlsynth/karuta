@@ -8,8 +8,8 @@
 namespace vm {
 
 Method::Method(bool is_toplevel) :
-  is_toplevel_(is_toplevel), method_fn_(nullptr),
-  alt_impl_(nullptr), parse_tree_(nullptr) {
+  method_fn_(nullptr), alt_impl_(nullptr),
+  parse_tree_(nullptr), is_toplevel_(is_toplevel), has_synth_(false) {
 }
 
 Method::~Method() {
@@ -31,6 +31,18 @@ const numeric::Width *Method::GetNthArgWidth(int i) {
 
 const char *Method::AlternativeImplementation() {
   return alt_impl_;
+}
+
+bool Method::GetHasSynth() const {
+  return has_synth_;
+}
+
+void Method::SetHasSynth(bool h) {
+  has_synth_ = h;
+}
+
+bool Method::IsTopLevel() const {
+  return is_toplevel_;
 }
 
 void Method::Dump() {

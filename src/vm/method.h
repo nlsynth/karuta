@@ -18,11 +18,12 @@ public:
   int GetNumReturnRegisters();
   const numeric::Width *GetNthArgWidth(int i);
   const char *AlternativeImplementation();
+  bool GetHasSynth() const;
+  void SetHasSynth(bool h);
+  bool IsTopLevel() const;
 
   typedef void (*method_func)(Thread *thr, Object *obj,
 			      const vector<Value> &args);
-
-  bool is_toplevel_;
 
   // native
   method_func method_fn_;
@@ -38,16 +39,22 @@ public:
   // method_native.cpp
   static void InstallNativeRootObjectMethods(VM *vm, Object *obj);
   static void InstallNativeKernelObjectMethods(VM *vm, Object *obj);
-  static void InstallNativeMethod(VM *vm, Object *obj, const char *name,
-				  method_func func, const vector<RegisterType> &types);
-  static void InstallNativeMethodWithAltImpl(VM *vm, Object *obj, const char *name,
-					     method_func func, const vector<RegisterType> &types,
-					     const char *alt);
+  static Method *InstallNativeMethod(VM *vm, Object *obj, const char *name,
+				     method_func func, const vector<RegisterType> &types);
+  static Method *InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
+						const char *name,
+						method_func func,
+						const vector<RegisterType> &types,
+						const char *alt);
   static void InstallEnvNativeMethods(VM *vm, Object *obj);
 
   static RegisterType ObjectType();
   static RegisterType BoolType(VM *vm);
   static RegisterType IntType(int w);
+
+private:
+  bool is_toplevel_;
+  bool has_synth_;
 };
 
 }  // namespace vm

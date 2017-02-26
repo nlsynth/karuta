@@ -25,8 +25,7 @@ void InsnAnnotator::AnnotateMethod(VM *vm, Object *obj, Method *method) {
 }
 
 void InsnAnnotator::DoAnnotate() {
-  //AnnotateWidth();
-  if (!method_->is_toplevel_) {
+  if (!method_->IsTopLevel()) {
     ClearType();
   }
   vector<Insn *> insns;

@@ -108,7 +108,7 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   vm::InsnAnnotator::AnnotateMethod(vm_, obj_, method_);
   if (dbg_bytecode_) {
     // Top level result will be output after execution.
-    if (!method_->is_toplevel_) {
+    if (!method_->IsTopLevel()) {
       method_->Dump();
     }
   }
@@ -1046,7 +1046,7 @@ vm::Register *Compiler::EmitMemberLoad(vm::Register *obj_reg, sym_t m) {
 }
 
 bool Compiler::IsTopLevel() const {
-  return method_->is_toplevel_;
+  return method_->IsTopLevel();
 }
 
 }  // namespace compiler

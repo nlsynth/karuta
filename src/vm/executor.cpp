@@ -537,7 +537,7 @@ bool Executor::ExecFuncall(MethodFrame *frame,
 Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
 			       Object **obj) {
   Value &obj_value = frame->reg_values_[insn->obj_reg_->id_];
-  CHECK(obj_value.type_ == Value::OBJECT);
+  CHECK(obj_value.IsObjectType());
   *obj = obj_value.object_;
   Value *value = (*obj)->LookupValue(insn->label_, false);
   if (!value) {

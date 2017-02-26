@@ -25,6 +25,7 @@ public:
   void Dump() const;
   void Dump(ostream &os) const;
   void SetBool(bool b);
+  bool IsObjectType() const;
 
   enum ValueType {
     NONE,
