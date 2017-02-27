@@ -7,7 +7,8 @@
 
 namespace synth {
 
-SharedResource::SharedResource() : owner_(nullptr), owner_res_(nullptr) {
+SharedResource::SharedResource()
+  : owner_thr_(nullptr), owner_res_(nullptr) {
 }
 
 SharedResource::~SharedResource() {
@@ -52,9 +53,14 @@ void SharedResourceSet::ResolveResourceAccessors() {
 }
 
 void SharedResourceSet::ResolveSharedResource(SharedResource *res) {
+  CHECK(res->axi_ctrl_thrs_.size() <= 1);
+  if (res->axi_ctrl_thrs_.size() == 1) {
+    res->owner_thr_ = *(res->axi_ctrl_thrs_.begin());
+  }
   for (ThreadSynth *thr : res->ordered_accessors_) {
-    if (res->owner_ == nullptr) {
-      res->owner_ = thr;
+    if (res->owner_thr_ == nullptr) {
+      // Picks up first one.
+      res->owner_thr_ = thr;
     }
   }
 }
@@ -89,6 +95,11 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
   }
   if (insn->op_ == vm::OP_ARRAY_WRITE) {
     res->writers_.insert(thr);
+  }
+  if (insn->op_ == vm::OP_FUNCALL) {
+    if (insn->label_ == sym_lookup("load")) {
+      res->axi_ctrl_thrs_.insert(thr);
+    }
   }
 }
 

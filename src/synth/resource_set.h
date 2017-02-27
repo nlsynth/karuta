@@ -38,6 +38,7 @@ public:
   IResource *GetMemberSharedReg(sym_t name, bool is_owner,
 				bool is_write);
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
+  IResource *GetAxiPort(vm::Object *obj);
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -69,6 +70,7 @@ private:
   map<vm::Object *, IResource *> shared_array_;
   map<vm::Object *, IResource *> shared_array_writer_;
   map<vm::Object *, IResource *> shared_array_reader_;
+  map<vm::Object *, IResource *> axi_ports_;
 };
 
 }  // namespace synth

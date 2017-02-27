@@ -22,9 +22,10 @@ public:
 
   set<ThreadSynth *> readers_;
   set<ThreadSynth *> writers_;
+  set<ThreadSynth *> axi_ctrl_thrs_;
   vector<ThreadSynth *> ordered_accessors_;
   set<ThreadSynth *> accessors_;
-  ThreadSynth *owner_;
+  ThreadSynth *owner_thr_;
   IResource *owner_res_;
   set<IResource *> accessor_resources_;
 };
@@ -33,7 +34,10 @@ class SharedResourceSet {
 public:
   ~SharedResourceSet();
 
+  // Called between pass 1 and 2.
+  // Determines an owner thread (ThreadSynth).
   void ResolveResourceTypes();
+  // Called after pass 2. Sets the foreign resource for IResource.
   void ResolveResourceAccessors();
 
   // NUM

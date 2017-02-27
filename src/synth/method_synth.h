@@ -47,6 +47,7 @@ private:
   void SynthConcat(vm::Insn *insn);
   void SynthPreIncDec(vm::Insn *insn);
   void SynthNative(vm::Insn *insn);
+  IInsn *SynthAxiLoad(vm::Insn *insn);
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);

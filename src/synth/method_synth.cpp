@@ -248,6 +248,8 @@ void MethodSynth::SynthNative(vm::Insn *insn) {
     iinsn = new IInsn(res_->PrintResource());
   } else if (insn->label_ == sym_lookup("assert")) {
     iinsn = new IInsn(res_->AssertResource());
+  } else if (insn->label_ == sym_lookup("load")) {
+    iinsn = SynthAxiLoad(insn);
   } else {
     CHECK(false);
   }
@@ -257,6 +259,14 @@ void MethodSynth::SynthNative(vm::Insn *insn) {
     IRegister *iarg = FindLocalVarRegister(arg);
     iinsn->inputs_.push_back(iarg);
   }
+}
+
+IInsn *MethodSynth::SynthAxiLoad(vm::Insn *insn) {
+  vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
+  IResource *res = res_->GetAxiPort(array_obj);
+  IInsn *iinsn = new IInsn(res);
+  iinsn->SetOperand("read");
+  return iinsn;
 }
 
 void MethodSynth::SynthFuncall(vm::Insn *insn) {
@@ -534,7 +544,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
   SharedResource *sres =
     shared_resource_set_->GetBySlotName(obj_, insn->label_);
   IResource *res;
-  if (sres->owner_ == thr_synth_) {
+  if (sres->owner_thr_ == thr_synth_) {
     res = res_->GetMemberSharedReg(insn->label_, true, is_store);
     sres->AddOwnerResource(res);
     int w = numeric::Width::GetWidth(value->num_.type);
@@ -611,7 +621,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   SharedResource *sres =
     shared_resource_set_->GetByObj(array_obj);
   IResource *res = nullptr;
-  if (sres->owner_ == thr_synth_) {
+  if (sres->owner_thr_ == thr_synth_) {
     res = res_->GetSharedArray(array_obj, true, false);
     sres->AddOwnerResource(res);
   } else {

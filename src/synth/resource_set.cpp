@@ -114,6 +114,22 @@ IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
   return res;
 }
 
+IResource *ResourceSet::GetAxiPort(vm::Object *obj) {
+  IResource *array_res = GetSharedArray(obj, true, true);
+  auto it = axi_ports_.find(obj);
+  if (it != axi_ports_.end()) {
+    return it->second;
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  resource::kAxiPort);
+  IResource *res = new IResource(tab_, rc);
+  res->SetSharedRegister(array_res);
+  tab_->resources_.push_back(res);
+  axi_ports_[obj] = res;
+  return res;
+}
+
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   synth::ResourceParams *dparams =
     method->parse_tree_->imported_resource_;
