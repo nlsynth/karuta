@@ -22,6 +22,7 @@ public:
   static IntArray *GetIntArray(Object *obj);
 
   static void Load(Thread *thr, Object *obj, const vector<Value> &args);
+  static void Store(Thread *thr, Object *obj, const vector<Value> &args);
   static void InstallArrayMethods(VM *vm ,Object *obj);
 };
 

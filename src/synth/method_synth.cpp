@@ -249,7 +249,9 @@ void MethodSynth::SynthNative(vm::Insn *insn) {
   } else if (insn->label_ == sym_lookup("assert")) {
     iinsn = new IInsn(res_->AssertResource());
   } else if (insn->label_ == sym_lookup("load")) {
-    iinsn = SynthAxiLoad(insn);
+    iinsn = SynthAxiAccess(insn, false);
+  } else if (insn->label_ == sym_lookup("store")) {
+    iinsn = SynthAxiAccess(insn, true);
   } else {
     CHECK(false);
   }
@@ -261,11 +263,15 @@ void MethodSynth::SynthNative(vm::Insn *insn) {
   }
 }
 
-IInsn *MethodSynth::SynthAxiLoad(vm::Insn *insn) {
+IInsn *MethodSynth::SynthAxiAccess(vm::Insn *insn, bool is_store) {
   vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
   IResource *res = res_->GetAxiPort(array_obj);
   IInsn *iinsn = new IInsn(res);
-  iinsn->SetOperand("read");
+  if (is_store) {
+    iinsn->SetOperand("write");
+  } else {
+    iinsn->SetOperand("read");
+  }
   return iinsn;
 }
 

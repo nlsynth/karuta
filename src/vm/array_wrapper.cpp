@@ -111,10 +111,16 @@ void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() == 1) << "load requires an address";
 }
 
+void ArrayWrapper::Store(Thread *thr, Object *obj, const vector<Value> &args) {
+  CHECK(args.size() == 1) << "store requires an address";
+}
+
 void ArrayWrapper::InstallArrayMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m =
     Method::InstallNativeMethod(vm, obj, "load", &ArrayWrapper::Load, rets);
+  m->SetHasSynth(true);
+  m = Method::InstallNativeMethod(vm, obj, "store", &ArrayWrapper::Store, rets);
   m->SetHasSynth(true);
 }
 
