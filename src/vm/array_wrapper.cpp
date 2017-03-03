@@ -5,6 +5,7 @@
 #include "vm/int_array.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/thread.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -112,10 +113,30 @@ IntArray *ArrayWrapper::GetIntArray(Object *obj) {
 
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() == 1) << "load requires an address";
+  MemAccess(thr, obj, args, true);
 }
 
 void ArrayWrapper::Store(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() == 1) << "store requires an address";
+  MemAccess(thr, obj, args, false);
+}
+
+void ArrayWrapper::MemAccess(Thread *thr, Object *obj,
+			     const vector<Value> &args,
+			     bool is_load) {
+  IntArray *mem = thr->GetVM()->GetDefaultMemory();
+  ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
+  IntArray *arr = data->int_array_;
+  auto length = arr->GetLength();
+  const Value &addr_value = args[0];
+  int addr = addr_value.num_.int_part;
+  for (int i = 0; i < length; ++i) {
+    if (is_load) {
+      arr->Write(i, mem->Read(addr + i));
+    } else {
+      mem->Write(i, arr->Read(addr + i));
+    }
+  }
 }
 
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {

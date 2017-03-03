@@ -24,6 +24,8 @@ public:
 private:
   static void Load(Thread *thr, Object *obj, const vector<Value> &args);
   static void Store(Thread *thr, Object *obj, const vector<Value> &args);
+  static void MemAccess(Thread *thr, Object *obj, const vector<Value> &args,
+			bool is_load);
   static void InstallMethods(VM *vm ,Object *obj);
 };
 
