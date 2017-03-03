@@ -12,6 +12,7 @@
 #include "vm/channel.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
+#include "vm/mailbox_wrapper.h"
 #include "vm/thread_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/object.h"
@@ -39,6 +40,9 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
     break;
   case OP_CHANNEL_DECL:
     ExecChannelDecl(method, frame, insn);
+    break;
+  case OP_MAILBOX_DECL:
+    ExecMailboxDecl(method, frame, insn);
     break;
   case OP_IMPORT:
     ExecImport(insn);
@@ -120,6 +124,18 @@ void ExecutorToplevel::ExecChannelDecl(const Method *method,
   Value *value = obj->LookupValue(insn->label_, true);
   value->type_ = Value::OBJECT;
   value->object_ = channel_obj;
+}
+
+void ExecutorToplevel::ExecMailboxDecl(const Method *method,
+				       MethodFrame *frame, Insn *insn) {
+  int width = numeric::Width::GetWidth(insn->insn_stmt_->width_);
+  Object *mailbox_obj =
+    MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn->label_);
+  Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
+  CHECK(obj);
+  Value *value = obj->LookupValue(insn->label_, true);
+  value->type_ = Value::OBJECT;
+  value->object_ = mailbox_obj;
 }
 
 void ExecutorToplevel::ExecImport(Insn *insn) {

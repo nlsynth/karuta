@@ -154,6 +154,7 @@ am__objects_5 = src/vm/nli_bin-array_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-value.$(OBJEXT) src/vm/nli_bin-method.$(OBJEXT) \
 	src/vm/nli_bin-native_methods.$(OBJEXT) \
 	src/vm/nli_bin-object.$(OBJEXT) \
+	src/vm/nli_bin-mailbox_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-string_wrapper.$(OBJEXT) \
 	src/vm/nli_bin-thread.$(OBJEXT) \
 	src/vm/nli_bin-thread_wrapper.$(OBJEXT) \
@@ -537,6 +538,7 @@ vm_SOURCES = \
  src/vm/method.cpp src/vm/method.h \
  src/vm/native_methods.cpp src/vm/native_methods.h \
  src/vm/object.cpp src/vm/object.h \
+ src/vm/mailbox_wrapper.cpp src/vm/mailbox_wrapper.h \
  src/vm/string_wrapper.cpp src/vm/string_wrapper.h \
  src/vm/thread.cpp src/vm/thread.h \
  src/vm/thread_wrapper.cpp src/vm/thread_wrapper.h \
@@ -799,6 +801,8 @@ src/vm/nli_bin-native_methods.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
 src/vm/nli_bin-object.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
+src/vm/nli_bin-mailbox_wrapper.$(OBJEXT): src/vm/$(am__dirstamp) \
+	src/vm/$(DEPDIR)/$(am__dirstamp)
 src/vm/nli_bin-string_wrapper.$(OBJEXT): src/vm/$(am__dirstamp) \
 	src/vm/$(DEPDIR)/$(am__dirstamp)
 src/vm/nli_bin-thread.$(OBJEXT): src/vm/$(am__dirstamp) \
@@ -868,6 +872,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-insn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-insn_annotator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-int_array.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-mailbox_wrapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-method.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-native_methods.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/vm/$(DEPDIR)/nli_bin-object.Po@am__quote@
@@ -1574,6 +1579,20 @@ src/vm/nli_bin-object.obj: src/vm/object.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/vm/object.cpp' object='src/vm/nli_bin-object.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/vm/nli_bin-object.obj `if test -f 'src/vm/object.cpp'; then $(CYGPATH_W) 'src/vm/object.cpp'; else $(CYGPATH_W) '$(srcdir)/src/vm/object.cpp'; fi`
+
+src/vm/nli_bin-mailbox_wrapper.o: src/vm/mailbox_wrapper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/vm/nli_bin-mailbox_wrapper.o -MD -MP -MF src/vm/$(DEPDIR)/nli_bin-mailbox_wrapper.Tpo -c -o src/vm/nli_bin-mailbox_wrapper.o `test -f 'src/vm/mailbox_wrapper.cpp' || echo '$(srcdir)/'`src/vm/mailbox_wrapper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/vm/$(DEPDIR)/nli_bin-mailbox_wrapper.Tpo src/vm/$(DEPDIR)/nli_bin-mailbox_wrapper.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/vm/mailbox_wrapper.cpp' object='src/vm/nli_bin-mailbox_wrapper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/vm/nli_bin-mailbox_wrapper.o `test -f 'src/vm/mailbox_wrapper.cpp' || echo '$(srcdir)/'`src/vm/mailbox_wrapper.cpp
+
+src/vm/nli_bin-mailbox_wrapper.obj: src/vm/mailbox_wrapper.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/vm/nli_bin-mailbox_wrapper.obj -MD -MP -MF src/vm/$(DEPDIR)/nli_bin-mailbox_wrapper.Tpo -c -o src/vm/nli_bin-mailbox_wrapper.obj `if test -f 'src/vm/mailbox_wrapper.cpp'; then $(CYGPATH_W) 'src/vm/mailbox_wrapper.cpp'; else $(CYGPATH_W) '$(srcdir)/src/vm/mailbox_wrapper.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/vm/$(DEPDIR)/nli_bin-mailbox_wrapper.Tpo src/vm/$(DEPDIR)/nli_bin-mailbox_wrapper.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/vm/mailbox_wrapper.cpp' object='src/vm/nli_bin-mailbox_wrapper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/vm/nli_bin-mailbox_wrapper.obj `if test -f 'src/vm/mailbox_wrapper.cpp'; then $(CYGPATH_W) 'src/vm/mailbox_wrapper.cpp'; else $(CYGPATH_W) '$(srcdir)/src/vm/mailbox_wrapper.cpp'; fi`
 
 src/vm/nli_bin-string_wrapper.o: src/vm/string_wrapper.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/vm/nli_bin-string_wrapper.o -MD -MP -MF src/vm/$(DEPDIR)/nli_bin-string_wrapper.Tpo -c -o src/vm/nli_bin-string_wrapper.o `test -f 'src/vm/string_wrapper.cpp' || echo '$(srcdir)/'`src/vm/string_wrapper.cpp

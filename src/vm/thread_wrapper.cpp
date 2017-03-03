@@ -17,7 +17,7 @@ public:
 };
 
 Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t name, Method *method) {
-  Object *thr = vm->thread_object_->Clone(vm);
+  Object *thr = vm->root_object_->Clone(vm);
   ThreadWrapperData *data = new ThreadWrapperData;
   data->entry.method_name = string(sym_cstr(name));
 

@@ -52,7 +52,12 @@ void Stmt::Dump(DumpStream &ds) {
     ds.pop_indent();
     break;
   case STMT_CHANNEL_DECL:
-    ds.os << "channel_decl:\n";
+  case STMT_MAILBOX_DECL:
+    if (type_ == STMT_CHANNEL_DECL) {
+      ds.os << "channel_decl:\n";
+    } else {
+      ds.os << "mailbox_decl:\n";
+    }
     ds.push_indent();
     ds.os << sym_cstr(sym_) << "\n";
     expr_->Dump(ds);

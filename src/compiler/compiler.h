@@ -78,6 +78,7 @@ private:
   void CompileVarDeclStmt(fe::Stmt *stmt);
   void CompileThreadDecl(fe::Stmt *stmt);
   void CompileChannelDecl(fe::Stmt *stmt);
+  void CompileMailboxDecl(fe::Stmt *stmt);
   // var, thread, channel.
   void CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr, vm::OpCode op,
 			     vm::Register *initial_val);

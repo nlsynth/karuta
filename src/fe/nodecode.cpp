@@ -72,6 +72,7 @@ const char *NodeName(enum NodeCode node) {
     {STMT_POP_BINDING, "pop_binding"},
     {STMT_THREAD_DECL, "thread_decl"},
     {STMT_CHANNEL_DECL, "channel_decl"},
+    {STMT_MAILBOX_DECL, "mailbox_decl"},
     {STMT_ENUM_DECL, "enum_decl"},
   };
   auto it = codes.find(node);

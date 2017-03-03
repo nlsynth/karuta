@@ -51,6 +51,8 @@ public:
   static void EmitThreadDeclStmt(Expr *var, Expr *funcall);
   static void EmitChannelDeclStmt(Expr *var, sym_t type_name,
 				  const numeric::Width *width);
+  static void EmitMailboxDeclStmt(Expr *var, sym_t type_name,
+				  const numeric::Width *width);
 
 private:
   static vector<MethodDecl> method_stack_;

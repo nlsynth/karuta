@@ -32,7 +32,7 @@ public:
 };
 
 Object *Channel::NewChannel(VM *vm, int width, sym_t name) {
-  Object *pipe = vm->channel_object_->Clone(vm);
+  Object *pipe = vm->root_object_->Clone(vm);
   vector<RegisterType> rets;
   Method::InstallNativeMethod(vm, pipe, "write", &Channel::WriteMethod, rets);
   rets.push_back(Method::IntType(width));

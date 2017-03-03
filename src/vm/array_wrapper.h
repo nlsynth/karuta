@@ -21,9 +21,10 @@ public:
   static void Set(Object *obj, int nth, Object *elem);
   static IntArray *GetIntArray(Object *obj);
 
+private:
   static void Load(Thread *thr, Object *obj, const vector<Value> &args);
   static void Store(Thread *thr, Object *obj, const vector<Value> &args);
-  static void InstallArrayMethods(VM *vm ,Object *obj);
+  static void InstallMethods(VM *vm ,Object *obj);
 };
 
 }  // namespace vm

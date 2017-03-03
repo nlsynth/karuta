@@ -19,9 +19,6 @@ void GC::Run(VM *vm, set<Thread *> *threads, set<Object *> *objs) {
 void GC::Collect() {
   AddRoot(vm_->root_object_);
   AddRoot(vm_->kernel_object_);
-  AddRoot(vm_->channel_object_);
-  AddRoot(vm_->thread_object_);
-  AddRoot(vm_->string_object_);
 
   for (Thread *th : *threads_) {
     vector<MethodFrame *> &frame_stack = th->MethodStack();

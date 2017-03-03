@@ -103,12 +103,6 @@ void VM::InstallObjects() {
   object_value.object_ = env;
   kernel_object_->InstallValue(sym_lookup("Env"), object_value);
   Method::InstallEnvNativeMethods(this, env);
-
-  channel_object_ = root_object_->Clone(this);
-  thread_object_ = root_object_->Clone(this);
-  string_object_ = root_object_->Clone(this);
-  array_object_ = root_object_->Clone(this);
-  ArrayWrapper::InstallArrayMethods(this, array_object_);
 }
 
 IntArray *VM::GetDefaultMemory() {

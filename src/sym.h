@@ -37,6 +37,7 @@ extern sym_t sym_function, sym_funcall;
 extern sym_t sym_unsigned, sym_const;
 extern sym_t sym_int, sym_bool, sym_void, sym_object, sym_thread;
 extern sym_t sym_channel, sym_read_channel, sym_write_channel;
+extern sym_t sym_mailbox;
 extern sym_t sym_sram_if, sym_bit_sel, sym_imported, sym_sub_module_call;
 extern sym_t sym_task_entry, sym_task_finish;
 extern sym_t sym_array_ref, sym_phi, sym_selector;

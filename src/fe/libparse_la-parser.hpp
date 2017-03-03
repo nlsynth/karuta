@@ -58,32 +58,33 @@ extern int z_yydebug;
     K_OBJECT = 268,
     K_THREAD = 269,
     K_CHANNEL = 270,
-    K_ADD_SUB = 271,
-    K_LG_COMPARE = 272,
-    K_EQ_COMPARE = 273,
-    K_INC_DEC = 274,
-    K_CONST = 275,
-    K_IF = 276,
-    K_ELSE = 277,
-    K_RETURN = 278,
-    K_GOTO = 279,
-    K_FOR = 280,
-    K_SPAWN = 281,
-    K_WHILE = 282,
-    K_DO = 283,
-    K_CONTINUE = 284,
-    K_SWITCH = 285,
-    K_CASE = 286,
-    K_DEFAULT = 287,
-    K_BREAK = 288,
-    NUM = 289,
-    SYM = 290,
-    STR = 291,
-    K_LOGIC_OR = 292,
-    K_LOGIC_AND = 293,
-    K_BIT_CONCAT = 294,
-    SIGN = 295,
-    ADDRESS = 296
+    K_MAILBOX = 271,
+    K_ADD_SUB = 272,
+    K_LG_COMPARE = 273,
+    K_EQ_COMPARE = 274,
+    K_INC_DEC = 275,
+    K_CONST = 276,
+    K_IF = 277,
+    K_ELSE = 278,
+    K_RETURN = 279,
+    K_GOTO = 280,
+    K_FOR = 281,
+    K_SPAWN = 282,
+    K_WHILE = 283,
+    K_DO = 284,
+    K_CONTINUE = 285,
+    K_SWITCH = 286,
+    K_CASE = 287,
+    K_DEFAULT = 288,
+    K_BREAK = 289,
+    NUM = 290,
+    SYM = 291,
+    STR = 292,
+    K_LOGIC_OR = 293,
+    K_LOGIC_AND = 294,
+    K_BIT_CONCAT = 295,
+    SIGN = 296,
+    ADDRESS = 297
   };
 #endif
 /* Tokens.  */
@@ -100,32 +101,33 @@ extern int z_yydebug;
 #define K_OBJECT 268
 #define K_THREAD 269
 #define K_CHANNEL 270
-#define K_ADD_SUB 271
-#define K_LG_COMPARE 272
-#define K_EQ_COMPARE 273
-#define K_INC_DEC 274
-#define K_CONST 275
-#define K_IF 276
-#define K_ELSE 277
-#define K_RETURN 278
-#define K_GOTO 279
-#define K_FOR 280
-#define K_SPAWN 281
-#define K_WHILE 282
-#define K_DO 283
-#define K_CONTINUE 284
-#define K_SWITCH 285
-#define K_CASE 286
-#define K_DEFAULT 287
-#define K_BREAK 288
-#define NUM 289
-#define SYM 290
-#define STR 291
-#define K_LOGIC_OR 292
-#define K_LOGIC_AND 293
-#define K_BIT_CONCAT 294
-#define SIGN 295
-#define ADDRESS 296
+#define K_MAILBOX 271
+#define K_ADD_SUB 272
+#define K_LG_COMPARE 273
+#define K_EQ_COMPARE 274
+#define K_INC_DEC 275
+#define K_CONST 276
+#define K_IF 277
+#define K_ELSE 278
+#define K_RETURN 279
+#define K_GOTO 280
+#define K_FOR 281
+#define K_SPAWN 282
+#define K_WHILE 283
+#define K_DO 284
+#define K_CONTINUE 285
+#define K_SWITCH 286
+#define K_CASE 287
+#define K_DEFAULT 288
+#define K_BREAK 289
+#define NUM 290
+#define SYM 291
+#define STR 292
+#define K_LOGIC_OR 293
+#define K_LOGIC_AND 294
+#define K_BIT_CONCAT 295
+#define SIGN 296
+#define ADDRESS 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -148,7 +150,7 @@ union YYSTYPE
   class ResourceParamValue *import_param;
   class ResourceParamValueSet *import_params;
 
-#line 152 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
+#line 154 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

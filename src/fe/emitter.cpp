@@ -190,6 +190,15 @@ void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
   EmitStmt(stmt);
 }
 
+void Emitter::EmitMailboxDeclStmt(Expr *var, sym_t type_name,
+				  const numeric::Width *width) {
+  Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
+  stmt->sym_ = type_name;
+  stmt->expr_ = var;
+  stmt->width_ = width;
+  EmitStmt(stmt);
+}
+
 void Emitter::EmitStmt(Stmt *stmt) {
   MethodDecl &decl = CurrentMethod();
   decl.method_->stmts_.push_back(stmt);

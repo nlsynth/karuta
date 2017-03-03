@@ -15,6 +15,7 @@ public:
   void ExecVardecl(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecThreadDecl(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecChannelDecl(const Method *method, MethodFrame *frame, Insn *insn);
+  void ExecMailboxDecl(const Method *method, MethodFrame *frame, Insn *insn);
   
   void ExecImport(Insn *insn);
   void ExecSpawn(MethodFrame *frame, Insn *insn);

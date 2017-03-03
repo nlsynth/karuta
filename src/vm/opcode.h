@@ -60,6 +60,7 @@ enum OpCode {
   OP_FUNCDECL,
   OP_VARDECL,
   OP_CHANNEL_DECL,
+  OP_MAILBOX_DECL,
   OP_THREAD_DECL,
   // Can be channel or memory.
   OP_GENERIC_READ,

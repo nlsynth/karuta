@@ -213,6 +213,8 @@ int FE::LookupKeyword(sym_t sym) {
     return K_THREAD;
   } else if (sym == sym_channel) {
     return K_CHANNEL;
+  } else if (sym == sym_mailbox) {
+    return K_MAILBOX;
   } else if (sym == sym_goto) {
     return K_GOTO;
   } else if (sym == sym_return) {

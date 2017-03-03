@@ -302,6 +302,9 @@ void Compiler::CompileStmt(fe::Stmt *stmt) {
   case fe::STMT_CHANNEL_DECL:
     CompileChannelDecl(stmt);
     break;
+  case fe::STMT_MAILBOX_DECL:
+    CompileMailboxDecl(stmt);
+    break;
   default:
     CHECK(false) << "Unknown stmt:" << fe::NodeName(stmt->type_);
     break;
@@ -394,6 +397,12 @@ void Compiler::CompileChannelDecl(fe::Stmt *stmt) {
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_CHANNEL_DECL, nullptr);
 }
                   
+void Compiler::CompileMailboxDecl(fe::Stmt *stmt) {
+  fe::Expr *var_expr = stmt->expr_;
+  CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
+  CompileMemberDeclStmt(stmt, var_expr, vm::OP_MAILBOX_DECL, nullptr);
+}
+
 void Compiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
 				     vm::OpCode op, vm::Register *initial_val) {
   CHECK(IsTopLevel());
@@ -406,7 +415,8 @@ void Compiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
   if (op == vm::OP_THREAD_DECL) {
     insn->label_ = stmt->expr_->func_->func_->sym_;
   }
-  if (op == vm::OP_CHANNEL_DECL) {
+  if (op == vm::OP_CHANNEL_DECL ||
+      op == vm::OP_MAILBOX_DECL) {
     insn->label_ = stmt->expr_->sym_;
   }
   EmitInsn(insn);

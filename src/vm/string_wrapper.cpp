@@ -27,7 +27,7 @@ bool StringWrapper::IsString(Object *obj) {
 }
 
 Object *StringWrapper::NewStringWrapper(VM *vm, const string &str) {
-  Object *str_obj = vm->string_object_->Clone(vm);
+  Object *str_obj = vm->root_object_->Clone(vm);
   StringWrapperData *data = new StringWrapperData(str);
   str_obj->object_specific_.reset(data);
   return str_obj;

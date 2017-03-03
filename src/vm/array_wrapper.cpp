@@ -53,7 +53,8 @@ bool ArrayWrapper::IsIntArray(Object *obj) {
 }
 
 Object *ArrayWrapper::Copy(VM *vm, Object *src_obj) {
-  Object *array_obj = vm->array_object_->Clone(vm);
+  Object *array_obj = vm->root_object_->Clone(vm);
+  InstallMethods(vm, array_obj);
   ArrayWrapperData *src_data =
     (ArrayWrapperData *)src_obj->object_specific_.get();
   ArrayWrapperData *data = new ArrayWrapperData(src_data);
@@ -75,7 +76,8 @@ string ArrayWrapper::ToString(Object *obj) {
 }
 
 Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
-  Object *array_obj = vm->array_object_->Clone(vm);
+  Object *array_obj = vm->root_object_->Clone(vm);
+  InstallMethods(vm, array_obj);
   ArrayWrapperData *data = new ArrayWrapperData(size, false, nullptr);
   array_obj->object_specific_.reset(data);
   return array_obj;
@@ -83,7 +85,8 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
 
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
 					 const numeric::Width *width) {
-  Object *array_obj = vm->array_object_->Clone(vm);
+  Object *array_obj = vm->root_object_->Clone(vm);
+  InstallMethods(vm, array_obj);
   ArrayWrapperData *data = new ArrayWrapperData(size, true, width);
   array_obj->object_specific_.reset(data);
   return array_obj;
@@ -115,7 +118,7 @@ void ArrayWrapper::Store(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() == 1) << "store requires an address";
 }
 
-void ArrayWrapper::InstallArrayMethods(VM *vm, Object *obj) {
+void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m =
     Method::InstallNativeMethod(vm, obj, "load", &ArrayWrapper::Load, rets);

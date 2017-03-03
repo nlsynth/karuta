@@ -28,14 +28,6 @@ public:
   Object *root_object_;
   // Kernel.
   Object *kernel_object_;
-  // prototype of channel.
-  Object *channel_object_;
-  // prototype of thread.
-  Object *thread_object_;
-  // prototype of string.
-  Object *string_object_;
-  // prototype of array.
-  Object *array_object_;
   std::unique_ptr<EnumType> bool_type_;
 
 private:
