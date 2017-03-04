@@ -11,12 +11,11 @@ def Kernel.compile() {
   __compile("array_to_mem");
 }
 
+@embed(resource = "wait_cycles",
+ verilog = "nli_wait.v",
+ ack = "ack",
+ file= "copy",
+ module= "wait_cycles")
 def Kernel.__wait(int cycles)
-  [
-    resource = "wait_cycles",
-    verilog = "nli_wait.v",
-    ack = "ack",
-    file= "copy",
-    module= "wait_cycles"
-  ] {
+  {
 }

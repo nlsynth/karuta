@@ -2,8 +2,9 @@
 def Kernel.f(int x) (int) {
   return x + 1;
 }
+
+@embed(resource = "a", verilog="resource.v", file="copy", module="hello")
 def Kernel.ex()
- [ resource = "a", verilog="resource.v", file="copy", module="hello" ]
 {
 }
 

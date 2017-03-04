@@ -12,6 +12,7 @@
 namespace fe {
 
 vector<MethodDecl> Emitter::method_stack_;
+ResourceParamValueSet *Emitter::params_;
 
 void Emitter::BeginFunction(Expr *name) {
   Method *method = new Method;
@@ -32,19 +33,12 @@ MethodDecl Emitter::EndFunction() {
   return new_decl;
 }
 
-void Emitter::SetCurrentFunctionArgs(VarDeclSet *args) {
+void Emitter::SetCurrentFunctionParams() {
+  if (params_ == nullptr) {
+    return;
+  }
   MethodDecl &decl = CurrentMethod();
-  decl.method_->args_ = args;
-}
-
-void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
-  MethodDecl &decl = CurrentMethod();
-  decl.method_->returns_ = returns;
-}
-
-void Emitter::SetImportedResource(ResourceParamValueSet *params) {
-  MethodDecl &decl = CurrentMethod();
-  decl.method_->imported_resource_ = synth::Importer::Import(params);
+  decl.method_->imported_resource_ = synth::Importer::Import(params_);
   fe::VarDeclSet *args = decl.method_->args_;
   if (args) {
     for (size_t i = 0; i < args->decls.size(); ++i) {
@@ -60,6 +54,20 @@ void Emitter::SetImportedResource(ResourceParamValueSet *params) {
 						   width);
     }
   }
+}
+
+void Emitter::SetCurrentFunctionArgs(VarDeclSet *args) {
+  MethodDecl &decl = CurrentMethod();
+  decl.method_->args_ = args;
+}
+
+void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
+  MethodDecl &decl = CurrentMethod();
+  decl.method_->returns_ = returns;
+}
+
+void Emitter::SetImportedResource(ResourceParamValueSet *params) {
+  params_ = params;
 }
 
 void Emitter::BeginBlock() {

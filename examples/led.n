@@ -2,7 +2,8 @@
 
 object L = Kernel.clone();
 
-def L.f(bool b) [ output = "led" ] {
+@embed(output = "led")
+def L.f(bool b) {
   // print(b);
 }
 

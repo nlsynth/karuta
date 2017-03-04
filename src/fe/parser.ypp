@@ -113,8 +113,9 @@ IMPORT_PARAM_LIST : IMPORT_PARAM {
 }
 
 IMPORT_SPEC : {
-} | '[' IMPORT_PARAM_LIST ']' {
-  Emitter::SetImportedResource($2);
+  Emitter::SetImportedResource(nullptr);
+} | '@' SYM '(' IMPORT_PARAM_LIST ')' {
+  Emitter::SetImportedResource($4);
 }
 
 RETURN_TYPE : TYPE_NAME WIDTH_SPEC {
@@ -133,11 +134,12 @@ RETURN_SPEC : {
   $$ = $2;
 }
 
-FUNC_DECL : FUNC_DECL_HEAD IMPORT_SPEC '{' STMT_LIST '}' {
+FUNC_DECL : IMPORT_SPEC FUNC_DECL_HEAD '{' STMT_LIST '}' {
   Emitter::EndFunction();
 }
 
 FUNC_DECL_HEAD : FUNC_DECL_NAME ARG_DECL ')' RETURN_SPEC {
+  Emitter::SetCurrentFunctionParams();
   Emitter::SetCurrentFunctionArgs($2);
   Emitter::SetCurrentFunctionReturns($4);
 }

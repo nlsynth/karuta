@@ -30,6 +30,7 @@ class Emitter {
 public:
   static void BeginFunction(Expr *name);
   static MethodDecl EndFunction();
+  static void SetCurrentFunctionParams();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
   static void SetImportedResource(synth::ResourceParamValueSet *params);
@@ -56,6 +57,8 @@ public:
 
 private:
   static vector<MethodDecl> method_stack_;
+  static synth::ResourceParamValueSet *params_;
+
   static Stmt *BuildFuncDeclStmt(MethodDecl *decl);
   static MethodDecl &CurrentMethod();
   static void EmitStmt(Stmt *stmt);
