@@ -55,6 +55,8 @@ public:
   string GetOutputPinName();
   string GetInputPinName();
 
+  string GetThreadEntry();
+
   bool ResetPolarity();
 
   void AddPinDecl(sym_t name, bool is_out, int width);

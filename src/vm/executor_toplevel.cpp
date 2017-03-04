@@ -4,9 +4,11 @@
 #include "dump_stream.h"
 #include "fe/fe.h"
 #include "fe/expr.h"
+#include "fe/method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "status.h"
+#include "synth/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/method.h"
 #include "vm/channel.h"
@@ -173,6 +175,19 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   Method *new_method = thr_->GetVM()->NewMethod(false /* not toplevel */);
   new_method->parse_tree_ = insn->insn_stmt_->method_def_;
   value->method_ = new_method;
+  if (new_method->parse_tree_->imported_resource_ != nullptr) {
+    string e = new_method->parse_tree_->imported_resource_->GetThreadEntry();
+    if (!e.empty()) {
+      Object *callee_obj;
+      Method *callee_method = LookupMethod(frame, insn, &callee_obj);
+      Object *thread_obj =
+	ThreadWrapper::NewThreadWrapper(thr_->GetVM(),
+					insn->label_, callee_method);
+      Value *value = obj->LookupValue(sym_lookup(e.c_str()), true);
+      value->type_ = Value::OBJECT;
+      value->object_ = thread_obj;
+    }
+  }
 }
 
 void ExecutorToplevel::ExecMemberAccess(Method *method, MethodFrame *frame,

@@ -117,6 +117,10 @@ bool ResourceParams::ResetPolarity() {
   return (LookupStrParam(sym_lookup("resetPolarity"), "1") == "1");
 }
 
+string ResourceParams::GetThreadEntry() {
+  return LookupStrParam(sym_lookup("thread_entry"), "");
+}
+
 bool ResourceParams::IsExtIO() {
   if (LookupParam(sym_output) || LookupParam(sym_input)) {
     return true;
