@@ -145,7 +145,8 @@ O.writeHdl("call.v");
            'n' : '07 - External port',
            's' : '''object L = Kernel.clone();
 
-def L.f(bool b) [ output = "led" ] {
+@embed(output = "led")
+def L.f(bool b) {
   // print(b);
 }
 
@@ -165,12 +166,12 @@ L.writeHdl("led.v");
            'n' : '08 - Embedded module',
            's' : '''object M = Kernel.clone();
 
-def M.my_wait(int cycles) [
-    resource = "wait_cycles",
+@embed(    resource = "wait_cycles",
     verilog = "nli_wait.v",
     ack = "ack",
     file= "copy",
-    module= "wait_cycles" ] {
+    module= "wait_cycles")
+def M.my_wait(int cycles) {
   print(cycles);
 }
 
