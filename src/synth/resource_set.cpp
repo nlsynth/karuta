@@ -124,7 +124,7 @@ IResource *ResourceSet::GetAxiPort(vm::Object *obj) {
     DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
 				  resource::kAxiPort);
   IResource *res = new IResource(tab_, rc);
-  res->SetSharedRegister(array_res);
+  res->SetParentResource(array_res);
   tab_->resources_.push_back(res);
   axi_ports_[obj] = res;
   return res;

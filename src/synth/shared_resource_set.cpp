@@ -67,7 +67,7 @@ void SharedResourceSet::ResolveSharedResource(SharedResource *res) {
 
 void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
   for (IResource *res : sres->accessor_resources_) {
-    res->SetSharedRegister(sres->owner_res_);
+    res->SetParentResource(sres->owner_res_);
   }
 }
 
