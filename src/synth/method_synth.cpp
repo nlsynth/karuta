@@ -6,6 +6,7 @@
 #include "iroha/iroha.h"
 #include "synth/channel_synth.h"
 #include "synth/thread_synth.h"
+#include "synth/object_method.h"
 #include "synth/object_synth.h"
 #include "synth/resource_params.h"
 #include "synth/resource_set.h"
@@ -30,6 +31,14 @@ MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 }
 
 MethodSynth::~MethodSynth() {
+}
+
+vm::Object *MethodSynth::GetObjByReg(vm::Register *reg) {
+  return member_reg_to_obj_map_[reg];
+}
+
+ResourceSet *MethodSynth::GetResourceSet() {
+  return res_;
 }
 
 bool MethodSynth::Synth() {
@@ -243,36 +252,8 @@ void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
 }
 
 void MethodSynth::SynthNative(vm::Insn *insn) {
-  IInsn *iinsn;
-  if (insn->label_ == sym_lookup("print")) {
-    iinsn = new IInsn(res_->PrintResource());
-  } else if (insn->label_ == sym_lookup("assert")) {
-    iinsn = new IInsn(res_->AssertResource());
-  } else if (insn->label_ == sym_lookup("load")) {
-    iinsn = SynthAxiAccess(insn, false);
-  } else if (insn->label_ == sym_lookup("store")) {
-    iinsn = SynthAxiAccess(insn, true);
-  } else {
-    CHECK(false);
-  }
-  StateWrapper *sw = AllocState();
-  sw->state_->insns_.push_back(iinsn);
-  for (vm::Register *arg : insn->src_regs_) {
-    IRegister *iarg = FindLocalVarRegister(arg);
-    iinsn->inputs_.push_back(iarg);
-  }
-}
-
-IInsn *MethodSynth::SynthAxiAccess(vm::Insn *insn, bool is_store) {
-  vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
-  IResource *res = res_->GetAxiPort(array_obj);
-  IInsn *iinsn = new IInsn(res);
-  if (is_store) {
-    iinsn->SetOperand("write");
-  } else {
-    iinsn->SetOperand("read");
-  }
-  return iinsn;
+  ObjectMethod m(this, insn);
+  m.Synth();
 }
 
 void MethodSynth::SynthFuncall(vm::Insn *insn) {

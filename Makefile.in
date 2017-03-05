@@ -136,6 +136,7 @@ am__objects_4 = src/synth/nli_bin-synth.$(OBJEXT) \
 	src/synth/nli_bin-method_expander.$(OBJEXT) \
 	src/synth/nli_bin-method_scanner.$(OBJEXT) \
 	src/synth/nli_bin-method_synth.$(OBJEXT) \
+	src/synth/nli_bin-object_method.$(OBJEXT) \
 	src/synth/nli_bin-object_synth.$(OBJEXT) \
 	src/synth/nli_bin-shared_resource_set.$(OBJEXT) \
 	src/synth/nli_bin-resource_params.$(OBJEXT) \
@@ -515,6 +516,7 @@ synth_SOURCES = \
  src/synth/method_expander.cpp src/synth/method_expander.h \
  src/synth/method_scanner.cpp src/synth/method_scanner.h \
  src/synth/method_synth.cpp src/synth/method_synth.h \
+ src/synth/object_method.cpp src/synth/object_method.h \
  src/synth/object_synth.cpp src/synth/object_synth.h \
  src/synth/shared_resource_set.cpp src/synth/shared_resource_set.h \
  src/synth/resource_params.cpp src/synth/resource_params.h \
@@ -755,6 +757,8 @@ src/synth/nli_bin-method_scanner.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-method_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
+src/synth/nli_bin-object_method.$(OBJEXT): src/synth/$(am__dirstamp) \
+	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-object_synth.$(OBJEXT): src/synth/$(am__dirstamp) \
 	src/synth/$(DEPDIR)/$(am__dirstamp)
 src/synth/nli_bin-shared_resource_set.$(OBJEXT):  \
@@ -857,6 +861,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-method_expander.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-method_scanner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-method_synth.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-object_method.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-object_synth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-resource_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/synth/$(DEPDIR)/nli_bin-resource_set.Po@am__quote@
@@ -1299,6 +1304,20 @@ src/synth/nli_bin-method_synth.obj: src/synth/method_synth.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/method_synth.cpp' object='src/synth/nli_bin-method_synth.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-method_synth.obj `if test -f 'src/synth/method_synth.cpp'; then $(CYGPATH_W) 'src/synth/method_synth.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/method_synth.cpp'; fi`
+
+src/synth/nli_bin-object_method.o: src/synth/object_method.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-object_method.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-object_method.Tpo -c -o src/synth/nli_bin-object_method.o `test -f 'src/synth/object_method.cpp' || echo '$(srcdir)/'`src/synth/object_method.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-object_method.Tpo src/synth/$(DEPDIR)/nli_bin-object_method.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/object_method.cpp' object='src/synth/nli_bin-object_method.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-object_method.o `test -f 'src/synth/object_method.cpp' || echo '$(srcdir)/'`src/synth/object_method.cpp
+
+src/synth/nli_bin-object_method.obj: src/synth/object_method.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-object_method.obj -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-object_method.Tpo -c -o src/synth/nli_bin-object_method.obj `if test -f 'src/synth/object_method.cpp'; then $(CYGPATH_W) 'src/synth/object_method.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/object_method.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/synth/$(DEPDIR)/nli_bin-object_method.Tpo src/synth/$(DEPDIR)/nli_bin-object_method.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/synth/object_method.cpp' object='src/synth/nli_bin-object_method.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/synth/nli_bin-object_method.obj `if test -f 'src/synth/object_method.cpp'; then $(CYGPATH_W) 'src/synth/object_method.cpp'; else $(CYGPATH_W) '$(srcdir)/src/synth/object_method.cpp'; fi`
 
 src/synth/nli_bin-object_synth.o: src/synth/object_synth.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/synth/nli_bin-object_synth.o -MD -MP -MF src/synth/$(DEPDIR)/nli_bin-object_synth.Tpo -c -o src/synth/nli_bin-object_synth.o `test -f 'src/synth/object_synth.cpp' || echo '$(srcdir)/'`src/synth/object_synth.cpp

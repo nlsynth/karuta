@@ -39,7 +39,9 @@ bool MailboxWrapper::IsMailbox(Object *obj) {
 void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
   vector<RegisterType> rets;
   rets.push_back(Method::IntType(32));
-  Method::InstallNativeMethod(vm, obj, "width", &MailboxWrapper::Width, rets);
+  Method *m =
+    Method::InstallNativeMethod(vm, obj, "width", &MailboxWrapper::Width, rets);
+  m->SetHasSynth(true);
   Method::InstallNativeMethod(vm, obj, "put", &MailboxWrapper::Put, rets);
   rets[0] = Method::IntType(width);
   Method::InstallNativeMethod(vm, obj, "get", &MailboxWrapper::Get, rets);

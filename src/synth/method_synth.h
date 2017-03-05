@@ -20,6 +20,12 @@ public:
   MethodContext *GetContext();
   void InjectTaskEntry(IState *st);
 
+  // for ObjectMethod
+  vm::Object *GetObjByReg(vm::Register *reg);
+  ResourceSet *GetResourceSet();
+  StateWrapper *AllocState();
+  IRegister *FindLocalVarRegister(vm::Register *vreg);
+
 private:
   void SynthNativeImplMethod(vm::Method *method);
   void SynthEmbeddedMethod(vm::Method *method);
@@ -47,7 +53,6 @@ private:
   void SynthConcat(vm::Insn *insn);
   void SynthPreIncDec(vm::Insn *insn);
   void SynthNative(vm::Insn *insn);
-  IInsn *SynthAxiAccess(vm::Insn *insn, bool is_store);
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);
@@ -64,10 +69,8 @@ private:
 
   map<int, StateWrapper *> vm_insn_state_map_;
 
-  IRegister *FindLocalVarRegister(vm::Register *vreg);
   IRegister *FindArgRegister(vm::Method *method, int nth,
 			     fe::VarDecl *arg_decl);
-  StateWrapper *AllocState();
   void ResolveJumps();
   void LinkStates();
   void InsnToCalcValueType(vm::Insn *insn, IValueType *vt);
