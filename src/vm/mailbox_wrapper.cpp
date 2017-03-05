@@ -41,7 +41,7 @@ void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
   rets.push_back(Method::IntType(32));
   Method *m =
     Method::InstallNativeMethod(vm, obj, "width", &MailboxWrapper::Width, rets);
-  m->SetHasSynth(true);
+  m->SetSynthName("mailbox_width");
   Method::InstallNativeMethod(vm, obj, "put", &MailboxWrapper::Put, rets);
   rets[0] = Method::IntType(width);
   Method::InstallNativeMethod(vm, obj, "get", &MailboxWrapper::Get, rets);

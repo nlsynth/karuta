@@ -143,9 +143,9 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m =
     Method::InstallNativeMethod(vm, obj, "load", &ArrayWrapper::Load, rets);
-  m->SetHasSynth(true);
+  m->SetSynthName("load");
   m = Method::InstallNativeMethod(vm, obj, "store", &ArrayWrapper::Store, rets);
-  m->SetHasSynth(true);
+  m->SetSynthName("store");
 }
 
 }  // namespace vm

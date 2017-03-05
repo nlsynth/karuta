@@ -18,8 +18,8 @@ public:
   int GetNumReturnRegisters();
   const numeric::Width *GetNthArgWidth(int i);
   const char *AlternativeImplementation();
-  bool GetHasSynth() const;
-  void SetHasSynth(bool h);
+  const string &GetSynthName() const;
+  void SetSynthName(const string &s);
   bool IsTopLevel() const;
 
   typedef void (*method_func)(Thread *thr, Object *obj,
@@ -54,7 +54,7 @@ public:
 
 private:
   bool is_toplevel_;
-  bool has_synth_;
+  string synth_name_;
 };
 
 }  // namespace vm

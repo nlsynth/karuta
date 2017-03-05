@@ -203,9 +203,9 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethodWithAltImpl(vm, obj, "wait", &NativeMethods::Wait, rets, "__wait");
   Method *m;
   m = InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
-  m->SetHasSynth(true);
+  m->SetSynthName("print");
   m = InstallNativeMethod(vm, obj, "assert", &NativeMethods::Assert, rets);
-  m->SetHasSynth(true);
+  m->SetSynthName("assert");
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);

@@ -14,16 +14,17 @@ ObjectMethod::ObjectMethod(MethodSynth *synth, vm::Insn *insn)
 void ObjectMethod::Synth() {
   ResourceSet *rset = synth_->GetResourceSet();
   IInsn *iinsn;
-  if (insn_->label_ == sym_lookup("print")) {
+  string name(sym_cstr(insn_->label_));
+  if (name == "print") {
     iinsn = new IInsn(rset->PrintResource());
-  } else if (insn_->label_ == sym_lookup("assert")) {
+  } else if (name == "assert") {
     iinsn = new IInsn(rset->AssertResource());
-  } else if (insn_->label_ == sym_lookup("load")) {
+  } else if (name == "load") {
     iinsn = SynthAxiAccess(false);
-  } else if (insn_->label_ == sym_lookup("store")) {
+  } else if (name == "store") {
     iinsn = SynthAxiAccess(true);
   } else {
-    CHECK(false);
+    CHECK(false) << name;
   }
   StateWrapper *sw = synth_->AllocState();
   sw->state_->insns_.push_back(iinsn);

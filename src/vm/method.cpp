@@ -9,7 +9,7 @@ namespace vm {
 
 Method::Method(bool is_toplevel) :
   method_fn_(nullptr), alt_impl_(nullptr),
-  parse_tree_(nullptr), is_toplevel_(is_toplevel), has_synth_(false) {
+  parse_tree_(nullptr), is_toplevel_(is_toplevel) {
 }
 
 Method::~Method() {
@@ -33,12 +33,12 @@ const char *Method::AlternativeImplementation() {
   return alt_impl_;
 }
 
-bool Method::GetHasSynth() const {
-  return has_synth_;
+const string &Method::GetSynthName() const {
+  return synth_name_;
 }
 
-void Method::SetHasSynth(bool h) {
-  has_synth_ = h;
+void Method::SetSynthName(const string &s) {
+  synth_name_ = s;
 }
 
 bool Method::IsTopLevel() const {

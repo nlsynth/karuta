@@ -57,7 +57,7 @@ bool InsnWalker::IsNativeFuncall(vm::Insn *insn) {
   vm::Value *value = obj->LookupValue(func_name, false);
   CHECK(value != nullptr && value->type_ == vm::Value::METHOD);
   vm::Method *method = value->method_;
-  return method->GetHasSynth();
+  return !(method->GetSynthName().empty());
 }
 
 vm::Object *InsnWalker::GetCalleeObject(vm::Insn *insn) {
