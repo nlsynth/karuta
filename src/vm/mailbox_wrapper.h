@@ -6,14 +6,20 @@
 
 namespace vm {
 
+class MailboxData;
+
 class MailboxWrapper {
 public:
   static Object *NewMailbox(VM *vm, int width, sym_t name);
   static bool IsMailbox(Object *obj);
 
 private:
-  static void InstallMethods(VM *vm ,Object *obj);
+  static void InstallMethods(VM *vm ,Object *obj, int width);
   static void Width(Thread *thr, Object *obj, const vector<Value> &args);
+  static void Put(Thread *thr, Object *obj, const vector<Value> &args);
+  static void Get(Thread *thr, Object *obj, const vector<Value> &args);
+
+  static void Wake(bool wake_put, MailboxData *data);
 };
 
 }  // namespace vm

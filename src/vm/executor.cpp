@@ -104,6 +104,9 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     break;
   case OP_FUNCALL:
     need_suspend = ExecFuncall(frame, insn);
+    if (!thr_->IsRunnable()) {
+      return true;
+    }
     break;
   case OP_FUNCALL_DONE:
     ExecFuncallDone(method, frame, insn);
