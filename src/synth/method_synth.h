@@ -25,6 +25,7 @@ public:
   ResourceSet *GetResourceSet();
   StateWrapper *AllocState();
   IRegister *FindLocalVarRegister(vm::Register *vreg);
+  ITable *GetITable();
 
 private:
   void SynthNativeImplMethod(vm::Method *method);

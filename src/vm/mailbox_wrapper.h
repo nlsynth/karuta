@@ -12,6 +12,7 @@ class MailboxWrapper {
 public:
   static Object *NewMailbox(VM *vm, int width, sym_t name);
   static bool IsMailbox(Object *obj);
+  static int GetWidth(Object *obj);
 
 private:
   static void InstallMethods(VM *vm ,Object *obj, int width);

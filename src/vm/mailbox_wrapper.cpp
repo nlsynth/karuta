@@ -17,6 +17,10 @@ public:
     has_value_ = false;
   }
 
+  virtual const char *ObjectTypeKey() {
+    return kMailboxObjectKey;
+  }
+
   int width_;
   string name_;
   set<Thread *> put_waiters_;
@@ -36,6 +40,12 @@ bool MailboxWrapper::IsMailbox(Object *obj) {
   return (obj->ObjectTypeKey() == kMailboxObjectKey);
 }
 
+int MailboxWrapper::GetWidth(Object *obj) {
+  CHECK(IsMailbox(obj));
+  MailboxData *data = (MailboxData *)obj->object_specific_.get();
+  return data->width_;
+}
+
 void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
   vector<RegisterType> rets;
   rets.push_back(Method::IntType(32));
@@ -51,8 +61,7 @@ void MailboxWrapper::Width(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
   Value value;
   value.type_ = Value::NUM;
-  MailboxData *data = (MailboxData *)obj->object_specific_.get();
-  value.num_.int_part = data->width_;
+  value.num_.int_part = GetWidth(obj);
   thr->SetReturnValueFromNativeMethod(value);
 }
 

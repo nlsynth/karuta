@@ -13,7 +13,8 @@ public:
   void Synth();
 
 private:
-  IInsn *SynthAxiAccess(bool is_store);
+  IInsn *SynthAxiAccess(vm::Object *array_obj, bool is_store);
+  IInsn *SynthMailboxWidth(vm::Object *mailbox_obj);
 
   MethodSynth *synth_;
   vm::Insn *insn_;

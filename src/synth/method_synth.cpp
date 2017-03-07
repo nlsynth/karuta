@@ -355,6 +355,10 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   return ireg;
 }
 
+ITable *MethodSynth::GetITable() {
+  return tab_;
+}
+
 IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
 					fe::VarDecl *arg_decl) {
   int w = 0;
