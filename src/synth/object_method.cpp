@@ -4,6 +4,7 @@
 #include "synth/insn_walker.h"
 #include "synth/method_context.h"
 #include "synth/method_synth.h"
+#include "synth/object_method_names.h"
 #include "synth/resource_set.h"
 #include "synth/shared_resource_set.h"
 #include "vm/mailbox_wrapper.h"
@@ -23,15 +24,15 @@ void ObjectMethod::Synth() {
   string name = GetSynthName(obj);
   IInsn *iinsn = nullptr;
   ResourceSet *rset = synth_->GetResourceSet();
-  if (name == "print") {
+  if (name == kPrint) {
     iinsn = new IInsn(rset->PrintResource());
-  } else if (name == "assert") {
+  } else if (name == kAssert) {
     iinsn = new IInsn(rset->AssertResource());
-  } else if (name == "load") {
+  } else if (name == kLoad) {
     iinsn = SynthAxiAccess(obj, false);
-  } else if (name == "store") {
+  } else if (name == kStore) {
     iinsn = SynthAxiAccess(obj, true);
-  } else if (name == "mailbox_width") {
+  } else if (name == kMailboxWidth) {
     iinsn = SynthMailboxWidth(obj);
   } else {
     CHECK(false) << name;
@@ -49,7 +50,7 @@ void ObjectMethod::Scan() {
   CHECK(obj);
   string name = GetSynthName(obj);
   SharedResourceSet *sres = walker_->GetSharedResourceSet();
-  if (name == "load" || name == "store") {
+  if (name == kLoad || name == kStore) {
     sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name);
   }
 }

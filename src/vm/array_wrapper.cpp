@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "synth/object_method_names.h"
 #include "vm/int_array.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -143,9 +144,9 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m =
     Method::InstallNativeMethod(vm, obj, "load", &ArrayWrapper::Load, rets);
-  m->SetSynthName("load");
+  m->SetSynthName(synth::kLoad);
   m = Method::InstallNativeMethod(vm, obj, "store", &ArrayWrapper::Store, rets);
-  m->SetSynthName("store");
+  m->SetSynthName(synth::kStore);
 }
 
 }  // namespace vm

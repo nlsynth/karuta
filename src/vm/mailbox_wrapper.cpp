@@ -1,6 +1,7 @@
 #include "vm/mailbox_wrapper.h"
 
 #include "numeric/numeric.h"
+#include "synth/object_method_names.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/thread.h"
@@ -51,10 +52,12 @@ void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
   rets.push_back(Method::IntType(32));
   Method *m =
     Method::InstallNativeMethod(vm, obj, "width", &MailboxWrapper::Width, rets);
-  m->SetSynthName("mailbox_width");
-  Method::InstallNativeMethod(vm, obj, "put", &MailboxWrapper::Put, rets);
+  m->SetSynthName(synth::kMailboxWidth);
+  m = Method::InstallNativeMethod(vm, obj, "put", &MailboxWrapper::Put, rets);
+  m->SetSynthName(synth::kMailboxPut);
   rets[0] = Method::IntType(width);
-  Method::InstallNativeMethod(vm, obj, "get", &MailboxWrapper::Get, rets);
+  m = Method::InstallNativeMethod(vm, obj, "get", &MailboxWrapper::Get, rets);
+  m->SetSynthName(synth::kMailboxGet);
 }
 
 void MailboxWrapper::Width(Thread *thr, Object *obj,

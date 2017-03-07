@@ -6,6 +6,7 @@
 #include "status.h"
 #include "synth/resource_params.h"
 #include "synth/synth.h"
+#include "synth/object_method_names.h"
 #include "vm/channel.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -203,9 +204,9 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethodWithAltImpl(vm, obj, "wait", &NativeMethods::Wait, rets, "__wait");
   Method *m;
   m = InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
-  m->SetSynthName("print");
+  m->SetSynthName(synth::kPrint);
   m = InstallNativeMethod(vm, obj, "assert", &NativeMethods::Assert, rets);
-  m->SetSynthName("assert");
+  m->SetSynthName(synth::kAssert);
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
