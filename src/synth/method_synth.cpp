@@ -33,10 +33,6 @@ MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 MethodSynth::~MethodSynth() {
 }
 
-vm::Object *MethodSynth::GetObjByReg(vm::Register *reg) {
-  return member_reg_to_obj_map_[reg];
-}
-
 ResourceSet *MethodSynth::GetResourceSet() {
   return res_;
 }
@@ -252,7 +248,7 @@ void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
 }
 
 void MethodSynth::SynthNative(vm::Insn *insn) {
-  ObjectMethod m(this, insn);
+  ObjectMethod m(this, this, insn);
   m.Synth();
 }
 
@@ -588,7 +584,8 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
   } else {
     SharedResource *sres =
       shared_resource_set_->GetByObj(array_obj);
-    if (sres->accessors_.size() >= 2) {
+    if (sres->accessors_.size() >= 2 ||
+	sres->axi_ctrl_thrs_.size() > 0) {
       SynthSharedArrayAccess(insn, is_write);
       return;
     }
@@ -608,7 +605,7 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
 }
 
 void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
-  vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
+  vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
   SharedResource *sres =
     shared_resource_set_->GetByObj(array_obj);
   IResource *res = nullptr;

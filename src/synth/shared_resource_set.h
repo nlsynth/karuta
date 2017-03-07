@@ -43,7 +43,8 @@ public:
   // NUM
   void AddMemberAccessor(ThreadSynth *thr, sym_t name, vm::Insn *insn);
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
-  void AddObjectAccessor(ThreadSynth *thr, vm::Object *obj, vm::Insn *insn);
+  void AddObjectAccessor(ThreadSynth *thr, vm::Object *obj, vm::Insn *insn,
+			 const string &synth_name);
 
   SharedResource *GetBySlotName(vm::Object *obj, sym_t name);
   SharedResource *GetByObj(vm::Object *obj);

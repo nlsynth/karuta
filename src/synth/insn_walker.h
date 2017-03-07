@@ -14,6 +14,11 @@ namespace synth {
 // This can be used to share code by both synthesizing phase and
 // preprocesses.
 class InsnWalker {
+public:
+  vm::Object *GetObjByReg(vm::Register *reg);
+  SharedResourceSet *GetSharedResourceSet();
+  ThreadSynth *GetThreadSynth();
+
 protected:
   InsnWalker(ThreadSynth *thr_synth);
   void LoadObj(vm::Insn *insn);
@@ -22,6 +27,7 @@ protected:
   bool IsSubObjCall(vm::Insn *insn);
   vm::Object *GetCalleeObject(vm::Insn *insn);
 
+  ThreadSynth *thr_synth_;
   vm::VM *vm_;
   vm::Object *obj_;
   SharedResourceSet *shared_resource_set_;

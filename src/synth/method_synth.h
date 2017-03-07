@@ -21,7 +21,6 @@ public:
   void InjectTaskEntry(IState *st);
 
   // for ObjectMethod
-  vm::Object *GetObjByReg(vm::Register *reg);
   ResourceSet *GetResourceSet();
   StateWrapper *AllocState();
   IRegister *FindLocalVarRegister(vm::Register *vreg);

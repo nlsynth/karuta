@@ -11,7 +11,7 @@
 
 namespace synth {
 
-InsnWalker::InsnWalker(ThreadSynth *thr_synth) {
+InsnWalker::InsnWalker(ThreadSynth *thr_synth) : thr_synth_(thr_synth) {
   vm_ = thr_synth->GetObjectSynth()->GetVM();
   obj_ = thr_synth->GetObjectSynth()->GetObject();
   DesignSynth *ds = thr_synth->GetObjectSynth()->GetDesignSynth();
@@ -73,6 +73,18 @@ bool InsnWalker::IsSubObjCall(vm::Insn *insn) {
     return true;
   }
   return false;
+}
+
+vm::Object *InsnWalker::GetObjByReg(vm::Register *reg) {
+  return member_reg_to_obj_map_[reg];
+}
+
+SharedResourceSet *InsnWalker::GetSharedResourceSet() {
+  return shared_resource_set_;
+}
+
+ThreadSynth *InsnWalker::GetThreadSynth() {
+  return thr_synth_;
 }
 
 }  // namespace synth

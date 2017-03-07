@@ -86,7 +86,8 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, sym_t name,
 }
 
 void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
-					  vm::Insn *insn) {
+					  vm::Insn *insn,
+					  const string &synth_name) {
   SharedResource *res = GetByObj(obj);
   res->ordered_accessors_.push_back(thr);
   res->accessors_.insert(thr);
@@ -97,7 +98,7 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
     res->writers_.insert(thr);
   }
   if (insn->op_ == vm::OP_FUNCALL) {
-    if (insn->label_ == sym_lookup("load")) {
+    if (synth_name == "load" || synth_name == "store") {
       res->axi_ctrl_thrs_.insert(thr);
     }
   }

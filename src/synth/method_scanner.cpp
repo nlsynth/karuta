@@ -4,6 +4,7 @@
 #include "status.h"
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
+#include "synth/object_method.h"
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
@@ -91,15 +92,12 @@ void MethodScanner::MemberAccess(vm::Insn *insn) {
 void MethodScanner::ArrayAccess(vm::Insn *insn) {
   vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
   CHECK(array_obj);
-  shared_resource_set_->AddObjectAccessor(thr_synth_, array_obj, insn);
+  shared_resource_set_->AddObjectAccessor(thr_synth_, array_obj, insn, "");
 }
 
 void MethodScanner::NativeFuncall(vm::Insn *insn) {
-  if (insn->label_ == sym_lookup("load")) {
-    vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
-    CHECK(array_obj);
-    shared_resource_set_->AddObjectAccessor(thr_synth_, array_obj, insn);
-  }
+  ObjectMethod m(nullptr, this, insn);
+  m.Scan();
 }
 
 }  // namespace synth
