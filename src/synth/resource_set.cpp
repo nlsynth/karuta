@@ -130,6 +130,30 @@ IResource *ResourceSet::GetAxiPort(vm::Object *obj) {
   return res;
 }
 
+IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner, bool is_put) {
+  map<vm::Object *, IResource *> *m;
+  const char *n;
+  if (is_owner) {
+    m = &mailbox_shared_reg_;
+    n = resource::kSharedReg;
+  } else {
+    m = is_put ? &mailbox_putters_ : &mailbox_getters_;
+    n = is_put ?
+      resource::kSharedRegWriter : resource::kSharedRegReader;
+  }
+  auto it = m->find(obj);
+  if (it != m->end()) {
+    return it->second;
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  n);
+  IResource *res = new IResource(tab_, rc);
+  tab_->resources_.push_back(res);
+  (*m)[obj] = res;
+  return res;
+}
+
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   synth::ResourceParams *dparams =
     method->parse_tree_->imported_resource_;

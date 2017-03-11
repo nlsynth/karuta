@@ -39,6 +39,7 @@ public:
 				bool is_write);
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
   IResource *GetAxiPort(vm::Object *obj);
+  IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -71,6 +72,9 @@ private:
   map<vm::Object *, IResource *> shared_array_writer_;
   map<vm::Object *, IResource *> shared_array_reader_;
   map<vm::Object *, IResource *> axi_ports_;
+  map<vm::Object *, IResource *> mailbox_shared_reg_;
+  map<vm::Object *, IResource *> mailbox_putters_;
+  map<vm::Object *, IResource *> mailbox_getters_;
 };
 
 }  // namespace synth

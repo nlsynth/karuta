@@ -34,6 +34,10 @@ void ObjectMethod::Synth() {
     iinsn = SynthAxiAccess(obj, true);
   } else if (name == kMailboxWidth) {
     iinsn = SynthMailboxWidth(obj);
+  } else if (name == kMailboxGet) {
+    iinsn = SynthMailboxAccess(obj, false);
+  } else if (name == kMailboxPut) {
+    iinsn = SynthMailboxAccess(obj, true);
   } else {
     CHECK(false) << name;
   }
@@ -50,7 +54,8 @@ void ObjectMethod::Scan() {
   CHECK(obj);
   string name = GetSynthName(obj);
   SharedResourceSet *sres = walker_->GetSharedResourceSet();
-  if (name == kLoad || name == kStore) {
+  if (name == kLoad || name == kStore || name == kMailboxPut ||
+      name == kMailboxGet) {
     sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name);
   }
 }
@@ -75,6 +80,26 @@ IInsn *ObjectMethod::SynthMailboxWidth(vm::Object *mailbox_obj) {
 			      32,
 			      width);
   iinsn->inputs_.push_back(wreg);
+  return iinsn;
+}
+
+IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj, bool is_put) {
+  SharedResource *sres =
+    synth_->GetSharedResourceSet()->GetByObj(mailbox_obj);
+  IResource *res = nullptr;
+  ResourceSet *rset = synth_->GetResourceSet();
+  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
+    res = rset->GetMailbox(mailbox_obj, true, false);
+    sres->AddOwnerResource(res);
+  }
+  res = rset->GetMailbox(mailbox_obj, false, is_put);
+  sres->AddAccessorResource(res);
+  IInsn *iinsn = new IInsn(res);
+  if (is_put) {
+    iinsn->SetOperand(iroha::operand::kPutMailbox);
+  } else {
+    iinsn->SetOperand(iroha::operand::kGetMailbox);
+  }
   return iinsn;
 }
 

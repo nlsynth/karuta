@@ -1,6 +1,7 @@
 #include "synth/shared_resource_set.h"
 
 #include "iroha/i_design.h"
+#include "synth/object_method_names.h"
 #include "synth/object_synth.h"
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
@@ -98,8 +99,10 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
     res->writers_.insert(thr);
   }
   if (insn->op_ == vm::OP_FUNCALL) {
-    if (synth_name == "load" || synth_name == "store") {
+    if (synth_name == kLoad || synth_name == kStore) {
       res->axi_ctrl_thrs_.insert(thr);
+    }
+    if (synth_name == kMailboxGet || synth_name == kMailboxPut) {
     }
   }
 }
