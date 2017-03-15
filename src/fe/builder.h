@@ -18,6 +18,14 @@ class Stmt;
 class VarDecl;
 class VarDeclSet;
 
+struct WidthSpec {
+  const numeric::Width *width;
+  sym_t name;
+
+  static WidthSpec Int(const numeric::Width *w);
+  static WidthSpec Name(sym_t name);
+};
+
 class Builder {
  public:
   static Expr *StrExpr(const string &str);
@@ -35,7 +43,8 @@ class Builder {
   static VarDeclSet *VarDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ArgDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ReturnDeclList(VarDeclSet *decls, VarDecl *decl);
-  static VarDecl *ReturnType(sym_t type_name, const numeric::Width *w);
+  static VarDecl *ReturnType(sym_t type_name, const numeric::Width *w,
+			     sym_t object_name);
   static void SetArrayLength(VarDecl *decl, int length);
   static Expr *ArrayRefExpr(Expr *array, Expr *index);
   static Expr *BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb);
@@ -44,8 +53,10 @@ class Builder {
 
   static VarDecl *ModifiedVar(Expr *var, bool is_ptr, sym_t ns);
   static VarDecl *BuildVarDecl(sym_t type, const numeric::Width *w,
+			       sym_t object_name,
 			       VarDecl *var);
   static sym_t TypeNameFromVarDeclSet(VarDeclSet *vds);
+  static WidthSpec GetWidthSpecFromVarDeclSet(VarDeclSet *vds);
   static Stmt *DoWhileStmt();
 
   static Stmt *NewStmt(int type);

@@ -5,9 +5,10 @@
 
 namespace fe {
 
-VarDecl::VarDecl() : name_expr(NULL), type(NULL), width(NULL),
-		     initial_val(NULL), array_length(-1),
-		     array_initializer(NULL) {
+VarDecl::VarDecl() : name_expr(nullptr), type(nullptr), width(nullptr),
+		     object_name(sym_null),
+		     initial_val(nullptr), array_length(-1),
+		     array_initializer(nullptr) {
 }
 
 void VarDecl::Dump() {
@@ -35,6 +36,10 @@ void VarDecl::Dump(DumpStream &ds) {
     ds.indent();
     numeric::Width::Dump(width, ds.os);
     ds.os << "\n";
+  }
+  if (object_name) {
+    ds.indent();
+    ds.os << "#" << sym_cstr(object_name) << "\n";
   }
   if (array_length >= 0) {
     ds.indent();

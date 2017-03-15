@@ -10,6 +10,20 @@
 
 namespace fe {
 
+WidthSpec WidthSpec::Int(const numeric::Width *w) {
+  WidthSpec s;
+  s.width = w;
+  s.name = sym_null;
+  return s;
+}
+
+WidthSpec WidthSpec::Name(sym_t name) {
+  WidthSpec s;
+  s.width = nullptr;
+  s.name = name;
+  return s;
+}
+
 Expr *Builder::NewExpr(NodeCode type) {
   Expr *expr = new Expr;
   expr->type_ = type;
@@ -64,15 +78,24 @@ VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
 }
 
 VarDecl *Builder::BuildVarDecl(sym_t type, const numeric::Width *w,
-			       VarDecl *var) {
+			       sym_t object_name, VarDecl *var) {
   var->type = type;
   var->width = w;
+  var->object_name = object_name;
   return var;
 }
 
 sym_t Builder::TypeNameFromVarDeclSet(VarDeclSet *vds) {
   CHECK(vds->decls.size() > 0);
   return vds->decls[vds->decls.size() - 1]->type;
+}
+
+WidthSpec Builder::GetWidthSpecFromVarDeclSet(VarDeclSet *vds) {
+  CHECK(vds->decls.size() > 0);
+  WidthSpec ws;
+  ws.width = vds->decls[vds->decls.size() - 1]->width;
+  ws.name = vds->decls[vds->decls.size() - 1]->object_name;
+  return ws;
 }
 
 Expr *Builder::IncDecExpr(Expr *val, int op, bool is_post) {
@@ -154,7 +177,8 @@ VarDeclSet *Builder::ReturnDeclList(VarDeclSet *decls, VarDecl *decl) {
   return ArgDeclList(decls, decl);
 }
 
-VarDecl *Builder::ReturnType(sym_t type_name, const numeric::Width *w) {
+VarDecl *Builder::ReturnType(sym_t type_name, const numeric::Width *w,
+			     sym_t object_name) {
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
   v->type = type_name;

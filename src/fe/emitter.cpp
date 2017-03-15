@@ -190,7 +190,8 @@ void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
 }
 
 void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
-				  const numeric::Width *width) {
+				  const numeric::Width *width,
+				  sym_t object_name) {
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);
   stmt->sym_ = type_name;
   stmt->expr_ = var;
@@ -199,7 +200,8 @@ void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
 }
 
 void Emitter::EmitMailboxDeclStmt(Expr *var, sym_t type_name,
-				  const numeric::Width *width) {
+				  const numeric::Width *width,
+				  sym_t object_name) {
   Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
   stmt->sym_ = type_name;
   stmt->expr_ = var;

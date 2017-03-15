@@ -146,7 +146,7 @@ union YYSTYPE
   const char *str;
   sym_t sym;
   uint64_t num;
-  const class numeric::Width *width;
+  struct WidthSpec width_spec;
   class ResourceParamValue *import_param;
   class ResourceParamValueSet *import_params;
 

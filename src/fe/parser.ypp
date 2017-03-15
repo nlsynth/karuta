@@ -25,7 +25,7 @@ extern void yyerror(const char *msg);
   const char *str;
   sym_t sym;
   uint64_t num;
-  const class numeric::Width *width;
+  struct WidthSpec width_spec;
   class ResourceParamValue *import_param;
   class ResourceParamValueSet *import_params;
 }
@@ -51,7 +51,7 @@ extern void yyerror(const char *msg);
 %type <num> K_ASSIGN K_LG_COMPARE K_EQ_COMPARE K_BIT_CONCAT
 %type <num> K_ADD_SUB K_INC_DEC K_SHIFT
 %type <num> K_LOGIC_AND K_LOGIC_OR
-%type <width> WIDTH_SPEC
+%type <width_spec> WIDTH_SPEC
 %type <import_param> IMPORT_PARAM IMPORT_PARAM_HEAD
 %type <import_params> IMPORT_PARAM_LIST
 
@@ -119,7 +119,7 @@ IMPORT_SPEC : {
 }
 
 RETURN_TYPE : TYPE_NAME WIDTH_SPEC {
-  $$ = Builder::ReturnType($1, $2);
+  $$ = Builder::ReturnType($1, $2.width, $2.name);
 }
 
 RETURN_TYPE_LIST : RETURN_TYPE {
@@ -164,19 +164,21 @@ MODIFIED_VAR : VAR {
 }
 
 VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
-  $$ = Builder::BuildVarDecl($1, $2, $3);
+  $$ = Builder::BuildVarDecl($1, $2.width, $2.name, $3);
 } | K_ENUM TYPE_NAME MODIFIED_VAR {
 } | ENUM_DECL MODIFIED_VAR {
 }
 
 WIDTH_SPEC : {
-  $$ = numeric::Width::MakeInt(false, 32, 0);
+  $$ = WidthSpec::Int(numeric::Width::MakeInt(false, 32, 0));
 } | '#' NUM {
-  $$ = numeric::Width::MakeInt(false, $2, 0);
+  $$ = WidthSpec::Int(numeric::Width::MakeInt(false, $2, 0));
 } | '#' NUM ':' NUM {
-  $$ = numeric::Width::MakeInt(false, $2, $4);
+  $$ = WidthSpec::Int(numeric::Width::MakeInt(false, $2, $4));
+} | '#' SYM {
+  $$ = WidthSpec::Name($2);
 } | '#' '#' {
-  $$ = numeric::Width::Null();
+  $$ = WidthSpec::Int(numeric::Width::Null());
 }
 
 ARG_DECL : {
@@ -236,7 +238,8 @@ VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
   $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL_STMT ',' MODIFIED_VAR {
   sym_t type = Builder::TypeNameFromVarDeclSet($1);
-  $$ = Builder::VarDeclList($1, Builder::BuildVarDecl(type, nullptr, $3));
+  WidthSpec w = Builder::GetWidthSpecFromVarDeclSet($1);
+  $$ = Builder::VarDeclList($1, Builder::BuildVarDecl(type, w.width, w.name, $3));
 } | VAR_DECL_STMT ',' MODIFIED_VAR K_ASSIGN EXPR {
   $$ = Builder::VarDeclList($1, $3);
 }
@@ -290,11 +293,11 @@ THREAD_DECL_STMT : K_THREAD VAR K_ASSIGN FUNCALL {
 }
 
 CHANNEL_DECL_STMT : K_CHANNEL VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
-  Emitter::EmitChannelDeclStmt($2, $4, $5);
+  Emitter::EmitChannelDeclStmt($2, $4, $5.width, $5.name);
 }
 
 MAILBOX_DECL_STMT : K_MAILBOX VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
-  Emitter::EmitMailboxDeclStmt($2, $4, $5);
+  Emitter::EmitMailboxDeclStmt($2, $4, $5.width, $5.name);
 }
 
 IF_COND_PART : K_IF '(' EXPR ')' {

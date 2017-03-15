@@ -27,8 +27,10 @@ public:
   void Dump(DumpStream &os);
 
   Expr *name_expr;
+  // int, bool, string, object and so on.
   sym_t type;
   const numeric::Width *width;
+  sym_t object_name;
   Expr *initial_val;
   int array_length;
   ArrayInitializer *array_initializer;
