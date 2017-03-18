@@ -8,7 +8,7 @@ def Kernel.enable_wire_insn() {
 
 def Kernel.compile() {
   __compile("");
-  __compile("array_to_mem");
+  __compile("clean_unused_resource,array_to_mem");
 }
 
 @embed(resource = "wait_cycles",

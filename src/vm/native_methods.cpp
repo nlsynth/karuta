@@ -122,9 +122,18 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     phase = StringWrapper::String(args[0].object_);
   }
   if (phase.empty()) {
-    synth::Synth::Synthesize(thr->GetVM(), obj, synth::Synth::IrPath(obj));
+    bool ok = synth::Synth::Synthesize(thr->GetVM(), obj,
+				       synth::Synth::IrPath(obj));
+    if (!ok) {
+      Status::os(Status::USER) << "failed synthesize the design.";
+      thr->UserError();
+    }
   } else {
-    synth::Synth::RunIrohaOpt(phase, obj);
+    int res = synth::Synth::RunIrohaOpt(phase, obj);
+    if (res > 0) {
+      Status::os(Status::USER) << "compile(" << phase << ") failed.";
+      thr->UserError();
+    }
   }
 }
 
