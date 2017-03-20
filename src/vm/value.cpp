@@ -10,7 +10,8 @@
 namespace vm {
 
 Value::Value() : type_(NONE), is_const_(false), method_(nullptr),
-		 object_(nullptr), local_int_array_(nullptr) {
+		 object_(nullptr), local_int_array_(nullptr),
+		 type_object_name_(sym_null) {
 }
 
 void Value::Dump() const {
@@ -26,6 +27,9 @@ void Value::Dump(ostream &os) const {
     os << "(method)";
     break;
   case NUM:
+    if (type_object_name_ != sym_null) {
+      os << "[" << sym_cstr(type_object_name_) << "]";
+    }
     num_.Dump(os);
     break;
   case ENUM_TYPE:

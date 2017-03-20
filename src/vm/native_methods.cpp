@@ -260,16 +260,18 @@ void Method::InstallEnvNativeMethods(VM *vm, Object *env) {
 }
 
 RegisterType Method::ObjectType() {
-  return RegisterType(Value::OBJECT, nullptr, nullptr, false);
+  return RegisterType(Value::OBJECT, nullptr, nullptr, sym_null, false);
 }
 
 RegisterType Method::BoolType(VM *vm) {
-  return RegisterType(Value::ENUM_ITEM, vm->bool_type_.get(), nullptr, false);
+  return RegisterType(Value::ENUM_ITEM, vm->bool_type_.get(), nullptr,
+		      sym_null, false);
 }
 
 RegisterType Method::IntType(int w) {
   return RegisterType(Value::NUM, nullptr,
-		      numeric::Width::MakeInt(false, w, 0), false);
+		      numeric::Width::MakeInt(false, w, 0), sym_null,
+		      false);
 }
 
 }  // namespace vm

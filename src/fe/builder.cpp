@@ -183,6 +183,7 @@ VarDecl *Builder::ReturnType(sym_t type_name, const numeric::Width *w,
   NodePool::AddVarDecl(v);
   v->type = type_name;
   v->width = w;
+  v->object_name = object_name;
   return v;
 }
 

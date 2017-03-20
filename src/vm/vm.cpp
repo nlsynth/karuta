@@ -99,6 +99,10 @@ void VM::InstallObjects() {
   object_value.object_ = global;
   kernel_object_->InstallValue(sym_lookup("Global"), object_value);
 
+  Object *numerics = root_object_->Clone(this);
+  object_value.object_ = numerics;
+  kernel_object_->InstallValue(sym_lookup("Numerics"), object_value);
+
   Object *env = root_object_->Clone(this);
   object_value.object_ = env;
   kernel_object_->InstallValue(sym_lookup("Env"), object_value);

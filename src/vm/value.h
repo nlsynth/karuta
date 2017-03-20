@@ -56,6 +56,7 @@ public:
   synth::ResourceParams *resource_params_;
   Object *object_;
   IntArray *local_int_array_;
+  sym_t type_object_name_;
 };
 
 }  // namespace vm

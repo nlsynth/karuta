@@ -11,7 +11,8 @@ namespace vm {
 class RegisterType {
 public:
   RegisterType(Value::ValueType value_type, const EnumType *enum_type,
-	       const numeric::Width *width, bool is_const);
+	       const numeric::Width *width, sym_t object_name,
+	       bool is_const);
   void Dump();
   void Dump(DumpStream &ds);
 
@@ -20,7 +21,11 @@ public:
   // when value_type_ == ENUM_ITEM
   const EnumType *enum_type_;
   const numeric::Width *width_;
+  sym_t object_name_;
   bool is_const_;
+
+private:
+  RegisterType();
 };
 
 // Register definition. Actual value will be stored in

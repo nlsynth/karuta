@@ -263,6 +263,9 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
   } else {
     reg->type_.width_ = numeric::Width::DefaultInt();
   }
+  if (decl->object_name) {
+    reg->type_.object_name_ = decl->object_name;
+  }
   CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->type);
 }
 
@@ -290,6 +293,9 @@ void InsnAnnotator::AnnotateValueType(fe::VarDecl *decl, Value *value) {
     }
   }
   value->num_.type = decl->width;
+  if (decl->object_name != sym_null) {
+    value->type_object_name_ = decl->object_name;
+  }
 }
 
 void InsnAnnotator::AnnotateByValue(Value *value, Register *reg) {
@@ -297,6 +303,7 @@ void InsnAnnotator::AnnotateByValue(Value *value, Register *reg) {
   if (value->type_ == Value::NUM) {
     reg->type_.width_ = value->num_.type;
   }
+  reg->type_.object_name_ = value->type_object_name_;
 }
 
 void InsnAnnotator::SetDstRegType(Value::ValueType vtype, Insn *insn, int idx) {

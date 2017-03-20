@@ -6,9 +6,14 @@
 namespace vm {
 
 RegisterType::RegisterType(Value::ValueType type, const EnumType *enum_type,
-			   const numeric::Width *width, bool is_const)
+			   const numeric::Width *width, sym_t object_name,
+			   bool is_const)
   : value_type_(type), enum_type_(enum_type), width_(width),
+    object_name_(object_name),
     is_const_(is_const) {
+}
+
+RegisterType::RegisterType() {
 }
 
 void RegisterType::Dump() {
@@ -25,9 +30,12 @@ void RegisterType::Dump(DumpStream &ds) {
     ds.os << " #";
     numeric::Width::Dump(width_, ds.os);
   }
+  if (object_name_ != nullptr) {
+    ds.os << "[" << sym_cstr(object_name_) << "]";
+  }
 }
 
-Register::Register() : type_(Value::NONE, nullptr, nullptr, false),
+Register::Register() : type_(Value::NONE, nullptr, nullptr, sym_null, false),
 		       orig_name_(nullptr),
 		       array_length_(-1), array_initializer_(nullptr),
 		       is_declared_type_(false) {
