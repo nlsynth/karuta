@@ -244,29 +244,30 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
 void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 				   Register *reg) {
   reg->SetIsDeclaredType(true);
-  if (decl->array_length >= 0) {
-    CHECK(decl->type == sym_int);
+  if (decl->GetArrayLength() >= 0) {
+    CHECK(decl->type_ == sym_int);
     reg->type_.value_type_ = Value::INT_ARRAY;
-    reg->SetArrayLength(decl->array_length);
-    if (reg->GetArrayLength() == 0 && decl->array_initializer) {
-      reg->SetArrayLength(decl->array_initializer->num_.size());
+    reg->SetArrayLength(decl->GetArrayLength());
+    if (reg->GetArrayLength() == 0 &&
+	decl->GetArrayInitializer() != nullptr) {
+      reg->SetArrayLength(decl->GetArrayInitializer()->num_.size());
     }
-    reg->SetArrayInitializer(decl->array_initializer);
+    reg->SetArrayInitializer(decl->GetArrayInitializer());
   } else {
-    reg->type_.value_type_ = SymToType(decl->type);
-    if (decl->type == sym_bool) {
+    reg->type_.value_type_ = SymToType(decl->type_);
+    if (decl->type_ == sym_bool) {
       reg->type_.enum_type_ = vm->bool_type_.get();
     }
   }
-  if (decl->width) {
-    reg->type_.width_ = decl->width;
+  if (decl->width_) {
+    reg->type_.width_ = decl->width_;
   } else {
     reg->type_.width_ = numeric::Width::DefaultInt();
   }
-  if (decl->object_name) {
-    reg->type_.object_name_ = decl->object_name;
+  if (decl->object_name_) {
+    reg->type_.object_name_ = decl->object_name_;
   }
-  CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->type);
+  CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->type_);
 }
 
 Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
@@ -283,8 +284,8 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
 }
 
 void InsnAnnotator::AnnotateValueType(fe::VarDecl *decl, Value *value) {
-  value->type_ = SymToType(decl->type);
-  if (decl->array_length > -1) {
+  value->type_ = SymToType(decl->type_);
+  if (decl->GetArrayLength() > -1) {
     if (value->type_ == Value::OBJECT) {
       value->type_ = Value::OBJECT_ARRAY;
     } else {
@@ -292,9 +293,9 @@ void InsnAnnotator::AnnotateValueType(fe::VarDecl *decl, Value *value) {
       value->type_ = Value::INT_ARRAY;
     }
   }
-  value->num_.type = decl->width;
-  if (decl->object_name != sym_null) {
-    value->type_object_name_ = decl->object_name;
+  value->num_.type = decl->width_;
+  if (decl->object_name_ != sym_null) {
+    value->type_object_name_ = decl->object_name_;
   }
 }
 

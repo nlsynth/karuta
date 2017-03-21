@@ -26,14 +26,23 @@ public:
   void Dump();
   void Dump(DumpStream &os);
 
-  Expr *name_expr;
+  Expr *GetInitialVal() const;
+  void SetInitialVal(Expr *initial_val);
+  int GetArrayLength();
+  void SetArrayLength(int array_length);
+  ArrayInitializer *GetArrayInitializer() const;
+  void SetArrayInitializer(ArrayInitializer *array);
+
+  Expr *name_expr_;
   // int, bool, string, object and so on.
-  sym_t type;
-  const numeric::Width *width;
-  sym_t object_name;
-  Expr *initial_val;
-  int array_length;
-  ArrayInitializer *array_initializer;
+  sym_t type_;
+  const numeric::Width *width_;
+  sym_t object_name_;
+
+private:
+  Expr *initial_val_;
+  int array_length_;
+  ArrayInitializer *array_initializer_;
 };
 
 class VarDeclSet {

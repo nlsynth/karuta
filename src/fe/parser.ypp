@@ -230,7 +230,7 @@ VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
   Builder::SetArrayLength($1, $2);
   $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL K_ASSIGN EXPR {
-  $1->initial_val = $3;
+  $1->SetInitialVal($3);
   $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL ARRAY_SPEC K_ASSIGN ARRAY_INITIALIZER {
   Builder::SetArrayLength($1, $2);

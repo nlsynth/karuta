@@ -358,14 +358,14 @@ ITable *MethodSynth::GetITable() {
 IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
 					fe::VarDecl *arg_decl) {
   int w = 0;
-  if (arg_decl->type == sym_bool) {
+  if (arg_decl->type_ == sym_bool) {
     w = 0;
-  } else if (arg_decl->type == sym_int) {
-    w = numeric::Width::GetWidth(arg_decl->width);
+  } else if (arg_decl->type_ == sym_int) {
+    w = numeric::Width::GetWidth(arg_decl->width_);
   } else {
     CHECK(false);
   }
-  string reg_name(sym_cstr(arg_decl->name_expr->sym_));
+  string reg_name(sym_cstr(arg_decl->name_expr_->sym_));
   IRegister *reg = thr_synth_->AllocRegister(reg_name);
   reg->value_type_.SetWidth(w);
   // Add as a local variable if this isn't a native method.

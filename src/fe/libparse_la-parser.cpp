@@ -2009,7 +2009,7 @@ yyreduce:
   case 50:
 #line 232 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyvsp[-2].var_decl)->initial_val = (yyvsp[0].expr);
+  (yyvsp[-2].var_decl)->SetInitialVal((yyvsp[0].expr));
   (yyval.var_decl_set) = Builder::VarDeclList(nullptr, (yyvsp[-2].var_decl));
 }
 #line 2016 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */

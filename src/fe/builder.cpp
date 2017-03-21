@@ -73,28 +73,28 @@ Expr *Builder::FuncallExpr(Expr *func, Expr *args) {
 VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
   VarDecl *mv = new VarDecl;
   NodePool::AddVarDecl(mv);
-  mv->name_expr = var;
+  mv->name_expr_ = var;
   return mv;
 }
 
 VarDecl *Builder::BuildVarDecl(sym_t type, const numeric::Width *w,
 			       sym_t object_name, VarDecl *var) {
-  var->type = type;
-  var->width = w;
-  var->object_name = object_name;
+  var->type_ = type;
+  var->width_ = w;
+  var->object_name_ = object_name;
   return var;
 }
 
 sym_t Builder::TypeNameFromVarDeclSet(VarDeclSet *vds) {
   CHECK(vds->decls.size() > 0);
-  return vds->decls[vds->decls.size() - 1]->type;
+  return vds->decls[vds->decls.size() - 1]->type_;
 }
 
 WidthSpec Builder::GetWidthSpecFromVarDeclSet(VarDeclSet *vds) {
   CHECK(vds->decls.size() > 0);
   WidthSpec ws;
-  ws.width = vds->decls[vds->decls.size() - 1]->width;
-  ws.name = vds->decls[vds->decls.size() - 1]->object_name;
+  ws.width = vds->decls[vds->decls.size() - 1]->width_;
+  ws.name = vds->decls[vds->decls.size() - 1]->object_name_;
   return ws;
 }
 
@@ -181,21 +181,21 @@ VarDecl *Builder::ReturnType(sym_t type_name, const numeric::Width *w,
 			     sym_t object_name) {
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
-  v->type = type_name;
-  v->width = w;
-  v->object_name = object_name;
+  v->type_ = type_name;
+  v->width_ = w;
+  v->object_name_ = object_name;
   return v;
 }
 
 void Builder::SetArrayLength(VarDecl *decl, int length) {
-  decl->array_length = length;
+  decl->SetArrayLength(length);
 }
 
 void Builder::SetArrayInitializer(VarDecl *decl,
 				  ArrayInitializer *initializer) {
-  decl->array_initializer = initializer;
-  if (decl->array_length == 0) {
-    decl->array_length = initializer->num_.size();
+  decl->SetArrayInitializer(initializer);
+  if (decl->GetArrayLength() == 0) {
+    decl->SetArrayLength(initializer->num_.size());
   }
 }
 

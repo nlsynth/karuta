@@ -84,18 +84,18 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   fe::VarDecl *decl = insn->insn_stmt_->decl_;
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);
-  sym_t name = decl->name_expr->sym_;
+  sym_t name = decl->name_expr_->sym_;
   Value *value = obj->LookupValue(name, true);
   InsnAnnotator::AnnotateValueType(decl, value);
   if (value->type_ == Value::NUM) {
     numeric::Numeric::MakeConst(0, 0, &value->num_);
   }
   if (value->type_ == Value::INT_ARRAY) {
-    value->object_ = CreateMemoryObject(decl->width, decl->array_length,
-					decl->array_initializer);
+    value->object_ = CreateMemoryObject(decl->width_, decl->GetArrayLength(),
+					decl->GetArrayInitializer());
   }
   if (value->type_ == Value::OBJECT_ARRAY) {
-    value->object_ = CreateObjectArray(decl->array_length);
+    value->object_ = CreateObjectArray(decl->GetArrayLength());
   }
 }
 
