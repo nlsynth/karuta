@@ -28,7 +28,13 @@ void Value::Dump(ostream &os) const {
     break;
   case NUM:
     if (type_object_name_ != sym_null) {
-      os << "[" << sym_cstr(type_object_name_) << "]";
+      os << "[" << sym_cstr(type_object_name_);
+      if (object_ == nullptr) {
+	os << "?";
+      } else {
+	os << "*";
+      }
+      os << "]";
     }
     num_.Dump(os);
     break;

@@ -71,6 +71,7 @@ vm_SOURCES = \
  src/vm/native_methods.cpp src/vm/native_methods.h \
  src/vm/object.cpp src/vm/object.h \
  src/vm/mailbox_wrapper.cpp src/vm/mailbox_wrapper.h \
+ src/vm/numeric_object.cpp src/vm/numeric_object.h \
  src/vm/string_wrapper.cpp src/vm/string_wrapper.h \
  src/vm/thread.cpp src/vm/thread.h \
  src/vm/thread_wrapper.cpp src/vm/thread_wrapper.h \

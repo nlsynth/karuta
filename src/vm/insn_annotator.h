@@ -23,12 +23,13 @@ public:
   // Sets the type of the result from OP_MEMBER_READ.
   static void AnnotateByValue(Value *value, Register *reg);
   // top level executor to set type of declared member dynamically
-  static void AnnotateValueType(fe::VarDecl *decl, Value *value);
+  static void AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value);
 
 private:
   void ClearType();
 
-  bool IsTyped(Insn *insn);
+  static bool IsTyped(Insn *insn);
+  static bool IsTypedReg(Register *reg);
   void TryType(Insn *insn);
   void PropagateType();
   void TryPropagate(Insn *insn, std::set<Register *> *propagated);

@@ -15,6 +15,7 @@
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/mailbox_wrapper.h"
+#include "vm/numeric_object.h"
 #include "vm/thread_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/object.h"
@@ -86,9 +87,12 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   CHECK(obj);
   sym_t name = decl->name_expr_->sym_;
   Value *value = obj->LookupValue(name, true);
-  InsnAnnotator::AnnotateValueType(decl, value);
+  InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
     numeric::Numeric::MakeConst(0, 0, &value->num_);
+    if (decl->object_name_ != sym_null) {
+      value->object_ = NumericObject::Get(thr_->GetVM(), decl->object_name_);
+    }
   }
   if (value->type_ == Value::INT_ARRAY) {
     value->object_ = CreateMemoryObject(decl->width_, decl->GetArrayLength(),

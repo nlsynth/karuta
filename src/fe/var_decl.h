@@ -37,6 +37,7 @@ public:
   // int, bool, string, object and so on.
   sym_t type_;
   const numeric::Width *width_;
+  // for numeric object.
   sym_t object_name_;
 
 private:

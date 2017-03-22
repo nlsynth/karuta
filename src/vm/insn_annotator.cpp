@@ -6,6 +6,7 @@
 #include "fe/var_decl.h"
 #include "vm/insn.h"
 #include "vm/method.h"
+#include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
 #include "vm/value.h"
@@ -219,16 +220,20 @@ void InsnAnnotator::TryType(Insn *insn) {
 
 bool InsnAnnotator::IsTyped(Insn *insn) {
   for (Register *reg : insn->dst_regs_) {
-    if (reg->type_.value_type_ == Value::NONE) {
+    if (!IsTypedReg(reg)) {
       return false;
     }
   }
   for (Register *reg : insn->src_regs_) {
-    if (reg->type_.value_type_ == Value::NONE) {
+    if (!IsTypedReg(reg)) {
       return false;
     }
   }
   return true;
+}
+
+bool InsnAnnotator::IsTypedReg(Register *reg) {
+  return (reg->type_.value_type_ != Value::NONE);
 }
 
 void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
@@ -283,7 +288,7 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
   return Value::NONE;
 }
 
-void InsnAnnotator::AnnotateValueType(fe::VarDecl *decl, Value *value) {
+void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
   value->type_ = SymToType(decl->type_);
   if (decl->GetArrayLength() > -1) {
     if (value->type_ == Value::OBJECT) {
@@ -295,7 +300,9 @@ void InsnAnnotator::AnnotateValueType(fe::VarDecl *decl, Value *value) {
   }
   value->num_.type = decl->width_;
   if (decl->object_name_ != sym_null) {
+    CHECK(!value->IsObjectType());
     value->type_object_name_ = decl->object_name_;
+    value->object_ = NumericObject::Get(vm, value->type_object_name_);
   }
 }
 
