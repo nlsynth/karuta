@@ -80,8 +80,8 @@ VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
 VarDecl *Builder::BuildVarDecl(sym_t type, const numeric::Width *w,
 			       sym_t object_name, VarDecl *var) {
   var->type_ = type;
-  var->width_ = w;
-  var->object_name_ = object_name;
+  var->SetWidth(w);
+  var->SetObjectName(object_name);
   return var;
 }
 
@@ -93,8 +93,8 @@ sym_t Builder::TypeNameFromVarDeclSet(VarDeclSet *vds) {
 WidthSpec Builder::GetWidthSpecFromVarDeclSet(VarDeclSet *vds) {
   CHECK(vds->decls.size() > 0);
   WidthSpec ws;
-  ws.width = vds->decls[vds->decls.size() - 1]->width_;
-  ws.name = vds->decls[vds->decls.size() - 1]->object_name_;
+  ws.width = vds->decls[vds->decls.size() - 1]->GetWidth();
+  ws.name = vds->decls[vds->decls.size() - 1]->GetObjectName();
   return ws;
 }
 
@@ -182,8 +182,8 @@ VarDecl *Builder::ReturnType(sym_t type_name, const numeric::Width *w,
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
   v->type_ = type_name;
-  v->width_ = w;
-  v->object_name_ = object_name;
+  v->SetWidth(w);
+  v->SetObjectName(object_name);
   return v;
 }
 

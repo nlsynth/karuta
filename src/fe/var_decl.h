@@ -26,6 +26,10 @@ public:
   void Dump();
   void Dump(DumpStream &os);
 
+  const numeric::Width *GetWidth() const;
+  void SetWidth(const numeric::Width *width);
+  sym_t GetObjectName() const;
+  void SetObjectName(sym_t object_name);
   Expr *GetInitialVal() const;
   void SetInitialVal(Expr *initial_val);
   int GetArrayLength();
@@ -36,11 +40,11 @@ public:
   Expr *name_expr_;
   // int, bool, string, object and so on.
   sym_t type_;
+
+private:
   const numeric::Width *width_;
   // for numeric object.
   sym_t object_name_;
-
-private:
   Expr *initial_val_;
   int array_length_;
   ArrayInitializer *array_initializer_;

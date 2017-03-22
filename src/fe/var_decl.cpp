@@ -63,6 +63,22 @@ void VarDeclSet::Dump(DumpStream &ds) {
   }
 }
 
+const numeric::Width *VarDecl::GetWidth() const {
+  return width_;
+}
+
+void VarDecl::SetWidth(const numeric::Width *width) {
+  width_ = width;
+}
+
+sym_t VarDecl::GetObjectName() const {
+  return object_name_;
+}
+
+void VarDecl::SetObjectName(sym_t object_name) {
+  object_name_ = object_name;
+}
+
 Expr *VarDecl::GetInitialVal() const {
   return initial_val_;
 }

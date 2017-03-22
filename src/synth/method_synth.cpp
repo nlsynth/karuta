@@ -361,7 +361,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   if (arg_decl->type_ == sym_bool) {
     w = 0;
   } else if (arg_decl->type_ == sym_int) {
-    w = numeric::Width::GetWidth(arg_decl->width_);
+    w = numeric::Width::GetWidth(arg_decl->GetWidth());
   } else {
     CHECK(false);
   }

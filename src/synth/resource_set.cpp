@@ -179,7 +179,7 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
       if (vd->type_ == sym_bool) {
 	vt.SetWidth(0);
       } else {
-	vt.SetWidth(numeric::Width::GetWidth(vd->width_));
+	vt.SetWidth(numeric::Width::GetWidth(vd->GetWidth()));
       }
       res->input_types_.push_back(vt);
     }

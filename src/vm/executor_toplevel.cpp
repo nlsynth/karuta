@@ -90,12 +90,14 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
     numeric::Numeric::MakeConst(0, 0, &value->num_);
-    if (decl->object_name_ != sym_null) {
-      value->object_ = NumericObject::Get(thr_->GetVM(), decl->object_name_);
+    sym_t object_name = decl->GetObjectName();
+    if (object_name != sym_null) {
+      value->object_ = NumericObject::Get(thr_->GetVM(), object_name);
     }
   }
   if (value->type_ == Value::INT_ARRAY) {
-    value->object_ = CreateMemoryObject(decl->width_, decl->GetArrayLength(),
+    value->object_ = CreateMemoryObject(decl->GetWidth(),
+					decl->GetArrayLength(),
 					decl->GetArrayInitializer());
   }
   if (value->type_ == Value::OBJECT_ARRAY) {

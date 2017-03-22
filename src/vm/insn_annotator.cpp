@@ -264,14 +264,12 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
       reg->type_.enum_type_ = vm->bool_type_.get();
     }
   }
-  if (decl->width_) {
-    reg->type_.width_ = decl->width_;
+  if (decl->GetWidth()) {
+    reg->type_.width_ = decl->GetWidth();
   } else {
     reg->type_.width_ = numeric::Width::DefaultInt();
   }
-  if (decl->object_name_) {
-    reg->type_.object_name_ = decl->object_name_;
-  }
+  reg->type_.object_name_ = decl->GetObjectName();
   CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->type_);
 }
 
@@ -298,10 +296,11 @@ void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
       value->type_ = Value::INT_ARRAY;
     }
   }
-  value->num_.type = decl->width_;
-  if (decl->object_name_ != sym_null) {
+  value->num_.type = decl->GetWidth();
+  sym_t object_name = decl->GetObjectName();
+  if (object_name != sym_null) {
     CHECK(!value->IsObjectType());
-    value->type_object_name_ = decl->object_name_;
+    value->type_object_name_ = object_name;
     value->object_ = NumericObject::Get(vm, value->type_object_name_);
   }
 }
