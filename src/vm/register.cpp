@@ -36,7 +36,7 @@ void RegisterType::Dump(DumpStream &ds) {
 }
 
 Register::Register() : type_(Value::NONE, nullptr, nullptr, sym_null, false),
-		       orig_name_(nullptr),
+		       orig_name_(nullptr), type_object_(nullptr),
 		       array_length_(-1), array_initializer_(nullptr),
 		       is_declared_type_(false) {
 }
@@ -54,6 +54,13 @@ void Register::Dump(DumpStream &ds) {
   }
   if (orig_name_) {
     ds.os << "(" << sym_cstr(orig_name_) << ")";
+  }
+  if (type_object_ == nullptr) {
+    if (type_.object_name_ != nullptr) {
+      ds.os << "?";
+    }
+  } else {
+    ds.os << "*";
   }
   if (array_length_ > -1) {
     ds.os << " [" << array_length_ << "]";

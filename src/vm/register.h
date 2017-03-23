@@ -48,6 +48,7 @@ public:
   RegisterType type_;
   numeric::Number initial_num_;
   sym_t orig_name_;
+  Object *type_object_;
 
 private:
   // local array.

@@ -7,6 +7,9 @@
 namespace vm {
 
 Object *NumericObject::Get(VM *vm, sym_t name) {
+  if (name == sym_null) {
+    return nullptr;
+  }
   Value *v =
     vm->kernel_object_->LookupValue(sym_lookup("Numerics"), false);
   CHECK(v != nullptr && v->type_ == Value::OBJECT);

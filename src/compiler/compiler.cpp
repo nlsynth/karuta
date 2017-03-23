@@ -7,9 +7,10 @@
 #include "fe/method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
-#include "vm/method.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
+#include "vm/method.h"
+#include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
 #include "vm/value.h"
@@ -376,6 +377,11 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   sym_t name = var_expr->sym_;
   vm::Register *reg = AllocRegister();
   reg->orig_name_ = name;
+  sym_t type_object_name = stmt->decl_->GetObjectName();
+  if (type_object_name != sym_null) {
+    CHECK(!IsTopLevel());
+    reg->type_object_ = vm::NumericObject::Get(vm_, type_object_name);
+  }
   VarScope *scope = CurrentScope();
   scope->local_regs_[name] = reg;
   vm::InsnAnnotator::AnnotateByDecl(vm_, stmt->decl_, reg);
