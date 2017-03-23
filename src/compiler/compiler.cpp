@@ -10,7 +10,6 @@
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/method.h"
-#include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
 #include "vm/value.h"
@@ -377,14 +376,21 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   sym_t name = var_expr->sym_;
   vm::Register *reg = AllocRegister();
   reg->orig_name_ = name;
-  sym_t type_object_name = stmt->decl_->GetObjectName();
-  if (type_object_name != sym_null) {
-    CHECK(!IsTopLevel());
-    reg->type_object_ = vm::NumericObject::Get(vm_, type_object_name);
-  }
   VarScope *scope = CurrentScope();
   scope->local_regs_[name] = reg;
   vm::InsnAnnotator::AnnotateByDecl(vm_, stmt->decl_, reg);
+  if (stmt->decl_->GetObjectName() != sym_null) {
+    if (IsTopLevel()) {
+      // Set type object later.
+      vm::Insn *insn = new vm::Insn;
+      insn->op_ = vm::OP_SET_TYPE_OBJECT;
+      insn->dst_regs_.push_back(reg);
+      insn->insn_stmt_ = stmt;
+      EmitInsn(insn);
+    } else {
+      CHECK(reg->type_object_ != nullptr);
+    }
+  }
 
   if (rhs_val) {
     SimpleAssign(rhs_val, reg);

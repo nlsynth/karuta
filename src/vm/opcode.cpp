@@ -63,6 +63,7 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_THREAD_DECL, "thread_decl"},
     {vm::OP_GENERIC_READ, "generic_read"},
     {vm::OP_GENERIC_WRITE, "generic_write"},
+    {vm::OP_SET_TYPE_OBJECT, "set_type_object"},
   };
   auto it = codes.find(node);
   if (it == codes.end()) {

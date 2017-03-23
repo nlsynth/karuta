@@ -73,6 +73,9 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
   case OP_FUNCALL_DONE:
     ExecutorToplevel::ExecFuncallDone(method, frame, insn);
     break;
+  case OP_SET_TYPE_OBJECT:
+    ExecSetTypeObject(method, insn);
+    break;
   default:
     return Executor::ExecInsn(method, frame, insn);
   }
@@ -267,6 +270,13 @@ void ExecutorToplevel::ExecGenericWrite(const Method *method,
   } else {
     CHECK(false);
   }
+}
+
+void ExecutorToplevel::ExecSetTypeObject(Method *method, Insn *insn) {
+  int dst_id = insn->dst_regs_[0]->id_;
+  Register *reg = method->method_regs_[dst_id];
+  reg->type_object_ = NumericObject::Get(thr_->GetVM(),
+					 reg->type_.object_name_);
 }
 
 }  // namespace vm

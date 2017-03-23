@@ -65,6 +65,8 @@ enum OpCode {
   // Can be channel or memory.
   OP_GENERIC_READ,
   OP_GENERIC_WRITE,
+
+  OP_SET_TYPE_OBJECT,
 };
 
 const char *OpCodeName(enum OpCode node);

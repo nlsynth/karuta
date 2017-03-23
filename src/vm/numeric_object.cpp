@@ -12,9 +12,15 @@ Object *NumericObject::Get(VM *vm, sym_t name) {
   }
   Value *v =
     vm->kernel_object_->LookupValue(sym_lookup("Numerics"), false);
-  CHECK(v != nullptr && v->type_ == Value::OBJECT);
+  if (v == nullptr) {
+    return nullptr;
+  }
+  CHECK(v->type_ == Value::OBJECT);
   Value *n = v->object_->LookupValue(name, false);
-  CHECK(n != nullptr && n->type_ == Value::OBJECT);
+  if (n == nullptr) {
+    return nullptr;
+  }
+  CHECK(n->type_ == Value::OBJECT);
   return n->object_;
 }
 

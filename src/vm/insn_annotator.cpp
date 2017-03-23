@@ -270,6 +270,9 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
     reg->type_.width_ = numeric::Width::DefaultInt();
   }
   reg->type_.object_name_ = decl->GetObjectName();
+  if (reg->type_.object_name_ != sym_null) {
+    reg->type_object_ = vm::NumericObject::Get(vm, reg->type_.object_name_);
+  }
   CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->type_);
 }
 

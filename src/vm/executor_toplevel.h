@@ -25,6 +25,7 @@ public:
   void ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn);
   bool ExecGenericRead(MethodFrame *frame, Insn *insn);
   void ExecGenericWrite(const Method *method, MethodFrame *frame, Insn *insn);
+  void ExecSetTypeObject(Method *method, Insn *insn);
 };
 
 }  // namespace vm
