@@ -88,7 +88,7 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   fe::VarDecl *decl = insn->insn_stmt_->decl_;
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);
-  sym_t name = decl->name_expr_->sym_;
+  sym_t name = decl->GetNameExpr()->sym_;
   Value *value = obj->LookupValue(name, true);
   InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {

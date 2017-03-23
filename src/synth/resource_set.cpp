@@ -174,9 +174,9 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   fe::VarDeclSet *a = method->parse_tree_->args_;
   if (a) {
     for (fe::VarDecl *vd : a->decls) {
-      args.push_back(sym_cstr(vd->name_expr_->sym_));
+      args.push_back(sym_cstr(vd->GetNameExpr()->sym_));
       IValueType vt;
-      if (vd->type_ == sym_bool) {
+      if (vd->GetType() == sym_bool) {
 	vt.SetWidth(0);
       } else {
 	vt.SetWidth(numeric::Width::GetWidth(vd->GetWidth()));

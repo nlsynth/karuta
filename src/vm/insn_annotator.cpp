@@ -250,7 +250,7 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 				   Register *reg) {
   reg->SetIsDeclaredType(true);
   if (decl->GetArrayLength() >= 0) {
-    CHECK(decl->type_ == sym_int);
+    CHECK(decl->GetType() == sym_int);
     reg->type_.value_type_ = Value::INT_ARRAY;
     reg->SetArrayLength(decl->GetArrayLength());
     if (reg->GetArrayLength() == 0 &&
@@ -259,8 +259,8 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
     }
     reg->SetArrayInitializer(decl->GetArrayInitializer());
   } else {
-    reg->type_.value_type_ = SymToType(decl->type_);
-    if (decl->type_ == sym_bool) {
+    reg->type_.value_type_ = SymToType(decl->GetType());
+    if (decl->GetType() == sym_bool) {
       reg->type_.enum_type_ = vm->bool_type_.get();
     }
   }
@@ -273,7 +273,7 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
   if (reg->type_.object_name_ != sym_null) {
     reg->type_object_ = vm::NumericObject::Get(vm, reg->type_.object_name_);
   }
-  CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->type_);
+  CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->GetType());
 }
 
 Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
@@ -290,7 +290,7 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
 }
 
 void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
-  value->type_ = SymToType(decl->type_);
+  value->type_ = SymToType(decl->GetType());
   if (decl->GetArrayLength() > -1) {
     if (value->type_ == Value::OBJECT) {
       value->type_ = Value::OBJECT_ARRAY;

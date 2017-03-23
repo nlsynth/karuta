@@ -63,6 +63,22 @@ void VarDeclSet::Dump(DumpStream &ds) {
   }
 }
 
+Expr *VarDecl::GetNameExpr() const {
+  return name_expr_;
+}
+
+void VarDecl::SetNameExpr(Expr *name) {
+  name_expr_ = name;
+}
+
+sym_t VarDecl::GetType() const {
+  return type_;
+}
+  
+void VarDecl::SetType(sym_t type) {
+  type_ = type;
+}
+
 const numeric::Width *VarDecl::GetWidth() const {
   return width_;
 }

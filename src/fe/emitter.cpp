@@ -44,12 +44,12 @@ void Emitter::SetCurrentFunctionParams() {
     for (size_t i = 0; i < args->decls.size(); ++i) {
       fe::VarDecl *arg = args->decls[i];
       int width = 1;
-      if (arg->type_ == sym_int) {
+      if (arg->GetType() == sym_int) {
 	width = numeric::Width::GetWidth(arg->GetWidth());
       } else {
-	CHECK(arg->type_ == sym_bool);
+	CHECK(arg->GetType() == sym_bool);
       }
-      decl.method_->imported_resource_->AddPinDecl(arg->name_expr_->sym_,
+      decl.method_->imported_resource_->AddPinDecl(arg->GetNameExpr()->sym_,
 						   false,
 						   width);
     }

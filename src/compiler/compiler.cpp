@@ -215,8 +215,8 @@ void Compiler::SetupDeclSetRegisters(fe::VarDeclSet &vds,
   for (size_t i = 0; i < vds.decls.size(); ++i) {
     fe::VarDecl *decl = vds.decls[i];
     vm::Register *reg = AllocRegister();
-    if (decl->name_expr_) {
-      reg->orig_name_ = decl->name_expr_->sym_;
+    if (decl->GetNameExpr()) {
+      reg->orig_name_ = decl->GetNameExpr()->sym_;
     }
     VarScope *scope = CurrentScope();
     if (reg->orig_name_) {
@@ -356,7 +356,7 @@ void Compiler::CompileIfStmt(fe::Stmt *stmt) {
 }
 
 void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
-  fe::Expr *var_expr = stmt->decl_->name_expr_;
+  fe::Expr *var_expr = stmt->decl_->GetNameExpr();
   vm::Register *rhs_val = nullptr;
   if (stmt->decl_->GetInitialVal() != nullptr) {
     rhs_val = CompileExpr(stmt->decl_->GetInitialVal());
