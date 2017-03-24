@@ -1,0 +1,23 @@
+mailbox Kernel.m1 = int;
+mailbox Kernel.m2 = int;
+
+@a(thread_entry = "t1")
+def Kernel.f() {
+  m1.put(100);
+  print(m2.get());
+}
+
+@a(thread_entry = "t2")
+def Kernel.g() {
+  int g = m1.get();
+  print(g);
+  m2.put(g + 1);
+}
+
+//Kernel.dump();
+run();
+
+print(m1.width());
+
+compile();
+writeHdl("/tmp/m.v");
