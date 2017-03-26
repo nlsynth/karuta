@@ -4,6 +4,7 @@
 #include "iroha/i_design.h"
 #include "synth/method_context.h"
 #include "synth/resource_set.h"
+#include "synth/object_synth.h"
 #include "synth/thread_synth.h"
 #include "synth/tool.h"
 
@@ -77,7 +78,7 @@ void MethodExpander::CollectSubObjCalls(MethodContext *method,
       call.call_insn = DesignUtil::FindInsnByResource(st, pseudo);
       call.call_state = st;
       call.callee_obj = sw->callee_vm_obj_;
-      call.callee_func = sw->func_name_;
+      call.callee_func = sw->callee_func_name_;
       sub_obj_calls_->push_back(call);
     }
   }
@@ -87,13 +88,15 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
 					map<IState *, IState *> &st_map,
 					map<IRegister *, IRegister *> &reg_map) {
   for (StateWrapper *sw : method->states_) {
-    if (sw->func_name_.empty()) {
+    if (sw->callee_func_name_.empty()) {
       continue;
     }
     if (sw->callee_vm_obj_ != nullptr) {
       continue;
     }
-    MethodContext *callee = thread_->GetMethodContext(sw->func_name_);
+    MethodContext *callee =
+      thread_->GetMethodContext(thread_->GetObjectSynth()->GetObject(),
+				sw->callee_func_name_);
     CalleeInfo ci = ExpandMethod(callee);
     IState *rs = Tool::GetNextState(sw->state_);
     Tool::SetNextState(st_map[sw->state_], ci.initial);

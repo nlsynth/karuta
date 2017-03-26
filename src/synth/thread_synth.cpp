@@ -1,9 +1,10 @@
 #include "synth/thread_synth.h"
 
+#include "iroha/i_design.h"
 #include "synth/method_expander.h"
 #include "synth/method_scanner.h"
 #include "synth/method_synth.h"
-#include "iroha/i_design.h"
+#include "synth/object_synth.h"
 #include "synth/resource_set.h"
 #include "synth/tool.h"
 #include "status.h"
@@ -12,41 +13,45 @@ namespace synth {
 
 ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 			 const string &thread_name,
-			 const string &method_name, IModule *mod)
+			 const string &entry_method_name,
+			 IModule *mod)
   : obj_synth_(obj_synth),
-    thread_name_(thread_name), method_name_(method_name), mod_(mod),
-    tab_(nullptr),
+    thread_name_(thread_name), entry_method_name_(entry_method_name),
+    mod_(mod), tab_(nullptr),
     is_task_(false),
     reg_name_index_(0) {
 }
 
 ThreadSynth::~ThreadSynth() {
-  STLDeleteSecondElements(&methods_);
 }
 
 bool ThreadSynth::Scan() {
   tab_ = new ITable(mod_);
   tab_->SetName(thread_name_);
   resource_.reset(new ResourceSet(tab_));
-  RequestMethod(method_name_);
+  RequestMethod(obj_synth_->GetObject(), entry_method_name_);
   int num_scan;
-  set<string> scanned;
+  map<vm::Object *, set<string>> scanned;
   do {
     num_scan = 0;
-    for (auto &n : method_names_) {
-      if (scanned.find(n) != scanned.end()) {
-	continue;
+    for (auto &it : obj_methods_) {
+      for (auto jt : it.second.methods_) {
+	vm::Object *obj = it.first;
+	auto &name = jt.first;
+	auto &m = scanned[obj];
+	if (m.find(name) != m.end()) {
+	  continue;
+	}
+	++num_scan;
+	MethodScanner ms(this, name);
+	if (!ms.Scan()) {
+	  Status::os(Status::USER) << "Failed to scan thread: "
+				   << thread_name_ << "." << entry_method_name_;
+	  MessageFlush::Get(Status::USER);
+	  return false;
+	}
+	scanned[obj].insert(name);
       }
-      ++num_scan;
-      MethodScanner ms(this, n);
-      if (!ms.Scan()) {
-	Status::os(Status::USER) << "Failed to scan thread: "
-				 << thread_name_ << "." << method_name_;
-	MessageFlush::Get(Status::USER);
-	return false;
-      }
-      scanned.insert(n);
-      break;
     }
   } while (num_scan > 0);
 
@@ -54,19 +59,26 @@ bool ThreadSynth::Scan() {
 }
 
 bool ThreadSynth::Synth() {
-  for (const string &s : method_names_) {
-    methods_[s] = new MethodSynth(this, s, tab_, resource_.get());
+  for (auto &it : obj_methods_) {
+    for (auto jt : it.second.methods_) {
+      auto &s = jt.first;
+      auto *ms = new MethodSynth(this, s, tab_, resource_.get());
+      obj_methods_[obj_synth_->GetObject()].methods_[s] = ms;
+    }
   }
-  for (auto it : methods_) {
-    if (!it.second->Synth()) {
-      Status::os(Status::USER) << "Failed to synthesize thread: "
-			       << thread_name_ << "." << method_name_;
-      MessageFlush::Get(Status::USER);
-      return false;
+  for (auto &it : obj_methods_) {
+    for (auto jt : it.second.methods_) {
+      if (!jt.second->Synth()) {
+	Status::os(Status::USER) << "Failed to synthesize thread: "
+				 << thread_name_ << "." << entry_method_name_;
+	MessageFlush::Get(Status::USER);
+	return false;
+      }
     }
   }
 
-  MethodSynth *root_method = methods_[method_name_];
+  MethodSynth *root_method =
+    obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
   MethodExpander expander(root_method->GetContext(), this, &sub_obj_calls_);
   expander.Expand();
   if (is_task_) {
@@ -81,12 +93,13 @@ void ThreadSynth::SetIsTask(bool is_task) {
   is_task_ = is_task;
 }
 
-void ThreadSynth::RequestMethod(const string &m) {
-  method_names_.insert(m);
+void ThreadSynth::RequestMethod(vm::Object *obj, const string &m) {
+  obj_methods_[obj].methods_[m] = nullptr;
 }
 
-MethodContext *ThreadSynth::GetMethodContext(const string &m) {
-  return methods_[m]->GetContext();
+MethodContext *ThreadSynth::GetMethodContext(vm::Object *obj,
+					     const string &m) {
+  return obj_methods_[obj].methods_[m]->GetContext();
 }
 
 ResourceSet *ThreadSynth::GetResourceSet() {
@@ -122,8 +135,8 @@ vector<SubObjCall> &ThreadSynth::GetSubObjCalls() {
   return sub_obj_calls_;
 }
 
-const string &ThreadSynth::GetMethodName() {
-  return method_name_;
+const string &ThreadSynth::GetEntryMethodName() {
+  return entry_method_name_;
 }
 
 void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *insn,

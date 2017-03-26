@@ -81,7 +81,8 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     ds->AddChildObjSynth(this_synth, callee_synth);
   } else {
     // Normal method call.
-    thr_synth_->RequestMethod(string(sym_cstr(insn->label_)));
+    thr_synth_->RequestMethod(thr_synth_->GetObjectSynth()->GetObject(),
+			      string(sym_cstr(insn->label_)));
   }
 }
 

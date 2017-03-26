@@ -107,7 +107,7 @@ void ObjectSynth::ResolveSubModuleCalls() {
 
 ThreadSynth *ObjectSynth::GetThreadByName(const string &name) {
   for (auto *thr : threads_) {
-    if (thr->GetMethodName() == name) {
+    if (thr->GetEntryMethodName() == name) {
       return thr;
     }
   }

@@ -260,7 +260,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   vm::Object *callee_obj = GetCalleeObject(insn);
   StateWrapper *sw = AllocState();
   sym_t func_name = insn->label_;
-  sw->func_name_ = string(sym_cstr(func_name));
+  sw->callee_func_name_ = string(sym_cstr(func_name));
   if (IsSubObjCall(insn)) {
     // Sub object call.
     sw->callee_vm_obj_ = callee_obj;
