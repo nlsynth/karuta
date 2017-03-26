@@ -10,18 +10,18 @@ Object *NumericObject::Get(VM *vm, sym_t name) {
   if (name == sym_null) {
     return nullptr;
   }
-  Value *v =
-    vm->kernel_object_->LookupValue(sym_lookup("Numerics"), false);
-  if (v == nullptr) {
-    return nullptr;
-  }
-  CHECK(v->type_ == Value::OBJECT);
-  Value *n = v->object_->LookupValue(name, false);
+  Value *n = vm->numerics_object_->LookupValue(name, false);
   if (n == nullptr) {
     return nullptr;
   }
   CHECK(n->type_ == Value::OBJECT);
   return n->object_;
+}
+
+bool NumericObject::IsNumericObject(VM *vm, Object *obj) {
+  vector<sym_t> slots;
+  vm->numerics_object_->LookupMemberNames(obj, &slots);
+  return (slots.size() > 0);
 }
 
 int NumericObject::Width(Object *obj) {

@@ -23,9 +23,10 @@
 namespace synth {
 
 MethodSynth::MethodSynth(ThreadSynth *thr_synth,
-			 const string &method_name, ITable *tab,
-			 ResourceSet *res)
-  : InsnWalker(thr_synth), thr_synth_(thr_synth), method_name_(method_name),
+			 vm::Object *obj, const string &method_name,
+			 ITable *tab, ResourceSet *res)
+  : InsnWalker(thr_synth, obj),
+    thr_synth_(thr_synth), method_name_(method_name),
     tab_(tab), res_(res) {
   context_.reset(new MethodContext(this));
 }
@@ -261,9 +262,10 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   StateWrapper *sw = AllocState();
   sym_t func_name = insn->label_;
   sw->callee_func_name_ = string(sym_cstr(func_name));
+  sw->callee_vm_obj_ = callee_obj;
   if (IsSubObjCall(insn)) {
-    // Sub object call.
-    sw->callee_vm_obj_ = callee_obj;
+    CHECK(callee_obj);
+    sw->is_sub_obj_call_ = true;
     vector<sym_t> names;
     obj_->LookupMemberNames(callee_obj, &names);
     CHECK(names.size() > 0);

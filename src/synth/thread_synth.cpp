@@ -43,7 +43,7 @@ bool ThreadSynth::Scan() {
 	  continue;
 	}
 	++num_scan;
-	MethodScanner ms(this, name);
+	MethodScanner ms(this, obj, name);
 	if (!ms.Scan()) {
 	  Status::os(Status::USER) << "Failed to scan thread: "
 				   << thread_name_ << "." << entry_method_name_;
@@ -61,9 +61,11 @@ bool ThreadSynth::Scan() {
 bool ThreadSynth::Synth() {
   for (auto &it : obj_methods_) {
     for (auto jt : it.second.methods_) {
-      auto &s = jt.first;
-      auto *ms = new MethodSynth(this, s, tab_, resource_.get());
-      obj_methods_[obj_synth_->GetObject()].methods_[s] = ms;
+      vm::Object *obj = it.first;
+      auto &name = jt.first;
+      auto *ms = new MethodSynth(this, obj, name,
+				 tab_, resource_.get());
+      obj_methods_[obj].methods_[name] = ms;
     }
   }
   for (auto &it : obj_methods_) {

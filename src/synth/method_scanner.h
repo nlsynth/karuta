@@ -8,7 +8,8 @@ namespace synth {
 
 class MethodScanner : public InsnWalker {
 public:
-  MethodScanner(ThreadSynth *thr_synth, const string &method_name);
+  MethodScanner(ThreadSynth *thr_synth, vm::Object *obj,
+		const string &method_name);
 
   bool Scan();
 

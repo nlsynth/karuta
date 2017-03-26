@@ -20,7 +20,7 @@ public:
   ThreadSynth *GetThreadSynth();
 
 protected:
-  InsnWalker(ThreadSynth *thr_synth);
+  InsnWalker(ThreadSynth *thr_synth, vm::Object *obj);
   void LoadObj(vm::Insn *insn);
   void MaybeLoadMemberObject(vm::Insn *insn);
   bool IsNativeFuncall(vm::Insn *insn);

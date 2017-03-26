@@ -9,6 +9,7 @@ namespace vm {
 class NumericObject {
 public:
   static Object *Get(VM *vm, sym_t name);
+  static bool IsNumericObject(VM *vm, Object *obj);
   static int Width(Object *obj);
 };
 

@@ -6,7 +6,7 @@ namespace synth {
 
 StateWrapper::StateWrapper()
   : state_(nullptr), callee_method_(nullptr),
-    vm_insn_(nullptr), callee_vm_obj_(nullptr) {
+    vm_insn_(nullptr), is_sub_obj_call_(false), callee_vm_obj_(nullptr) {
 }
 
 MethodContext::MethodContext(MethodSynth *synth)

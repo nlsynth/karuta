@@ -14,8 +14,10 @@
 namespace synth {
 
 MethodScanner::MethodScanner(ThreadSynth *thr_synth,
+			     vm::Object *obj,
 			     const string &method_name)
-  : InsnWalker(thr_synth), thr_synth_(thr_synth), method_name_(method_name) {
+  : InsnWalker(thr_synth, obj),
+    thr_synth_(thr_synth), method_name_(method_name) {
 }
 
 bool MethodScanner::Scan() {
@@ -80,8 +82,9 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     callee_synth->AddEntryName(string(sym_cstr(insn->label_)));
     ds->AddChildObjSynth(this_synth, callee_synth);
   } else {
-    // Normal method call.
-    thr_synth_->RequestMethod(thr_synth_->GetObjectSynth()->GetObject(),
+    // Normal method or numeric call.
+    vm::Object *callee_obj = GetCalleeObject(insn);
+    thr_synth_->RequestMethod(callee_obj,
 			      string(sym_cstr(insn->label_)));
   }
 }

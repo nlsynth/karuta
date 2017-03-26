@@ -6,14 +6,15 @@
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
 #include "vm/method.h"
+#include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/value.h"
 
 namespace synth {
 
-InsnWalker::InsnWalker(ThreadSynth *thr_synth) : thr_synth_(thr_synth) {
+InsnWalker::InsnWalker(ThreadSynth *thr_synth, vm::Object *obj)
+  : thr_synth_(thr_synth), obj_(obj) {
   vm_ = thr_synth->GetObjectSynth()->GetVM();
-  obj_ = thr_synth->GetObjectSynth()->GetObject();
   DesignSynth *ds = thr_synth->GetObjectSynth()->GetDesignSynth();
   shared_resource_set_ = ds->GetSharedResourceSet();
 }
@@ -70,6 +71,9 @@ vm::Object *InsnWalker::GetCalleeObject(vm::Insn *insn) {
 bool InsnWalker::IsSubObjCall(vm::Insn *insn) {
   vm::Object *callee_obj = GetCalleeObject(insn);
   if (insn->obj_reg_ != nullptr && callee_obj != obj_) {
+    if (vm::NumericObject::IsNumericObject(vm_, callee_obj)) {
+      return false;
+    }
     return true;
   }
   return false;

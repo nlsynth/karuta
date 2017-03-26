@@ -13,7 +13,8 @@ namespace synth {
 class MethodSynth : public InsnWalker {
 public:
   MethodSynth(ThreadSynth *thr_synth,
-	      const string &method_name, ITable *tab, ResourceSet *res);
+	      vm::Object *obj, const string &method_name,
+	      ITable *tab, ResourceSet *res);
   virtual ~MethodSynth();
 
   bool Synth();

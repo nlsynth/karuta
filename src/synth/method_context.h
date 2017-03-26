@@ -16,6 +16,7 @@ public:
   vm::Insn *vm_insn_;
   // for sub obj task call.
   string obj_name_;
+  bool is_sub_obj_call_;
   vm::Object *callee_vm_obj_;
 };
 

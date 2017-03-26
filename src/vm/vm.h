@@ -28,6 +28,7 @@ public:
   Object *root_object_;
   // Kernel.
   Object *kernel_object_;
+  Object *numerics_object_;
   std::unique_ptr<EnumType> bool_type_;
 
 private:
