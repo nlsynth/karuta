@@ -1,0 +1,19 @@
+// This is not yet tested well
+// TODO: test this.
+object M = Kernel.clone();
+
+int M.a[16];
+
+def M.main() {
+  a.load(0);
+  a[1] = 10;
+  a.store(0);
+  a[1] = 0;
+  print(a[1]);
+  a.load(0);
+  print(a[1]);
+}
+
+M.main();
+M.compile();
+M.writeHdl("/tmp/axi.v");
