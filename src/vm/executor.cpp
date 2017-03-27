@@ -404,7 +404,7 @@ bool Executor::ExecChannelRead(MethodFrame *frame, Insn *insn) {
 void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {
   int target = insn->dst_regs_[0]->id_;
   numeric::Number n1;
-  numeric::Numeric::MakeConst(1, 0, &n1);
+  numeric::Numeric::MakeConst(1, &n1);
   numeric::Number res;
   if (insn->op_ == OP_PRE_INC) {
     numeric::Numeric::Add(frame->reg_values_[target].num_, n1, &res);
@@ -623,7 +623,7 @@ void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_init
   if (array_initializer) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       numeric::Number num;
-      numeric::Numeric::MakeConst(array_initializer->num_[i], 0, &num);
+      numeric::Numeric::MakeConst(array_initializer->num_[i], &num);
       array->Write(i, num);
     }
   }

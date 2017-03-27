@@ -52,7 +52,7 @@ Expr *Builder::SymExpr(sym_t sym) {
 
 Expr *Builder::NumExpr(uint64_t num) {
   Expr *expr = NewExpr(EXPR_NUM);
-  numeric::Numeric::MakeConst(num, 0, &expr->num_);
+  numeric::Numeric::MakeConst(num, &expr->num_);
   return expr;
 }
 

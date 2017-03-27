@@ -92,7 +92,7 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   Value *value = obj->LookupValue(name, true);
   InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
-    numeric::Numeric::MakeConst(0, 0, &value->num_);
+    numeric::Numeric::MakeConst(0, &value->num_);
     sym_t object_name = decl->GetObjectName();
     if (object_name != sym_null) {
       value->object_ = NumericObject::Get(thr_->GetVM(), object_name);

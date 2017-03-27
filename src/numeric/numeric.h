@@ -11,13 +11,11 @@ public:
   // signedness affects only for printing.
   bool is_signed;
   int int_width;
-  int frac_width;
 
 public:
   static const Width *Null();
   static const Width *DefaultInt();
-  static const Width *MakeInt(bool is_signed,
-			      int int_part, int frac_part);
+  static const Width *MakeInt(bool is_signed, int int_part);
   static const Width *CommonWidth(const Width *w1,
 				  const Width *w2);
   static void Dump(const Width *w, ostream &os);
@@ -34,7 +32,6 @@ public:
   void Dump(ostream &os) const;
   //
   uint64_t int_part;
-  uint64_t frac_part;
   const Width *type;
 };
 
@@ -66,7 +63,7 @@ public:
   static bool Compare(enum CompareOp op, const Number &x, const Number &y);
   static void CalcBinOp(enum BinOp op, const Number &x, const Number &y,
 			Number *res);
-  static void MakeConst(uint64_t int_part, uint64_t frac_part, Number *num);
+  static void MakeConst(uint64_t int_part, Number *num);
   static void Concat(const Number &x, const Number &y, Number *a);
   static void SelectBits(const Number &num, int h, int l, Number *res);
   static void BitInv(const Number &num, Number *res);

@@ -16,13 +16,11 @@ Number::Number() {
   type = NULL;
 }
 
-const Width *Width::MakeInt(bool is_signed,
-			    int int_part, int frac_part) {
+const Width *Width::MakeInt(bool is_signed, int int_part) {
   vector<Width *>::iterator it;
   for (Width *nw : Width_list) {
     if (nw->is_signed == is_signed &&
-	nw->int_width == int_part &&
-	nw->frac_width == frac_part) {
+	nw->int_width == int_part) {
       return nw;
     }
   }
@@ -30,7 +28,6 @@ const Width *Width::MakeInt(bool is_signed,
   pool.Add(nw);
   nw->is_signed = is_signed;
   nw->int_width = int_part;
-  nw->frac_width = frac_part;
   Width_list.push_back(nw);
   return nw;
 }
@@ -39,7 +36,7 @@ const Width *Numeric::ValueWidth(const Number &src_num) {
   bool is_signed = false;
   Number num = src_num;
   Number zero;
-  Numeric::MakeConst(0, 0, &zero);
+  Numeric::MakeConst(0, &zero);
   if (Compare(COMPARE_LT, num, zero)) {
     Number tmp = num;
     // negate
@@ -50,7 +47,7 @@ const Width *Numeric::ValueWidth(const Number &src_num) {
   n = Numeric::GetInt(num);
   int w;
   for (w = 0; n > 0; w++, n /= 2);
-  return Width::MakeInt(is_signed, w, 0);
+  return Width::MakeInt(is_signed, w);
 }
 
 const Width *Width::CommonWidth(const Width *w1,
@@ -63,15 +60,11 @@ const Width *Width::CommonWidth(const Width *w1,
   }
   bool is_signed;
   int int_part = w1->int_width;
-  int frac_part = w2->frac_width;
   is_signed = w1->is_signed || w2->is_signed;
   if (w2->int_width > w1->int_width) {
     int_part = w2->int_width;
   }
-  if (w2->frac_width > w1->frac_width) {
-    frac_part = w2->frac_width;
-  }
-  return Width::MakeInt(is_signed, int_part, frac_part);
+  return Width::MakeInt(is_signed, int_part);
 }
 
 bool Width::IsWide(const Width *w1,
@@ -87,18 +80,18 @@ int Width::GetWidth(const Width *w) {
 }
 
 void Numeric::Init() {
-  g_int_width = Width::MakeInt(false, 32, 0);
+  g_int_width = Width::MakeInt(false, 32);
   Width *nan = new Width();
   g_nan_width = nan;
   pool.Add(nan);
 }
 
 const Width *Width::Null() {
-  return Width::MakeInt(false, 0, 0);
+  return Width::MakeInt(false, 0);
 }
 
 bool Width::IsNull(const Width *w) {
-  return (w == Width::MakeInt(false, 0, 0));
+  return (w == Width::MakeInt(false, 0));
 }
 
 bool Width::IsEqual(const Width *w1,
@@ -107,7 +100,7 @@ bool Width::IsEqual(const Width *w1,
 }
 
 bool Numeric::IsZero(const Number &n) {
-  return n.int_part == 0 && n.frac_part == 0;
+  return n.int_part == 0;
 }
 
 const Width *Width::DefaultInt() {
@@ -129,25 +122,19 @@ void Width::Dump(const Width *w,
     os << "+,";
   }
   os << w->int_width;
-  if (w->frac_width) {
-    os << "," << w->frac_width;
-  }
   os << ">";
 }
 
 void Numeric::Add(const Number &x, const Number &y, Number *a) {
   a->int_part = x.int_part + y.int_part;
-  a->frac_part = x.frac_part + y.frac_part;
 }
 
 void Numeric::Sub(const Number &x, const Number &y, Number *a) {
   a->int_part = x.int_part - y.int_part;
-  a->frac_part = x.frac_part - y.frac_part;
 }
 
-void Numeric::MakeConst(uint64_t int_part, uint64_t frac_part, Number *num) {
+void Numeric::MakeConst(uint64_t int_part, Number *num) {
   num->int_part = int_part;
-  num->frac_part = frac_part;
 }
 
 uint64_t Numeric::GetInt(const Number &x) {
@@ -231,13 +218,13 @@ void Numeric::SelectBits(const Number &num, int h, int l, Number *res) {
       res->int_part |= (1UL << i);
     }
   }
-  res->type = Width::MakeInt(false, width, 0);
+  res->type = Width::MakeInt(false, width);
 }
 
 void Numeric::Concat(const Number &x, const Number &y, Number *a) {
   a->int_part = (x.int_part << y.type->int_width) + y.int_part;
   a->type = Width::MakeInt(false,
-			   x.type->int_width + y.type->int_width, 0);
+			   x.type->int_width + y.type->int_width);
 }
 
 }  // namespace numeric

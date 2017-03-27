@@ -160,7 +160,7 @@ void InsnAnnotator::TryType(Insn *insn) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
       int w = numeric::Width::GetWidth(insn->src_regs_[0]->type_.width_) +
 	numeric::Width::GetWidth(insn->src_regs_[1]->type_.width_);
-      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
+      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w);
       return;
     }
   }
@@ -169,7 +169,7 @@ void InsnAnnotator::TryType(Insn *insn) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
       int w = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_) -
 	numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_) + 1;
-      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w, 0);
+      insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w);
       return;
     }
   }
@@ -196,7 +196,7 @@ void InsnAnnotator::TryType(Insn *insn) {
   if (insn->op_ == OP_FUNCALL_DONE) {
     // TODO: Look up return type(s).
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-    insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, 32, 0);
+    insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, 32);
     return;
   }
   if (insn->op_ == OP_GENERIC_READ || insn->op_ == OP_CHANNEL_READ ||

@@ -14,7 +14,7 @@ static const char *kMailboxObjectKey = "mailbox";
 class MailboxData : public ObjectSpecificData {
 public:
   MailboxData(int width, sym_t name) : width_(width), name_(sym_cstr(name)) {
-    number_.type = numeric::Width::MakeInt(false, width, 0);
+    number_.type = numeric::Width::MakeInt(false, width);
     has_value_ = false;
   }
 

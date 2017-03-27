@@ -41,7 +41,6 @@ npage::npage(const numeric::Width *width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
     data[i].int_part = 0;
-    data[i].frac_part = 0;
     data[i].type = width;
   }
 }
