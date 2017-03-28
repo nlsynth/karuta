@@ -28,6 +28,8 @@ const Width *Width::MakeInt(bool is_signed, int int_part) {
   pool.Add(nw);
   nw->is_signed = is_signed;
   nw->int_width = int_part;
+  nw->mask = ~0;
+  nw->mask >>= (64 - int_part);
   Width_list.push_back(nw);
   return nw;
 }
@@ -82,6 +84,7 @@ int Width::GetWidth(const Width *w) {
 void Numeric::Init() {
   g_int_width = Width::MakeInt(false, 32);
   Width *nan = new Width();
+  nan->mask = 0;
   g_nan_width = nan;
   pool.Add(nan);
 }
@@ -202,10 +205,7 @@ void Numeric::FixupWidth(const Width *w, Number *num) {
   if (!w) {
     w = g_int_width;
   }
-  uint64_t mask = 0;
-  mask = ~mask;
-  mask >>= (64 - w->int_width);
-  num->int_part &= mask;
+  num->int_part &= w->mask;
   num->type = w;
 }
 

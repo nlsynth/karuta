@@ -477,7 +477,13 @@ vm::Register *Compiler::CompileExpr(fe::Expr *expr) {
   }
   if (expr->type_ == fe::BINOP_ASSIGN ||
       expr->type_ == fe::BINOP_ADD_ASSIGN ||
-      expr->type_ == fe::BINOP_SUB_ASSIGN) {
+      expr->type_ == fe::BINOP_SUB_ASSIGN ||
+      expr->type_ == fe::BINOP_MUL_ASSIGN ||
+      expr->type_ == fe::BINOP_LSHIFT_ASSIGN ||
+      expr->type_ == fe::BINOP_RSHIFT_ASSIGN ||
+      expr->type_ == fe::BINOP_AND_ASSIGN ||
+      expr->type_ == fe::BINOP_XOR_ASSIGN ||
+      expr->type_ == fe::BINOP_OR_ASSIGN) {
     return CompileAssign(expr);
   }
   if (expr->type_ == fe::BINOP_ARRAY_REF) {
@@ -893,8 +899,22 @@ vm::Register *Compiler::UpdateModifyOp(fe::NodeCode type, fe::Expr *lhs_expr,
   vm::Insn *insn = new vm::Insn;
   if (type == fe::BINOP_ADD_ASSIGN) {
     insn->op_ = vm::OP_ADD;
-  } else {
+  } else if (type == fe::BINOP_SUB_ASSIGN) {
     insn->op_ = vm::OP_SUB;
+  } else if (type == fe::BINOP_MUL_ASSIGN) {
+    insn->op_ = vm::OP_MUL;
+  } else if (type == fe::BINOP_LSHIFT_ASSIGN) {
+    insn->op_ = vm::OP_LSHIFT;
+  } else if (type == fe::BINOP_RSHIFT_ASSIGN) {
+    insn->op_ = vm::OP_RSHIFT;
+  } else if (type == fe::BINOP_AND_ASSIGN) {
+    insn->op_ = vm::OP_AND;
+  } else if (type == fe::BINOP_OR_ASSIGN) {
+    insn->op_ = vm::OP_OR;
+  } else if (type == fe::BINOP_XOR_ASSIGN) {
+    insn->op_ = vm::OP_XOR;
+  } else {
+    CHECK(false);
   }
   vm::Register *reg = AllocRegister();
   insn->dst_regs_.push_back(reg);

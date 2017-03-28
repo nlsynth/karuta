@@ -411,6 +411,7 @@ void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {
   } else {
     numeric::Numeric::Sub(frame->reg_values_[target].num_, n1, &res);
   }
+  numeric::Numeric::FixupWidth(frame->method_->method_regs_[target]->type_.width_, &res);
   frame->reg_values_[target].num_ = res;
 }
 

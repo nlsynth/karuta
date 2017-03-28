@@ -11,6 +11,7 @@ public:
   // signedness affects only for printing.
   bool is_signed;
   int int_width;
+  uint64_t mask;
 
 public:
   static const Width *Null();
