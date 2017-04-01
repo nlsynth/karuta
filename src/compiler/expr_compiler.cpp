@@ -68,13 +68,15 @@ vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
   if (expr->type_ == fe::UNIOP_REF) {
     return CompileRef(expr);
   }
+  return CompileSimpleExpr(expr);
+}
 
-  // Simple 1 dst reg cases.
-  vm::Register *reg = compiler_->AllocRegister();
+vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
+  vm::Register *dst_reg = compiler_->AllocRegister();
   vm::Insn *insn = new vm::Insn;
   insn->op_ = GetOpCodeFromExpr(expr);
   insn->insn_expr_ = expr;
-  insn->dst_regs_.push_back(reg);
+  insn->dst_regs_.push_back(dst_reg);
   switch (insn->op_) {
   case vm::OP_ADD:
   case vm::OP_SUB:
@@ -101,25 +103,26 @@ vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
       }
       insn->src_regs_.push_back(lhs);
       insn->src_regs_.push_back(rhs);
+      PropagateRegisterType(insn, lhs, rhs, &dst_reg->type_);
     }
     break;
   case vm::OP_NUM:
     {
       // using same register for src/dst.
-      reg->type_.value_type_ = vm::Value::NUM;
-      reg->initial_num_ = expr->num_;
-      reg->type_.is_const_ = true;
+      dst_reg->type_.value_type_ = vm::Value::NUM;
+      dst_reg->initial_num_ = expr->num_;
+      dst_reg->type_.is_const_ = true;
       // TODO: Handle the width sepcified with the number.
       // e.g. 32'd0
-      reg->type_.width_ = numeric::Numeric::ValueWidth(expr->num_);
-      reg->SetIsDeclaredType(true);
-      insn->src_regs_.push_back(reg);
+      dst_reg->type_.width_ = numeric::Numeric::ValueWidth(expr->num_);
+      dst_reg->SetIsDeclaredType(true);
+      insn->src_regs_.push_back(dst_reg);
     }
     break;
   case vm::OP_STR:
     {
-      reg->type_.value_type_ = vm::Value::OBJECT;
-      reg->SetIsDeclaredType(true);
+      dst_reg->type_.value_type_ = vm::Value::OBJECT;
+      dst_reg->SetIsDeclaredType(true);
     }
     break;
   case vm::OP_BIT_INV:
@@ -145,8 +148,12 @@ vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
     CHECK(false) << "Unknown expr:" << fe::NodeName(expr->type_);
     break;
   }
+  vm::Register *rewritten = MayRewriteOperator(insn);
+  if (rewritten != nullptr) {
+    return rewritten;
+  }
   compiler_->EmitInsn(insn);
-  return reg;
+  return dst_reg;
 }
 
 vm::Value::ValueType ExprCompiler::GetVariableType(sym_t name) {
@@ -585,6 +592,46 @@ vm::Register *ExprCompiler::UpdateModifyOp(fe::NodeCode type,
   insn->src_regs_.push_back(rhs_reg);
   compiler_->EmitInsn(insn);
   return reg;
+}
+
+vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
+  // Concept proof code.
+  if (orig_insn->op_ != vm::OP_ADD) {
+    return nullptr;
+  }
+  if (orig_insn->src_regs_[0]->type_.object_name_ == sym_null ||
+      orig_insn->src_regs_[0]->type_.object_name_ !=
+      orig_insn->src_regs_[1]->type_.object_name_) {
+    return nullptr;
+  }
+  vm::Register *numerics = compiler_->EmitLoadObj(sym_lookup("Numerics"));
+  vm::Register *type_obj =
+    compiler_->EmitMemberLoad(numerics,
+			      orig_insn->src_regs_[0]->type_.object_name_);
+  vm::Insn *call_insn = new vm::Insn;
+  call_insn->op_ = vm::OP_FUNCALL;
+  call_insn->obj_reg_ = type_obj;
+  call_insn->label_ = sym_lookup("Add");
+  call_insn->src_regs_.push_back(orig_insn->src_regs_[0]);
+  call_insn->src_regs_.push_back(orig_insn->src_regs_[1]);
+  compiler_->EmitInsn(call_insn);
+
+  vm::Insn *done_insn = new vm::Insn;
+  done_insn->op_ = vm::OP_FUNCALL_DONE;
+  done_insn->obj_reg_ = call_insn->obj_reg_;
+  done_insn->label_ = call_insn->label_;
+  done_insn->dst_regs_.push_back(orig_insn->dst_regs_[0]);
+  compiler_->EmitInsn(done_insn);
+  return orig_insn->dst_regs_[0];
+}
+
+void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
+					 vm::Register *lhs, vm::Register *rhs,
+					 vm::RegisterType *t) {
+  if (insn->op_ == vm::OP_ADD ||
+      insn->op_ == vm::OP_SUB) {
+    *t = lhs->type_;
+  }
 }
 
 }  // namespace compiler

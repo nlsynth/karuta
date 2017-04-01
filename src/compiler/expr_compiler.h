@@ -26,10 +26,7 @@ private:
 				      vm::Register *rhs_reg);
   vm::Register *CompileAssignToSym(vm::Insn *insn, fe::Expr *lhs,
 				   vm::Register *rhs_reg);
-  vm::Register *UpdateModifyOp(fe::NodeCode type, fe::Expr *lhs_expr,
-			       vm::Register *rhs_reg);
   vm::Register *CompileMemberSym(fe::Expr *expr);
-  vm::OpCode GetOpCodeFromExpr(fe::Expr *expr);
   vm::Register *CompileArrayRef(fe::Expr *expr);
   vm::Register *CompileAssignToUniopRef(vm::Insn *insn, fe::Expr *lhs,
 					vm::Register *rhs_reg);
@@ -39,11 +36,19 @@ private:
   vm::Register *CompileMultiValueFuncall(vm::Register *obj,
 					 fe::Expr *funcall,
 					 fe::Expr *lhs);
+  vm::Register *CompileSimpleExpr(fe::Expr *expr);
   vm::Register *CompileRef(fe::Expr *expr);
   vm::Register *CompileRefLhsExpr(fe::Expr *lhs_expr, vm::Insn *insn);
   vm::Register *CompileTriTerm(fe::Expr *expr);
 
   vm::Value::ValueType GetVariableType(sym_t name);
+  vm::OpCode GetOpCodeFromExpr(fe::Expr *expr);
+  vm::Register *UpdateModifyOp(fe::NodeCode type, fe::Expr *lhs_expr,
+			       vm::Register *rhs_reg);
+  vm::Register *MayRewriteOperator(vm::Insn *orig_insn);
+  void PropagateRegisterType(vm::Insn *insn,
+			     vm::Register *lhs, vm::Register *rhs,
+			     vm::RegisterType *t);
 
   Compiler *compiler_;
 };

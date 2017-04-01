@@ -58,7 +58,9 @@ void Insn::Dump(DumpStream &ds) const {
     ds.os << sym_cstr(insn_expr_->sym_) << "[]";
   }
   if (op_ == OP_FUNCALL || op_ == OP_FUNCALL_DONE) {
-    ds.os << " " << sym_cstr(insn_expr_->func_->sym_) << "()";
+    if (insn_expr_ != nullptr) {
+      ds.os << " " << sym_cstr(insn_expr_->func_->sym_) << "()";
+    }
   }
 }
 
