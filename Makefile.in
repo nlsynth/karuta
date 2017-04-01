@@ -118,7 +118,8 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = src/compiler/nli_bin-compiler.$(OBJEXT)
+am__objects_1 = src/compiler/nli_bin-compiler.$(OBJEXT) \
+	src/compiler/nli_bin-expr_compiler.$(OBJEXT)
 am__objects_2 = src/fe/nli_bin-nodecode.$(OBJEXT) \
 	src/fe/nli_bin-fe.$(OBJEXT) src/fe/nli_bin-common.$(OBJEXT) \
 	src/fe/nli_bin-builder.$(OBJEXT) \
@@ -489,7 +490,9 @@ EXAMPLES_FILES = \
 EXTRA_DIST = $(CCRT_FILES) $(EXAMPLES_FILES) nli run-file README.md .gitignore
 pkgdata_DATA = $(CCRT_FILES)
 compiler_SOURCES = \
- src/compiler/compiler.cpp src/compiler/compiler.h
+ src/common.h \
+ src/compiler/compiler.cpp src/compiler/compiler.h \
+ src/compiler/expr_compiler.cpp src/compiler/expr_compiler.h
 
 fe_SOURCES = \
  src/fe/nodecode.cpp src/fe/nodecode.h \
@@ -708,6 +711,9 @@ src/compiler/$(DEPDIR)/$(am__dirstamp):
 	@: > src/compiler/$(DEPDIR)/$(am__dirstamp)
 src/compiler/nli_bin-compiler.$(OBJEXT): src/compiler/$(am__dirstamp) \
 	src/compiler/$(DEPDIR)/$(am__dirstamp)
+src/compiler/nli_bin-expr_compiler.$(OBJEXT):  \
+	src/compiler/$(am__dirstamp) \
+	src/compiler/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-nodecode.$(OBJEXT): src/fe/$(am__dirstamp) \
 	src/fe/$(DEPDIR)/$(am__dirstamp)
 src/fe/nli_bin-fe.$(OBJEXT): src/fe/$(am__dirstamp) \
@@ -846,6 +852,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/nli_bin-sym.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/compiler/$(DEPDIR)/nli_bin-compiler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/compiler/$(DEPDIR)/nli_bin-expr_compiler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/libparse_la-parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-builder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/fe/$(DEPDIR)/nli_bin-common.Po@am__quote@
@@ -1030,6 +1037,20 @@ src/compiler/nli_bin-compiler.obj: src/compiler/compiler.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/compiler/compiler.cpp' object='src/compiler/nli_bin-compiler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/compiler/nli_bin-compiler.obj `if test -f 'src/compiler/compiler.cpp'; then $(CYGPATH_W) 'src/compiler/compiler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/compiler/compiler.cpp'; fi`
+
+src/compiler/nli_bin-expr_compiler.o: src/compiler/expr_compiler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/compiler/nli_bin-expr_compiler.o -MD -MP -MF src/compiler/$(DEPDIR)/nli_bin-expr_compiler.Tpo -c -o src/compiler/nli_bin-expr_compiler.o `test -f 'src/compiler/expr_compiler.cpp' || echo '$(srcdir)/'`src/compiler/expr_compiler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/compiler/$(DEPDIR)/nli_bin-expr_compiler.Tpo src/compiler/$(DEPDIR)/nli_bin-expr_compiler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/compiler/expr_compiler.cpp' object='src/compiler/nli_bin-expr_compiler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/compiler/nli_bin-expr_compiler.o `test -f 'src/compiler/expr_compiler.cpp' || echo '$(srcdir)/'`src/compiler/expr_compiler.cpp
+
+src/compiler/nli_bin-expr_compiler.obj: src/compiler/expr_compiler.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/compiler/nli_bin-expr_compiler.obj -MD -MP -MF src/compiler/$(DEPDIR)/nli_bin-expr_compiler.Tpo -c -o src/compiler/nli_bin-expr_compiler.obj `if test -f 'src/compiler/expr_compiler.cpp'; then $(CYGPATH_W) 'src/compiler/expr_compiler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/compiler/expr_compiler.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/compiler/$(DEPDIR)/nli_bin-expr_compiler.Tpo src/compiler/$(DEPDIR)/nli_bin-expr_compiler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/compiler/expr_compiler.cpp' object='src/compiler/nli_bin-expr_compiler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -c -o src/compiler/nli_bin-expr_compiler.obj `if test -f 'src/compiler/expr_compiler.cpp'; then $(CYGPATH_W) 'src/compiler/expr_compiler.cpp'; else $(CYGPATH_W) '$(srcdir)/src/compiler/expr_compiler.cpp'; fi`
 
 src/fe/nli_bin-nodecode.o: src/fe/nodecode.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(nli_bin_CXXFLAGS) $(CXXFLAGS) -MT src/fe/nli_bin-nodecode.o -MD -MP -MF src/fe/$(DEPDIR)/nli_bin-nodecode.Tpo -c -o src/fe/nli_bin-nodecode.o `test -f 'src/fe/nodecode.cpp' || echo '$(srcdir)/'`src/fe/nodecode.cpp

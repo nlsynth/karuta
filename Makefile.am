@@ -16,7 +16,9 @@ pkgdata_DATA = $(CCRT_FILES)
 bin_PROGRAMS = nli-bin
 
 compiler_SOURCES = \
- src/compiler/compiler.cpp src/compiler/compiler.h
+ src/common.h \
+ src/compiler/compiler.cpp src/compiler/compiler.h \
+ src/compiler/expr_compiler.cpp src/compiler/expr_compiler.h
 
 fe_SOURCES = \
  src/fe/nodecode.cpp src/fe/nodecode.h \
