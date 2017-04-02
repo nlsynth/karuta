@@ -49,6 +49,7 @@ private:
   void PropagateRegisterType(vm::Insn *insn,
 			     vm::Register *lhs, vm::Register *rhs,
 			     vm::RegisterType *t);
+  vm::Register *EmitFuncallDone(vm::Insn *call_insn, fe::Expr *lhs);
 
   Compiler *compiler_;
 };

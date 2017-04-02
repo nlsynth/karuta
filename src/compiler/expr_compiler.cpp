@@ -2,9 +2,12 @@
 
 #include "compiler/compiler.h"
 #include "fe/expr.h"
+#include "fe/method.h"
+#include "fe/var_decl.h"
 #include "status.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
+#include "vm/method.h"
 #include "vm/object.h"
 #include "vm/register.h"
 
@@ -204,16 +207,8 @@ vm::Register *ExprCompiler::CompileSymExpr(fe::Expr *expr) {
 
 vm::Register *ExprCompiler::CompileMemberSym(fe::Expr *expr) {
   vm::Register *obj_reg = compiler_->EmitLoadObj(nullptr);
-
-  vm::Insn *ref_insn = new vm::Insn;
-  ref_insn->src_regs_.push_back(obj_reg);
-  ref_insn->op_ = vm::OP_MEMBER_READ;
-  ref_insn->insn_expr_ = expr;
-  ref_insn->label_ = expr->sym_;
-  vm::Register *reg = compiler_->AllocRegister();
+  vm::Register *reg = compiler_->EmitMemberLoad(obj_reg, expr->sym_);
   reg->orig_name_ = expr->sym_;
-  ref_insn->dst_regs_.push_back(reg);
-  compiler_->EmitInsn(ref_insn);
 
   vm::Value *value = compiler_->GetObj()->LookupValue(expr->sym_, false);
   if (value) {
@@ -377,15 +372,9 @@ vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
   vm::Register *obj_reg = CompileExpr(expr->lhs_);
   fe::Expr *rhs = expr->rhs_;
   if (rhs->type_ == fe::EXPR_SYM) {
-    vm::Insn *ref_insn = new vm::Insn;
-    ref_insn->op_ = vm::OP_MEMBER_READ;
-    ref_insn->insn_expr_ = expr;
-    ref_insn->label_ = expr->rhs_->sym_;
-    vm::Register *res_reg = compiler_->AllocRegister();
+    vm::Register *res_reg;
+    res_reg = compiler_->EmitMemberLoad(obj_reg, expr->rhs_->sym_);
     res_reg->orig_name_ = expr->rhs_->sym_;
-    ref_insn->dst_regs_.push_back(res_reg);
-    ref_insn->src_regs_.push_back(obj_reg);
-    compiler_->EmitInsn(ref_insn);
     return res_reg;
   } else if (rhs->type_ == fe::EXPR_FUNCALL) {
     return CompileFuncallExpr(obj_reg, rhs);
@@ -423,9 +412,24 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj,
   }
   compiler_->EmitInsn(call_insn);
 
+  return EmitFuncallDone(call_insn, lhs);
+}
+
+vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn, fe::Expr *lhs) {
+  vm::Method *method = nullptr;
+  if (!compiler_->IsTopLevel()) {
+    vm::Object *obj = compiler_->GetVMObject(call_insn->obj_reg_);
+    CHECK(obj) << "Failed to find corresponding object to r:"
+	       << call_insn->obj_reg_->id_ << " "
+	       << sym_cstr(call_insn->label_);
+    vm::Value *method_value = obj->LookupValue(call_insn->label_, false);
+    CHECK(method_value && method_value->type_ == vm::Value::METHOD);
+    method = method_value->method_;
+  }
+
   vm::Insn *done_insn = new vm::Insn;
   done_insn->op_ = vm::OP_FUNCALL_DONE;
-  done_insn->insn_expr_ = funcall;
+  done_insn->insn_expr_ = call_insn->insn_expr_;
   done_insn->obj_reg_ = call_insn->obj_reg_;
   done_insn->label_ = call_insn->label_;
   if (lhs) {
@@ -437,14 +441,25 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj,
     }
     compiler_->EmitInsn(done_insn);
     return nullptr;
-  } else {
-    // This can be a dummy value, if the callee return void.
-    vm::Register *reg = compiler_->AllocRegister();
-    reg->type_.value_type_ = vm::Value::NUM;
-    done_insn->dst_regs_.push_back(reg);
-    compiler_->EmitInsn(done_insn);
-    return reg;
   }
+  // This can be a dummy value, if the callee return void.
+  vm::Register *reg = compiler_->AllocRegister();
+  reg->type_.value_type_ = vm::Value::NUM;
+  done_insn->dst_regs_.push_back(reg);
+  if (method != nullptr) {
+    int num_rets = method->GetNumReturnRegisters();
+    if (num_rets == 1) {
+      if (method->return_types_.size() > 0) {
+	reg->type_ = method->return_types_[0];
+      } else {
+	fe::VarDecl *vd = method->parse_tree_->returns_->decls[0];
+	reg->type_.object_name_ = vd->GetObjectName();
+	reg->type_.width_ = vd->GetWidth();
+      }
+    }
+  }
+  compiler_->EmitInsn(done_insn);
+  return reg;
 }
 
 vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {

@@ -511,6 +511,16 @@ vm::Register *Compiler::EmitLoadObj(sym_t label) {
   obj_insn->dst_regs_.push_back(obj_reg);
   obj_insn->label_ = label;
   EmitInsn(obj_insn);
+
+  if (label) {
+    vm::Value *obj_value = obj_->LookupValue(label, false);
+    if (obj_value != nullptr &&
+	obj_value->IsObjectType()) {
+      reg_obj_map_[obj_reg] = obj_value->object_;
+    }
+  } else {
+    reg_obj_map_[obj_reg] = obj_;
+  }
   return obj_reg;
 }
 
@@ -522,6 +532,15 @@ vm::Register *Compiler::EmitMemberLoad(vm::Register *obj_reg, sym_t m) {
   vm::Register *value_reg = AllocRegister();
   insn->dst_regs_.push_back(value_reg);
   EmitInsn(insn);
+
+  vm::Object *vm_obj = GetVMObject(obj_reg);
+  if (vm_obj) {
+    vm::Value *obj_value = vm_obj->LookupValue(m, false);
+    if (obj_value != nullptr &&
+	obj_value->IsObjectType()) {
+      reg_obj_map_[value_reg] = obj_value->object_;
+    }
+  }
   return value_reg;
 }
 
@@ -531,6 +550,13 @@ void Compiler::AddPrePostIncDecExpr(fe::Expr *expr, bool is_post) {
   } else {
     pre_inc_dec_exprs_.push_back(expr);
   }
+}
+
+vm::Object *Compiler::GetVMObject(vm::Register *obj_reg) {
+  if (obj_reg == nullptr) {
+    return vm_->kernel_object_;
+  }
+  return reg_obj_map_[obj_reg];
 }
 
 bool Compiler::IsTopLevel() const {

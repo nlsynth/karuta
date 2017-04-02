@@ -379,10 +379,7 @@ void Executor::ExecLoadObj(MethodFrame *frame, Insn *insn) {
     }
     obj_value = src_obj->LookupValue(insn->label_, false);
     CHECK(obj_value) << "Failed to LoadObj: " << sym_cstr(insn->label_);
-    CHECK(obj_value->type_ == Value::OBJECT ||
-	  obj_value->type_ == Value::INT_ARRAY ||
-	  obj_value->type_ == Value::OBJECT_ARRAY)
-      << "member " << sym_cstr(insn->label_) << " is not a object";
+    CHECK(obj_value->IsObjectType()) << " is not a object";
     dst_value.object_ = obj_value->object_;
     dst_value.type_ = obj_value->type_;
   } else {

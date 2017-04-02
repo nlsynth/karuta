@@ -36,6 +36,7 @@ public:
   vm::Register *CompilePathHead(fe::Expr *path_expr);
   vm::Register *EmitMemberLoad(vm::Register *obj_reg, sym_t m);
   void AddPrePostIncDecExpr(fe::Expr *expr, bool is_post);
+  vm::Object *GetVMObject(vm::Register *obj_reg);
 
 private:
   // stub can be NULL.
@@ -88,6 +89,7 @@ private:
   map<sym_t, vm::Insn *> label_insn_map_;
   vector<fe::Expr*> pre_inc_dec_exprs_;
   vector<fe::Expr*> post_inc_dec_exprs_;
+  map<vm::Register *, vm::Object *> reg_obj_map_;
 
   ExprCompiler *exc_;
 };
