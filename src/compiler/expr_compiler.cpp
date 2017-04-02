@@ -8,6 +8,7 @@
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/method.h"
+#include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/register.h"
 
@@ -611,7 +612,9 @@ vm::Register *ExprCompiler::UpdateModifyOp(fe::NodeCode type,
 
 vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
   // Concept proof code.
-  if (orig_insn->op_ != vm::OP_ADD) {
+  if (orig_insn->op_ != vm::OP_ADD &&
+      orig_insn->op_ != vm::OP_SUB &&
+      orig_insn->op_ != vm::OP_MUL) {
     return nullptr;
   }
   if (orig_insn->src_regs_[0]->type_.object_name_ == sym_null ||
@@ -619,14 +622,24 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
       orig_insn->src_regs_[1]->type_.object_name_) {
     return nullptr;
   }
-  vm::Register *numerics = compiler_->EmitLoadObj(sym_lookup("Numerics"));
-  vm::Register *type_obj =
-    compiler_->EmitMemberLoad(numerics,
+  vm::Register *numerics_reg = compiler_->EmitLoadObj(sym_lookup("Numerics"));
+  vm::Register *type_obj_reg =
+    compiler_->EmitMemberLoad(numerics_reg,
 			      orig_insn->src_regs_[0]->type_.object_name_);
+  vm::Object *type_obj = compiler_->GetVMObject(type_obj_reg);
+  if (type_obj == nullptr) {
+    // TODO: Warn if the user is trying to use type object in top env.
+    return nullptr;
+  }
+  sym_t label = vm::NumericObject::GetMethodName(type_obj, orig_insn->op_);
+  if (label == sym_null) {
+    // The operator is not available.
+    return nullptr;
+  }
   vm::Insn *call_insn = new vm::Insn;
   call_insn->op_ = vm::OP_FUNCALL;
-  call_insn->obj_reg_ = type_obj;
-  call_insn->label_ = sym_lookup("Add");
+  call_insn->obj_reg_ = type_obj_reg;
+  call_insn->label_ = label;
   call_insn->src_regs_.push_back(orig_insn->src_regs_[0]);
   call_insn->src_regs_.push_back(orig_insn->src_regs_[1]);
   compiler_->EmitInsn(call_insn);

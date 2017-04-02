@@ -29,4 +29,23 @@ int NumericObject::Width(Object *obj) {
   return 32;
 }
 
+sym_t NumericObject::GetMethodName(Object *obj, enum OpCode op) {
+  sym_t n = sym_null;
+  if (op == OP_ADD) {
+    n = sym_lookup("Add");
+  } else if (op == OP_SUB) {
+    n = sym_lookup("Sub");
+  } else if (op == OP_MUL) {
+    n = sym_lookup("Mul");
+  }
+  if (n == sym_null) {
+    return sym_null;
+  }
+  auto *v = obj->LookupValue(n, false);
+  if (v == nullptr || v->type_ != Value::METHOD) {
+    return sym_null;
+  }
+  return n;
+}
+
 }  // namespace vm
