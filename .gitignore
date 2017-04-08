@@ -8,6 +8,8 @@
 .dirstamp
 .libs/
 Makefile
+*.Makefile
+*.mk
 autom4te.cache/
 config.log
 config.status
