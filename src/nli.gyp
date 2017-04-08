@@ -16,6 +16,8 @@
       'sources': [
         'compiler/compiler.cpp',
         'compiler/compiler.h',
+        'compiler/expr_compiler.cpp',
+        'compiler/expr_compiler.h',
         'dump_stream.cpp',
         'dump_stream.h',
         'fe/builder.cpp',
