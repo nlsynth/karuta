@@ -1,8 +1,10 @@
-# gyp src/nli.gyp --depth=. -f make --no-duplicate-basename-check
+# gyp src/nli.gyp --depth=. -f make
 {
   'make_global_settings': [
   ],
   'target_defaults': {
+    'cflags': [ '-std=c++11', ],
+    'defines': ['PACKAGE="nli"', 'VERSION="0.1.10"'],
   },
   'targets': [
     {
@@ -136,8 +138,6 @@
       'dependencies': [
         '../iroha/src/iroha.gyp:libiroha'
       ],
-      'cflags': [ '-std=c++11', ],
-      'defines': ['PACKAGE="nli"', 'VERSION="0.1.10"'],
     },
   ] # targets
 }
