@@ -26,6 +26,8 @@ public:
   string name_;
   set<Thread *> put_waiters_;
   set<Thread *> get_waiters_;
+  set<Thread *> notify_waiters_;
+  set<Thread *> notified_threads_;
   numeric::Number number_;
   bool has_value_;
 };
@@ -50,14 +52,24 @@ int MailboxWrapper::GetWidth(Object *obj) {
 void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
   vector<RegisterType> rets;
   rets.push_back(Method::IntType(32));
+  // width
   Method *m =
     Method::InstallNativeMethod(vm, obj, "width", &MailboxWrapper::Width, rets);
   m->SetSynthName(synth::kMailboxWidth);
+  // put
   m = Method::InstallNativeMethod(vm, obj, "put", &MailboxWrapper::Put, rets);
   m->SetSynthName(synth::kMailboxPut);
+  // notify
+  m = Method::InstallNativeMethod(vm, obj, "notify",
+				  &MailboxWrapper::Notify, rets);
+  m->SetSynthName(synth::kMailboxNotify);
+  // get
   rets[0] = Method::IntType(width);
   m = Method::InstallNativeMethod(vm, obj, "get", &MailboxWrapper::Get, rets);
   m->SetSynthName(synth::kMailboxGet);
+  // wait
+  m = Method::InstallNativeMethod(vm, obj, "wait", &MailboxWrapper::Wait, rets);
+  m->SetSynthName(synth::kMailboxWait);
 }
 
 void MailboxWrapper::Width(Thread *thr, Object *obj,
@@ -94,6 +106,30 @@ void MailboxWrapper::Put(Thread *thr, Object *obj,
     data->has_value_ = true;
     data->number_ = args[0].num_;
     Wake(false, data);
+  }
+}
+
+void MailboxWrapper::Notify(Thread *thr, Object *obj, const vector<Value> &args) {
+  MailboxData *data = (MailboxData *)obj->object_specific_.get();
+  data->number_ = args[0].num_;
+  for (Thread *t : data->notify_waiters_) {
+    t->Resume();
+    data->notified_threads_.insert(t);
+  }
+  data->notify_waiters_.clear();
+}
+
+void MailboxWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
+  MailboxData *data = (MailboxData *)obj->object_specific_.get();
+  if (data->notified_threads_.find(thr) != data->notified_threads_.end()) {
+    data->notified_threads_.erase(thr);
+    Value value;
+    value.type_ = Value::NUM;
+    value.num_ = data->number_;
+    thr->SetReturnValueFromNativeMethod(value);
+  } else {
+    data->notify_waiters_.insert(thr);
+    thr->Suspend();
   }
 }
 

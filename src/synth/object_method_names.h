@@ -10,6 +10,8 @@ const char kLoad[] = "load";
 const char kStore[] = "store";
 const char kMailboxGet[] = "mailbox_get";
 const char kMailboxPut[] = "mailbox_put";
+const char kMailboxWait[] = "mailbox_wait";
+const char kMailboxNotify[] = "mailbox_notify";
 const char kMailboxWidth[] = "mailbox_width";
 
 }  // namespace synth
