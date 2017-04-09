@@ -35,9 +35,13 @@ void ObjectMethod::Synth() {
   } else if (name == kMailboxWidth) {
     iinsn = SynthMailboxWidth(obj);
   } else if (name == kMailboxGet) {
-    iinsn = SynthMailboxAccess(obj, false);
+    iinsn = SynthMailboxAccess(obj, true, false);
   } else if (name == kMailboxPut) {
-    iinsn = SynthMailboxAccess(obj, true);
+    iinsn = SynthMailboxAccess(obj, true, true);
+  } else if (name == kMailboxWait) {
+    iinsn = SynthMailboxAccess(obj, false, false);
+  } else if (name == kMailboxNotify) {
+    iinsn = SynthMailboxAccess(obj, false, true);
   } else {
     CHECK(false) << name;
   }
@@ -83,7 +87,9 @@ IInsn *ObjectMethod::SynthMailboxWidth(vm::Object *mailbox_obj) {
   return iinsn;
 }
 
-IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj, bool is_put) {
+IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj,
+					bool is_blocking,
+					bool is_put) {
   SharedResource *sres =
     synth_->GetSharedResourceSet()->GetByObj(mailbox_obj);
   IResource *res = nullptr;
@@ -95,10 +101,18 @@ IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj, bool is_put) {
   res = rset->GetMailbox(mailbox_obj, false, is_put);
   sres->AddAccessorResource(res);
   IInsn *iinsn = new IInsn(res);
-  if (is_put) {
-    iinsn->SetOperand(iroha::operand::kPutMailbox);
+  if (is_blocking) {
+    if (is_put) {
+      iinsn->SetOperand(iroha::operand::kPutMailbox);
+    } else {
+      iinsn->SetOperand(iroha::operand::kGetMailbox);
+    }
   } else {
-    iinsn->SetOperand(iroha::operand::kGetMailbox);
+    if (is_put) {
+      iinsn->SetOperand(iroha::operand::kNotify);
+    } else {
+      iinsn->SetOperand(iroha::operand::kWaitNotify);
+    }
   }
   return iinsn;
 }
