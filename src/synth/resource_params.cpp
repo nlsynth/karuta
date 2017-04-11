@@ -121,6 +121,10 @@ string ResourceParams::GetThreadEntry() {
   return LookupStrParam(sym_lookup("thread_entry"), "");
 }
 
+string ResourceParams::GetDataFlowEntry() {
+  return LookupStrParam(sym_lookup("dataflow_entry"), "");
+}
+
 bool ResourceParams::IsExtIO() {
   if (LookupParam(sym_output) || LookupParam(sym_input)) {
     return true;

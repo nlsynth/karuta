@@ -5,13 +5,14 @@
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
 #include "synth/channel_synth.h"
-#include "synth/thread_synth.h"
+#include "synth/method_context.h"
 #include "synth/object_method.h"
 #include "synth/object_synth.h"
 #include "synth/resource_params.h"
 #include "synth/resource_set.h"
 #include "synth/shared_resource_set.h"
-#include "synth/method_context.h"
+#include "synth/thread_synth.h"
+#include "synth/tool.h"
 #include "status.h"
 #include "vm/channel.h"
 #include "vm/insn.h"
@@ -27,8 +28,10 @@ MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 			 ITable *tab, ResourceSet *res)
   : InsnWalker(thr_synth, obj),
     thr_synth_(thr_synth), method_name_(method_name),
-    tab_(tab), res_(res) {
+    tab_(tab), res_(res), method_(nullptr) {
   context_.reset(new MethodContext(this));
+  vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
+  method_ = value->method_;
 }
 
 MethodSynth::~MethodSynth() {
@@ -39,20 +42,21 @@ ResourceSet *MethodSynth::GetResourceSet() {
 }
 
 bool MethodSynth::Synth() {
-  vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
-  vm::Method *method = value->method_;
-  if (method->parse_tree_ == nullptr) {
-    SynthNativeImplMethod(method);
+  if (method_ == nullptr) {
+    return false;
+  }
+  if (method_->parse_tree_ == nullptr) {
+    SynthNativeImplMethod(method_);
     return true;
   }
 
-  EmitEntryInsn(method);
+  EmitEntryInsn(method_);
   StateWrapper *last = nullptr;
   // mapping from vm::insn index to state index.
   map<int, int> state_index;
   state_index[0] = context_->states_.size();
-  for (size_t i = 0; i < method->insns_.size(); ++i) {
-    SynthInsn(method->insns_[i]);
+  for (size_t i = 0; i < method_->insns_.size(); ++i) {
+    SynthInsn(method_->insns_[i]);
     StateWrapper *lw = context_->LastState();
     if (last == lw) {
       AllocState();
@@ -60,7 +64,7 @@ bool MethodSynth::Synth() {
     state_index[i + 1] = context_->states_.size();
     last = context_->LastState();
   }
-  for (size_t i = 0; i < method->insns_.size(); ++i) {
+  for (size_t i = 0; i < method_->insns_.size(); ++i) {
     vm_insn_state_map_[i] = context_->states_[state_index[i]];
   }
   AllocState();
@@ -78,6 +82,19 @@ void MethodSynth::InjectTaskEntry(IState *st) {
   IResource *res = res_->GetSubModuleTaskResource();
   IInsn *iinsn = new IInsn(res);
   st->insns_.push_back(iinsn);
+}
+
+void MethodSynth::InjectDataFlowEntry(IState *st) {
+  Tool::InjectDataFlowIn(st, res_);
+}
+
+bool MethodSynth::IsDataFlowEntry() const {
+  if (method_->parse_tree_ == nullptr ||
+      method_->parse_tree_->imported_resource_ == nullptr) {
+    return false;
+  }
+  string s = method_->parse_tree_->imported_resource_->GetDataFlowEntry();
+  return !s.empty();
 }
 
 void MethodSynth::SynthNativeImplMethod(vm::Method *method) {

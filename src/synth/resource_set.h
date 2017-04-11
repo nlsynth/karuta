@@ -35,6 +35,7 @@ public:
   IResource *GetChannelResource(vm::Object *ch, bool is_write,
 				int data_width);
   IResource *GetSubModuleTaskResource();
+  IResource *GetDataFlowInResource();
   IResource *GetMemberSharedReg(sym_t name, bool is_owner,
 				bool is_write);
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
@@ -53,6 +54,7 @@ private:
   IResource *mem_if_;
   IResource *pseudo_;
   IResource *task_entry_;
+  IResource *dataflow_in_;
 
   class ResourceEntry {
   public:

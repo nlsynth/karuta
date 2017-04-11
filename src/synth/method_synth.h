@@ -20,6 +20,8 @@ public:
   bool Synth();
   MethodContext *GetContext();
   void InjectTaskEntry(IState *st);
+  bool IsDataFlowEntry() const;
+  void InjectDataFlowEntry(IState *st);
 
   // for ObjectMethod
   ResourceSet *GetResourceSet();
@@ -63,6 +65,7 @@ private:
   ITable *tab_;
   ResourceSet *res_;
   std::unique_ptr<MethodContext> context_;
+  vm::Method *method_;
 
   // VM -> Iroha mapping.
   map<vm::Register *, IRegister *> local_reg_map_;

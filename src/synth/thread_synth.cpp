@@ -91,6 +91,15 @@ bool ThreadSynth::Synth() {
   return true;
 }
 
+bool ThreadSynth::ProcessDataFlow() {
+  MethodSynth *root_method =
+    obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
+  if (root_method->IsDataFlowEntry()) {
+    root_method->InjectDataFlowEntry(tab_->GetInitialState());
+  }
+  return true;
+}
+
 void ThreadSynth::SetIsTask(bool is_task) {
   is_task_ = is_task;
 }

@@ -185,18 +185,29 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   new_method->parse_tree_ = insn->insn_stmt_->method_def_;
   value->method_ = new_method;
   if (new_method->parse_tree_->imported_resource_ != nullptr) {
-    string e = new_method->parse_tree_->imported_resource_->GetThreadEntry();
-    if (!e.empty()) {
-      Object *callee_obj;
-      Method *callee_method = LookupMethod(frame, insn, &callee_obj);
-      Object *thread_obj =
-	ThreadWrapper::NewThreadWrapper(thr_->GetVM(),
-					insn->label_, callee_method);
-      Value *value = obj->LookupValue(sym_lookup(e.c_str()), true);
-      value->type_ = Value::OBJECT;
-      value->object_ = thread_obj;
+    string t = new_method->parse_tree_->imported_resource_->GetThreadEntry();
+    if (!t.empty()) {
+      AddThreadEntry(frame, insn, t);
     }
+    string d = new_method->parse_tree_->imported_resource_->GetDataFlowEntry();
+    if (!d.empty()) {
+      AddThreadEntry(frame, insn, d);
+    }
+    CHECK(t.empty() || d.empty());
   }
+}
+
+void ExecutorToplevel::AddThreadEntry(MethodFrame *frame, Insn *insn,
+				      const string &name) {
+  Object *callee_obj;
+  Method *callee_method = LookupMethod(frame, insn, &callee_obj);
+  Object *thread_obj =
+    ThreadWrapper::NewThreadWrapper(thr_->GetVM(),
+				    insn->label_, callee_method);
+  Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
+  Value *value = obj->LookupValue(sym_lookup(name.c_str()), true);
+  value->type_ = Value::OBJECT;
+  value->object_ = thread_obj;
 }
 
 void ExecutorToplevel::ExecMemberAccess(Method *method, MethodFrame *frame,

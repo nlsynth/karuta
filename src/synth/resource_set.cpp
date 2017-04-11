@@ -19,6 +19,7 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   task_entry_ = nullptr;
   br_ = DesignTool::GetOneResource(tab, resource::kTransition);
   print_ = nullptr;
+  dataflow_in_ = nullptr;
 }
 
 ResourceSet::~ResourceSet() {
@@ -335,6 +336,13 @@ IResource *ResourceSet::GetSubModuleTaskResource() {
     task_entry_ = DesignTool::CreateTaskResource(tab_);
   }
   return task_entry_;
+}
+
+IResource *ResourceSet::GetDataFlowInResource() {
+  if (dataflow_in_ == nullptr) {
+    dataflow_in_ = DesignTool::CreateDataFlowInResource(tab_);
+  }
+  return dataflow_in_;
 }
 
 }  // namespace synth

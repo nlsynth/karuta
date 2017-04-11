@@ -21,6 +21,7 @@ public:
 
   bool Synth();
   bool Scan();
+  bool ProcessDataFlow();
   void SetIsTask(bool is_task);
   ObjectSynth *GetObjectSynth();
   void RequestMethod(vm::Object *obj, const string &m);

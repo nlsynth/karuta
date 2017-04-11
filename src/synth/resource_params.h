@@ -56,6 +56,7 @@ public:
   string GetInputPinName();
 
   string GetThreadEntry();
+  string GetDataFlowEntry();
 
   bool ResetPolarity();
 

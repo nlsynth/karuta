@@ -58,8 +58,9 @@ void ObjectMethod::Scan() {
   CHECK(obj);
   string name = GetSynthName(obj);
   SharedResourceSet *sres = walker_->GetSharedResourceSet();
-  if (name == kLoad || name == kStore || name == kMailboxPut ||
-      name == kMailboxGet) {
+  if (name == kLoad || name == kStore ||
+      name == kMailboxPut || name == kMailboxGet ||
+      name == kMailboxNotify || name == kMailboxWait) {
     sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name);
   }
 }

@@ -25,6 +25,7 @@ public:
 
 private:
   bool SynthObjRec(ObjectSynth *osynth);
+  bool ProcessDataFlowIn(ObjectSynth *osynth);
   bool ScanObjs();
 
   vm::VM *vm_;

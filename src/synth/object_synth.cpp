@@ -105,6 +105,15 @@ void ObjectSynth::ResolveSubModuleCalls() {
   }
 }
 
+bool ObjectSynth::ProcessDataFlowIn() {
+  for (auto *thr : threads_) {
+    if (!thr->ProcessDataFlow()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 ThreadSynth *ObjectSynth::GetThreadByName(const string &name) {
   for (auto *thr : threads_) {
     if (thr->GetEntryMethodName() == name) {

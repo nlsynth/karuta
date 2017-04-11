@@ -26,6 +26,8 @@ public:
   bool ExecGenericRead(MethodFrame *frame, Insn *insn);
   void ExecGenericWrite(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecSetTypeObject(Method *method, Insn *insn);
+
+  void AddThreadEntry(MethodFrame *frame, Insn *insn, const string &name);
 };
 
 }  // namespace vm
