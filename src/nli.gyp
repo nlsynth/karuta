@@ -5,6 +5,11 @@
   'target_defaults': {
     'cflags': [ '-std=c++11', ],
     'defines': ['PACKAGE="nli"', 'VERSION="0.1.10"'],
+    'xcode_settings': {
+      'OTHER_CFLAGS': [
+          '-std=c++11',
+      ],
+    },
   },
   'targets': [
     {
