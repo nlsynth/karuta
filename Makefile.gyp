@@ -6,7 +6,7 @@ nli-bin	: all
 all	: src/Makefile
 	make -C src
 
-src/Makefile: makefile
+src/Makefile: src/nli.gyp
 	gyp src/nli.gyp --depth=. -f make --generator-output=src
 
 clean:
