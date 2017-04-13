@@ -17,3 +17,5 @@ y.dot
 lib/nli
 libtool
 nli-bin
+# by gyp
+src/out
