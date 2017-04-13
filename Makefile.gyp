@@ -1,13 +1,19 @@
 # WIP makefile using gyp. This will replace autotools based makefile.
 #
-nli-bin	: all
+nli-bin	: src/out/Default/nli
+	rm -f nli-bin
 	ln -s src/out/Default/nli ./nli-bin
 
-all	: src/Makefile
+src/out/Default/nli: src/Makefile src/fe/libparse_la-parser.cpp
 	make -C src
 
 src/Makefile: src/nli.gyp
 	gyp src/nli.gyp --depth=. -f make --generator-output=src
+
+src/fe/libparse_la-parser.cpp: src/fe/parser.ypp
+	/bin/bash ./ylwrap src/fe/parser.ypp y.tab.c src/fe/libparse_la-parser.cpp y.tab.h src/fe/libparse_la-parser.hpp y.output src/fe/libparse_la-parser.output -- bison -y -d -g -p z_yy
+
+src/fe/libparse_la-parser.cpp: src/fe/parser.ypp
 
 clean:
 	rm -rf src/out/
