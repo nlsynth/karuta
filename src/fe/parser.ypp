@@ -44,7 +44,6 @@ extern void yyerror(const char *msg);
 %type <var_decl> RETURN_TYPE
 %type <var_decl_set> RETURN_SPEC RETURN_TYPE_LIST
 %type <enum_decl> ENUM_DECL ENUM_ITEM_LIST
-%type <stmt> STRUCT_DECL STRUCT_ELEMENT_LIST
 %type <str> STR
 %type <sym> SYM TYPE_NAME
 %type <num> NUM ARRAY_ELM
@@ -55,7 +54,7 @@ extern void yyerror(const char *msg);
 %type <import_param> IMPORT_PARAM IMPORT_PARAM_HEAD
 %type <import_params> IMPORT_PARAM_LIST
 
-%token K_DEF K_FUNC K_ENUM K_IMPORT K_STRUCT
+%token K_DEF K_FUNC K_ENUM K_IMPORT
 %token K_ASSIGN K_SHIFT
 %token K_INT K_BOOL K_STRING K_OBJECT K_THREAD K_CHANNEL K_MAILBOX
 %token K_ADD_SUB K_LG_COMPARE K_EQ_COMPARE
@@ -261,7 +260,6 @@ STMT : ';' {
 } | EXPR ';' {
   Emitter::EmitExprStmt($1);
 } | ENUM_DECL ';' {
-} | STRUCT_DECL ';' {
 } | K_GOTO FUNCALL ';' {
 } | K_GOTO SYM ';' {
 } | K_RETURN EXPR ';' {
@@ -407,16 +405,6 @@ ENUM_ITEM_LIST : SYM {
   $$ = Builder::EnumItemList(nullptr, $1);
 } | ENUM_ITEM_LIST ',' SYM {
   $$ = Builder::EnumItemList($1, $3);
-}
-
-STRUCT_DECL : STRUCT_DECL_HEAD '{' STRUCT_ELEMENT_LIST '}' {
-}
-
-STRUCT_DECL_HEAD : K_STRUCT '{' {
-}
-
-STRUCT_ELEMENT_LIST : VAR_DECL_STMT ';' {
-} | STRUCT_ELEMENT_LIST VAR_DECL_STMT ';' {
 }
 
 EXPR : SYM {

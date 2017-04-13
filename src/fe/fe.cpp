@@ -15,7 +15,7 @@
 // This should be the last.
 #include "fe/libparse_la-parser.hpp"
 
-static sym_t sym_def, sym_func, sym_enum, sym_import, sym_struct, sym_spawn;
+static sym_t sym_def, sym_func, sym_enum, sym_import, sym_spawn;
 
 static struct OperatorTableEntry op_tab[] = {
   {"<<=", K_ASSIGN, BINOP_LSHIFT_ASSIGN},
@@ -236,8 +236,6 @@ int FE::LookupKeyword(sym_t sym) {
     return K_DO;
   } else if (sym == sym_const) {
     return K_CONST;
-  } else if (sym == sym_struct) {
-    return K_STRUCT;
   } else if (sym == sym_switch) {
     return K_SWITCH;
   } else if (sym == sym_case) {
@@ -261,7 +259,6 @@ void FE::InitSyms() {
   sym_enum = sym_lookup("enum");
   sym_func = sym_lookup("func");
   sym_import = sym_lookup("import");
-  sym_struct = sym_lookup("struct");
   sym_spawn = sym_lookup("spawn");
 }
 
