@@ -26,6 +26,7 @@ Scanner::Scanner() {
   Reset();
   token_len_ = 0;
   current_scanner_ = this;
+  in_semicolon_ = false;
 }
 
 int Scanner::GetToken(int *sub) {
@@ -94,7 +95,7 @@ char Scanner::read_ahead(int a) {
 }
 
 void Scanner::skip_non_token() {
-  while (1) {
+  while (true) {
     if ((is_space(cur_char()))) {
       go_ahead();
     } else if (is_comment_start()) {
@@ -217,6 +218,9 @@ struct OperatorTableEntry *Scanner::lookup_op() {
   buf[1] = next_char();
   buf[2] = read_ahead(2);
   buf[3] = 0;
+  if (in_semicolon_ && buf[0] == '\n') {
+    buf[0] = ';';
+  }
   for (struct OperatorTableEntry *op = op_tab; op->str; op++) {
     int len = strlen(op->str);
     if (!strncmp(op->str, buf, len)) {
@@ -260,6 +264,9 @@ bool Scanner::is_dec(char c) {
 }
 
 bool Scanner::is_space(char c) {
+  if (in_semicolon_ && c == '\n') {
+    return false;
+  }
   if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
     return true;
   }
@@ -334,6 +341,14 @@ void Scanner::ReleaseFileImage() {
   im_.reset(NULL);
 }
 
+void Scanner::InSemiColonStatement() {
+  in_semicolon_ = true;
+}
+
+void Scanner::EndSemiColonStatement() {
+  in_semicolon_ = false;
+}
+
 ScannerPos::ScannerPos() {
   line = -1;
   pos = -1;
@@ -379,6 +394,14 @@ int ScannerInterface::GetToken(ScannerToken *tk) {
     tk->sub_op = sub_op;
   }
   return r;
+}
+
+void ScannerInterface::InSemiColonStatement() {
+  Scanner::current_scanner_->InSemiColonStatement();
+}
+
+void ScannerInterface::EndSemiColonStatement() {
+  Scanner::current_scanner_->EndSemiColonStatement();
 }
 
 }  // namespace fe

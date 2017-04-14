@@ -59,6 +59,8 @@ public:
   sym_t GetSym();
   const char *GetStr();
   void GetPosition(ScannerPos *pos);
+  void InSemiColonStatement();
+  void EndSemiColonStatement();
 
   static Scanner *current_scanner_;
 
@@ -98,6 +100,7 @@ private:
   char token_[MAX_TOKEN];
   int token_len_;
   int ln_;
+  bool in_semicolon_;
 };
 
 class ScannerInterface {
@@ -105,6 +108,8 @@ public:
   static Scanner *CreateScanner();
   static int GetToken(ScannerToken *tk);
   static void GetPosition(ScannerPos *pos);
+  static void InSemiColonStatement();
+  static void EndSemiColonStatement();
 };
 
 }  // namespace fe

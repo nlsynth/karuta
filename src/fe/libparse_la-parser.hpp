@@ -132,7 +132,7 @@ extern int z_yydebug;
 
 union YYSTYPE
 {
-#line 17 "src/fe/parser.ypp" /* yacc.c:1909  */
+#line 18 "src/fe/parser.ypp" /* yacc.c:1909  */
 
   class ArrayInitializer *array;
   class Expr *expr;

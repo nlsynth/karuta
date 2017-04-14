@@ -6,6 +6,7 @@
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/nodecode.h"
+#include "fe/scanner.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "synth/resource_params.h"
@@ -224,20 +225,25 @@ ARRAY_INITIALIZER : '{' ARRAY_ELM_LIST '}' {
 }
 
 VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
+  ScannerInterface::InSemiColonStatement();
   Builder::SetArrayLength($1, $2);
   $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL K_ASSIGN EXPR {
+  ScannerInterface::InSemiColonStatement();
   $1->SetInitialVal($3);
   $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL ARRAY_SPEC K_ASSIGN ARRAY_INITIALIZER {
+  ScannerInterface::InSemiColonStatement();
   Builder::SetArrayLength($1, $2);
   Builder::SetArrayInitializer($1, $4);
   $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL_STMT ',' MODIFIED_VAR {
+  ScannerInterface::InSemiColonStatement();
   sym_t type = Builder::TypeNameFromVarDeclSet($1);
   WidthSpec w = Builder::GetWidthSpecFromVarDeclSet($1);
   $$ = Builder::VarDeclList($1, Builder::BuildVarDecl(type, w.width, w.name, $3));
 } | VAR_DECL_STMT ',' MODIFIED_VAR K_ASSIGN EXPR {
+  ScannerInterface::InSemiColonStatement();
   $$ = Builder::VarDeclList($1, $3);
 }
 
@@ -255,16 +261,16 @@ TYPE_NAME : K_INT {
 LABEL : SYM ':' {
 }
 
-STMT : ';' {
+STMT : EOS {
   /* empty stmt */
-} | EXPR ';' {
+} | EXPR EOS {
   Emitter::EmitExprStmt($1);
-} | ENUM_DECL ';' {
-} | K_GOTO FUNCALL ';' {
-} | K_GOTO SYM ';' {
-} | K_RETURN EXPR ';' {
+} | ENUM_DECL EOS {
+} | K_GOTO FUNCALL EOS {
+} | K_GOTO SYM EOS {
+} | K_RETURN EXPR EOS {
   Emitter::EmitReturnStmt($2);
-} | K_RETURN ';' {
+} | K_RETURN EOS {
   Emitter::EmitReturnStmt(nullptr);
 } | BLOCK {
 } | IF_STMT {
@@ -272,16 +278,21 @@ STMT : ';' {
 } | WHILE_STMT {
 } | DO_WHILE_STMT {
 } | SWITCH_STMT {
-} | VAR_DECL_STMT ';' {
+} | VAR_DECL_STMT EOS {
   Emitter::EmitVarDeclStmtSet($1);
 } | LABEL
-  | K_IMPORT STR ';' {
+  | K_IMPORT STR EOS {
   Emitter::EmitImportStmt($2);
-} | K_SPAWN FUNCALL ';' {
+} | K_SPAWN FUNCALL EOS {
   Emitter::EmitSpawnStmt($2);
-} | THREAD_DECL_STMT ';' {
-} | CHANNEL_DECL_STMT ';' {
-} | MAILBOX_DECL_STMT ';' {
+} | THREAD_DECL_STMT EOS {
+} | CHANNEL_DECL_STMT EOS {
+} | MAILBOX_DECL_STMT EOS {
+}
+
+// End Of Statement
+EOS : ';' {
+  ScannerInterface::EndSemiColonStatement();
 }
 
 THREAD_DECL_STMT : K_THREAD VAR K_ASSIGN FUNCALL {
@@ -408,6 +419,7 @@ ENUM_ITEM_LIST : SYM {
 }
 
 EXPR : SYM {
+  ScannerInterface::InSemiColonStatement();
   $$ = Builder::SymExpr($1);
 } | '(' EXPR ')' {
   $$ = $2;
@@ -460,8 +472,10 @@ EXPR : SYM {
 } | EXPR '?' EXPR ':' EXPR {
   $$ = Builder::TriTerm($1, $3, $5);
 } | STR {
+  ScannerInterface::InSemiColonStatement();
   $$ = Builder::StrExpr($1);
 } | NUM {
+  ScannerInterface::InSemiColonStatement();
   $$ = Builder::NumExpr($1);
 }
 
