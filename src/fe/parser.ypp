@@ -33,7 +33,7 @@ extern void yyerror(const char *msg);
 
 %type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
 %type <num> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
-%type <var_decl> MODIFIED_VAR VAR_DECL
+%type <var_decl> MODIFIED_VAR MAYBE_PTR_VAR VAR_DECL
 %type <var_decl_set> VAR_DECL_STMT
 %type <array> ARRAY_INITIALIZER ARRAY_ELM_LIST
 %type <block> BLOCK IF_STMT FOR_STMT
@@ -57,7 +57,7 @@ extern void yyerror(const char *msg);
 
 %token K_DEF K_FUNC K_ENUM K_IMPORT
 %token K_ASSIGN K_SHIFT
-%token K_INT K_BOOL K_STRING K_OBJECT K_THREAD K_CHANNEL K_MAILBOX
+%token K_INT K_BOOL K_STRING K_OBJECT K_THREAD K_CHANNEL K_MAILBOX K_VAR
 %token K_ADD_SUB K_LG_COMPARE K_EQ_COMPARE
 %token K_INC_DEC K_CONST
 %token K_IF K_ELSE K_RETURN K_GOTO K_FOR K_SPAWN
@@ -120,6 +120,8 @@ IMPORT_SPEC : {
 
 RETURN_TYPE : TYPE_NAME WIDTH_SPEC {
   $$ = Builder::ReturnType($1, $2.width, $2.name);
+} | WIDTH_SPEC {
+  $$ = Builder::ReturnType(sym_int, $1.width, $1.name);
 }
 
 RETURN_TYPE_LIST : RETURN_TYPE {
@@ -163,8 +165,25 @@ MODIFIED_VAR : VAR {
   $$ = Builder::ModifiedVar($3, true, $2);
 }
 
+MAYBE_PTR_VAR : VAR {
+  $$ = Builder::ModifiedVar($1, false, nullptr);
+} | VAR '*' {
+  $$ = Builder::ModifiedVar($1, true, nullptr);
+} | VAR SYM '*' {
+  $$ = Builder::ModifiedVar($1, true, $2);
+}
+
 VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
+  // Obsoleted grammar.
   $$ = Builder::BuildVarDecl($1, $2.width, $2.name, $3);
+} | K_VAR MAYBE_PTR_VAR WIDTH_SPEC {
+  // Current grammar.
+  ScannerInterface::InSemiColonStatement();
+  $$ = Builder::BuildVarDecl(sym_int, $3.width, $3.name, $2);
+} | K_VAR MAYBE_PTR_VAR K_BOOL {
+  // Ditto. Current grammar.
+  ScannerInterface::InSemiColonStatement();
+  $$ = Builder::BuildVarDecl(sym_bool, numeric::Width::MakeInt(false, 0), sym_null, $2);
 } | K_ENUM TYPE_NAME MODIFIED_VAR {
 } | ENUM_DECL MODIFIED_VAR {
 }
