@@ -1,10 +1,14 @@
 # WIP makefile using gyp. This will replace autotools based makefile.
 #
+include config.mk
+
+prefix ?= /usr/local
+
 nli-bin	: src/out/Default/nli
 	rm -f nli-bin
 	ln -s src/out/Default/nli ./nli-bin
 
-src/out/Default/nli: src/Makefile src/fe/libparse_la-parser.cpp
+src/out/Default/nli: src/Makefile src/fe/libparse_la-parser.cpp config.mk
 	make -C src
 
 src/Makefile: src/nli.gyp

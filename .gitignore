@@ -9,7 +9,7 @@
 .libs/
 Makefile
 *.Makefile
-*.mk
+src/*.mk
 autom4te.cache/
 config.log
 config.status
