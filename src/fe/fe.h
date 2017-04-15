@@ -3,18 +3,9 @@
 #ifndef _fe_fe_h_
 #define _fe_fe_h_
 
-#include "nli.h"
-
-namespace vm {
-class Method;
-class VM;
-}  // namespace vm
+#include "fe/common.h"
 
 namespace fe {
-
-class FileImage;
-class Method;
-class ScannerInfo;
 
 class FE {
  public:

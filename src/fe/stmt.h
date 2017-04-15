@@ -2,22 +2,10 @@
 #ifndef _fe_stmt_h_
 #define _fe_stmt_h_
 
-#include "nli.h"
-
+#include "fe/common.h"
 #include "fe/nodecode.h"
 
-class DumpStream;
-
-namespace numeric {
-class Width;
-}  // namespace numeric
-
 namespace fe {
-
-class EnumDecl;
-class Expr;
-class Method;
-class VarDecl;
 
 class Stmt {
 public:

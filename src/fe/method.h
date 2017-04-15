@@ -2,17 +2,9 @@
 #ifndef _fe_method_h_
 #define _fe_method_h_
 
-#include "nli.h"
-
-namespace synth {
-class ResourceParams;
-}  // namespace synth
-class DumpStream;
+#include "fe/common.h"
 
 namespace fe {
-
-class Stmt;
-class VarDeclSet;
 
 class Method {
 public:

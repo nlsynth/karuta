@@ -5,12 +5,31 @@
 #include "nli.h"
 #include "pool.h"
 
+class DumpStream;
+
+namespace synth {
+class ResourceParams;
+class ResourceParamValueSet;
+}  // namespace synth
+
+namespace numeric {
+class Width;
+}  // namespace numeric
+
+namespace vm {
+class Method;
+class VM;
+}  // namespace vm
+
 namespace fe {
 
+class ArrayInitializer;
 class EnumDecl;
 class Expr;
-class Stmt;
+class FileImage;
 class Method;
+class ScannerInfo;
+class Stmt;
 class VarDecl;
 class VarDeclSet;
 

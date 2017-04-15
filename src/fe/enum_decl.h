@@ -2,9 +2,7 @@
 #ifndef _fe_enum_decl_h_
 #define _fe_enum_decl_h_
 
-#include "nli.h"
-
-class DumpStream;
+#include "fe/common.h"
 
 namespace fe {
 

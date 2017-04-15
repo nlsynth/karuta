@@ -2,12 +2,10 @@
 #ifndef _fe_expr_h_
 #define _fe_expr_h_
 
-#include "nli.h"
+#include "fe/common.h"
 
 #include "fe/nodecode.h"
 #include "numeric/numeric.h"
-
-class DumpStream;
 
 namespace fe {
 

@@ -2,21 +2,10 @@
 #ifndef _fe_builder_h_
 #define _fe_builder_h_
 
-#include "nli.h"
+#include "fe/common.h"
 #include "fe/nodecode.h"
 
-namespace numeric {
-class Width;
-}  // namespace numeric
-
 namespace fe {
-
-class ArrayInitializer;
-class EnumDecl;
-class Expr;
-class Stmt;
-class VarDecl;
-class VarDeclSet;
 
 struct WidthSpec {
   const numeric::Width *width;

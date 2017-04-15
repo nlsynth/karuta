@@ -2,15 +2,11 @@
 #ifndef _fe_emitter_h_
 #define _fe_emitter_h_
 
-#include "nli.h"
+#include "fe/common.h"
 
 namespace numeric {
 class Width;
 }  // namespace numeric
-
-namespace synth {
-class ResourceParamValueSet;
-}  // namespace synth
 
 namespace fe {
 

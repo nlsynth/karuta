@@ -2,17 +2,9 @@
 #ifndef _fe_var_decl_h_
 #define _fe_var_decl_h_
 
-#include "nli.h"
-
-class DumpStream;
-
-namespace numeric {
-class Width;
-}  // namespace numeric
+#include "fe/common.h"
 
 namespace fe {
-
-class Expr;
 
 class ArrayInitializer {
 public:
