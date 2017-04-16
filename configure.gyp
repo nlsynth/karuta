@@ -29,7 +29,7 @@ def Generate(ifn, ofn):
 
 Generate("lib/nli.in", "lib/nli")
 
-os.system("make -f Makefile.gyp src/Makefile")
 fh = open("config.mk", "w")
 fh.write("prefix=" + PREFIX + "\n")
 fh.close()
+os.system("make -f Makefile.gyp src/Makefile")

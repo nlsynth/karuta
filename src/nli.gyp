@@ -23,6 +23,7 @@
       'sources': [
         'compiler/compiler.cpp',
         'compiler/compiler.h',
+        'compiler/common.h',
         'compiler/expr_compiler.cpp',
         'compiler/expr_compiler.h',
         'dump_stream.cpp',
