@@ -18,10 +18,6 @@ Method::~Method() {
 }
 
 int Method::GetNumReturnRegisters() {
-  if (parse_tree_ && parse_tree_->returns_) {
-    // Non native && !toplevel.
-    return parse_tree_->returns_->decls.size();
-  }
   return return_types_.size();
 }
 

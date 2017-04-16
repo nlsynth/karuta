@@ -70,20 +70,19 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     NativeFuncall(insn);
     return;
   }
+  vm::Object *callee_obj = GetCalleeObject(insn);
   if (IsSubObjCall(insn)) {
-    vm::Object *callee_obj = GetCalleeObject(insn);
     DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
     ObjectSynth *callee_synth = ds->GetObjectSynth(callee_obj);
     vector<sym_t> names;
     obj_->LookupMemberNames(callee_obj, &names);
     CHECK(names.size() > 0);
     callee_synth->Prepare(sym_cstr(names[0]), false);
-    ObjectSynth *this_synth = ds->GetObjectSynth(obj_);
     callee_synth->AddEntryName(string(sym_cstr(insn->label_)));
+    ObjectSynth *this_synth = ds->GetObjectSynth(obj_);
     ds->AddChildObjSynth(this_synth, callee_synth);
   } else {
     // Normal method or numeric call.
-    vm::Object *callee_obj = GetCalleeObject(insn);
     thr_synth_->RequestMethod(callee_obj,
 			      string(sym_cstr(insn->label_)));
   }

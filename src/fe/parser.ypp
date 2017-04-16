@@ -180,10 +180,10 @@ VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
   // Current grammar.
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::BuildVarDecl(sym_int, $3.width, $3.name, $2);
-} | K_VAR MAYBE_PTR_VAR K_BOOL {
+} | K_VAR MAYBE_PTR_VAR TYPE_NAME {
   // Ditto. Current grammar.
   ScannerInterface::InSemiColonStatement();
-  $$ = Builder::BuildVarDecl(sym_bool, numeric::Width::MakeInt(false, 0), sym_null, $2);
+  $$ = Builder::BuildVarDecl($3, numeric::Width::MakeInt(false, 0), sym_null, $2);
 } | K_ENUM TYPE_NAME MODIFIED_VAR {
 } | ENUM_DECL MODIFIED_VAR {
 }

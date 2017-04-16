@@ -29,14 +29,17 @@ bool ThreadSynth::Scan() {
   tab_ = new ITable(mod_);
   tab_->SetName(thread_name_);
   resource_.reset(new ResourceSet(tab_));
+  // Entry method of this thread.
   RequestMethod(obj_synth_->GetObject(), entry_method_name_);
   int num_scan;
   map<vm::Object *, set<string>> scanned;
   do {
     num_scan = 0;
+    // Every object in this thread.
     for (auto &it : obj_methods_) {
-      for (auto jt : it.second.methods_) {
-	vm::Object *obj = it.first;
+      vm::Object *obj = it.first;
+      map<string, MethodSynth *> &methods = it.second.methods_;
+      for (auto jt : methods) {
 	auto &name = jt.first;
 	auto &m = scanned[obj];
 	if (m.find(name) != m.end()) {
@@ -60,8 +63,8 @@ bool ThreadSynth::Scan() {
 
 bool ThreadSynth::Synth() {
   for (auto &it : obj_methods_) {
+    vm::Object *obj = it.first;
     for (auto jt : it.second.methods_) {
-      vm::Object *obj = it.first;
       auto &name = jt.first;
       auto *ms = new MethodSynth(this, obj, name,
 				 tab_, resource_.get());
