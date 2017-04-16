@@ -84,6 +84,16 @@ void MethodSynth::InjectTaskEntry(IState *st) {
   st->insns_.push_back(iinsn);
 }
 
+void MethodSynth::InjectTaskReturn() {
+  int num_rets = method_->GetNumReturnRegisters();
+  int num_args = method_->GetNumArgRegisters();
+  for (int i = 0; i < num_rets; ++i) {
+    vm::Register *ret = method_->method_regs_[i + num_args];
+    (void)ret;
+  }
+  // TODO: Set them shared to shared-reg(s) and notify.
+}
+
 void MethodSynth::InjectDataFlowEntry(IState *st) {
   Tool::InjectDataFlowIn(st, res_);
 }

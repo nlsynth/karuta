@@ -88,6 +88,7 @@ bool ThreadSynth::Synth() {
   expander.Expand();
   if (is_task_) {
     root_method->InjectTaskEntry(tab_->GetInitialState());
+    root_method->InjectTaskReturn();
   }
 
   mod_->tables_.push_back(tab_);
@@ -160,6 +161,9 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *insn,
 							   callee_tab);
   IInsn *iinsn = new IInsn(call_res);
   st->insns_.push_back(iinsn);
+  for (IRegister *reg : insn->inputs_) {
+    iinsn->inputs_.push_back(reg);
+  }
 }
 
 }  // namespace synth

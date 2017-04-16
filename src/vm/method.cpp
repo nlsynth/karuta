@@ -17,7 +17,15 @@ Method::~Method() {
   STLDeleteValues(&method_regs_);
 }
 
-int Method::GetNumReturnRegisters() {
+int Method::GetNumArgRegisters() const {
+  if (parse_tree_ != nullptr &&
+      parse_tree_->args_) {
+    return parse_tree_->args_->decls.size();
+  }
+  return 0;
+}
+
+int Method::GetNumReturnRegisters() const {
   return return_types_.size();
 }
 

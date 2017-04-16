@@ -15,7 +15,8 @@ public:
   void Dump();
   void Dump(DumpStream &os);
 
-  int GetNumReturnRegisters();
+  int GetNumArgRegisters() const;
+  int GetNumReturnRegisters() const;
   const numeric::Width *GetNthArgWidth(int i);
   const char *AlternativeImplementation();
   const string &GetSynthName() const;

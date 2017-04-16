@@ -424,7 +424,8 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn, fe::Expr *lhs) 
 	       << call_insn->obj_reg_->id_ << " "
 	       << sym_cstr(call_insn->label_);
     vm::Value *method_value = obj->LookupValue(call_insn->label_, false);
-    CHECK(method_value && method_value->type_ == vm::Value::METHOD);
+    CHECK(method_value && method_value->type_ == vm::Value::METHOD)
+      << "method=" << sym_cstr(call_insn->label_);
     method = method_value->method_;
   }
 

@@ -20,6 +20,7 @@ public:
   bool Synth();
   MethodContext *GetContext();
   void InjectTaskEntry(IState *st);
+  void InjectTaskReturn();
   bool IsDataFlowEntry() const;
   void InjectDataFlowEntry(IState *st);
 
