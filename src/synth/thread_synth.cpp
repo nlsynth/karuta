@@ -62,6 +62,7 @@ bool ThreadSynth::Scan() {
 }
 
 bool ThreadSynth::Synth() {
+  // Prepares MethodSynth objects for all methods.
   for (auto &it : obj_methods_) {
     vm::Object *obj = it.first;
     for (auto jt : it.second.methods_) {
@@ -71,6 +72,12 @@ bool ThreadSynth::Synth() {
       obj_methods_[obj].methods_[name] = ms;
     }
   }
+  MethodSynth *root_method =
+    obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
+  if (is_task_) {
+    root_method->SetTaskEntry();
+  }
+  // Actually synthesize all.
   for (auto &it : obj_methods_) {
     for (auto jt : it.second.methods_) {
       if (!jt.second->Synth()) {
@@ -82,14 +89,11 @@ bool ThreadSynth::Synth() {
     }
   }
 
-  MethodSynth *root_method =
-    obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
   MethodExpander expander(root_method->GetContext(), this, &sub_obj_calls_);
   expander.Expand();
   if (is_task_) {
-    // TODO: Move them to synth, since required information is already
+    // TODO: Move this to synth, since required information is already
     // gathered in scan phase.
-    root_method->InjectTaskEntry(tab_->GetInitialState());
     root_method->InjectTaskReturn(expander.GetLastState(),
 				  expander.GetRootRegMap());
   }

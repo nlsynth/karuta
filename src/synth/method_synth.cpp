@@ -28,7 +28,7 @@ MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 			 ITable *tab, ResourceSet *res)
   : InsnWalker(thr_synth, obj),
     thr_synth_(thr_synth), method_name_(method_name),
-    tab_(tab), res_set_(res), method_(nullptr) {
+    tab_(tab), res_set_(res), method_(nullptr), is_task_entry_(false) {
   context_.reset(new MethodContext(this));
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
   method_ = value->method_;
@@ -71,14 +71,21 @@ bool MethodSynth::Synth() {
 
   ResolveJumps();
   LinkStates();
+  if (is_task_entry_) {
+    EmitTaskEntry(context_->states_[0]->state_);
+  }
   return true;
+}
+
+void MethodSynth::SetTaskEntry() {
+  is_task_entry_ = true;
 }
 
 MethodContext *MethodSynth::GetContext() {
   return context_.get();
 }
 
-void MethodSynth::InjectTaskEntry(IState *st) {
+void MethodSynth::EmitTaskEntry(IState *st) {
   IResource *res = res_set_->GetSubModuleTaskResource();
   IInsn *iinsn = new IInsn(res);
   st->insns_.push_back(iinsn);

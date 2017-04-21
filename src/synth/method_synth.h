@@ -19,7 +19,7 @@ public:
 
   bool Synth();
   MethodContext *GetContext();
-  void InjectTaskEntry(IState *st);
+  void SetTaskEntry();
   void InjectTaskReturn(IState *last, map<IRegister *, IRegister *> *reg_map);
   bool IsDataFlowEntry() const;
   void InjectDataFlowEntry(IState *st);
@@ -60,6 +60,7 @@ private:
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);
+  void EmitTaskEntry(IState *st);
 
   ThreadSynth *thr_synth_;
   const string method_name_;
@@ -67,6 +68,7 @@ private:
   ResourceSet *res_set_;
   std::unique_ptr<MethodContext> context_;
   vm::Method *method_;
+  bool is_task_entry_;
 
   // VM -> Iroha mapping.
   map<vm::Register *, IRegister *> local_reg_map_;
