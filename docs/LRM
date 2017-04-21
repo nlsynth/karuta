@@ -1,12 +1,5 @@
 Language Reference Manual
 
-*** Width spec
- uint #32 x;
-
-*** Address space
- int *a y;
- accesses int a[];
-
 *** Built in methods
 
 * Object
@@ -31,13 +24,8 @@ Kernel.Module
 *.$compiled_module
 *.$dump_file_name
 
-*** Run time environment
-32bit or 64bit address bus.
-
-*** Built in types
-int
-uint
-num
+*** Width spec
+ var x #32
 
 *** Names
 prefix '__' is reserved for implementation

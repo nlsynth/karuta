@@ -12,11 +12,6 @@
  * goto f();
  * goto label;
  * switch
-* Optimizer
- * Profiling on script runtime and optimize based on it
- * Pipeline
-* Other features
- * C++ writer to catch up verilog.
 * Web UI
 * Maturity
  * Better error reporting
@@ -29,22 +24,3 @@
  * GC on memory pressure
  * Pass object as an argument or return value
  * Declare a function as a thread entry
-
-## Multiple blocking insns can be in a state.
-
-Use sub-state machine
-
-if (s1 == INITIAL) {
-  if (canStart1()) {
-    do it;
-    s1 = WAITING;
-  }
-} else if (s1 == WAITING) {
-  if (done1()) {
-    s1 = DONE;
-  }
-}
-
-if (s1 == DONE || done1()) && (s2 == DONE || done2()) .. (sn == DONE || done_n())
-  s = next;
-  s1 = INITIAL
