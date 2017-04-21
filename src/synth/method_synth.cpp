@@ -73,6 +73,7 @@ bool MethodSynth::Synth() {
   LinkStates();
   if (is_task_entry_) {
     EmitTaskEntry(context_->states_[0]->state_);
+    EmitTaskReturn(context_->states_[context_->states_.size() - 1]->state_);
   }
   return true;
 }
@@ -91,8 +92,7 @@ void MethodSynth::EmitTaskEntry(IState *st) {
   st->insns_.push_back(iinsn);
 }
 
-void MethodSynth::InjectTaskReturn(IState *last,
-				   map<IRegister *, IRegister *> *reg_map) {
+void MethodSynth::EmitTaskReturn(IState *last) {
   int num_rets = method_->GetNumReturnRegisters();
   if (num_rets == 0) {
     return;
@@ -113,7 +113,7 @@ void MethodSynth::InjectTaskReturn(IState *last,
   for (int i = 0; i < num_rets; ++i) {
     vm::Register *ret = method_->method_regs_[i + num_args];
     IRegister *reg = local_reg_map_[ret];
-    insn->inputs_.push_back((*reg_map)[reg]);
+    insn->inputs_.push_back(reg);
   }
   insn->SetOperand(iroha::operand::kNotify);
   last->insns_.push_back(insn);
@@ -695,9 +695,11 @@ void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
 }
 
 void MethodSynth::EmitEntryInsn(vm::Method *method) {
+  // This insn doesn't belong to a state.
   IResource *pseudo = res_set_->PseudoResource();
   context_->method_insn_ = new IInsn(pseudo);
   context_->method_insn_->SetOperand("method_entry");
+
   fe::VarDeclSet *args = method->parse_tree_->args_;
   int num_args = 0;
   if (args) {

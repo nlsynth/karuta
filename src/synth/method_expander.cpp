@@ -14,8 +14,7 @@ MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
 			       vector<SubObjCall> *sub_obj_calls)
   : root_method_(root), thread_(thread_synth),
     tab_(thread_synth->GetITable()),
-    sub_obj_calls_(sub_obj_calls),
-    last_state_(nullptr)
+    sub_obj_calls_(sub_obj_calls)
 {
 }
 
@@ -23,22 +22,12 @@ bool MethodExpander::Expand() {
   for (IRegister *reg : tab_->registers_) {
     thread_->AddName(reg->GetName());
   }
-  CalleeInfo ci = ExpandMethod(root_method_, &root_reg_copy_map_);
+  CalleeInfo ci = ExpandMethod(root_method_);
   tab_->SetInitialState(ci.initial);
-  last_state_ = ci.final;
   return true;
 }
 
-IState *MethodExpander::GetLastState() {
-  return last_state_;
-}
-
-map<IRegister *, IRegister *> *MethodExpander::GetRootRegMap() {
-  return &root_reg_copy_map_;
-}
-
-CalleeInfo MethodExpander::ExpandMethod(MethodContext *method,
-					map<IRegister *, IRegister *> *reg_map_out) {
+CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   map<IState *, IState *> st_copy_map;
   map<IRegister *, IRegister *> reg_copy_map;
   // Copy registers.
@@ -76,14 +65,12 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method,
   for (IRegister *reg : method->method_insn_->outputs_) {
     p.rets.push_back(reg_copy_map[reg]);
   }
-  if (reg_map_out != nullptr) {
-    *reg_map_out = reg_copy_map;
-  }
   return p;
 }
 
 void MethodExpander::CollectSubObjCalls(MethodContext *method,
 					map<IState *, IState *> &st_map) {
+  // sub obj call resource.
   IResource *pseudo = thread_->GetResourceSet()->PseudoResource();
   for (StateWrapper *sw : method->states_) {
     if (!sw->is_sub_obj_call_) {
@@ -102,6 +89,8 @@ void MethodExpander::CollectSubObjCalls(MethodContext *method,
 void MethodExpander::ExpandCalleeStates(MethodContext *method,
 					map<IState *, IState *> &st_map,
 					map<IRegister *, IRegister *> &reg_map) {
+  // call resource.
+  IResource *pseudo = thread_->GetResourceSet()->PseudoResource();
   for (StateWrapper *sw : method->states_) {
     if (sw->callee_func_name_.empty()) {
       continue;
@@ -112,11 +101,10 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
     MethodContext *callee =
       thread_->GetMethodContext(sw->callee_vm_obj_,
 				sw->callee_func_name_);
-    CalleeInfo ci = ExpandMethod(callee, nullptr);
+    CalleeInfo ci = ExpandMethod(callee);
     IState *rs = Tool::GetNextState(sw->state_);
     Tool::SetNextState(st_map[sw->state_], ci.initial);
     Tool::SetNextState(ci.final, st_map[rs]);
-    IResource *pseudo = thread_->GetResourceSet()->PseudoResource();
     IInsn *call_insn = DesignUtil::FindInsnByResource(sw->state_, pseudo);
     CHECK(call_insn->inputs_.size() == ci.args.size());
     IResource *assign = thread_->GetResourceSet()->AssignResource();

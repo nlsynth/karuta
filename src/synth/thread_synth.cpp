@@ -91,12 +91,6 @@ bool ThreadSynth::Synth() {
 
   MethodExpander expander(root_method->GetContext(), this, &sub_obj_calls_);
   expander.Expand();
-  if (is_task_) {
-    // TODO: Move this to synth, since required information is already
-    // gathered in scan phase.
-    root_method->InjectTaskReturn(expander.GetLastState(),
-				  expander.GetRootRegMap());
-  }
 
   mod_->tables_.push_back(tab_);
   return true;

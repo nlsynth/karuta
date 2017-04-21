@@ -20,7 +20,6 @@ public:
   bool Synth();
   MethodContext *GetContext();
   void SetTaskEntry();
-  void InjectTaskReturn(IState *last, map<IRegister *, IRegister *> *reg_map);
   bool IsDataFlowEntry() const;
   void InjectDataFlowEntry(IState *st);
 
@@ -61,6 +60,7 @@ private:
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);
   void EmitTaskEntry(IState *st);
+  void EmitTaskReturn(IState *last);
 
   ThreadSynth *thr_synth_;
   const string method_name_;
