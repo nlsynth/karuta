@@ -28,7 +28,7 @@ MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 			 ITable *tab, ResourceSet *res)
   : InsnWalker(thr_synth, obj),
     thr_synth_(thr_synth), method_name_(method_name),
-    tab_(tab), res_(res), method_(nullptr) {
+    tab_(tab), res_set_(res), method_(nullptr) {
   context_.reset(new MethodContext(this));
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
   method_ = value->method_;
@@ -38,7 +38,7 @@ MethodSynth::~MethodSynth() {
 }
 
 ResourceSet *MethodSynth::GetResourceSet() {
-  return res_;
+  return res_set_;
 }
 
 bool MethodSynth::Synth() {
@@ -79,23 +79,41 @@ MethodContext *MethodSynth::GetContext() {
 }
 
 void MethodSynth::InjectTaskEntry(IState *st) {
-  IResource *res = res_->GetSubModuleTaskResource();
+  IResource *res = res_set_->GetSubModuleTaskResource();
   IInsn *iinsn = new IInsn(res);
   st->insns_.push_back(iinsn);
 }
 
-void MethodSynth::InjectTaskReturn() {
+void MethodSynth::InjectTaskReturn(IState *last,
+				   map<IRegister *, IRegister *> *reg_map) {
   int num_rets = method_->GetNumReturnRegisters();
+  if (num_rets == 0) {
+    return;
+  }
   int num_args = method_->GetNumArgRegisters();
+  int width = 0;
   for (int i = 0; i < num_rets; ++i) {
     vm::Register *ret = method_->method_regs_[i + num_args];
-    (void)ret;
+    if (ret->type_.value_type_ == vm::Value::ENUM_ITEM) {
+      // Assumes bool.
+      width += 1;
+    } else {
+      width += numeric::Width::GetWidth(ret->type_.width_);
+    }
   }
-  // TODO: Set them shared to shared-reg(s) and notify.
+  IResource *res = res_set_->GetTaskReturnRegWriter(width);
+  IInsn *insn = new IInsn(res);
+  for (int i = 0; i < num_rets; ++i) {
+    vm::Register *ret = method_->method_regs_[i + num_args];
+    IRegister *reg = local_reg_map_[ret];
+    insn->inputs_.push_back((*reg_map)[reg]);
+  }
+  insn->SetOperand(iroha::operand::kNotify);
+  last->insns_.push_back(insn);
 }
 
 void MethodSynth::InjectDataFlowEntry(IState *st) {
-  Tool::InjectDataFlowIn(st, res_);
+  Tool::InjectDataFlowIn(st, res_set_);
 }
 
 bool MethodSynth::IsDataFlowEntry() const {
@@ -122,7 +140,7 @@ void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
 void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
   EmitEntryInsn(method);
   StateWrapper *sw = AllocState();
-  IResource *res = res_->GetImportedResource(method);
+  IResource *res = res_set_->GetImportedResource(method);
   IInsn *iinsn = new IInsn(res);
   iinsn->inputs_ = context_->method_insn_->inputs_;
   iinsn->outputs_ = context_->method_insn_->outputs_;
@@ -247,7 +265,7 @@ void MethodSynth::SynthNum(vm::Insn *insn) {
 void MethodSynth::SynthAssign(vm::Insn *insn) {
   IRegister *lhs_reg = FindLocalVarRegister(insn->src_regs_[0]);
   IRegister *rhs_reg = FindLocalVarRegister(insn->src_regs_[1]);
-  IResource *assign = res_->AssignResource();
+  IResource *assign = res_set_->AssignResource();
   IInsn *iinsn = new IInsn(assign);
   iinsn->inputs_.push_back(rhs_reg);
   iinsn->outputs_.push_back(lhs_reg);
@@ -262,7 +280,7 @@ void MethodSynth::SynthLoadObj(vm::Insn *insn) {
 void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
   IValueType vt;
   InsnToCalcValueType(insn, &vt);
-  IResource *res = res_->GetOpResource(insn->op_ == vm::OP_PRE_INC ?
+  IResource *res = res_set_->GetOpResource(insn->op_ == vm::OP_PRE_INC ?
 				       vm::OP_ADD : vm::OP_SUB,
 				       vt);
   IInsn *iinsn = new IInsn(res);
@@ -299,7 +317,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
     sw->obj_name_ = string(sym_cstr(names[0]));
   }
 
-  IInsn *iinsn = new IInsn(res_->PseudoResource());
+  IInsn *iinsn = new IInsn(res_set_->PseudoResource());
   sw->state_->insns_.push_back(iinsn);
   for (vm::Register *arg : insn->src_regs_) {
     IRegister *iarg = FindLocalVarRegister(arg);
@@ -327,7 +345,7 @@ void MethodSynth::SynthIf(vm::Insn *insn) {
 
 void MethodSynth::SynthConcat(vm::Insn *insn) {
   IValueType vt;
-  IResource *concat = res_->GetOpResource(vm::OP_CONCAT, vt);
+  IResource *concat = res_set_->GetOpResource(vm::OP_CONCAT, vt);
   IInsn *iinsn = new IInsn(concat);
   IRegister *lhs = FindLocalVarRegister(insn->src_regs_[0]);
   IRegister *rhs = FindLocalVarRegister(insn->src_regs_[1]);
@@ -347,7 +365,7 @@ void MethodSynth::SynthBitRange(vm::Insn *insn) {
 
   StateWrapper *sw = AllocState();
   IValueType vt_none;
-  IResource *bit_sel = res_->GetOpResource(vm::OP_BIT_RANGE, vt_none);
+  IResource *bit_sel = res_set_->GetOpResource(vm::OP_BIT_RANGE, vt_none);
   IInsn *iinsn = new IInsn(bit_sel);
 
   iinsn->inputs_.push_back(src);
@@ -439,7 +457,7 @@ StateWrapper *MethodSynth::AllocState() {
 void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
   IValueType vt;
   InsnToCalcValueType(insn, &vt);
-  IResource *res = res_->GetOpResource(insn->op_, vt);
+  IResource *res = res_set_->GetOpResource(insn->op_, vt);
   IInsn *iinsn = new IInsn(res);
   for (vm::Register *vreg : insn->src_regs_) {
     IRegister *reg = FindLocalVarRegister(vreg);
@@ -475,15 +493,15 @@ void MethodSynth::SynthShiftExpr(vm::Insn *insn) {
   CHECK(insn->src_regs_[1]->type_.is_const_);
   int shift_count = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_);
   IValueType vt;
-  IResource *shifter = res_->GetOpResource(insn->op_, vt);
+  IResource *shifter = res_set_->GetOpResource(insn->op_, vt);
   IInsn *iinsn = new IInsn(shifter);
   iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
   iinsn->inputs_.push_back(DesignTool::AllocConstNum(tab_, 32, shift_count));
   iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
   if (insn->op_ == vm::OP_LSHIFT) {
-    iinsn->SetOperand("left");
+    iinsn->SetOperand(iroha::operand::kLeft);
   } else {
-    iinsn->SetOperand("right");
+    iinsn->SetOperand(iroha::operand::kRight);
   }
   StateWrapper *w = AllocState();
   w->state_->insns_.push_back(iinsn);
@@ -542,7 +560,7 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
     reg->value_type_.SetWidth(w);
     member_name_reg_map_[sym_cstr(insn->label_)] = reg;
   }
-  IResource *assign = res_->AssignResource();
+  IResource *assign = res_set_->AssignResource();
   IInsn *iinsn = new IInsn(assign);
   if (is_store) {
     iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
@@ -561,13 +579,13 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
     shared_resource_set_->GetBySlotName(obj_, insn->label_);
   IResource *res;
   if (sres->owner_thr_ == thr_synth_) {
-    res = res_->GetMemberSharedReg(insn->label_, true, is_store);
+    res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
     sres->AddOwnerResource(res);
     int w = numeric::Width::GetWidth(value->num_.type);
     auto *params = res->GetParams();
     params->SetWidth(w);
   } else {
-    res = res_->GetMemberSharedReg(insn->label_, false, is_store);
+    res = res_set_->GetMemberSharedReg(insn->label_, false, is_store);
     sres->AddAccessorResource(res);
   }
   IInsn *iinsn = new IInsn(res);
@@ -591,7 +609,7 @@ void MethodSynth::SynthChannelAccess(vm::Insn *insn, bool is_write) {
   vm::Object *obj = member_reg_to_obj_map_[insn->obj_reg_];
   CHECK(vm::Channel::IsChannel(obj));
   int width = vm::Channel::ChannelWidth(obj);
-  IResource *res = res_->GetChannelResource(obj, is_write, width);
+  IResource *res = res_set_->GetChannelResource(obj, is_write, width);
   IInsn *iinsn = new IInsn(res);
   if (is_write) {
     iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
@@ -609,7 +627,7 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
   CHECK(!(is_memory && array_obj));
   IResource *res;
   if (is_memory) {
-    res = res_->GetExternalArrayResource();
+    res = res_set_->GetExternalArrayResource();
   } else {
     SharedResource *sres =
       shared_resource_set_->GetByObj(array_obj);
@@ -618,7 +636,7 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
       SynthSharedArrayAccess(insn, is_write);
       return;
     }
-    res = res_->GetInternalArrayResource(array_obj);
+    res = res_set_->GetInternalArrayResource(array_obj);
   }
   IInsn *iinsn = new IInsn(res);
   // index
@@ -639,10 +657,10 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
     shared_resource_set_->GetByObj(array_obj);
   IResource *res = nullptr;
   if (sres->owner_thr_ == thr_synth_) {
-    res = res_->GetSharedArray(array_obj, true, false);
+    res = res_set_->GetSharedArray(array_obj, true, false);
     sres->AddOwnerResource(res);
   } else {
-    res = res_->GetSharedArray(array_obj, false, is_write);
+    res = res_set_->GetSharedArray(array_obj, false, is_write);
     sres->AddAccessorResource(res);
   }
   IInsn *iinsn = new IInsn(res);
@@ -662,7 +680,7 @@ void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
   StateWrapper *w = AllocState();
   IValueType vt;
   vt.SetWidth(0);
-  IResource *bit_inv = res_->GetOpResource(vm::OP_BIT_INV, vt);
+  IResource *bit_inv = res_set_->GetOpResource(vm::OP_BIT_INV, vt);
   IInsn *insn = new IInsn(bit_inv);
   insn->inputs_.push_back(src);
   insn->outputs_.push_back(dst);
@@ -670,7 +688,7 @@ void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
 }
 
 void MethodSynth::EmitEntryInsn(vm::Method *method) {
-  IResource *pseudo = res_->PseudoResource();
+  IResource *pseudo = res_set_->PseudoResource();
   context_->method_insn_ = new IInsn(pseudo);
   context_->method_insn_->SetOperand("method_entry");
   fe::VarDeclSet *args = method->parse_tree_->args_;

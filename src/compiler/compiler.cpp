@@ -74,6 +74,7 @@ vm::Method *Compiler::Compile(vm::Method *method) {
     CompilePostIncDec();
   }
   PopScope();
+  EmitNop();
   AddLabel(sym_return);
   // If a jump targets the label at the last insn.
   EmitNop();
@@ -315,6 +316,7 @@ void Compiler::CompileReturn(fe::Stmt *stmt) {
     EmitInsn(insn);
   }
 
+  // Goto the last insn.
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_GOTO;
   insn->insn_stmt_ = nullptr;

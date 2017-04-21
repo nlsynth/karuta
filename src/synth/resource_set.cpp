@@ -20,6 +20,9 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   br_ = DesignTool::GetOneResource(tab, resource::kTransition);
   print_ = nullptr;
   dataflow_in_ = nullptr;
+  task_return_reg_ = nullptr;
+  task_return_reg_reader_ = nullptr;
+  task_return_reg_writer_ = nullptr;
 }
 
 ResourceSet::~ResourceSet() {
@@ -153,6 +156,26 @@ IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner, bool is_put) 
   tab_->resources_.push_back(res);
   (*m)[obj] = res;
   return res;
+}
+
+IResource *ResourceSet::GetTaskReturnRegWriter(int width) {
+  if (task_return_reg_ == nullptr) {
+    task_return_reg_ = DesignTool::CreateSharedRegResource(tab_, width);
+    task_return_reg_writer_ =
+      DesignTool::CreateSharedRegWriterResource(task_return_reg_);
+  }
+  return task_return_reg_writer_;
+}
+
+IResource *ResourceSet::GetTaskReturnRegReader() {
+  if (task_return_reg_ == nullptr) {
+    return nullptr;
+  }
+  if (task_return_reg_reader_ == nullptr) {
+    task_return_reg_reader_ =
+      DesignTool::CreateSharedRegReaderResource(task_return_reg_);
+  }
+  return task_return_reg_reader_;
 }
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {

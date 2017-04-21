@@ -41,6 +41,8 @@ public:
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
   IResource *GetAxiPort(vm::Object *obj);
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
+  IResource *GetTaskReturnRegWriter(int width);
+  IResource *GetTaskReturnRegReader();
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -55,6 +57,9 @@ private:
   IResource *pseudo_;
   IResource *task_entry_;
   IResource *dataflow_in_;
+  IResource *task_return_reg_;
+  IResource *task_return_reg_reader_;
+  IResource *task_return_reg_writer_;
 
   class ResourceEntry {
   public:

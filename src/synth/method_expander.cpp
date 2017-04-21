@@ -14,7 +14,8 @@ MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
 			       vector<SubObjCall> *sub_obj_calls)
   : root_method_(root), thread_(thread_synth),
     tab_(thread_synth->GetITable()),
-    sub_obj_calls_(sub_obj_calls)
+    sub_obj_calls_(sub_obj_calls),
+    last_state_(nullptr)
 {
 }
 
@@ -22,12 +23,22 @@ bool MethodExpander::Expand() {
   for (IRegister *reg : tab_->registers_) {
     thread_->AddName(reg->GetName());
   }
-  CalleeInfo ci = ExpandMethod(root_method_);
+  CalleeInfo ci = ExpandMethod(root_method_, &root_reg_copy_map_);
   tab_->SetInitialState(ci.initial);
+  last_state_ = ci.final;
   return true;
 }
 
-CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
+IState *MethodExpander::GetLastState() {
+  return last_state_;
+}
+
+map<IRegister *, IRegister *> *MethodExpander::GetRootRegMap() {
+  return &root_reg_copy_map_;
+}
+
+CalleeInfo MethodExpander::ExpandMethod(MethodContext *method,
+					map<IRegister *, IRegister *> *reg_map_out) {
   map<IState *, IState *> st_copy_map;
   map<IRegister *, IRegister *> reg_copy_map;
   // Copy registers.
@@ -65,6 +76,9 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   for (IRegister *reg : method->method_insn_->outputs_) {
     p.rets.push_back(reg_copy_map[reg]);
   }
+  if (reg_map_out != nullptr) {
+    *reg_map_out = reg_copy_map;
+  }
   return p;
 }
 
@@ -98,7 +112,7 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
     MethodContext *callee =
       thread_->GetMethodContext(sw->callee_vm_obj_,
 				sw->callee_func_name_);
-    CalleeInfo ci = ExpandMethod(callee);
+    CalleeInfo ci = ExpandMethod(callee, nullptr);
     IState *rs = Tool::GetNextState(sw->state_);
     Tool::SetNextState(st_map[sw->state_], ci.initial);
     Tool::SetNextState(ci.final, st_map[rs]);

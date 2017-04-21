@@ -20,7 +20,7 @@ public:
   bool Synth();
   MethodContext *GetContext();
   void InjectTaskEntry(IState *st);
-  void InjectTaskReturn();
+  void InjectTaskReturn(IState *last, map<IRegister *, IRegister *> *reg_map);
   bool IsDataFlowEntry() const;
   void InjectDataFlowEntry(IState *st);
 
@@ -64,7 +64,7 @@ private:
   ThreadSynth *thr_synth_;
   const string method_name_;
   ITable *tab_;
-  ResourceSet *res_;
+  ResourceSet *res_set_;
   std::unique_ptr<MethodContext> context_;
   vm::Method *method_;
 

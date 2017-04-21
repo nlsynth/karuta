@@ -24,9 +24,12 @@ public:
 		 vector<SubObjCall> *sub_obj_calls);
 
   bool Expand();
+  IState *GetLastState();
+  map<IRegister *, IRegister *> *GetRootRegMap();
 
 private:
-  CalleeInfo ExpandMethod(MethodContext *method);
+  CalleeInfo ExpandMethod(MethodContext *method,
+			  map<IRegister *, IRegister *> *reg_map_out);
   void CopyState(IState *ost, map<IState *, IState *> &st_map,
 		 map<IRegister *, IRegister *> &reg_map,
 		 IState *nst);
@@ -44,6 +47,8 @@ private:
   ThreadSynth *thread_;
   ITable *tab_;
   vector<SubObjCall> *sub_obj_calls_;
+  IState *last_state_;
+  map<IRegister *, IRegister *> root_reg_copy_map_;
 };
 
 }  // namespace synth
