@@ -155,16 +155,25 @@ const string &ThreadSynth::GetEntryMethodName() {
   return entry_method_name_;
 }
 
-void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *insn,
+void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 				      ITable *callee_tab) {
   ITable *caller_tab = st->GetTable();
   IResource *call_res = Tool::FindOrCreateTaskCallResource(caller_tab,
 							   callee_tab);
+  // Argument values.
   IInsn *iinsn = new IInsn(call_res);
   st->insns_.push_back(iinsn);
-  for (IRegister *reg : insn->inputs_) {
+  for (IRegister *reg : pseudo_call_insn->inputs_) {
     iinsn->inputs_.push_back(reg);
   }
+  // Return values.
+  if (pseudo_call_insn->outputs_.size() == 0) {
+    return;
+  }
+  // State allocated for funcall_done to inject return.
+  IState *next = Tool::GetNextState(st);
+  CHECK(next);
+  // TODO: Emit wait notification insn.
 }
 
 }  // namespace synth

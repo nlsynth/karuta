@@ -89,6 +89,11 @@ MethodContext *MethodSynth::GetContext() {
 void MethodSynth::EmitTaskEntry(IState *st) {
   IResource *res = res_set_->GetSubModuleTaskResource();
   IInsn *iinsn = new IInsn(res);
+  // Args
+  for (IRegister *reg : context_->method_insn_->inputs_) {
+    iinsn->outputs_.push_back(reg);
+    res->output_types_.push_back(reg->value_type_);
+  }
   st->insns_.push_back(iinsn);
 }
 
@@ -324,6 +329,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
     sw->obj_name_ = string(sym_cstr(names[0]));
   }
 
+  // Setup arguments.
   IInsn *iinsn = new IInsn(res_set_->PseudoResource());
   sw->state_->insns_.push_back(iinsn);
   for (vm::Register *arg : insn->src_regs_) {
@@ -339,6 +345,10 @@ void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
   for (vm::Register *ret : insn->dst_regs_) {
     IRegister *iret = FindLocalVarRegister(ret);
     iinsn->outputs_.push_back(iret);
+  }
+  if (IsSubObjCall(insn)) {
+    // state for capturing return value.
+    AllocState();
   }
 }
 

@@ -32,7 +32,7 @@ public:
   ITable *GetITable();
   vector<SubObjCall> &GetSubObjCalls();
   const string &GetEntryMethodName();
-  static void InjectSubModuleCall(IState *st, IInsn *insn,
+  static void InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 				  ITable *callee_tab);
 
 private:

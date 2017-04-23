@@ -30,7 +30,14 @@ IResource *Tool::FindOrCreateTaskCallResource(ITable *caller,
       return res;
     }
   }
-  return DesignTool::CreateTaskCallResource(caller, callee);
+  IResource *res = DesignTool::CreateTaskCallResource(caller, callee);
+  IInsn *task_entry = DesignUtil::FindTaskEntryInsn(callee);
+  IResource *entry = task_entry->GetResource();
+  // copy arg types
+  for (auto &iv : entry->output_types_) {
+    res->input_types_.push_back(iv);
+  }
+  return res;
 }
 
 void Tool::InjectDataFlowIn(IState *initialSt, ResourceSet *rset) {
@@ -38,7 +45,7 @@ void Tool::InjectDataFlowIn(IState *initialSt, ResourceSet *rset) {
   IInsn *wait_insn = nullptr;
   IState *wait_st = nullptr;
   int insn_idx;
-  for (int i = 0; i < tab->states_.size(); ++i) {
+  for (size_t i = 0; i < tab->states_.size(); ++i) {
     IState *st = tab->states_[i];
     int idx = 0;
     for (IInsn *insn : st->insns_) {
