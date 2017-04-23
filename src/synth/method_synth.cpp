@@ -339,6 +339,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
 }
 
 void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
+  // Adds return values to the insn generated for funcall.
   StateWrapper *sw = context_->LastState();
   CHECK(sw->state_->insns_.size() == 1);
   IInsn *iinsn = sw->state_->insns_[0];
@@ -346,6 +347,7 @@ void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
     IRegister *iret = FindLocalVarRegister(ret);
     iinsn->outputs_.push_back(iret);
   }
+
   if (IsSubObjCall(insn)) {
     // state for capturing return value.
     AllocState();

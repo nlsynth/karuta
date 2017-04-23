@@ -184,7 +184,9 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   IInsn *ret_insn = new IInsn(ret);
   ret_insn->SetOperand(iroha::operand::kWaitNotify);
   next_st->insns_.push_back(ret_insn);
-  // TODO: Receive return values.
+  for (IRegister *reg : pseudo_call_insn->outputs_) {
+    ret_insn->outputs_.push_back(reg);
+  }
 }
 
 }  // namespace synth
