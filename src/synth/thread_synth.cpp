@@ -1,6 +1,6 @@
 #include "synth/thread_synth.h"
 
-#include "iroha/i_design.h"
+#include "iroha/iroha.h"
 #include "synth/method_expander.h"
 #include "synth/method_scanner.h"
 #include "synth/method_synth.h"
@@ -171,9 +171,20 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
     return;
   }
   // State allocated for funcall_done to inject return.
-  IState *next = Tool::GetNextState(st);
-  CHECK(next);
-  // TODO: Emit wait notification insn.
+  IState *next_st = Tool::GetNextState(st);
+  CHECK(next_st);
+  IResource *ret =
+    Tool::FindOrCreateTaskReturnValueResource(caller_tab, callee_tab);
+  if (ret == nullptr) {
+    // TODO: This shouldn't happen. Put CHECK(false) here.
+    // outputs_.size() == 1 in case of void return due to the default
+    // return reg.
+    return;
+  }
+  IInsn *ret_insn = new IInsn(ret);
+  ret_insn->SetOperand(iroha::operand::kWaitNotify);
+  next_st->insns_.push_back(ret_insn);
+  // TODO: Receive return values.
 }
 
 }  // namespace synth

@@ -40,6 +40,30 @@ IResource *Tool::FindOrCreateTaskCallResource(ITable *caller,
   return res;
 }
 
+IResource *Tool::FindOrCreateTaskReturnValueResource(ITable *caller,
+						     ITable *callee) {
+  // Find the return value writer.
+  IState *return_st = callee->states_[callee->states_.size() - 1];
+  IResource *writer = nullptr;
+  for (IInsn *insn : return_st->insns_) {
+    if (resource::IsSharedRegWriter(*insn->GetResource()->GetClass())) {
+      writer = insn->GetResource();
+    }
+  }
+  if (writer == nullptr) {
+    return nullptr;
+  }
+  IResource *return_reg = writer->GetParentResource();
+  for (IResource *res : caller->resources_) {
+    if (res->GetParentResource() == return_reg) {
+      return res;
+    }
+  }
+  IResource *res = DesignTool::CreateSharedRegReaderResource(caller,
+							     return_reg);
+  return res;
+}
+
 void Tool::InjectDataFlowIn(IState *initialSt, ResourceSet *rset) {
   ITable *tab = initialSt->GetTable();
   IInsn *wait_insn = nullptr;

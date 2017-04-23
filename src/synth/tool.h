@@ -13,6 +13,8 @@ public:
   static IState *GetNextState(IState *st);
   static IResource *FindOrCreateTaskCallResource(ITable *caller,
 						 ITable *callee);
+  static IResource *FindOrCreateTaskReturnValueResource(ITable *caller,
+						 ITable *callee);
   static void InjectDataFlowIn(IState *initialSt, ResourceSet *rset);
 };
 
