@@ -22,17 +22,13 @@ To check out the code including Iroha submodule.
     > $ git submodule update --init
     in nli/ directory.
 
--- Install
+-- Build
 
 At first, you have to compile the interpreter (nli command).
 
+    > $ make -f Makefile.gyp
+
 NOTE: Please make sure you checked out iroha submodule and have iroha/ directory
-    > $ ./configure; make
-    > $ make install # optional
-
-You may also have to (install and) run auto tools if you got this package from git.
-
-    > $ aclocal; automake; autoconf
 
 -- Use
 
@@ -118,22 +114,18 @@ Now some computation is defined within object 'Kernel', so Neon Light Compiler c
     * Command and common utilities.
 * src/compiler
     * Neon Light Script to bytecode.
-* src/dfg
-    * Data flow graph.
 * src/fe
     * Neon Light Script parser.
 * src/isynth
     * Experimental byte code to Iroha IR.
 * src/numeric
     * Numeric operations.
-* src/opt
-    * DFG optimizer.
 * src/synth
     * Bytecode to DFG.
 * src/vm
     * Bytecode executor.
-* src/writer
-    * Verilog/C++ writer.
+* iroha/
+    * Iroha backend.
 
 -- Glossary
 
