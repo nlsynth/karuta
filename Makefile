@@ -1,5 +1,3 @@
-# WIP makefile using gyp. This will replace autotools based makefile.
-#
 include config.mk
 
 prefix ?= /usr/local

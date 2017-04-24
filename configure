@@ -1,8 +1,5 @@
 #! /usr/bin/python
 #
-# WIP configure script to wrap makefile using gyp.
-# This will replace autotools based configure script.
-#
 # Borrowed the idea from here:
 #  http://stackoverflow.com/questions/27267951/how-to-generate-make-install-action-using-gyp
 
@@ -32,4 +29,4 @@ Generate("lib/nli.in", "lib/nli")
 fh = open("config.mk", "w")
 fh.write("prefix=" + PREFIX + "\n")
 fh.close()
-os.system("make -f Makefile.gyp src/Makefile")
+os.system("make -f Makefile src/Makefile")

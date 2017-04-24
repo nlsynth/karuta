@@ -7,7 +7,7 @@
 *.deps/
 .dirstamp
 .libs/
-Makefile
+src/Makefile
 *.Makefile
 src/*.mk
 autom4te.cache/

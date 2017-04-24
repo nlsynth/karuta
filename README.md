@@ -26,7 +26,7 @@ To check out the code including Iroha submodule.
 
 At first, you have to compile the interpreter (nli command).
 
-    > $ make -f Makefile.gyp
+    > $ make
 
 NOTE: Please make sure you checked out iroha submodule and have iroha/ directory
 
