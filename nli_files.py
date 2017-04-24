@@ -3,7 +3,7 @@ sys.path.append("iroha/")
 
 import iroha_files
 
-EXTRA = ["README.md", "NEWS", "configure.gyp", "Makefile.gyp", "config.mk", "lib/nli", "src/nli.gyp", "iroha/src/iroha.gyp", "src/fe/parser.ypp", "ylwrap", "nli_files.py", "lib/default-isynth.h"]
+EXTRA = ["README.md", "NEWS", "configure", "Makefile", "config.mk", "lib/nli.in", "src/nli.gyp", "iroha/src/iroha.gyp", "src/fe/parser.ypp", "ylwrap", "nli_files.py", "lib/default-isynth.n"]
 
 ifiles = iroha_files.GetGypFileList("iroha/src/iroha.gyp")
 iextras = iroha_files.GetExtraFileList("iroha/")
