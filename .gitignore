@@ -10,9 +10,9 @@
 src/Makefile
 *.Makefile
 src/*.mk
-autom4te.cache/
-config.log
-config.status
+src/src/
+src/out/
+src/iroha/
 y.dot
 lib/nli
 libtool

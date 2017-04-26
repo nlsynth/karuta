@@ -171,7 +171,7 @@ void MethodExpander::BuildRegCopy(IRegister *reg,
   }
   IRegister *nreg = thread_->AllocRegister(reg->GetName());
   if (reg->HasInitialValue()) {
-    IValue v = reg->GetInitialValue();
+    iroha::Numeric v = reg->GetInitialValue();
     nreg->SetInitialValue(v);
   }
   nreg->SetConst(reg->IsConst());
