@@ -569,7 +569,7 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
     string name = sym_cstr(insn->label_);
     name = "m_" + name;
     reg = thr_synth_->AllocRegister(name);
-    Numeric iv;
+    iroha::Numeric iv;
     iv.value_ = numeric::Numeric::GetInt(value->num_);
     reg->SetInitialValue(iv);
     int w = 0;
