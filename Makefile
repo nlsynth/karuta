@@ -2,11 +2,14 @@ include config.mk
 
 prefix ?= /usr/local
 
-nli-bin	: src/out/Default/nli
+nli-bin	: src/out/Default/nli build
 	rm -f nli-bin
 	ln -s src/out/Default/nli ./nli-bin
 
 src/out/Default/nli: src/Makefile src/fe/libparse_la-parser.cpp config.mk
+	make -C src
+
+build:
 	make -C src
 
 src/Makefile: src/nli.gyp
