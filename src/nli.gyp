@@ -21,6 +21,7 @@
         '../iroha/src/',
       ],
       'sources': [
+        'base/pool.h',
         'compiler/compiler.cpp',
         'compiler/compiler.h',
         'compiler/common.h',
@@ -61,7 +62,6 @@
         'nli.h',
         'numeric/numeric.cpp',
         'numeric/numeric.h',
-        'pool.h',
         'status.cpp',
         'status.h',
         'stl_util.h',

@@ -2,7 +2,7 @@
 #include "numeric/numeric.h"
 
 #include "nli.h"
-#include "pool.h"
+#include "base/pool.h"
 
 namespace numeric {
 

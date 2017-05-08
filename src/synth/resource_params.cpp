@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "nli.h"
-#include "pool.h"
+#include "base/pool.h"
 
 static sym_t sym_resource, sym_file, sym_copy, sym_verilog;
 static sym_t sym_module, sym_clock, sym_reset;

@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-#include "pool.h"
+#include "base/pool.h"
 #include "status.h"
 #include "synth/resource_params.h"
 #include "synth/synth.h"

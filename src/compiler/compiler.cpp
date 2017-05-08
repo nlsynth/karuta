@@ -1,7 +1,7 @@
 // Compiles a parse tree into vm instructions.
 #include "compiler/compiler.h"
 
-#include "pool.h"
+#include "base/pool.h"
 #include "status.h"
 #include "compiler/expr_compiler.h"
 #include "fe/expr.h"

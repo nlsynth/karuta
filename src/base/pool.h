@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _pool_h_
-#define _pool_h_
+#ifndef _base_pool_h_
+#define _base_pool_h_
 
 #include <vector>
 
@@ -18,4 +18,4 @@ public:
   std::vector<T *> ptrs_;
 };
 
-#endif  // _pool_h_
+#endif  // _base_pool_h_

@@ -3,7 +3,7 @@
 #define _fe_common_
 
 #include "nli.h"
-#include "pool.h"
+#include "base/pool.h"
 
 class DumpStream;
 

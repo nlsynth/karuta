@@ -2,7 +2,7 @@
 #ifndef _vm_vm_h_
 #define _vm_vm_h_
 
-#include "pool.h"
+#include "base/pool.h"
 #include "vm/common.h"
 
 #include <set>

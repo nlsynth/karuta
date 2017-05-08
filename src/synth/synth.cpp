@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 #include "iroha/iroha.h"
-#include "pool.h"
+#include "base/pool.h"
 #include "synth/design_synth.h"
 #include "vm/object.h"
 #include "vm/string_wrapper.h"
