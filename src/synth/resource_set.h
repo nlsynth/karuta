@@ -39,7 +39,7 @@ public:
   IResource *GetMemberSharedReg(sym_t name, bool is_owner,
 				bool is_write);
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
-  IResource *GetAxiPort(vm::Object *obj);
+  IResource *GetAxiMasterPort(vm::Object *obj);
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
   IResource *GetTaskReturnRegWriter(int width);
 
