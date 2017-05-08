@@ -1,5 +1,6 @@
 #include "fe/emitter.h"
 
+#include "base/annotation.h"
 #include "fe/builder.h"
 #include "fe/common.h"
 #include "fe/expr.h"
@@ -7,7 +8,6 @@
 #include "fe/nodecode.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
-#include "synth/resource_params.h"
 
 namespace fe {
 
@@ -38,7 +38,7 @@ void Emitter::SetCurrentFunctionParams() {
     return;
   }
   MethodDecl &decl = CurrentMethod();
-  decl.method_->imported_resource_ = synth::Importer::Import(params_);
+  decl.method_->imported_resource_ = Importer::Import(params_);
   fe::VarDeclSet *args = decl.method_->args_;
   if (args) {
     for (size_t i = 0; i < args->decls.size(); ++i) {

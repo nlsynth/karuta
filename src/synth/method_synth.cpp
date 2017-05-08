@@ -1,5 +1,6 @@
 #include "synth/method_synth.h"
 
+#include "base/annotation.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
@@ -8,7 +9,6 @@
 #include "synth/method_context.h"
 #include "synth/object_method.h"
 #include "synth/object_synth.h"
-#include "synth/resource_params.h"
 #include "synth/resource_set.h"
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"

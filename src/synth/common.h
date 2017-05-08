@@ -4,6 +4,8 @@
 
 #include "nli.h"
 
+class Annotation;
+
 namespace fe {
 class VarDecl;
 }  // namespace fe
@@ -30,10 +32,6 @@ class Register;
 class VM;
 class Value;
 }  // namespace vm
-
-namespace synth {
-class ResourceParams;
-}  // namespace synth
 
 namespace synth {
 class ChannelSynth;

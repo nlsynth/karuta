@@ -4,6 +4,7 @@
 
 #include "nli.h"
 
+class Annotation;
 class DumpStream;
 
 namespace fe {
@@ -17,10 +18,6 @@ class Stmt;
 namespace numeric {
 class Width;
 }  // namespace numeric
-
-namespace synth {
-class ResourceParams;
-}  // namespace synth
 
 namespace vm {
 

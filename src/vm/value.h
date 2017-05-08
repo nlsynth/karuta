@@ -33,7 +33,7 @@ public:
     METHOD,
     ENUM_ITEM,
     ENUM_TYPE,
-    RESOURCE_PARAMS,
+    ANNOTATION,
 
     // In object_.
     OBJECT,
@@ -52,8 +52,8 @@ public:
   EnumVal enum_val_;
   // for ENUM_TYPE
   const EnumType *enum_type_;
-  // for RESOURCE_PARAMS
-  synth::ResourceParams *resource_params_;
+  // for ANNOTATION
+  Annotation *annotation_;
   // object itself for OBJECT, INT_ARRAY and OBJECT_ARRAY
   // (IsObjectType()==true).
   // can be numeric type object for NUM.

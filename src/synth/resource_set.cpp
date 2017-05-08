@@ -1,10 +1,10 @@
 #include "synth/resource_set.h"
 
-#include "iroha/iroha.h"
+#include "base/annotation.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
-#include "synth/resource_params.h"
+#include "iroha/iroha.h"
 #include "vm/array_wrapper.h"
 #include "vm/insn.h"
 #include "vm/int_array.h"
@@ -167,7 +167,7 @@ IResource *ResourceSet::GetTaskReturnRegWriter(int width) {
 }
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
-  synth::ResourceParams *dparams =
+  Annotation *dparams =
     method->parse_tree_->imported_resource_;
 
   string name = dparams->GetResourceName();

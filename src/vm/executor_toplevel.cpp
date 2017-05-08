@@ -1,5 +1,6 @@
 #include "vm/executor_toplevel.h"
 
+#include "base/annotation.h"
 #include "compiler/compiler.h"
 #include "dump_stream.h"
 #include "fe/fe.h"
@@ -8,7 +9,6 @@
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "status.h"
-#include "synth/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/method.h"
 #include "vm/channel.h"

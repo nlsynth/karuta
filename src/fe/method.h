@@ -15,7 +15,7 @@ public:
   vector<Stmt*> stmts_;
   VarDeclSet *args_;
   VarDeclSet *returns_;
-  synth::ResourceParams *imported_resource_;
+  Annotation *imported_resource_;
 };
 
 }  // namespace fe

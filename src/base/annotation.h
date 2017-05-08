@@ -1,21 +1,19 @@
 // -*- C++ -*-
-#ifndef _synth_resource_params_h_
-#define _synth_resource_params_h_
+#ifndef _base_annotation_h_
+#define _base_annotation_h_
 
 #include "nli.h"
 
-namespace synth {
-
 class ResourceParamValue;
 class ResourceParamValueSet;
-class ResourceParams;
+class Annotation;
 
 class Importer {
 public:
   static void Init();
 
   // Called mainly from parser
-  static ResourceParams *Import(ResourceParamValueSet *params);
+  static Annotation *Import(ResourceParamValueSet *params);
   static ResourceParamValue *BuildStrParam(sym_t key, const char *str);
   static void AddStrParam(ResourceParamValue *p, const char *str);
   static ResourceParamValueSet *BuildParamSet(ResourceParamValueSet *lst,
@@ -29,14 +27,14 @@ public:
   int width;
 };
 
-class ResourceParams {
+class Annotation {
 public:
-  explicit ResourceParams(ResourceParamValueSet *params);
-  ResourceParams(const ResourceParams &that);
-  ~ResourceParams();
+  explicit Annotation(ResourceParamValueSet *params);
+  Annotation(const Annotation &that);
+  ~Annotation();
 
   void Dump(ostream &os) const;
-  static ResourceParams *Copy(ResourceParams *params);
+  static Annotation *Copy(Annotation *params);
 
   bool IsImportedModule();
   bool IsExtIO();
@@ -74,7 +72,4 @@ private:
   vector<ResourceParams_pin> pins_;
 };
 
-}  // namespace synth
-using namespace synth;
-
-#endif  // _synth_resource_params_h_
+#endif  // _base_annotation_h_

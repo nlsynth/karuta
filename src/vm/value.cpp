@@ -1,6 +1,6 @@
 #include "vm/value.h"
 
-#include "synth/resource_params.h"
+#include "base/annotation.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
@@ -45,9 +45,9 @@ void Value::Dump(ostream &os) const {
   case ENUM_ITEM:
     os << enum_val_.val << " in " << sym_cstr(enum_val_.enum_type->name_);
     break;
-  case RESOURCE_PARAMS:
-    os << "resource_params: ";
-    resource_params_->Dump(os);
+  case ANNOTATION:
+    os << "annotation: ";
+    annotation_->Dump(os);
     break;
   case OBJECT:
     if (StringWrapper::IsString(object_)) {

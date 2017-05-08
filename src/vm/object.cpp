@@ -1,7 +1,7 @@
 #include "vm/object.h"
 
+#include "base/annotation.h"
 #include "dump_stream.h"
-#include "synth/resource_params.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
@@ -77,9 +77,9 @@ Object *Object::Clone(VM *vm) {
     if (value.type_ == Value::INT_ARRAY) {
       value.object_ = ArrayWrapper::Copy(vm, value.object_);
     }
-    if (value.type_ == Value::RESOURCE_PARAMS) {
-      value.resource_params_ =
-	synth::ResourceParams::Copy(value.resource_params_);
+    if (value.type_ == Value::ANNOTATION) {
+      value.annotation_ =
+	Annotation::Copy(value.annotation_);
     }
   }
   return new_obj;

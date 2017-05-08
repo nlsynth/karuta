@@ -22,6 +22,8 @@
       ],
       'sources': [
         'base/pool.h',
+        'base/annotation.cpp',
+        'base/annotation.h',
         'compiler/compiler.cpp',
         'compiler/compiler.h',
         'compiler/common.h',
@@ -87,8 +89,6 @@
         'synth/object_method_names.h',
         'synth/object_synth.cpp',
         'synth/object_synth.h',
-        'synth/resource_params.cpp',
-        'synth/resource_params.h',
         'synth/resource_set.cpp',
         'synth/resource_set.h',
         'synth/shared_resource_set.cpp',

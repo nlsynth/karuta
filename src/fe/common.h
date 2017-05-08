@@ -5,12 +5,9 @@
 #include "nli.h"
 #include "base/pool.h"
 
+class Annotation;
 class DumpStream;
-
-namespace synth {
-class ResourceParams;
 class ResourceParamValueSet;
-}  // namespace synth
 
 namespace numeric {
 class Width;

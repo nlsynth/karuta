@@ -1,4 +1,4 @@
-#include "synth/resource_params.h"
+#include "base/annotation.h"
 
 #include <iostream>
 #include <list>
@@ -10,9 +10,7 @@
 static sym_t sym_resource, sym_file, sym_copy, sym_verilog;
 static sym_t sym_module, sym_clock, sym_reset;
 
-namespace synth {
-
-static Pool<ResourceParams> resource_params_pool;
+static Pool<Annotation> resource_params_pool;
 
 class ResourceParamValue {
 public:
@@ -39,12 +37,12 @@ ResourceParamValueSet::~ResourceParamValueSet() {
   STLDeleteValues(&params_);
 }
 
-ResourceParams::ResourceParams(ResourceParamValueSet *params) {
+Annotation::Annotation(ResourceParamValueSet *params) {
   resource_params_pool.Add(this);
   params_ = params;
 }
 
-ResourceParams::ResourceParams(const ResourceParams &that) {
+Annotation::Annotation(const Annotation &that) {
   resource_params_pool.Add(this);
   pins_ = that.pins_;
   params_ = new ResourceParamValueSet;
@@ -55,11 +53,11 @@ ResourceParams::ResourceParams(const ResourceParams &that) {
   }
 }
 
-ResourceParams::~ResourceParams() {
+Annotation::~Annotation() {
   delete params_;
 }
 
-void ResourceParams::Dump(ostream &os) const {
+void Annotation::Dump(ostream &os) const {
   bool is_first_param = true;
   for (ResourceParamValue *param : params_->params_) {
     if (!is_first_param) {
@@ -90,63 +88,63 @@ void ResourceParams::Dump(ostream &os) const {
   }
 }
 
-ResourceParams *ResourceParams::Copy(ResourceParams *params) {
-  return new ResourceParams(*params);
+Annotation *Annotation::Copy(Annotation *params) {
+  return new Annotation(*params);
 }
 
-bool ResourceParams::IsImportedModule() {
+bool Annotation::IsImportedModule() {
   if (LookupParam(sym_verilog)) {
     return true;
   }
   return false;
 }
 
-string ResourceParams::GetOutputPinName() {
+string Annotation::GetOutputPinName() {
   return LookupStrParam(sym_output, "");
 }
 
-string ResourceParams::GetInputPinName() {
+string Annotation::GetInputPinName() {
   return LookupStrParam(sym_input, "");
 }
 
-string ResourceParams::GetAckPinName() {
+string Annotation::GetAckPinName() {
   return LookupStrParam(sym_lookup("ack"), "");
 }
 
-bool ResourceParams::ResetPolarity() {
+bool Annotation::ResetPolarity() {
   return (LookupStrParam(sym_lookup("resetPolarity"), "1") == "1");
 }
 
-string ResourceParams::GetThreadEntry() {
+string Annotation::GetThreadEntry() {
   return LookupStrParam(sym_lookup("thread_entry"), "");
 }
 
-string ResourceParams::GetDataFlowEntry() {
+string Annotation::GetDataFlowEntry() {
   return LookupStrParam(sym_lookup("dataflow_entry"), "");
 }
 
-bool ResourceParams::IsExtIO() {
+bool Annotation::IsExtIO() {
   if (LookupParam(sym_output) || LookupParam(sym_input)) {
     return true;
   }
   return false;
 }
 
-bool ResourceParams::IsExtInput() {
+bool Annotation::IsExtInput() {
   if (LookupParam(sym_input)) {
     return true;
   }
   return false;
 }
 
-bool ResourceParams::IsExtOutput() {
+bool Annotation::IsExtOutput() {
   if (LookupParam(sym_output)) {
     return true;
   }
   return false;
 }
 
-string ResourceParams::LookupStrParam(sym_t key, string dflt) {
+string Annotation::LookupStrParam(sym_t key, string dflt) {
   ResourceParamValue *p = LookupParam(key);
   if (!p) {
     return dflt;
@@ -154,7 +152,7 @@ string ResourceParams::LookupStrParam(sym_t key, string dflt) {
   return p->GetNthValue(0);
 }
 
-ResourceParamValue *ResourceParams::LookupParam(sym_t key) {
+ResourceParamValue *Annotation::LookupParam(sym_t key) {
   for (ResourceParamValue *param : params_->params_) {
     if (key == param->key_) {
       return param;
@@ -163,11 +161,11 @@ ResourceParamValue *ResourceParams::LookupParam(sym_t key) {
   return nullptr;
 }
 
-string ResourceParams::GetResourceName() {
+string Annotation::GetResourceName() {
   return LookupStrParam(sym_resource, "");
 }
 
-string ResourceParams::GetCopyFileName() {
+string Annotation::GetCopyFileName() {
   string file = LookupStrParam(sym_file, "");
   if (file != "copy") {
     return "";
@@ -181,19 +179,19 @@ string ResourceParams::GetCopyFileName() {
   return p->GetNthValue(0);
 }
 
-string ResourceParams::GetModuleName() {
+string Annotation::GetModuleName() {
   return LookupStrParam(sym_module, "");
 }
 
-string ResourceParams::GetClockPinName() {
+string Annotation::GetClockPinName() {
   return LookupStrParam(sym_clock, "clk");
 }
 
-string ResourceParams::GetResetPinName() {
+string Annotation::GetResetPinName() {
   return LookupStrParam(sym_reset, "rst");
 }
 
-void ResourceParams::AddPinDecl(sym_t name, bool is_out, int width) {
+void Annotation::AddPinDecl(sym_t name, bool is_out, int width) {
   ResourceParams_pin pin;
   pin.name = name;
   pin.is_out = is_out;
@@ -202,11 +200,11 @@ void ResourceParams::AddPinDecl(sym_t name, bool is_out, int width) {
   pins_.push_back(pin);
 }
 
-int ResourceParams::GetNrPinDecls() {
+int Annotation::GetNrPinDecls() {
   return pins_.size();
 }
 
-bool ResourceParams::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
+bool Annotation::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
   if (nth >= 0 && nth < static_cast<int>(pins_.size())) {
     *decl = pins_[nth];
     return true;
@@ -214,7 +212,7 @@ bool ResourceParams::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
   return false;
 }
 
-void ResourceParams::AddParam(const string &key, const string &value) {
+void Annotation::AddParam(const string &key, const string &value) {
   ResourceParamValue *param = LookupParam(sym_lookup(key.c_str()));
   if (param) {
     param->values_.push_back(value);
@@ -244,11 +242,11 @@ ResourceParamValueSet *Importer::BuildParamSet(ResourceParamValueSet *params,
   return params;
 }
 
-ResourceParams *Importer::Import(ResourceParamValueSet *params) {
+Annotation *Importer::Import(ResourceParamValueSet *params) {
   if (!params) {
     params = new ResourceParamValueSet;
   }
-  return new ResourceParams(params);
+  return new Annotation(params);
 }
 
 void Importer::Init() {
@@ -262,5 +260,3 @@ void Importer::Init() {
 }
 
 STATIC_INITIALIZER(importer , Importer::Init());
-}  // namespace synth
-

@@ -2,9 +2,9 @@
 
 #include <stdlib.h>
 
+#include "base/annotation.h"
 #include "base/pool.h"
 #include "status.h"
-#include "synth/resource_params.h"
 #include "synth/synth.h"
 #include "synth/object_method_names.h"
 #include "vm/channel.h"
@@ -147,10 +147,10 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
   }
   Value *value = obj->LookupValue(sym_lookup("$synth_params"), true);
   if (value->type_ == Value::NONE) {
-    value->type_ = Value::RESOURCE_PARAMS;
-    value->resource_params_ = Importer::Import(nullptr);
+    value->type_ = Value::ANNOTATION;
+    value->annotation_ = Importer::Import(nullptr);
   }
-  value->resource_params_
+  value->annotation_
     ->AddParam(StringWrapper::String(args[0].object_),
 	       StringWrapper::String(args[1].object_));
 }
