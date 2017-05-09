@@ -6,7 +6,7 @@
 
 namespace fe {
 
-Method::Method() : args_(NULL), returns_(NULL), imported_resource_(NULL) {
+Method::Method() : args_(nullptr), returns_(nullptr), annotation_(nullptr) {
 }
 
 void Method::Dump() const {

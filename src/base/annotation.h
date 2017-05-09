@@ -4,20 +4,20 @@
 
 #include "nli.h"
 
-class ResourceParamValue;
-class ResourceParamValueSet;
+class AnnotationValue;
+class AnnotationValueSet;
 class Annotation;
 
-class Importer {
+class AnnotationBuilder {
 public:
   static void Init();
 
   // Called mainly from parser
-  static Annotation *Import(ResourceParamValueSet *params);
-  static ResourceParamValue *BuildStrParam(sym_t key, const char *str);
-  static void AddStrParam(ResourceParamValue *p, const char *str);
-  static ResourceParamValueSet *BuildParamSet(ResourceParamValueSet *lst,
-					      ResourceParamValue *p);
+  static Annotation *Build(AnnotationValueSet *params);
+  static AnnotationValue *BuildStrParam(sym_t key, const char *str);
+  static void AddStrParam(AnnotationValue *p, const char *str);
+  static AnnotationValueSet *BuildParamSet(AnnotationValueSet *lst,
+					   AnnotationValue *p);
 };
 
 class ResourceParams_pin {
@@ -29,7 +29,7 @@ public:
 
 class Annotation {
 public:
-  explicit Annotation(ResourceParamValueSet *params);
+  explicit Annotation(AnnotationValueSet *params);
   Annotation(const Annotation &that);
   ~Annotation();
 
@@ -66,9 +66,9 @@ public:
 
 private:
   string LookupStrParam(sym_t key, string dflt);
-  ResourceParamValue *LookupParam(sym_t key);
+  AnnotationValue *LookupParam(sym_t key);
 
-  ResourceParamValueSet *params_;
+  AnnotationValueSet *params_;
   vector<ResourceParams_pin> pins_;
 };
 

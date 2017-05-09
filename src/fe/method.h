@@ -15,7 +15,7 @@ public:
   vector<Stmt*> stmts_;
   VarDeclSet *args_;
   VarDeclSet *returns_;
-  Annotation *imported_resource_;
+  Annotation *annotation_;
 };
 
 }  // namespace fe

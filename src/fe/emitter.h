@@ -29,7 +29,7 @@ public:
   static void SetCurrentFunctionParams();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
-  static void SetImportedResource(ResourceParamValueSet *params);
+  static void SetImportedResource(AnnotationValueSet *params);
   static void BeginBlock();
   static void EndBlock();
   static void EmitNop();
@@ -55,7 +55,7 @@ public:
 
 private:
   static vector<MethodDecl> method_stack_;
-  static ResourceParamValueSet *params_;
+  static AnnotationValueSet *params_;
 
   static Stmt *BuildFuncDeclStmt(MethodDecl *decl);
   static MethodDecl &CurrentMethod();

@@ -184,12 +184,12 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   Method *new_method = thr_->GetVM()->NewMethod(false /* not toplevel */);
   new_method->parse_tree_ = insn->insn_stmt_->method_def_;
   value->method_ = new_method;
-  if (new_method->parse_tree_->imported_resource_ != nullptr) {
-    string t = new_method->parse_tree_->imported_resource_->GetThreadEntry();
+  if (new_method->parse_tree_->annotation_ != nullptr) {
+    string t = new_method->parse_tree_->annotation_->GetThreadEntry();
     if (!t.empty()) {
       AddThreadEntry(frame, insn, t);
     }
-    string d = new_method->parse_tree_->imported_resource_->GetDataFlowEntry();
+    string d = new_method->parse_tree_->annotation_->GetDataFlowEntry();
     if (!d.empty()) {
       AddThreadEntry(frame, insn, d);
     }

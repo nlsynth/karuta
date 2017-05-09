@@ -12,7 +12,7 @@
 namespace fe {
 
 vector<MethodDecl> Emitter::method_stack_;
-ResourceParamValueSet *Emitter::params_;
+AnnotationValueSet *Emitter::params_;
 
 void Emitter::BeginFunction(Expr *name) {
   Method *method = new Method;
@@ -38,7 +38,7 @@ void Emitter::SetCurrentFunctionParams() {
     return;
   }
   MethodDecl &decl = CurrentMethod();
-  decl.method_->imported_resource_ = Importer::Import(params_);
+  decl.method_->annotation_ = AnnotationBuilder::Build(params_);
   fe::VarDeclSet *args = decl.method_->args_;
   if (args) {
     for (size_t i = 0; i < args->decls.size(); ++i) {
@@ -49,9 +49,9 @@ void Emitter::SetCurrentFunctionParams() {
       } else {
 	CHECK(arg->GetType() == sym_bool);
       }
-      decl.method_->imported_resource_->AddPinDecl(arg->GetNameExpr()->sym_,
-						   false,
-						   width);
+      decl.method_->annotation_->AddPinDecl(arg->GetNameExpr()->sym_,
+					    false,
+					    width);
     }
   }
 }
@@ -66,7 +66,7 @@ void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
   decl.method_->returns_ = returns;
 }
 
-void Emitter::SetImportedResource(ResourceParamValueSet *params) {
+void Emitter::SetImportedResource(AnnotationValueSet *params) {
   params_ = params;
 }
 

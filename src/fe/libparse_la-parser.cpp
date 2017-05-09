@@ -224,8 +224,8 @@ union YYSTYPE
   sym_t sym;
   uint64_t num;
   struct WidthSpec width_spec;
-  class ResourceParamValue *import_param;
-  class ResourceParamValueSet *import_params;
+  class AnnotationValue *import_param;
+  class AnnotationValueSet *import_params;
 
 #line 231 "src/fe/libparse_la-parser.cpp" /* yacc.c:355  */
 };
@@ -1664,7 +1664,7 @@ yyreduce:
   case 5:
 #line 96 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_param) = Importer::BuildStrParam((yyvsp[-3].sym), (yyvsp[0].str));
+  (yyval.import_param) = AnnotationBuilder::BuildStrParam((yyvsp[-3].sym), (yyvsp[0].str));
 }
 #line 1670 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1672,7 +1672,7 @@ yyreduce:
   case 6:
 #line 98 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  Importer::AddStrParam((yyvsp[-2].import_param), (yyvsp[0].str));
+  AnnotationBuilder::AddStrParam((yyvsp[-2].import_param), (yyvsp[0].str));
   (yyval.import_param) = (yyvsp[-2].import_param);
 }
 #line 1679 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
@@ -1681,7 +1681,7 @@ yyreduce:
   case 7:
 #line 103 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_param) = Importer::BuildStrParam((yyvsp[-2].sym), (yyvsp[0].str));
+  (yyval.import_param) = AnnotationBuilder::BuildStrParam((yyvsp[-2].sym), (yyvsp[0].str));
 }
 #line 1687 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1697,7 +1697,7 @@ yyreduce:
   case 9:
 #line 109 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_params) = Importer::BuildParamSet(nullptr, (yyvsp[0].import_param));
+  (yyval.import_params) = AnnotationBuilder::BuildParamSet(nullptr, (yyvsp[0].import_param));
 }
 #line 1703 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1705,7 +1705,7 @@ yyreduce:
   case 10:
 #line 111 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.import_params) = Importer::BuildParamSet((yyvsp[-2].import_params), (yyvsp[0].import_param));
+  (yyval.import_params) = AnnotationBuilder::BuildParamSet((yyvsp[-2].import_params), (yyvsp[0].import_param));
 }
 #line 1711 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;

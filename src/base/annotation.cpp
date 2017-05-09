@@ -12,7 +12,7 @@ static sym_t sym_module, sym_clock, sym_reset;
 
 static Pool<Annotation> resource_params_pool;
 
-class ResourceParamValue {
+class AnnotationValue {
 public:
   string GetNthValue(int nth);
 
@@ -20,24 +20,24 @@ public:
   vector <string> values_;
 };
 
-class ResourceParamValueSet {
+class AnnotationValueSet {
 public:
-  ~ResourceParamValueSet();
-  vector<ResourceParamValue *> params_;
+  ~AnnotationValueSet();
+  vector<AnnotationValue *> params_;
 };
 
-string ResourceParamValue::GetNthValue(int nth) {
+string AnnotationValue::GetNthValue(int nth) {
   if (nth < (int)values_.size()) {
     return values_[nth];
   }
   return "";
 }
 
-ResourceParamValueSet::~ResourceParamValueSet() {
+AnnotationValueSet::~AnnotationValueSet() {
   STLDeleteValues(&params_);
 }
 
-Annotation::Annotation(ResourceParamValueSet *params) {
+Annotation::Annotation(AnnotationValueSet *params) {
   resource_params_pool.Add(this);
   params_ = params;
 }
@@ -45,9 +45,9 @@ Annotation::Annotation(ResourceParamValueSet *params) {
 Annotation::Annotation(const Annotation &that) {
   resource_params_pool.Add(this);
   pins_ = that.pins_;
-  params_ = new ResourceParamValueSet;
-  for (ResourceParamValue *param : that.params_->params_) {
-    ResourceParamValue *value = new ResourceParamValue;
+  params_ = new AnnotationValueSet;
+  for (AnnotationValue *param : that.params_->params_) {
+    AnnotationValue *value = new AnnotationValue;
     *value = *param;
     params_->params_.push_back(value);
   }
@@ -59,7 +59,7 @@ Annotation::~Annotation() {
 
 void Annotation::Dump(ostream &os) const {
   bool is_first_param = true;
-  for (ResourceParamValue *param : params_->params_) {
+  for (AnnotationValue *param : params_->params_) {
     if (!is_first_param) {
       os << ",";
     }
@@ -145,15 +145,15 @@ bool Annotation::IsExtOutput() {
 }
 
 string Annotation::LookupStrParam(sym_t key, string dflt) {
-  ResourceParamValue *p = LookupParam(key);
+  AnnotationValue *p = LookupParam(key);
   if (!p) {
     return dflt;
   }
   return p->GetNthValue(0);
 }
 
-ResourceParamValue *Annotation::LookupParam(sym_t key) {
-  for (ResourceParamValue *param : params_->params_) {
+AnnotationValue *Annotation::LookupParam(sym_t key) {
+  for (AnnotationValue *param : params_->params_) {
     if (key == param->key_) {
       return param;
     }
@@ -170,7 +170,7 @@ string Annotation::GetCopyFileName() {
   if (file != "copy") {
     return "";
   }
-  ResourceParamValue *p = LookupParam(sym_verilog);
+  AnnotationValue *p = LookupParam(sym_verilog);
   if (!p) {
     std::cout << "source file to be copied is not specified.\n";
     abort();
@@ -213,43 +213,43 @@ bool Annotation::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
 }
 
 void Annotation::AddParam(const string &key, const string &value) {
-  ResourceParamValue *param = LookupParam(sym_lookup(key.c_str()));
+  AnnotationValue *param = LookupParam(sym_lookup(key.c_str()));
   if (param) {
     param->values_.push_back(value);
   } else {
-    param = Importer::BuildStrParam(sym_lookup(key.c_str()), value.c_str());
+    param = AnnotationBuilder::BuildStrParam(sym_lookup(key.c_str()), value.c_str());
     params_->params_.push_back(param);
   }
 }
 
-void Importer::AddStrParam(ResourceParamValue *p, const char *str) {
+void AnnotationBuilder::AddStrParam(AnnotationValue *p, const char *str) {
   p->values_.push_back(string(str));
 }
 
-ResourceParamValue *Importer::BuildStrParam(sym_t key, const char *str) {
-  ResourceParamValue *p = new ResourceParamValue();
+AnnotationValue *AnnotationBuilder::BuildStrParam(sym_t key, const char *str) {
+  AnnotationValue *p = new AnnotationValue();
   p->key_ = key;
   AddStrParam(p, str);
   return p;
 }
 
-ResourceParamValueSet *Importer::BuildParamSet(ResourceParamValueSet *params,
-					       ResourceParamValue *p) {
+AnnotationValueSet *AnnotationBuilder::BuildParamSet(AnnotationValueSet *params,
+						     AnnotationValue *p) {
   if (!params) {
-    params = new ResourceParamValueSet();
+    params = new AnnotationValueSet();
   }
   params->params_.push_back(p);
   return params;
 }
 
-Annotation *Importer::Import(ResourceParamValueSet *params) {
+Annotation *AnnotationBuilder::Build(AnnotationValueSet *params) {
   if (!params) {
-    params = new ResourceParamValueSet;
+    params = new AnnotationValueSet;
   }
   return new Annotation(params);
 }
 
-void Importer::Init() {
+void AnnotationBuilder::Init() {
   sym_resource = sym_lookup("resource");
   sym_file = sym_lookup("file");
   sym_copy = sym_lookup("copy");
@@ -259,4 +259,4 @@ void Importer::Init() {
   sym_reset = sym_lookup("reset");
 }
 
-STATIC_INITIALIZER(importer , Importer::Init());
+STATIC_INITIALIZER(importer , AnnotationBuilder::Init());

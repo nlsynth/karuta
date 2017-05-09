@@ -168,7 +168,7 @@ IResource *ResourceSet::GetTaskReturnRegWriter(int width) {
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   Annotation *dparams =
-    method->parse_tree_->imported_resource_;
+    method->parse_tree_->annotation_;
 
   string name = dparams->GetResourceName();
   for (IResource *res : imported_resources_) {

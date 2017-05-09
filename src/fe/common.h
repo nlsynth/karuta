@@ -7,7 +7,7 @@
 
 class Annotation;
 class DumpStream;
-class ResourceParamValueSet;
+class AnnotationValueSet;
 
 namespace numeric {
 class Width;

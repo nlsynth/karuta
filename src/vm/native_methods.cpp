@@ -148,7 +148,7 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
   Value *value = obj->LookupValue(sym_lookup("$synth_params"), true);
   if (value->type_ == Value::NONE) {
     value->type_ = Value::ANNOTATION;
-    value->annotation_ = Importer::Import(nullptr);
+    value->annotation_ = AnnotationBuilder::Build(nullptr);
   }
   value->annotation_
     ->AddParam(StringWrapper::String(args[0].object_),

@@ -130,10 +130,10 @@ void MethodSynth::InjectDataFlowEntry(IState *st) {
 
 bool MethodSynth::IsDataFlowEntry() const {
   if (method_->parse_tree_ == nullptr ||
-      method_->parse_tree_->imported_resource_ == nullptr) {
+      method_->parse_tree_->annotation_ == nullptr) {
     return false;
   }
-  string s = method_->parse_tree_->imported_resource_->GetDataFlowEntry();
+  string s = method_->parse_tree_->annotation_->GetDataFlowEntry();
   return !s.empty();
 }
 
@@ -143,8 +143,8 @@ void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(name);
   vm::Method *alt_method = value->method_;
   CHECK(alt_method->parse_tree_ &&
-	alt_method->parse_tree_->imported_resource_ &&
-	alt_method->parse_tree_->imported_resource_->IsImportedModule());
+	alt_method->parse_tree_->annotation_ &&
+	alt_method->parse_tree_->annotation_->IsImportedModule());
 
   SynthEmbeddedMethod(alt_method);
 }
@@ -436,7 +436,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   reg->value_type_.SetWidth(w);
   // Add as a local variable if this isn't a native method.
   if (method->parse_tree_ &&
-      !method->parse_tree_->imported_resource_) {
+      !method->parse_tree_->annotation_) {
     local_reg_map_[method->method_regs_[nth]] = reg;
   }
   return reg;

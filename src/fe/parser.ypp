@@ -27,8 +27,8 @@ extern void yyerror(const char *msg);
   sym_t sym;
   uint64_t num;
   struct WidthSpec width_spec;
-  class ResourceParamValue *import_param;
-  class ResourceParamValueSet *import_params;
+  class AnnotationValue *import_param;
+  class AnnotationValueSet *import_params;
 }
 
 %type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
@@ -94,22 +94,22 @@ input : {
 }
 
 IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
-  $$ = Importer::BuildStrParam($1, $4);
+  $$ = AnnotationBuilder::BuildStrParam($1, $4);
 } | IMPORT_PARAM_HEAD ',' STR {
-  Importer::AddStrParam($1, $3);
+  AnnotationBuilder::AddStrParam($1, $3);
   $$ = $1;
 }
 
 IMPORT_PARAM : SYM K_ASSIGN STR {
-  $$ = Importer::BuildStrParam($1, $3);
+  $$ = AnnotationBuilder::BuildStrParam($1, $3);
 } | IMPORT_PARAM_HEAD ')' {
   $$ = $1;
 }
 
 IMPORT_PARAM_LIST : IMPORT_PARAM {
-  $$ = Importer::BuildParamSet(nullptr, $1);
+  $$ = AnnotationBuilder::BuildParamSet(nullptr, $1);
 } | IMPORT_PARAM_LIST ',' IMPORT_PARAM {
-  $$ = Importer::BuildParamSet($1, $3);
+  $$ = AnnotationBuilder::BuildParamSet($1, $3);
 }
 
 IMPORT_SPEC : {
