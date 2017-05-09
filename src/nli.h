@@ -8,10 +8,10 @@
 #include <stdint.h>
 #include <vector>
 
-#include "initializer.h"
-#include "logging.h"
-#include "sym.h"
-#include "stl_util.h"
+#include "base/initializer.h"
+#include "base/stl_util.h"
+#include "base/logging.h"
+#include "base/sym.h"
 
 using std::cout;
 using std::ostream;

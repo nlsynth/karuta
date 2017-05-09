@@ -1,7 +1,7 @@
 #include "synth/method_scanner.h"
 
+#include "base/status.h"
 #include "compiler/compiler.h"
-#include "status.h"
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
 #include "synth/object_method.h"

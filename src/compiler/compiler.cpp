@@ -2,7 +2,7 @@
 #include "compiler/compiler.h"
 
 #include "base/pool.h"
-#include "status.h"
+#include "base/status.h"
 #include "compiler/expr_compiler.h"
 #include "fe/expr.h"
 #include "fe/method.h"

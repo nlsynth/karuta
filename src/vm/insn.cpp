@@ -1,6 +1,6 @@
 #include "vm/insn.h"
 
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 #include "fe/expr.h"
 #include "fe/stmt.h"
 #include "vm/opcode.h"

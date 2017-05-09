@@ -25,7 +25,7 @@
 #include "iroha/iroha_main.h"
 #include "nli.h"
 #include "numeric/numeric.h"
-#include "status.h"
+#include "base/status.h"
 
 using std::map;
 

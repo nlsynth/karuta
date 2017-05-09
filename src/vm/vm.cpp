@@ -1,7 +1,7 @@
 #include "vm/vm.h"
 
+#include "base/status.h"
 #include "fe/expr.h"
-#include "status.h"
 #include "vm/array_wrapper.h"
 #include "vm/channel.h"
 #include "vm/gc.h"

@@ -1,6 +1,7 @@
 #include "synth/method_synth.h"
 
 #include "base/annotation.h"
+#include "base/status.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
@@ -13,7 +14,6 @@
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "synth/tool.h"
-#include "status.h"
 #include "vm/channel.h"
 #include "vm/insn.h"
 #include "vm/method.h"

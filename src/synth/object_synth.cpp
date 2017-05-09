@@ -1,9 +1,9 @@
 #include "synth/object_synth.h"
 
+#include "base/status.h"
 #include "iroha/i_design.h"
 #include "synth/design_synth.h"
 #include "synth/thread_synth.h"
-#include "status.h"
 #include "vm/thread_wrapper.h"
 
 namespace synth {

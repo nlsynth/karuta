@@ -1,6 +1,6 @@
 #include "fe/stmt.h"
 
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/method.h"

@@ -4,7 +4,7 @@
 
 #include "base/annotation.h"
 #include "base/pool.h"
-#include "status.h"
+#include "base/status.h"
 #include "synth/synth.h"
 #include "synth/object_method_names.h"
 #include "vm/channel.h"

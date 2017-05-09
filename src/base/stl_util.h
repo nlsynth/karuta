@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _stl_util_h_
-#define _stl_util_h_
+#ifndef _base_stl_util_h_
+#define _base_stl_util_h_
 
 // the names of function come from some opensource projects.
 
@@ -27,4 +27,4 @@ void STLDeleteValues(T *t) {
   STLEraseValues(t->begin(), t->end());
 }
 
-#endif  // _stl_util_h_
+#endif  // _base_stl_util_h_

@@ -1,6 +1,6 @@
 #include "fe/expr.h"
 
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 #include "fe/nodecode.h"
 
 namespace fe {

@@ -1,7 +1,7 @@
 // -*- C++ -*-
 %{
-#include "sym.h"
 #include "base/annotation.h"
+#include "base/sym.h"
 #include "fe/builder.h"
 #include "fe/emitter.h"
 #include "fe/enum_decl.h"

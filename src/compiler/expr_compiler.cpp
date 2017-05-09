@@ -1,10 +1,10 @@
 #include "compiler/expr_compiler.h"
 
+#include "base/status.h"
 #include "compiler/compiler.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
-#include "status.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/method.h"

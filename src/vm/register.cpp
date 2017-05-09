@@ -1,6 +1,6 @@
 #include "vm/register.h"
 
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 #include "vm/value.h"
 
 namespace vm {

@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _status_h_
-#define _status_h_
+#ifndef _base_status_h_
+#define _base_status_h_
 
 #include <sstream>
 
@@ -57,4 +57,4 @@ public:
   Status::Type t_;
 };
 
-#endif  // _status_h_
+#endif  // _base_status_h_

@@ -1,6 +1,6 @@
 #include "vm/method.h"
 
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "vm/insn.h"

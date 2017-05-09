@@ -1,6 +1,6 @@
 #include "fe/var_decl.h"
 
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 #include "fe/expr.h"
 
 namespace fe {

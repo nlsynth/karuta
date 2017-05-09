@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _logging_h_
-#define _logging_h_
+#ifndef _base_logging_h_
+#define _base_logging_h_
 
 #include <iostream>
 #include <set>
@@ -44,4 +44,4 @@ private:
 #define LOG(s) LogFinalizer(s, __FILE__, __LINE__) & Logger::GetStream(s)
 #define CHECK(s) LogFinalizer((s ? LOG_NONE : FATAL), __FILE__, __LINE__) & Logger::GetStream((s ? LOG_NONE : FATAL))
 
-#endif  // _logging_h_
+#endif  // _base_logging_h_

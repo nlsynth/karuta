@@ -72,8 +72,8 @@
 /* Copy the first part of user declarations.  */
 #line 2 "src/fe/parser.ypp" /* yacc.c:339  */
 
-#include "sym.h"
 #include "base/annotation.h"
+#include "base/sym.h"
 #include "fe/builder.h"
 #include "fe/emitter.h"
 #include "fe/enum_decl.h"

@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _dump_stream_h_
-#define _dump_stream_h_
+#ifndef _base_dump_stream_h_
+#define _base_dump_stream_h_
 
 #include "nli.h"
 
@@ -17,4 +17,4 @@ private:
   int indent_;
 };
 
-#endif  // _dump_stream_h_
+#endif  // _base_dump_stream_h_

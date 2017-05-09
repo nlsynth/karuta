@@ -1,7 +1,7 @@
 #include "vm/object.h"
 
 #include "base/annotation.h"
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"

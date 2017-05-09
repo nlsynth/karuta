@@ -1,5 +1,6 @@
 #include "synth/thread_synth.h"
 
+#include "base/status.h"
 #include "iroha/iroha.h"
 #include "synth/method_expander.h"
 #include "synth/method_scanner.h"
@@ -7,7 +8,6 @@
 #include "synth/object_synth.h"
 #include "synth/resource_set.h"
 #include "synth/tool.h"
-#include "status.h"
 
 namespace synth {
 

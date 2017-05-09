@@ -1,4 +1,4 @@
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 
 DumpStream::DumpStream(std::ostream &_os) : os(_os) {
   indent_ = 0;

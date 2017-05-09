@@ -1,6 +1,6 @@
 #include "fe/enum_decl.h"
 
-#include "dump_stream.h"
+#include "base/dump_stream.h"
 
 namespace fe {
 
