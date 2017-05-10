@@ -43,15 +43,18 @@ class NliWrapper(object):
 
         self.Write('''
 <html><head><title>Neon Light Playground</title></head><body>
-<h1>Neon Light Playground</h1>\n''')
-        self.Write('''%s ''' % version)
-        self.Write('''(<a href="https://github.com/nlsynth/nli">source code on github</a>)<br>\n''')
+<img src="nl.jpg" style="float:left">
+<div>
+  <h1>Neon Light Playground</h1>\n
+  %s
+</div>''' % version)
+        self.Write('''(<a href="https://github.com/nlsynth/nli">source code on github</a>)<br/><br/>\n''')
 
         self.Write(
 '''<form id="src" method="POST" action="">
 <textarea name="s" cols=100 rows=20>
 %s
-</textarea>
+</textarea><br/>
 <input type="submit" value="Run">
 </form>
 ''' % html.escape(src))

@@ -5,6 +5,7 @@
 from http.server import CGIHTTPRequestHandler
 from http.server import HTTPServer
 import os
+import os.path
 from socketserver import ThreadingMixIn
 import tempfile
 import urllib
@@ -40,6 +41,8 @@ class NliServerHandler(CGIHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/o/'):
             return self.ServeOutput()
+        if os.path.basename(self.path) == "nl.jpg":
+            return self.ServeLogo()
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
@@ -69,6 +72,12 @@ class NliServerHandler(CGIHTTPRequestHandler):
 
         for line in open(fn, 'r'):
             self.wfile.write(bytes(line, 'utf-8'))
+
+    def ServeLogo(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'image/jpeg')
+        self.end_headers()
+        self.wfile.write(bytes(open('nl.jpg', 'rb').read()))
 
     def log_message(self, format, *args):
         super().log_message(format, *args)
