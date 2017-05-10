@@ -13,7 +13,7 @@ public:
   static void Init();
 
   // Called mainly from parser
-  static Annotation *Build(AnnotationValueSet *params);
+  static Annotation *Build(sym_t key, AnnotationValueSet *values);
   static AnnotationValue *BuildStrParam(sym_t key, const char *str);
   static void AddStrParam(AnnotationValue *p, const char *str);
   static AnnotationValueSet *BuildParamSet(AnnotationValueSet *lst,

@@ -145,10 +145,11 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
     Status::os(Status::USER) << "Invalid argument type of setSynthParam()";
     return;
   }
-  Value *value = obj->LookupValue(sym_lookup("$synth_params"), true);
+  sym_t synth_params = sym_lookup("$synth_params");
+  Value *value = obj->LookupValue(synth_params, true);
   if (value->type_ == Value::NONE) {
     value->type_ = Value::ANNOTATION;
-    value->annotation_ = AnnotationBuilder::Build(nullptr);
+    value->annotation_ = AnnotationBuilder::Build(synth_params, nullptr);
   }
   value->annotation_
     ->AddParam(StringWrapper::String(args[0].object_),

@@ -242,11 +242,14 @@ AnnotationValueSet *AnnotationBuilder::BuildParamSet(AnnotationValueSet *params,
   return params;
 }
 
-Annotation *AnnotationBuilder::Build(AnnotationValueSet *params) {
-  if (!params) {
-    params = new AnnotationValueSet;
+Annotation *AnnotationBuilder::Build(sym_t name, AnnotationValueSet *values) {
+  if (name == sym_null) {
+    return nullptr;
   }
-  return new Annotation(params);
+  if (values == nullptr) {
+    values = new AnnotationValueSet;
+  }
+  return new Annotation(values);
 }
 
 void AnnotationBuilder::Init() {

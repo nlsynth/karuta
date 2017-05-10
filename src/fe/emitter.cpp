@@ -12,7 +12,7 @@
 namespace fe {
 
 vector<MethodDecl> Emitter::method_stack_;
-AnnotationValueSet *Emitter::params_;
+Annotation *Emitter::annotation_;
 
 void Emitter::BeginFunction(Expr *name) {
   Method *method = new Method;
@@ -34,11 +34,12 @@ MethodDecl Emitter::EndFunction() {
 }
 
 void Emitter::SetCurrentFunctionParams() {
-  if (params_ == nullptr) {
+  if (annotation_ == nullptr) {
     return;
   }
   MethodDecl &decl = CurrentMethod();
-  decl.method_->annotation_ = AnnotationBuilder::Build(params_);
+  decl.method_->annotation_ = annotation_;
+  annotation_ = nullptr;
   fe::VarDeclSet *args = decl.method_->args_;
   if (args) {
     for (size_t i = 0; i < args->decls.size(); ++i) {
@@ -66,8 +67,8 @@ void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
   decl.method_->returns_ = returns;
 }
 
-void Emitter::SetImportedResource(AnnotationValueSet *params) {
-  params_ = params;
+void Emitter::SetAnnotation(sym_t key, AnnotationValueSet *values) {
+  annotation_ = AnnotationBuilder::Build(key, values);
 }
 
 void Emitter::BeginBlock() {

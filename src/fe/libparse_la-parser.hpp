@@ -147,8 +147,8 @@ union YYSTYPE
   sym_t sym;
   uint64_t num;
   struct WidthSpec width_spec;
-  class AnnotationValue *import_param;
-  class AnnotationValueSet *import_params;
+  class AnnotationValue *annotation_value;
+  class AnnotationValueSet *annotation_value_set;
 
 #line 154 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
 };
