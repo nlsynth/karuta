@@ -1,5 +1,6 @@
 #include "fe/var_decl.h"
 
+#include "base/annotation.h"
 #include "base/dump_stream.h"
 #include "fe/expr.h"
 
@@ -8,7 +9,8 @@ namespace fe {
 VarDecl::VarDecl() : name_expr_(nullptr), type_(nullptr), width_(nullptr),
 		     object_name_(sym_null),
 		     initial_val_(nullptr),
-		     array_length_(-1), array_initializer_(nullptr) {
+		     array_length_(-1), array_initializer_(nullptr),
+		     annotation_(nullptr) {
 }
 
 void VarDecl::Dump() {
@@ -54,6 +56,11 @@ void VarDecl::Dump(DumpStream &ds) {
     ds.push_indent();
     initial_val_->Dump(ds);
     ds.pop_indent();
+  }
+  if (annotation_) {
+    ds.indent();
+    annotation_->Dump(ds.os);
+    ds.os << "\n";
   }
 }
 
@@ -117,6 +124,14 @@ ArrayInitializer *VarDecl::GetArrayInitializer() const {
 
 void VarDecl::SetArrayInitializer(ArrayInitializer *array) {
   array_initializer_ = array;
+}
+
+Annotation *VarDecl::GetAnnotation() const{
+  return annotation_;
+}
+
+void VarDecl::SetAnnotation(Annotation *an) {
+  annotation_ = an;
 }
 
 void ArrayInitializer::Dump(DumpStream &ds) const {

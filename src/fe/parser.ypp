@@ -27,6 +27,7 @@ extern void yyerror(const char *msg);
   sym_t sym;
   uint64_t num;
   struct WidthSpec width_spec;
+  class Annotation *annotation;
   class AnnotationValue *annotation_value;
   class AnnotationValueSet *annotation_value_set;
 }
@@ -52,6 +53,7 @@ extern void yyerror(const char *msg);
 %type <num> K_ADD_SUB K_INC_DEC K_SHIFT
 %type <num> K_LOGIC_AND K_LOGIC_OR
 %type <width_spec> WIDTH_SPEC
+%type <annotation> ANNOTATION_OR_EMPTY
 %type <annotation_value> ANNOTATION_VALUE IMPORT_PARAM_HEAD
 %type <annotation_value_set> ANNOTATION_VALUE_LIST
 
@@ -113,9 +115,9 @@ ANNOTATION_VALUE_LIST : ANNOTATION_VALUE {
 }
 
 ANNOTATION_OR_EMPTY : {
-  Emitter::SetAnnotation(sym_null, nullptr);
+  $$ = Emitter::SetAnnotation(sym_null, nullptr);
 } | '@' SYM '(' ANNOTATION_VALUE_LIST ')' {
-  Emitter::SetAnnotation($2, $4);
+  $$ = Emitter::SetAnnotation($2, $4);
 }
 
 RETURN_TYPE : TYPE_NAME WIDTH_SPEC {
@@ -175,16 +177,16 @@ MAYBE_PTR_VAR : VAR {
 
 VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
   // Obsoleted grammar.
-  $$ = Builder::BuildVarDecl($1, $2.width, $2.name, $3);
-} | K_VAR MAYBE_PTR_VAR WIDTH_SPEC {
+  $$ = Builder::BuildVarDecl($1, $2.width, $2.name, nullptr, $3);
+} | ANNOTATION_OR_EMPTY K_VAR MAYBE_PTR_VAR WIDTH_SPEC {
   // Current grammar.
   ScannerInterface::InSemiColonStatement();
-  $$ = Builder::BuildVarDecl(sym_int, $3.width, $3.name, $2);
-} | K_VAR MAYBE_PTR_VAR TYPE_NAME {
+  $$ = Builder::BuildVarDecl(sym_int, $4.width, $4.name, $1, $3);
+} | ANNOTATION_OR_EMPTY K_VAR MAYBE_PTR_VAR TYPE_NAME {
   // Ditto. Current grammar.
   ScannerInterface::InSemiColonStatement();
-  $$ = Builder::BuildVarDecl($3, numeric::Width::MakeInt(false, 0),
-			     sym_null, $2);
+  $$ = Builder::BuildVarDecl($4, numeric::Width::MakeInt(false, 0),
+			     sym_null, $1, $3);
 } | K_ENUM TYPE_NAME MODIFIED_VAR {
 } | ENUM_DECL MODIFIED_VAR {
 }
@@ -261,7 +263,9 @@ VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
   ScannerInterface::InSemiColonStatement();
   sym_t type = Builder::TypeNameFromVarDeclSet($1);
   WidthSpec w = Builder::GetWidthSpecFromVarDeclSet($1);
-  $$ = Builder::VarDeclList($1, Builder::BuildVarDecl(type, w.width, w.name, $3));
+  $$ = Builder::VarDeclList($1,
+			    Builder::BuildVarDecl(type, w.width, w.name,
+						  nullptr, $3));
 } | VAR_DECL_STMT ',' MODIFIED_VAR K_ASSIGN EXPR {
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::VarDeclList($1, $3);

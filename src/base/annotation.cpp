@@ -10,6 +10,8 @@
 static sym_t sym_resource, sym_file, sym_copy, sym_verilog;
 static sym_t sym_module, sym_clock, sym_reset;
 
+static const char kAnnotationKey[] = "ANNOTATION-KEY";
+
 static Pool<Annotation> resource_params_pool;
 
 class AnnotationValue {
@@ -249,7 +251,9 @@ Annotation *AnnotationBuilder::Build(sym_t name, AnnotationValueSet *values) {
   if (values == nullptr) {
     values = new AnnotationValueSet;
   }
-  return new Annotation(values);
+  Annotation *a = new Annotation(values);
+  a->AddParam(kAnnotationKey, string(sym_cstr(name)));
+  return a;
 }
 
 void AnnotationBuilder::Init() {

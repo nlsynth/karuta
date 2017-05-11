@@ -32,6 +32,8 @@ public:
   void SetArrayLength(int array_length);
   ArrayInitializer *GetArrayInitializer() const;
   void SetArrayInitializer(ArrayInitializer *array);
+  Annotation *GetAnnotation() const;
+  void SetAnnotation(Annotation *an);
 
 private:
   Expr *name_expr_;
@@ -44,6 +46,7 @@ private:
   Expr *initial_val_;
   int array_length_;
   ArrayInitializer *array_initializer_;
+  Annotation *annotation_;
 };
 
 class VarDeclSet {

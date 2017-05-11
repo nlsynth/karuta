@@ -29,7 +29,7 @@ public:
   static void SetCurrentFunctionParams();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
-  static void SetAnnotation(sym_t key, AnnotationValueSet *values);
+  static Annotation *SetAnnotation(sym_t key, AnnotationValueSet *values);
   static void BeginBlock();
   static void EndBlock();
   static void EmitNop();

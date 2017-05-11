@@ -78,10 +78,12 @@ VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
 }
 
 VarDecl *Builder::BuildVarDecl(sym_t type, const numeric::Width *w,
-			       sym_t object_name, VarDecl *var) {
+			       sym_t object_name, Annotation *an,
+			       VarDecl *var) {
   var->SetType(type);
   var->SetWidth(w);
   var->SetObjectName(object_name);
+  var->SetAnnotation(an);
   return var;
 }
 
