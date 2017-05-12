@@ -1,11 +1,12 @@
 #include "vm/register.h"
 
 #include "base/dump_stream.h"
+#include "vm/enum_type_wrapper.h"
 #include "vm/value.h"
 
 namespace vm {
 
-RegisterType::RegisterType(Value::ValueType type, const EnumType *enum_type,
+RegisterType::RegisterType(Value::ValueType type, const Object *enum_type,
 			   const numeric::Width *width, sym_t object_name,
 			   bool is_const)
   : value_type_(type), enum_type_(enum_type), width_(width),
@@ -24,7 +25,7 @@ void RegisterType::Dump() {
 void RegisterType::Dump(DumpStream &ds) {
   ds.os << Value::TypeName(value_type_);
   if (enum_type_) {
-    ds.os << ":" << sym_cstr(enum_type_->name_);
+    ds.os << ":" << EnumTypeWrapper::GetName(enum_type_);
   }
   if (width_) {
     ds.os << " #";

@@ -7,16 +7,10 @@
 
 namespace vm {
 
-class EnumType {
-public:
-  sym_t name_;
-  vector<sym_t> items_;
-};
-
 class EnumVal {
 public:
   int val;
-  const EnumType *enum_type;
+  const Object *enum_type;
 };
 
 class Value {
@@ -32,11 +26,11 @@ public:
     NUM,
     METHOD,
     ENUM_ITEM,
-    ENUM_TYPE,
     ANNOTATION,
 
     // In object_.
     OBJECT,
+    ENUM_TYPE,
     INT_ARRAY,
     OBJECT_ARRAY,
   };
@@ -50,11 +44,9 @@ public:
   Method *method_;
   // for ENUM_ITEM
   EnumVal enum_val_;
-  // for ENUM_TYPE
-  const EnumType *enum_type_;
   // for ANNOTATION
   Annotation *annotation_;
-  // object itself for OBJECT, INT_ARRAY and OBJECT_ARRAY
+  // object itself for OBJECT, ENUM_TYPE, INT_ARRAY and OBJECT_ARRAY
   // (IsObjectType()==true).
   // can be numeric type object for NUM.
   Object *object_;

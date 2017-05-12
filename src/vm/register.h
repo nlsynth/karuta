@@ -10,7 +10,7 @@ namespace vm {
 
 class RegisterType {
 public:
-  RegisterType(Value::ValueType value_type, const EnumType *enum_type,
+  RegisterType(Value::ValueType value_type, const Object *enum_type,
 	       const numeric::Width *width, sym_t object_name,
 	       bool is_const);
   void Dump();
@@ -19,7 +19,7 @@ public:
   // VALUE_*
   enum Value::ValueType value_type_;
   // when value_type_ == ENUM_ITEM
-  const EnumType *enum_type_;
+  const Object *enum_type_;
   const numeric::Width *width_;
   sym_t object_name_;
   bool is_const_;

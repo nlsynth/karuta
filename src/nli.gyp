@@ -130,6 +130,8 @@
         'vm/opcode.h',
         'vm/register.cpp',
         'vm/register.h',
+        'vm/enum_type_wrapper.cpp',
+        'vm/enum_type_wrapper.h',
         'vm/string_wrapper.cpp',
         'vm/string_wrapper.h',
         'vm/thread.cpp',

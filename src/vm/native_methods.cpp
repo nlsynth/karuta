@@ -25,7 +25,7 @@ void NativeMethods::Assert(Thread *thr, Object *obj,
   const Value &arg = args[0];
   VM *vm = thr->GetVM();
   CHECK(arg.type_ == Value::ENUM_ITEM) << "Assert argument is not an enum item";
-  CHECK(arg.enum_val_.enum_type == vm->bool_type_.get());
+  CHECK(arg.enum_val_.enum_type == vm->bool_type_);
   if (arg.enum_val_.val == 0) {
     cout << "ASSERTION FAILURE\n";
   }
@@ -187,7 +187,7 @@ void NativeMethods::IsMain(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
   Value value;
   value.type_ = Value::ENUM_ITEM;
-  value.enum_val_.enum_type = thr->GetVM()->bool_type_.get();
+  value.enum_val_.enum_type = thr->GetVM()->bool_type_;
   value.enum_val_.val = thr->IsRootThread() ? 1 : 0;
   SetReturnValue(thr, value);
 }
@@ -266,7 +266,7 @@ RegisterType Method::ObjectType() {
 }
 
 RegisterType Method::BoolType(VM *vm) {
-  return RegisterType(Value::ENUM_ITEM, vm->bool_type_.get(), nullptr,
+  return RegisterType(Value::ENUM_ITEM, vm->bool_type_, nullptr,
 		      sym_null, false);
 }
 

@@ -178,7 +178,7 @@ void InsnAnnotator::TryType(Insn *insn) {
       InsnType::IsComparison(insn->op_)) {
     insn->dst_regs_[0]->type_.value_type_ = Value::ENUM_ITEM;
     insn->dst_regs_[0]->type_.enum_type_ =
-      vm_->bool_type_.get();
+      vm_->bool_type_;
     return;
   }
   if (insn->op_ == OP_BIT_INV) {
@@ -261,7 +261,7 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
   } else {
     reg->type_.value_type_ = SymToType(decl->GetType());
     if (decl->GetType() == sym_bool) {
-      reg->type_.enum_type_ = vm->bool_type_.get();
+      reg->type_.enum_type_ = vm->bool_type_;
     }
   }
   if (decl->GetWidth()) {

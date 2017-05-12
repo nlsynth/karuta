@@ -2,6 +2,7 @@
 
 #include "base/annotation.h"
 #include "vm/array_wrapper.h"
+#include "vm/enum_type_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
 
@@ -39,11 +40,11 @@ void Value::Dump(ostream &os) const {
     num_.Dump(os);
     break;
   case ENUM_TYPE:
-    os << sym_cstr(enum_type_->name_) << " "
-       << enum_type_->items_.size() << "items";
+    os << EnumTypeWrapper::GetName(object_) << " "
+       << EnumTypeWrapper::GetNumItems(object_) << "items";
     break;
   case ENUM_ITEM:
-    os << enum_val_.val << " in " << sym_cstr(enum_val_.enum_type->name_);
+    os << enum_val_.val << " in " << EnumTypeWrapper::GetName(enum_val_.enum_type);
     break;
   case ANNOTATION:
     os << "annotation: ";

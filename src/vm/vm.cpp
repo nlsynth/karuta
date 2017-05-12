@@ -3,6 +3,7 @@
 #include "base/status.h"
 #include "fe/expr.h"
 #include "vm/array_wrapper.h"
+#include "vm/enum_type_wrapper.h"
 #include "vm/channel.h"
 #include "vm/gc.h"
 #include "vm/int_array.h"
@@ -59,27 +60,26 @@ void VM::GC() {
 }
 
 void VM::InstallBoolType() {
-  bool_type_.reset(new EnumType);
-  bool_type_->name_ = sym_lookup("bool");
-  bool_type_->items_.push_back(sym_lookup("false"));
-  bool_type_->items_.push_back(sym_lookup("true"));
+  bool_type_ = EnumTypeWrapper::NewEnumTypeWrapper(this, sym_lookup("bool"));
+  EnumTypeWrapper::AddItem(bool_type_, sym_lookup("false"));
+  EnumTypeWrapper::AddItem(bool_type_, sym_lookup("true"));
 
   Value value;
   value.type_ = Value::ENUM_TYPE;
-  value.enum_type_ = bool_type_.get();
+  value.object_ = bool_type_;
   root_object_->InstallValue(sym_lookup("bool"), value);
 
   Value true_value;
   true_value.type_ = Value::ENUM_ITEM;
   true_value.enum_val_.val = 1;
-  true_value.enum_val_.enum_type = bool_type_.get();
+  true_value.enum_val_.enum_type = bool_type_;
   true_value.is_const_ = true;
   root_object_->InstallValue(sym_lookup("true"), true_value);
 
   Value false_value;
   false_value.type_ = Value::ENUM_ITEM;
   false_value.enum_val_.val = 0;
-  false_value.enum_val_.enum_type = bool_type_.get();
+  false_value.enum_val_.enum_type = bool_type_;
   false_value.is_const_ = true;
   root_object_->InstallValue(sym_lookup("false"), false_value);
 }
