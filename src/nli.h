@@ -8,7 +8,6 @@
 #include <stdint.h>
 #include <vector>
 
-#include "base/initializer.h"
 #include "base/stl_util.h"
 #include "base/logging.h"
 #include "base/sym.h"

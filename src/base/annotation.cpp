@@ -5,28 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "nli.h"
+#include "base/annotation_builder.h"
 #include "base/pool.h"
 
-static sym_t sym_resource, sym_file, sym_copy, sym_verilog;
-static sym_t sym_module, sym_clock, sym_reset;
-
-static const char kAnnotationKey[] = "ANNOTATION-KEY";
+static const char kResource[] = "RESOURCE";
+static const char kFile[] = "FILE";
+static const char kCopy[] = "COPY";
+static const char kVerilog[] = "VERILOG";
+static const char kModule[] = "MODULE";
+static const char kClock[] = "CLOCK";
+static const char kReset[] = "RESET";
 
 static Pool<Annotation> resource_params_pool;
-
-class AnnotationValue {
-public:
-  string GetNthValue(int nth);
-
-  sym_t key_;
-  vector <string> values_;
-};
-
-class AnnotationValueSet {
-public:
-  ~AnnotationValueSet();
-  vector<AnnotationValue *> params_;
-};
 
 string AnnotationValue::GetNthValue(int nth) {
   if (nth < (int)values_.size()) {
@@ -65,7 +55,7 @@ void Annotation::Dump(ostream &os) const {
     if (!is_first_param) {
       os << ",";
     }
-    os << "[" << sym_cstr(param->key_) << "]=";
+    os << "[" << param->key_ << "]=";
     bool is_first_value = true;
     for (string &value : param->values_) {
       if (!is_first_value) {
@@ -95,58 +85,58 @@ Annotation *Annotation::Copy(Annotation *params) {
 }
 
 bool Annotation::IsImportedModule() {
-  if (LookupParam(sym_verilog)) {
+  if (LookupParam(kVerilog)) {
     return true;
   }
   return false;
 }
 
 string Annotation::GetOutputPinName() {
-  return LookupStrParam(sym_output, "");
+  return LookupStrParam(sym_cstr(sym_output), "");
 }
 
 string Annotation::GetInputPinName() {
-  return LookupStrParam(sym_input, "");
+  return LookupStrParam(sym_cstr(sym_input), "");
 }
 
 string Annotation::GetAckPinName() {
-  return LookupStrParam(sym_lookup("ack"), "");
+  return LookupStrParam("ack", "");
 }
 
 bool Annotation::ResetPolarity() {
-  return (LookupStrParam(sym_lookup("resetPolarity"), "1") == "1");
+  return (LookupStrParam("resetPolarity", "1") == "1");
 }
 
 string Annotation::GetThreadEntry() {
-  return LookupStrParam(sym_lookup("thread_entry"), "");
+  return LookupStrParam("thread_entry", "");
 }
 
 string Annotation::GetDataFlowEntry() {
-  return LookupStrParam(sym_lookup("dataflow_entry"), "");
+  return LookupStrParam("dataflow_entry", "");
 }
 
 bool Annotation::IsExtIO() {
-  if (LookupParam(sym_output) || LookupParam(sym_input)) {
+  if (LookupParam(sym_cstr(sym_output)) || LookupParam(sym_cstr(sym_input))) {
     return true;
   }
   return false;
 }
 
 bool Annotation::IsExtInput() {
-  if (LookupParam(sym_input)) {
+  if (LookupParam(sym_cstr(sym_input))) {
     return true;
   }
   return false;
 }
 
 bool Annotation::IsExtOutput() {
-  if (LookupParam(sym_output)) {
+  if (LookupParam(sym_cstr(sym_output))) {
     return true;
   }
   return false;
 }
 
-string Annotation::LookupStrParam(sym_t key, string dflt) {
+string Annotation::LookupStrParam(const string &key, const string &dflt) {
   AnnotationValue *p = LookupParam(key);
   if (!p) {
     return dflt;
@@ -154,7 +144,7 @@ string Annotation::LookupStrParam(sym_t key, string dflt) {
   return p->GetNthValue(0);
 }
 
-AnnotationValue *Annotation::LookupParam(sym_t key) {
+AnnotationValue *Annotation::LookupParam(const string &key) {
   for (AnnotationValue *param : params_->params_) {
     if (key == param->key_) {
       return param;
@@ -164,15 +154,15 @@ AnnotationValue *Annotation::LookupParam(sym_t key) {
 }
 
 string Annotation::GetResourceName() {
-  return LookupStrParam(sym_resource, "");
+  return LookupStrParam(kResource, "");
 }
 
 string Annotation::GetCopyFileName() {
-  string file = LookupStrParam(sym_file, "");
+  string file = LookupStrParam(kFile, "");
   if (file != "copy") {
     return "";
   }
-  AnnotationValue *p = LookupParam(sym_verilog);
+  AnnotationValue *p = LookupParam(kVerilog);
   if (!p) {
     std::cout << "source file to be copied is not specified.\n";
     abort();
@@ -182,15 +172,15 @@ string Annotation::GetCopyFileName() {
 }
 
 string Annotation::GetModuleName() {
-  return LookupStrParam(sym_module, "");
+  return LookupStrParam(kModule, "");
 }
 
 string Annotation::GetClockPinName() {
-  return LookupStrParam(sym_clock, "clk");
+  return LookupStrParam(kClock, "clk");
 }
 
 string Annotation::GetResetPinName() {
-  return LookupStrParam(sym_reset, "rst");
+  return LookupStrParam(kReset, "rst");
 }
 
 void Annotation::AddPinDecl(sym_t name, bool is_out, int width) {
@@ -215,7 +205,7 @@ bool Annotation::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
 }
 
 void Annotation::AddParam(const string &key, const string &value) {
-  AnnotationValue *param = LookupParam(sym_lookup(key.c_str()));
+  AnnotationValue *param = LookupParam(key);
   if (param) {
     param->values_.push_back(value);
   } else {
@@ -223,47 +213,3 @@ void Annotation::AddParam(const string &key, const string &value) {
     params_->params_.push_back(param);
   }
 }
-
-void AnnotationBuilder::AddStrParam(AnnotationValue *p, const char *str) {
-  p->values_.push_back(string(str));
-}
-
-AnnotationValue *AnnotationBuilder::BuildStrParam(sym_t key, const char *str) {
-  AnnotationValue *p = new AnnotationValue();
-  p->key_ = key;
-  AddStrParam(p, str);
-  return p;
-}
-
-AnnotationValueSet *AnnotationBuilder::BuildParamSet(AnnotationValueSet *params,
-						     AnnotationValue *p) {
-  if (!params) {
-    params = new AnnotationValueSet();
-  }
-  params->params_.push_back(p);
-  return params;
-}
-
-Annotation *AnnotationBuilder::Build(sym_t name, AnnotationValueSet *values) {
-  if (name == sym_null) {
-    return nullptr;
-  }
-  if (values == nullptr) {
-    values = new AnnotationValueSet;
-  }
-  Annotation *a = new Annotation(values);
-  a->AddParam(kAnnotationKey, string(sym_cstr(name)));
-  return a;
-}
-
-void AnnotationBuilder::Init() {
-  sym_resource = sym_lookup("resource");
-  sym_file = sym_lookup("file");
-  sym_copy = sym_lookup("copy");
-  sym_verilog = sym_lookup("verilog");
-  sym_module = sym_lookup("module");
-  sym_clock = sym_lookup("clock");
-  sym_reset = sym_lookup("reset");
-}
-
-STATIC_INITIALIZER(importer , AnnotationBuilder::Init());

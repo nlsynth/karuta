@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "base/annotation.h"
+#include "base/annotation_builder.h"
 #include "base/pool.h"
 #include "base/status.h"
 #include "synth/synth.h"

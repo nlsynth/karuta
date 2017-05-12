@@ -282,7 +282,6 @@ int Main::main(int argc, char **argv) {
   ::sym_table_init();
   numeric::Numeric::Init();
   iroha::Iroha::Init();
-  StaticInitializer::RunInitializers();
   Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
@@ -304,7 +303,6 @@ int Main::main(int argc, char **argv) {
   LOG(INFO) << "NLI-" << Env::GetVersion();
   RunFiles(args.source_files);
   Status::CheckAll();
-  StaticInitializer::RunFinalizers();
   if (print_exit_status) {
     // Used to confirm this program was finished normally.
     // (without SEGV and so on)

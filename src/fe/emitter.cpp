@@ -1,6 +1,7 @@
 #include "fe/emitter.h"
 
 #include "base/annotation.h"
+#include "base/annotation_builder.h"
 #include "fe/builder.h"
 #include "fe/common.h"
 #include "fe/expr.h"

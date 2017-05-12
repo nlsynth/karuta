@@ -1,6 +1,6 @@
 // -*- C++ -*-
 %{
-#include "base/annotation.h"
+#include "base/annotation_builder.h"
 #include "base/sym.h"
 #include "fe/builder.h"
 #include "fe/emitter.h"
