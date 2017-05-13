@@ -61,6 +61,7 @@ private:
   void EmitEntryInsn(vm::Method *method);
   void EmitTaskEntry(IState *st);
   void EmitTaskReturn(IState *last);
+  void MayAddAxiSlavePort(vm::Object *array_obj);
 
   ThreadSynth *thr_synth_;
   const string method_name_;

@@ -119,8 +119,8 @@ IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
 
 IResource *ResourceSet::GetAxiMasterPort(vm::Object *obj) {
   IResource *array_res = GetSharedArray(obj, true, true);
-  auto it = axi_ports_.find(obj);
-  if (it != axi_ports_.end()) {
+  auto it = axi_master_ports_.find(obj);
+  if (it != axi_master_ports_.end()) {
     return it->second;
   }
   IResourceClass *rc =
@@ -129,7 +129,23 @@ IResource *ResourceSet::GetAxiMasterPort(vm::Object *obj) {
   IResource *res = new IResource(tab_, rc);
   res->SetParentResource(array_res);
   tab_->resources_.push_back(res);
-  axi_ports_[obj] = res;
+  axi_master_ports_[obj] = res;
+  return res;
+}
+
+IResource *ResourceSet::GetAxiSlavePort(vm::Object *obj) {
+  IResource *array_res = GetSharedArray(obj, true, true);
+  auto it = axi_slave_ports_.find(obj);
+  if (it != axi_slave_ports_.end()) {
+    return it->second;
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  resource::kAxiSlavePort);
+  IResource *res = new IResource(tab_, rc);
+  res->SetParentResource(array_res);
+  tab_->resources_.push_back(res);
+  axi_slave_ports_[obj] = res;
   return res;
 }
 

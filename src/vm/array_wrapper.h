@@ -14,12 +14,15 @@ public:
 
   static Object *NewObjectArrayWrapper(VM *vm, int size);
   static Object *NewIntArrayWrapper(VM *vm, int size,
-				    const numeric::Width *width);
+				    const numeric::Width *width,
+				    Annotation *an);
   static Object *Copy(VM *vm, Object *obj);
 
   static Object *Get(Object *obj, int nth);
   static void Set(Object *obj, int nth, Object *elem);
   static IntArray *GetIntArray(Object *obj);
+  static Annotation *GetAnnotation(Object *obj);
+  static int GetDataWidth(Object *obj);
 
 private:
   static void Load(Thread *thr, Object *obj, const vector<Value> &args);

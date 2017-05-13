@@ -107,6 +107,10 @@ bool Annotation::ResetPolarity() {
   return (LookupStrParam("resetPolarity", "1") == "1");
 }
 
+bool Annotation::IsAxiSlave() {
+  return LookupStrParam(annotation::kAnnotationKey, "") == "axi_slave";
+}
+
 string Annotation::GetThreadEntry() {
   return LookupStrParam("thread_entry", "");
 }

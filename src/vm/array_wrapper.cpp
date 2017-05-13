@@ -16,13 +16,15 @@ static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
 public:
-  ArrayWrapperData(int size, bool is_int, const numeric::Width *width) {
+  ArrayWrapperData(int size, bool is_int, const numeric::Width *width,
+		   Annotation *an) {
     if (is_int) {
       int_array_ = IntArray::Create(width, size);
     } else {
       int_array_ = nullptr;
       objs_.resize(size);
     }
+    an_ = an;
   }
   ArrayWrapperData(ArrayWrapperData *src) {
     objs_ = src->objs_;
@@ -36,6 +38,7 @@ public:
 
   vector<Object *> objs_;
   IntArray *int_array_;
+  Annotation *an_;
 
   virtual const char *ObjectTypeKey() {
     if (int_array_) {
@@ -80,16 +83,17 @@ string ArrayWrapper::ToString(Object *obj) {
 Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
   Object *array_obj = vm->root_object_->Clone(vm);
   InstallMethods(vm, array_obj);
-  ArrayWrapperData *data = new ArrayWrapperData(size, false, nullptr);
+  ArrayWrapperData *data = new ArrayWrapperData(size, false, nullptr, nullptr);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }
 
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
-					 const numeric::Width *width) {
+					 const numeric::Width *width,
+					 Annotation *an) {
   Object *array_obj = vm->root_object_->Clone(vm);
   InstallMethods(vm, array_obj);
-  ArrayWrapperData *data = new ArrayWrapperData(size, true, width);
+  ArrayWrapperData *data = new ArrayWrapperData(size, true, width, an);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }
@@ -110,6 +114,16 @@ IntArray *ArrayWrapper::GetIntArray(Object *obj) {
   CHECK(obj->ObjectTypeKey() == kIntArrayKey);
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   return data->int_array_;
+}
+
+Annotation *ArrayWrapper::GetAnnotation(Object *obj) {
+  ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
+  return data->an_;
+}
+
+int ArrayWrapper::GetDataWidth(Object *obj) {
+  IntArray *a = GetIntArray(obj);
+  return numeric::Width::GetWidth(a->GetWidth());
 }
 
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {

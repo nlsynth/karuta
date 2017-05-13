@@ -15,6 +15,7 @@
 #include "synth/thread_synth.h"
 #include "synth/tool.h"
 #include "vm/channel.h"
+#include "vm/array_wrapper.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -678,6 +679,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetSharedArray(array_obj, true, false);
     sres->AddOwnerResource(res);
+    MayAddAxiSlavePort(array_obj);
   } else {
     res = res_set_->GetSharedArray(array_obj, false, is_write);
     sres->AddAccessorResource(res);
@@ -749,6 +751,19 @@ void MethodSynth::InsnToCalcValueType(vm::Insn *insn, IValueType *vt) {
   } else if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     vt->SetWidth(numeric::Width::GetWidth(reg->type_.width_));
   }
+}
+
+void MethodSynth::MayAddAxiSlavePort(vm::Object *array_obj) {
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
+  if (a == nullptr || !a->IsAxiSlave()) {
+    return;
+  }
+  IResource *slave_port = res_set_->GetAxiSlavePort(array_obj);
+  if (slave_port->GetParams()->GetWidth() == 32) {
+    // already configured.
+    return;
+  }
+  slave_port->GetParams()->SetWidth(vm::ArrayWrapper::GetDataWidth(array_obj));
 }
 
 }  // namespace synth

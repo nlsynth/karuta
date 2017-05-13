@@ -38,9 +38,11 @@ Executor::~Executor() {
 
 Object *Executor::CreateMemoryObject(const numeric::Width *width,
 				     int array_length,
-				     fe::ArrayInitializer *array_initializer) {
+				     fe::ArrayInitializer *array_initializer,
+				     Annotation *an) {
   Object *obj = ArrayWrapper::NewIntArrayWrapper(thr_->GetVM(),
-						 array_length, width);
+						 array_length, width,
+						 an);
   IntArray *memory = ArrayWrapper::GetIntArray(obj);
   InitializeArray(memory, array_initializer);
   return obj;

@@ -60,6 +60,8 @@ public:
 
   bool ResetPolarity();
 
+  bool IsAxiSlave();
+
   void AddPinDecl(sym_t name, bool is_out, int width);
   int GetNrPinDecls();
   bool GetNthPinDecl(int nth, ResourceParams_pin *decl);

@@ -101,7 +101,8 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   if (value->type_ == Value::INT_ARRAY) {
     value->object_ = CreateMemoryObject(decl->GetWidth(),
 					decl->GetArrayLength(),
-					decl->GetArrayInitializer());
+					decl->GetArrayInitializer(),
+					decl->GetAnnotation());
   }
   if (value->type_ == Value::OBJECT_ARRAY) {
     value->object_ = CreateObjectArray(decl->GetArrayLength());
