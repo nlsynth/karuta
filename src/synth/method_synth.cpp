@@ -134,8 +134,7 @@ bool MethodSynth::IsDataFlowEntry() const {
       method_->parse_tree_->annotation_ == nullptr) {
     return false;
   }
-  string s = method_->parse_tree_->annotation_->GetDataFlowEntry();
-  return !s.empty();
+  return method_->parse_tree_->annotation_->IsDataFlowEntry();
 }
 
 void MethodSynth::SynthNativeImplMethod(vm::Method *method) {

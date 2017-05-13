@@ -55,8 +55,9 @@ public:
   string GetOutputPinName();
   string GetInputPinName();
 
-  string GetThreadEntry();
-  string GetDataFlowEntry();
+  bool IsThreadEntry();
+  bool IsDataFlowEntry();
+  string GetName();
 
   bool ResetPolarity();
 

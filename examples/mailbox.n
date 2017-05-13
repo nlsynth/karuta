@@ -1,13 +1,13 @@
 mailbox Kernel.m1 = int;
 mailbox Kernel.m2 = int;
 
-@a(thread_entry = "t1")
+@thread_entry(name = "t1")
 def Kernel.f() {
   m1.put(100);
   print(m2.get());
 }
 
-@a(thread_entry = "t2")
+@thread_entry(name = "t2")
 def Kernel.g() {
   int g = m1.get();
   print(g);

@@ -111,12 +111,16 @@ bool Annotation::IsAxiSlave() {
   return LookupStrParam(annotation::kAnnotationKey, "") == "axi_slave";
 }
 
-string Annotation::GetThreadEntry() {
-  return LookupStrParam("thread_entry", "");
+bool Annotation::IsThreadEntry() {
+  return LookupStrParam(annotation::kAnnotationKey, "") == "thread_entry";
 }
 
-string Annotation::GetDataFlowEntry() {
-  return LookupStrParam("dataflow_entry", "");
+string Annotation::GetName() {
+  return LookupStrParam("name", "");
+}
+
+bool Annotation::IsDataFlowEntry() {
+  return LookupStrParam(annotation::kAnnotationKey, "") == "dataflow_entry";
 }
 
 bool Annotation::IsExtIO() {
