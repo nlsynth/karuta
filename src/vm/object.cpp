@@ -58,12 +58,20 @@ Value *Object::LookupValue(sym_t name, bool cr) {
 }
 
 void Object::LookupMemberNames(Object *obj, vector<sym_t> *slots) {
-  for (map<sym_t, Value>::iterator it = members_.begin();
-       it != members_.end(); ++it) {
-    Value &value = it->second;
+  for (auto it : members_) {
+    Value &value = it.second;
     // Can be object, array, string or other wrapped type.
     if (value.object_ == obj) {
-      slots->push_back(it->first);
+      slots->push_back(it.first);
+    }
+  }
+}
+
+void Object::GetAllMemberObjs(map<sym_t, Object *> *member_objs) {
+  for (auto it : members_) {
+    Value &value = it.second;
+    if (value.IsObjectType()) {
+      (*member_objs)[it.first] = value.object_;
     }
   }
 }

@@ -2,12 +2,16 @@
 
 #include "base/status.h"
 #include "iroha/iroha.h"
+#include "synth/design_synth.h"
 #include "synth/method_expander.h"
 #include "synth/method_scanner.h"
 #include "synth/method_synth.h"
 #include "synth/object_synth.h"
+#include "synth/shared_resource_set.h"
 #include "synth/resource_set.h"
 #include "synth/tool.h"
+#include "vm/array_wrapper.h"
+#include "vm/object.h"
 
 namespace synth {
 
@@ -17,6 +21,7 @@ ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 			 IModule *mod)
   : obj_synth_(obj_synth),
     thread_name_(thread_name), entry_method_name_(entry_method_name),
+    is_primary_thread_(false),
     mod_(mod), tab_(nullptr),
     is_task_(false),
     reg_name_index_(0) {
@@ -94,6 +99,31 @@ bool ThreadSynth::Synth() {
 
   mod_->tables_.push_back(tab_);
   return true;
+}
+
+void ThreadSynth::SetPrimary() {
+  is_primary_thread_ = true;
+}
+
+bool ThreadSynth::IsPrimary() {
+  return is_primary_thread_;
+}
+
+void ThreadSynth::CollectUnclaimedMembers() {
+  DesignSynth *ds = obj_synth_->GetDesignSynth();
+  SharedResourceSet *sres = ds->GetSharedResourceSet();
+  vm::Object *obj = obj_synth_->GetObject();
+  map<sym_t, vm::Object *> member_objs;
+  obj->GetAllMemberObjs(&member_objs);
+  for (auto it : member_objs) {
+    if (vm::ArrayWrapper::IsIntArray(it.second)) {
+      if (sres->HasAccessor(it.second)) {
+	continue;
+      }
+      // TODO: Allocate resource for this array.
+    }
+  }
+  // TODO: Also process methods with ext_io.
 }
 
 bool ThreadSynth::ProcessDataFlow() {

@@ -14,7 +14,7 @@ public:
 	      DesignSynth *design_synth);
   virtual ~ObjectSynth();
 
-  void Prepare(const char *name, bool is_root);
+  void Prepare(const char *obj_name, bool is_root);
   void AddEntryName(const string &task_entry);
   bool Scan(bool *ok);
   bool Synth();

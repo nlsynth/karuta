@@ -27,7 +27,9 @@ public:
 
   void InstallValue(sym_t name, const Value &value);
   Value *LookupValue(sym_t name, bool cr);
+  // Finds synonyms of the member objects.
   void LookupMemberNames(Object *obj, vector<sym_t> *slots);
+  void GetAllMemberObjs(map<sym_t, Object *> *member_objs);
   Object *Clone(VM *vm);
   const string &ToString();
   bool Compare(Object *obj);

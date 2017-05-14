@@ -21,6 +21,10 @@ public:
 
   bool Synth();
   bool Scan();
+  // One primary thread in an object and takes care of unaccessed resources.
+  void SetPrimary();
+  bool IsPrimary();
+  void CollectUnclaimedMembers();
   bool ProcessDataFlow();
   void SetIsTask(bool is_task);
   ObjectSynth *GetObjectSynth();
@@ -39,6 +43,7 @@ private:
   ObjectSynth *obj_synth_;
   const string thread_name_;
   const string entry_method_name_;
+  bool is_primary_thread_;
   vector<SubObjCall> sub_obj_calls_;
   IModule *mod_;
   ITable *tab_;

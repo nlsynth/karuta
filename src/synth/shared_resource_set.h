@@ -48,6 +48,7 @@ public:
 
   SharedResource *GetBySlotName(vm::Object *obj, sym_t name);
   SharedResource *GetByObj(vm::Object *obj);
+  bool HasAccessor(vm::Object *obj);
 
 private:
   void ResolveSharedResource(SharedResource *res);

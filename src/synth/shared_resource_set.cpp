@@ -137,4 +137,8 @@ SharedResource *SharedResourceSet::GetByObj(vm::Object *obj) {
   return res;
 }
 
+bool SharedResourceSet::HasAccessor(vm::Object *obj) {
+  return (obj_resources_.find(obj) != obj_resources_.end());
+}
+
 }  // namespace synth

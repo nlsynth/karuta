@@ -18,8 +18,8 @@ ObjectSynth::~ObjectSynth() {
   STLDeleteValues(&threads_);
 }
 
-void ObjectSynth::Prepare(const char *name, bool is_root) {
-  obj_name_ = string(name);
+void ObjectSynth::Prepare(const char *obj_name, bool is_root) {
+  obj_name_ = string(obj_name);
   // This method can be called multiple times, if multiple callers depend
   // on this object.
   if (mod_ != nullptr) {
@@ -58,12 +58,19 @@ bool ObjectSynth::Scan(bool *ok) {
 }
 
 bool ObjectSynth::Synth() {
+  ThreadSynth *primary = nullptr;
   for (auto *thr : threads_) {
     if (!thr->Synth()) {
       Status::os(Status::USER) << "Failed to synthesize object: " << obj_name_;
       MessageFlush::Get(Status::USER);
       return false;
     }
+    if (thr->IsPrimary()) {
+      primary = thr;
+    }
+  }
+  if (primary != nullptr) {
+    primary->CollectUnclaimedMembers();
   }
   return true;
 }
@@ -85,7 +92,11 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   vm::ThreadWrapper::GetThreadMethods(obj_, &thread_entries);
 
   if (thread_entries.size() == 0 && is_root_) {
-    threads_.push_back(new ThreadSynth(this, "main", "main", mod));
+    ThreadSynth *ts = new ThreadSynth(this, "main", "main", mod);
+    // TODO set primary thread if there's no main.
+    // (from DesignSynth after scan phase)
+    ts->SetPrimary();
+    threads_.push_back(ts);
   }
   for (auto &te : thread_entries) {
     threads_.push_back(new ThreadSynth(this, te.thread_name.c_str(), te.method_name.c_str(), mod));
