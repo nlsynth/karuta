@@ -91,6 +91,8 @@
         'synth/object_synth.h',
         'synth/resource_set.cpp',
         'synth/resource_set.h',
+        'synth/resource_synth.cpp',
+        'synth/resource_synth.h',
         'synth/shared_resource_set.cpp',
         'synth/shared_resource_set.h',
         'synth/synth.cpp',

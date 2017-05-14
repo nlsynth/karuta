@@ -42,6 +42,7 @@ class MethodSynth;
 class ObjectSynth;
 class ThreadSynth;
 class ResourceSet;
+class ResourceSynth;
 class StateWrapper;
 class SharedResource;
 class SharedResourceSet;

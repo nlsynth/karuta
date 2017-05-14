@@ -8,7 +8,8 @@ namespace synth {
 
 class ObjectMethod {
 public:
-  ObjectMethod(MethodSynth *synth, InsnWalker *walker, vm::Insn *insn);
+  ObjectMethod(MethodSynth *synth, InsnWalker *walker, ResourceSynth *rsynth,
+	       vm::Insn *insn);
 
   void Synth();
   void Scan();
@@ -22,6 +23,7 @@ private:
 
   MethodSynth *synth_;
   InsnWalker *walker_;
+  ResourceSynth *rsynth_;
   vm::Insn *insn_;
 };
 

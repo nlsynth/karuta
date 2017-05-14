@@ -49,6 +49,7 @@ private:
   ITable *tab_;
   bool is_task_;
   std::unique_ptr<ResourceSet> resource_;
+  std::unique_ptr<ResourceSynth> rsynth_;
   struct PerObject {
     // name to method.
     map<string, MethodSynth *> methods_;

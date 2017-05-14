@@ -99,7 +99,7 @@ void MethodScanner::ArrayAccess(vm::Insn *insn) {
 }
 
 void MethodScanner::NativeFuncall(vm::Insn *insn) {
-  ObjectMethod m(nullptr, this, insn);
+  ObjectMethod m(nullptr, this, nullptr, insn);
   m.Scan();
 }
 

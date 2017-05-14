@@ -61,6 +61,7 @@ public:
 
   bool ResetPolarity();
 
+  bool IsAxiMaster();
   bool IsAxiSlave();
 
   void AddPinDecl(sym_t name, bool is_out, int width);

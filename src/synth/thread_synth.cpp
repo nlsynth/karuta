@@ -9,6 +9,7 @@
 #include "synth/object_synth.h"
 #include "synth/shared_resource_set.h"
 #include "synth/resource_set.h"
+#include "synth/resource_synth.h"
 #include "synth/tool.h"
 #include "vm/array_wrapper.h"
 #include "vm/object.h"
@@ -34,6 +35,7 @@ bool ThreadSynth::Scan() {
   tab_ = new ITable(mod_);
   tab_->SetName(thread_name_);
   resource_.reset(new ResourceSet(tab_));
+  rsynth_.reset(new ResourceSynth(resource_.get()));
   // Entry method of this thread.
   RequestMethod(obj_synth_->GetObject(), entry_method_name_);
   int num_scan;
@@ -73,7 +75,7 @@ bool ThreadSynth::Synth() {
     for (auto jt : it.second.methods_) {
       auto &name = jt.first;
       auto *ms = new MethodSynth(this, obj, name,
-				 tab_, resource_.get());
+				 tab_, rsynth_.get(), resource_.get());
       obj_methods_[obj].methods_[name] = ms;
     }
   }
@@ -116,11 +118,13 @@ void ThreadSynth::CollectUnclaimedMembers() {
   map<sym_t, vm::Object *> member_objs;
   obj->GetAllMemberObjs(&member_objs);
   for (auto it : member_objs) {
-    if (vm::ArrayWrapper::IsIntArray(it.second)) {
-      if (sres->HasAccessor(it.second)) {
+    vm::Object *member_obj = it.second;
+    if (vm::ArrayWrapper::IsIntArray(member_obj)) {
+      if (sres->HasAccessor(member_obj)) {
 	continue;
       }
-      // TODO: Allocate resource for this array.
+      rsynth_->MayAddAxiMasterPort(member_obj);
+      rsynth_->MayAddAxiSlavePort(member_obj);
     }
   }
   // TODO: Also process methods with ext_io.

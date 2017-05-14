@@ -11,11 +11,12 @@
 #include "synth/object_method.h"
 #include "synth/object_synth.h"
 #include "synth/resource_set.h"
+#include "synth/resource_synth.h"
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "synth/tool.h"
-#include "vm/channel.h"
 #include "vm/array_wrapper.h"
+#include "vm/channel.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -26,10 +27,11 @@ namespace synth {
 
 MethodSynth::MethodSynth(ThreadSynth *thr_synth,
 			 vm::Object *obj, const string &method_name,
-			 ITable *tab, ResourceSet *res)
+			 ITable *tab, ResourceSynth *rsynth, ResourceSet *res)
   : InsnWalker(thr_synth, obj),
     thr_synth_(thr_synth), method_name_(method_name),
-    tab_(tab), res_set_(res), method_(nullptr), is_task_entry_(false) {
+    tab_(tab), rsynth_(rsynth), res_set_(res), method_(nullptr),
+    is_task_entry_(false) {
   context_.reset(new MethodContext(this));
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
   method_ = value->method_;
@@ -306,7 +308,7 @@ void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
 }
 
 void MethodSynth::SynthNative(vm::Insn *insn) {
-  ObjectMethod m(this, this, insn);
+  ObjectMethod m(this, this, rsynth_, insn);
   m.Synth();
 }
 
@@ -648,10 +650,7 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
   if (is_memory) {
     res = res_set_->GetExternalArrayResource();
   } else {
-    SharedResource *sres =
-      shared_resource_set_->GetByObj(array_obj);
-    if (sres->accessors_.size() >= 2 ||
-	sres->axi_ctrl_thrs_.size() > 0) {
+    if (UseSharedArray(array_obj)) {
       SynthSharedArrayAccess(insn, is_write);
       return;
     }
@@ -670,6 +669,20 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
   w->state_->insns_.push_back(iinsn);
 }
 
+bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
+  SharedResource *sres =
+    shared_resource_set_->GetByObj(array_obj);
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
+  if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave())) {
+    return true;
+  }
+  if (sres->accessors_.size() >= 2 ||
+      sres->axi_ctrl_thrs_.size() > 0) {
+    return true;
+  }
+  return false;
+}
+
 void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
   SharedResource *sres =
@@ -678,7 +691,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetSharedArray(array_obj, true, false);
     sres->AddOwnerResource(res);
-    MayAddAxiSlavePort(array_obj);
+    rsynth_->MayAddAxiSlavePort(array_obj);
   } else {
     res = res_set_->GetSharedArray(array_obj, false, is_write);
     sres->AddAccessorResource(res);
@@ -750,19 +763,6 @@ void MethodSynth::InsnToCalcValueType(vm::Insn *insn, IValueType *vt) {
   } else if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     vt->SetWidth(numeric::Width::GetWidth(reg->type_.width_));
   }
-}
-
-void MethodSynth::MayAddAxiSlavePort(vm::Object *array_obj) {
-  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
-  if (a == nullptr || !a->IsAxiSlave()) {
-    return;
-  }
-  IResource *slave_port = res_set_->GetAxiSlavePort(array_obj);
-  if (slave_port->GetParams()->GetWidth() == 32) {
-    // already configured.
-    return;
-  }
-  slave_port->GetParams()->SetWidth(vm::ArrayWrapper::GetDataWidth(array_obj));
 }
 
 }  // namespace synth

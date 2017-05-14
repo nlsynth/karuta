@@ -6,6 +6,7 @@
 #include "synth/method_synth.h"
 #include "synth/object_method_names.h"
 #include "synth/resource_set.h"
+#include "synth/resource_synth.h"
 #include "synth/shared_resource_set.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/insn.h"
@@ -15,8 +16,8 @@
 namespace synth {
 
 ObjectMethod::ObjectMethod(MethodSynth *synth, InsnWalker *walker,
-			   vm::Insn *insn)
-  : synth_(synth), walker_(walker), insn_(insn) {
+			   ResourceSynth *rsynth, vm::Insn *insn)
+  : synth_(synth), walker_(walker), rsynth_(rsynth), insn_(insn) {
 }
 
 void ObjectMethod::Synth() {
@@ -67,6 +68,7 @@ void ObjectMethod::Scan() {
 
 IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   IResource *res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
+  rsynth_->MayAddAxiSlavePort(array_obj);
   IInsn *iinsn = new IInsn(res);
   if (is_store) {
     iinsn->SetOperand("write");

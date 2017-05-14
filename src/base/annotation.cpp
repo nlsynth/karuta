@@ -107,6 +107,10 @@ bool Annotation::ResetPolarity() {
   return (LookupStrParam("resetPolarity", "1") == "1");
 }
 
+bool Annotation::IsAxiMaster() {
+  return LookupStrParam(annotation::kAnnotationKey, "") == "axi_master";
+}
+
 bool Annotation::IsAxiSlave() {
   return LookupStrParam(annotation::kAnnotationKey, "") == "axi_slave";
 }
