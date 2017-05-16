@@ -43,6 +43,7 @@ public:
   IResource *GetAxiSlavePort(vm::Object *obj);
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
   IResource *GetTaskReturnRegWriter(int width);
+  IResource *GetExtIO(const string &name, bool is_output, int width);
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -82,6 +83,7 @@ private:
   map<vm::Object *, IResource *> mailbox_shared_reg_;
   map<vm::Object *, IResource *> mailbox_putters_;
   map<vm::Object *, IResource *> mailbox_getters_;
+  map<string, IResource *> ext_io_;
 };
 
 }  // namespace synth

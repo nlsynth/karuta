@@ -52,6 +52,11 @@ bool MethodSynth::Synth() {
     SynthNativeImplMethod(method_);
     return true;
   }
+  if (method_->parse_tree_->annotation_ != nullptr &&
+      method_->parse_tree_->annotation_->IsExtIO()) {
+    SynthExtIOMethod();
+    return true;
+  }
 
   EmitEntryInsn(method_);
   StateWrapper *last = nullptr;
@@ -159,6 +164,22 @@ void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
   iinsn->inputs_ = context_->method_insn_->inputs_;
   iinsn->outputs_ = context_->method_insn_->outputs_;
   sw->state_->insns_.push_back(iinsn);
+}
+
+void MethodSynth::SynthExtIOMethod() {
+  EmitEntryInsn(method_);
+  Annotation *an = method_->parse_tree_->annotation_;
+  StateWrapper *sw = AllocState();
+  if (an->IsExtOutput()) {
+    CHECK(context_->method_insn_->inputs_.size() == 1);
+    IRegister *reg = context_->method_insn_->inputs_[0];
+    IResource *res = res_set_->GetExtIO(an->GetOutputPinName(),
+					true,
+					reg->value_type_.GetWidth());
+    IInsn *iinsn = new IInsn(res);
+    iinsn->inputs_.push_back(reg);
+    sw->state_->insns_.push_back(iinsn);
+  }
 }
 
 void MethodSynth::LinkStates() {

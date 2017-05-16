@@ -141,7 +141,7 @@ bool Annotation::IsDataFlowEntry() {
 }
 
 bool Annotation::IsExtIO() {
-  if (LookupParam(sym_cstr(sym_output)) || LookupParam(sym_cstr(sym_input))) {
+  if (IsExtInput() || IsExtOutput()) {
     return true;
   }
   return false;

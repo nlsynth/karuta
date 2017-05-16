@@ -182,6 +182,30 @@ IResource *ResourceSet::GetTaskReturnRegWriter(int width) {
   return task_return_reg_writer_;
 }
 
+IResource *ResourceSet::GetExtIO(const string &name,
+				 bool is_output, int width) {
+  if (ext_io_.find(name) != ext_io_.end()) {
+    return ext_io_[name];
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  (is_output ?
+				   resource::kExtOutput :
+				   resource::kExtInput));
+  IResource *res = new IResource(tab_, rc);
+  if (is_output) {
+    res->GetParams()->SetExtOutputPort(name, width);
+  } else {
+    res->GetParams()->SetExtInputPort(name, width);
+  }
+  tab_->resources_.push_back(res);
+  IValueType vt;
+  vt.SetWidth(width);
+  res->input_types_.push_back(vt);
+  ext_io_[name] = res;
+  return res;
+}
+
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   Annotation *dparams =
     method->parse_tree_->annotation_;
