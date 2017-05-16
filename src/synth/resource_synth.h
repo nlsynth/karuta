@@ -10,10 +10,12 @@ class ResourceSynth {
 public:
   ResourceSynth(ResourceSet *rset);
 
-  void MayAddAxiMasterPort(vm::Object *array_obj);
-  void MayAddAxiSlavePort(vm::Object *array_obj);
+  void MayAddAxiMasterPort(vm::Object *owner_obj, vm::Object *array_obj);
+  void MayAddAxiSlavePort(vm::Object *owner_obj, vm::Object *array_obj);
 
 private:
+  void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj, IResource *res);
+
   ResourceSet *rset_;
 };
 

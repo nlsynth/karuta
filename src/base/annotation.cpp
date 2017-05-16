@@ -8,13 +8,13 @@
 #include "base/annotation_builder.h"
 #include "base/pool.h"
 
-static const char kResource[] = "RESOURCE";
-static const char kFile[] = "FILE";
-static const char kCopy[] = "COPY";
-static const char kVerilog[] = "VERILOG";
-static const char kModule[] = "MODULE";
-static const char kClock[] = "CLOCK";
-static const char kReset[] = "RESET";
+static const char kResource[] = "resource";
+static const char kFile[] = "file";
+static const char kCopy[] = "copy";
+static const char kVerilog[] = "verilog";
+static const char kModule[] = "module";
+static const char kClock[] = "clock";
+static const char kReset[] = "reset";
 
 static Pool<Annotation> resource_params_pool;
 

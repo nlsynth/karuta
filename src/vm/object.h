@@ -30,6 +30,7 @@ public:
   // Finds synonyms of the member objects.
   void LookupMemberNames(Object *obj, vector<sym_t> *slots);
   void GetAllMemberObjs(map<sym_t, Object *> *member_objs);
+  void GetAllMemberMethods(map<sym_t, Method *> *member_objs);
   Object *Clone(VM *vm);
   const string &ToString();
   bool Compare(Object *obj);

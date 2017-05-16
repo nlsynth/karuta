@@ -49,6 +49,10 @@ void InsnWalker::LoadObj(vm::Insn *insn) {
   }
 }
 
+vm::Object *InsnWalker::GetObject() {
+  return obj_;
+}
+
 bool InsnWalker::IsNativeFuncall(vm::Insn *insn) {
   vm::Object *obj = GetCalleeObject(insn);
   if (obj == nullptr) {

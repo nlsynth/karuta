@@ -123,8 +123,8 @@ void ThreadSynth::CollectUnclaimedMembers() {
       if (sres->HasAccessor(member_obj)) {
 	continue;
       }
-      rsynth_->MayAddAxiMasterPort(member_obj);
-      rsynth_->MayAddAxiSlavePort(member_obj);
+      rsynth_->MayAddAxiMasterPort(obj_synth_->GetObject(), member_obj);
+      rsynth_->MayAddAxiSlavePort(obj_synth_->GetObject(), member_obj);
     }
   }
   // TODO: Also process methods with ext_io.

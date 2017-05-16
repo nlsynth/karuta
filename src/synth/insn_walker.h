@@ -18,6 +18,7 @@ public:
   vm::Object *GetObjByReg(vm::Register *reg);
   SharedResourceSet *GetSharedResourceSet();
   ThreadSynth *GetThreadSynth();
+  vm::Object *GetObject();
 
 protected:
   InsnWalker(ThreadSynth *thr_synth, vm::Object *obj);

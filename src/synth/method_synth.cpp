@@ -146,7 +146,7 @@ void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
   vm::Method *alt_method = value->method_;
   CHECK(alt_method->parse_tree_ &&
 	alt_method->parse_tree_->annotation_ &&
-	alt_method->parse_tree_->annotation_->IsImportedModule());
+	alt_method->parse_tree_->annotation_->IsImportedModule()) << sym_cstr(name);
 
   SynthEmbeddedMethod(alt_method);
 }
@@ -691,7 +691,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetSharedArray(array_obj, true, false);
     sres->AddOwnerResource(res);
-    rsynth_->MayAddAxiSlavePort(array_obj);
+    rsynth_->MayAddAxiSlavePort(obj_, array_obj);
   } else {
     res = res_set_->GetSharedArray(array_obj, false, is_write);
     sres->AddAccessorResource(res);
