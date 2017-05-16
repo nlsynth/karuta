@@ -19,6 +19,7 @@ void ResourceSynth::MayAddAxiMasterPort(vm::Object *owner_obj,
   }
   IResource *master_port = rset_->GetAxiMasterPort(array_obj);
   SetArrayName(owner_obj, array_obj, master_port);
+  master_port->GetParams()->SetAddrWidth(a->GetAddrWidth());
 }
 
 void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
@@ -33,6 +34,7 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
     return;
   }
   slave_port->GetParams()->SetWidth(vm::ArrayWrapper::GetDataWidth(array_obj));
+  slave_port->GetParams()->SetAddrWidth(a->GetAddrWidth());
   SetArrayName(owner_obj, array_obj, slave_port);
 }
 

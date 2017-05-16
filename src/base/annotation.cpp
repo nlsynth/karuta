@@ -108,15 +108,27 @@ bool Annotation::ResetPolarity() {
 }
 
 bool Annotation::IsAxiMaster() {
-  return LookupStrParam(annotation::kAnnotationKey, "") == "axi_master";
+  return LookupStrParam(annotation::kAnnotationKey, "") == "AxiMaster";
 }
 
 bool Annotation::IsAxiSlave() {
-  return LookupStrParam(annotation::kAnnotationKey, "") == "axi_slave";
+  return LookupStrParam(annotation::kAnnotationKey, "") == "AxiSlave";
+}
+
+int Annotation::GetAddrWidth() {
+  string s = LookupStrParam("addrWidth", "32");
+  if (s == "64") {
+    return 64;
+  }
+  if (s == "32") {
+    return 32;
+  }
+  return 0;
 }
 
 bool Annotation::IsThreadEntry() {
-  return LookupStrParam(annotation::kAnnotationKey, "") == "thread_entry";
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "ThreadEntry") || (s == "thread_entry");
 }
 
 string Annotation::GetName() {
@@ -124,7 +136,8 @@ string Annotation::GetName() {
 }
 
 bool Annotation::IsDataFlowEntry() {
-  return LookupStrParam(annotation::kAnnotationKey, "") == "dataflow_entry";
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "DataFlowEntry") || (s == "dataflow_entry");
 }
 
 bool Annotation::IsExtIO() {
