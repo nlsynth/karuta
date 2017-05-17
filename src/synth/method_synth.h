@@ -33,6 +33,7 @@ private:
   void SynthNativeImplMethod(vm::Method *method);
   void SynthEmbeddedMethod(vm::Method *method);
   void SynthExtIOMethod();
+  void DoSynthExtIO(bool is_output);
 
   void SynthInsn(vm::Insn *insn);
 

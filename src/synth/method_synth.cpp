@@ -169,17 +169,38 @@ void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
 void MethodSynth::SynthExtIOMethod() {
   EmitEntryInsn(method_);
   Annotation *an = method_->parse_tree_->annotation_;
-  StateWrapper *sw = AllocState();
   if (an->IsExtOutput()) {
-    CHECK(context_->method_insn_->inputs_.size() == 1);
-    IRegister *reg = context_->method_insn_->inputs_[0];
-    IResource *res = res_set_->GetExtIO(an->GetOutputPinName(),
-					true,
-					reg->value_type_.GetWidth());
-    IInsn *iinsn = new IInsn(res);
-    iinsn->inputs_.push_back(reg);
-    sw->state_->insns_.push_back(iinsn);
+    DoSynthExtIO(true);
   }
+  if (an->IsExtInput()) {
+    DoSynthExtIO(false);
+  }
+}
+
+void MethodSynth::DoSynthExtIO(bool is_output) {
+  IRegister *reg = nullptr;
+  string pin_name;
+  Annotation *an = method_->parse_tree_->annotation_;
+  if (is_output) {
+    CHECK(context_->method_insn_->inputs_.size() == 1);
+    reg = context_->method_insn_->inputs_[0];
+    pin_name = an->GetOutputPinName();
+  } else {
+    CHECK(context_->method_insn_->outputs_.size() == 1);
+    reg = context_->method_insn_->outputs_[0];
+    pin_name = an->GetInputPinName();
+  }
+  IResource *res = res_set_->GetExtIO(pin_name,
+				      is_output,
+				      reg->value_type_.GetWidth());
+  IInsn *iinsn = new IInsn(res);
+  if (is_output) {
+    iinsn->inputs_.push_back(reg);
+  } else {
+    iinsn->outputs_.push_back(reg);
+  }
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
 }
 
 void MethodSynth::LinkStates() {
