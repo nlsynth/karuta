@@ -12,6 +12,7 @@ public:
 
   void MayAddAxiMasterPort(vm::Object *owner_obj, vm::Object *array_obj);
   void MayAddAxiSlavePort(vm::Object *owner_obj, vm::Object *array_obj);
+  IResource *MayAddExtIO(vm::Method *method, bool is_output);
 
 private:
   void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj, IResource *res);

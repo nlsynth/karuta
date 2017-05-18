@@ -76,6 +76,15 @@ void Object::GetAllMemberObjs(map<sym_t, Object *> *member_objs) {
   }
 }
 
+void Object::GetAllMemberMethods(map<sym_t, Method *> *member_objs) {
+  for (auto it : members_) {
+    Value &value = it.second;
+    if (value.type_ == Value::METHOD) {
+      (*member_objs)[it.first] = value.method_;
+    }
+  }
+}
+
 Object *Object::Clone(VM *vm) {
   Object *new_obj = vm->NewObject();
   // This does shallow copy for most of data types.

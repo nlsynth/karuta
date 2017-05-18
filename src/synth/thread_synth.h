@@ -25,6 +25,7 @@ public:
   void SetPrimary();
   bool IsPrimary();
   void CollectUnclaimedMembers();
+  void MayGenerateExtIOMethod(vm::Method *method, bool is_output);
   bool ProcessDataFlow();
   void SetIsTask(bool is_task);
   ObjectSynth *GetObjectSynth();

@@ -1,6 +1,9 @@
 #include "synth/thread_synth.h"
 
+#include "base/annotation.h"
 #include "base/status.h"
+#include "compiler/compiler.h"
+#include "fe/method.h"
 #include "iroha/iroha.h"
 #include "synth/design_synth.h"
 #include "synth/method_expander.h"
@@ -13,6 +16,7 @@
 #include "synth/tool.h"
 #include "vm/array_wrapper.h"
 #include "vm/object.h"
+#include "vm/method.h"
 
 namespace synth {
 
@@ -127,7 +131,29 @@ void ThreadSynth::CollectUnclaimedMembers() {
       rsynth_->MayAddAxiSlavePort(obj_synth_->GetObject(), member_obj);
     }
   }
-  // TODO: Also process methods with ext_io.
+  map<sym_t, vm::Method *> member_methods;
+  obj->GetAllMemberMethods(&member_methods);
+  for (auto it : member_methods) {
+    vm::Method *method = it.second;
+    if (method->parse_tree_ != nullptr &&
+	method->parse_tree_->annotation_ != nullptr) {
+      if (method->parse_tree_->annotation_->IsExtIO()) {
+	compiler::Compiler::CompileMethod(obj_synth_->GetVM(),
+					  obj, method->parse_tree_,
+					  method);
+	if (method->parse_tree_->annotation_->IsExtInput()) {
+	  MayGenerateExtIOMethod(method, false);
+	}
+	if (method->parse_tree_->annotation_->IsExtOutput()) {
+	  MayGenerateExtIOMethod(method, true);
+	}
+      }
+    }
+  }
+}
+
+void ThreadSynth::MayGenerateExtIOMethod(vm::Method *method, bool is_output) {
+  rsynth_->MayAddExtIO(method, is_output);
 }
 
 bool ThreadSynth::ProcessDataFlow() {

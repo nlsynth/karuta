@@ -178,26 +178,14 @@ void MethodSynth::SynthExtIOMethod() {
 }
 
 void MethodSynth::DoSynthExtIO(bool is_output) {
-  IRegister *reg = nullptr;
-  string pin_name;
-  Annotation *an = method_->parse_tree_->annotation_;
-  if (is_output) {
-    CHECK(context_->method_insn_->inputs_.size() == 1);
-    reg = context_->method_insn_->inputs_[0];
-    pin_name = an->GetOutputPinName();
-  } else {
-    CHECK(context_->method_insn_->outputs_.size() == 1);
-    reg = context_->method_insn_->outputs_[0];
-    pin_name = an->GetInputPinName();
-  }
-  IResource *res = res_set_->GetExtIO(pin_name,
-				      is_output,
-				      reg->value_type_.GetWidth());
+  IResource *res = rsynth_->MayAddExtIO(method_, is_output);
   IInsn *iinsn = new IInsn(res);
   if (is_output) {
-    iinsn->inputs_.push_back(reg);
+    CHECK(context_->method_insn_->inputs_.size() == 1);
+    iinsn->inputs_.push_back(context_->method_insn_->inputs_[0]);
   } else {
-    iinsn->outputs_.push_back(reg);
+    CHECK(context_->method_insn_->outputs_.size() == 1);
+    iinsn->outputs_.push_back(context_->method_insn_->outputs_[0]);
   }
   StateWrapper *sw = AllocState();
   sw->state_->insns_.push_back(iinsn);
