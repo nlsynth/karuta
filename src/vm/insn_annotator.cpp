@@ -158,8 +158,8 @@ void InsnAnnotator::TryType(Insn *insn) {
     if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
 	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-      int w = numeric::Width::GetWidth(insn->src_regs_[0]->type_.width_) +
-	numeric::Width::GetWidth(insn->src_regs_[1]->type_.width_);
+      int w = numeric::Width::GetWidthFromPtr(insn->src_regs_[0]->type_.width_) +
+	numeric::Width::GetWidthFromPtr(insn->src_regs_[1]->type_.width_);
       insn->dst_regs_[0]->type_.width_ = numeric::Width::MakeInt(false, w);
       return;
     }

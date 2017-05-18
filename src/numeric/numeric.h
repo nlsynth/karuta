@@ -3,16 +3,11 @@
 #define _numeric_numeric_h_
 
 #include "nli.h"
+#include "numeric/numeric_type.h"  // from iroha
 
 namespace numeric {
 
-class Width {
-public:
-  // signedness affects only for printing.
-  bool is_signed;
-  int int_width;
-  uint64_t mask;
-
+class Width : public iroha::NumericWidth {
 public:
   static const Width *Null();
   static const Width *DefaultInt();
@@ -24,7 +19,7 @@ public:
   static bool IsEqual(const Width *w1, const Width *w2);
   // Checks if w1 is wider than w2.
   static bool IsWide(const Width *w1, const Width *w2);
-  static int GetWidth(const Width *w);
+  static int GetWidthFromPtr(const Width *w);
 };
 
 class Number {

@@ -66,7 +66,7 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
   if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     width = 0;
   } else {
-    width = numeric::Width::GetWidth(reg->type_.width_);
+    width = numeric::Width::GetWidthFromPtr(reg->type_.width_);
   }
   return rset_->GetExtIO(name, is_output, width);
 }

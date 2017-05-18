@@ -19,17 +19,15 @@ Number::Number() {
 const Width *Width::MakeInt(bool is_signed, int int_part) {
   vector<Width *>::iterator it;
   for (Width *nw : Width_list) {
-    if (nw->is_signed == is_signed &&
-	nw->int_width == int_part) {
+    if (nw->IsSigned() == is_signed &&
+	nw->GetWidth() == int_part) {
       return nw;
     }
   }
   Width *nw = new Width();
   pool.Add(nw);
-  nw->is_signed = is_signed;
-  nw->int_width = int_part;
-  nw->mask = ~0;
-  nw->mask >>= (64 - int_part);
+  nw->SetIsSigned(is_signed);
+  nw->SetWidth(int_part);
   Width_list.push_back(nw);
   return nw;
 }
@@ -61,30 +59,29 @@ const Width *Width::CommonWidth(const Width *w1,
     return w1;
   }
   bool is_signed;
-  int int_part = w1->int_width;
-  is_signed = w1->is_signed || w2->is_signed;
-  if (w2->int_width > w1->int_width) {
-    int_part = w2->int_width;
+  int int_part = w1->GetWidth();
+  is_signed = w1->IsSigned() || w2->IsSigned();
+  if (w2->GetWidth() > w1->GetWidth()) {
+    int_part = w2->GetWidth();
   }
   return Width::MakeInt(is_signed, int_part);
 }
 
 bool Width::IsWide(const Width *w1,
 		   const Width *w2) {
-  return w1->int_width >= w2->int_width;
+  return w1->GetWidth() >= w2->GetWidth();
 }
 
-int Width::GetWidth(const Width *w) {
+int Width::GetWidthFromPtr(const Width *w) {
   if (!w) {
     return 32;
   }
-  return w->int_width;
+  return w->GetWidth();
 }
 
 void Numeric::Init() {
   g_int_width = Width::MakeInt(false, 32);
   Width *nan = new Width();
-  nan->mask = 0;
   g_nan_width = nan;
   pool.Add(nan);
 }
@@ -121,10 +118,10 @@ void Width::Dump(const Width *w,
     return ;
   }
   os << "<";
-  if (w->is_signed) {
+  if (w->IsSigned()) {
     os << "+,";
   }
-  os << w->int_width;
+  os << w->GetWidth();
   os << ">";
 }
 
@@ -205,7 +202,7 @@ void Numeric::FixupWidth(const Width *w, Number *num) {
   if (!w) {
     w = g_int_width;
   }
-  num->int_part &= w->mask;
+  num->int_part &= w->GetMask();
   num->type = w;
 }
 
@@ -222,9 +219,9 @@ void Numeric::SelectBits(const Number &num, int h, int l, Number *res) {
 }
 
 void Numeric::Concat(const Number &x, const Number &y, Number *a) {
-  a->int_part = (x.int_part << y.type->int_width) + y.int_part;
+  a->int_part = (x.int_part << y.type->GetWidth()) + y.int_part;
   a->type = Width::MakeInt(false,
-			   x.type->int_width + y.type->int_width);
+			   x.type->GetWidth() + y.type->GetWidth());
 }
 
 }  // namespace numeric

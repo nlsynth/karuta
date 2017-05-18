@@ -118,7 +118,7 @@ void MethodSynth::EmitTaskReturn(IState *last) {
       // Assumes bool.
       width += 1;
     } else {
-      width += numeric::Width::GetWidth(ret->type_.width_);
+      width += numeric::Width::GetWidthFromPtr(ret->type_.width_);
     }
   }
   IResource *res = res_set_->GetTaskReturnRegWriter(width);
@@ -301,7 +301,7 @@ void MethodSynth::SynthNum(vm::Insn *insn) {
   vm::Register *dst_reg = insn->dst_regs_[0];
   IRegister *ireg =
     DesignTool::AllocConstNum(tab_,
-			      numeric::Width::GetWidth(src_reg->type_.width_),
+			      numeric::Width::GetWidthFromPtr(src_reg->type_.width_),
 			      numeric::Numeric::GetInt(src_reg->initial_num_));
   local_reg_map_[dst_reg] = ireg;
 }
@@ -439,7 +439,7 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   }
   char name[10];
   sprintf(name, "r%d_", vreg->id_);
-  int w = numeric::Width::GetWidth(vreg->type_.width_);
+  int w = numeric::Width::GetWidthFromPtr(vreg->type_.width_);
   if (vreg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     w = 0;
   }
@@ -459,7 +459,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   if (arg_decl->GetType() == sym_bool) {
     w = 0;
   } else if (arg_decl->GetType() == sym_int) {
-    w = numeric::Width::GetWidth(arg_decl->GetWidth());
+    w = numeric::Width::GetWidthFromPtr(arg_decl->GetWidth());
   } else {
     CHECK(false);
   }
@@ -606,7 +606,7 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
     reg->SetInitialValue(iv);
     int w = 0;
     if (value->type_ == vm::Value::NUM) {
-      w = numeric::Width::GetWidth(value->num_.type);
+      w = numeric::Width::GetWidthFromPtr(value->num_.type);
     }
     reg->value_type_.SetWidth(w);
     member_name_reg_map_[sym_cstr(insn->label_)] = reg;
@@ -632,7 +632,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
     sres->AddOwnerResource(res);
-    int w = numeric::Width::GetWidth(value->num_.type);
+    int w = numeric::Width::GetWidthFromPtr(value->num_.type);
     auto *params = res->GetParams();
     params->SetWidth(w);
   } else {
@@ -789,9 +789,9 @@ void MethodSynth::InsnToCalcValueType(vm::Insn *insn, IValueType *vt) {
   }
   vt->SetIsSigned(false);
   if (reg->type_.value_type_ == vm::Value::NUM) {
-    vt->SetWidth(numeric::Width::GetWidth(reg->type_.width_));
+    vt->SetWidth(numeric::Width::GetWidthFromPtr(reg->type_.width_));
   } else if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
-    vt->SetWidth(numeric::Width::GetWidth(reg->type_.width_));
+    vt->SetWidth(numeric::Width::GetWidthFromPtr(reg->type_.width_));
   }
 }
 
