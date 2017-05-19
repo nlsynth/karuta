@@ -8,10 +8,10 @@
 namespace fe {
 
 struct WidthSpec {
-  const numeric::Width *width;
+  const iroha::NumericWidth *width;
   sym_t name;
 
-  static WidthSpec Int(const numeric::Width *w);
+  static WidthSpec Int(const iroha::NumericWidth *w);
   static WidthSpec Name(sym_t name);
 };
 
@@ -32,7 +32,7 @@ class Builder {
   static VarDeclSet *VarDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ArgDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ReturnDeclList(VarDeclSet *decls, VarDecl *decl);
-  static VarDecl *ReturnType(sym_t type_name, const numeric::Width *w,
+  static VarDecl *ReturnType(sym_t type_name, const iroha::NumericWidth *w,
 			     sym_t object_name);
   static void SetArrayLength(VarDecl *decl, int length);
   static Expr *ArrayRefExpr(Expr *array, Expr *index);
@@ -41,7 +41,7 @@ class Builder {
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);
 
   static VarDecl *ModifiedVar(Expr *var, bool is_ptr, sym_t ns);
-  static VarDecl *BuildVarDecl(sym_t type, const numeric::Width *w,
+  static VarDecl *BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
 			       sym_t object_name,
 			       Annotation *an,
 			       VarDecl *var);

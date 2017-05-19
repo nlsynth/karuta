@@ -36,7 +36,7 @@ void VarDecl::Dump(DumpStream &ds) {
   }
   if (width_) {
     ds.indent();
-    numeric::Width::Dump(width_, ds.os);
+    numeric::WidthUtil::Dump(width_, ds.os);
     ds.os << "\n";
   }
   if (object_name_) {
@@ -86,11 +86,11 @@ void VarDecl::SetType(sym_t type) {
   type_ = type;
 }
 
-const numeric::Width *VarDecl::GetWidth() const {
+const iroha::NumericWidth *VarDecl::GetWidth() const {
   return width_;
 }
 
-void VarDecl::SetWidth(const numeric::Width *width) {
+void VarDecl::SetWidth(const iroha::NumericWidth *width) {
   width_ = width;
 }
 

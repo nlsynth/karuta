@@ -81,7 +81,7 @@ bool Channel::ReadValue(Thread *thr, Object *obj, Value *value) {
   int64_t v = *(pipe_data->values_.begin());
   pipe_data->values_.pop_front();
   numeric::Numeric::MakeConst(v, &value->num_);
-  value->num_.type = numeric::Width::MakeIntPtr(false, pipe_data->width_);
+  value->num_.type = numeric::WidthUtil::MakeIntPtr(false, pipe_data->width_);
   return true;
 }
 

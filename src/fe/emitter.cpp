@@ -47,7 +47,7 @@ void Emitter::SetCurrentFunctionParams() {
       fe::VarDecl *arg = args->decls[i];
       int width = 1;
       if (arg->GetType() == sym_int) {
-	width = numeric::Width::GetWidthFromPtr(arg->GetWidth());
+	width = numeric::WidthUtil::GetWidthFromPtr(arg->GetWidth());
       } else {
 	CHECK(arg->GetType() == sym_bool);
       }
@@ -193,7 +193,7 @@ void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
 }
 
 void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
-				  const numeric::Width *width,
+				  const iroha::NumericWidth *width,
 				  sym_t object_name) {
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);
   stmt->sym_ = object_name;
@@ -203,7 +203,7 @@ void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
 }
 
 void Emitter::EmitMailboxDeclStmt(Expr *var, sym_t type_name,
-				  const numeric::Width *width,
+				  const iroha::NumericWidth *width,
 				  sym_t object_name) {
   Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
   stmt->sym_ = object_name;

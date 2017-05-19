@@ -29,7 +29,7 @@ int Method::GetNumReturnRegisters() const {
   return return_types_.size();
 }
 
-const numeric::Width *Method::GetNthArgWidth(int i) {
+const iroha::NumericWidth *Method::GetNthArgWidth(int i) {
   return parse_tree_->args_->decls[i]->GetWidth();
 }
 

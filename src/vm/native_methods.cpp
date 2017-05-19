@@ -166,7 +166,7 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
   }
   Value value;
   value.type_ = Value::NUM;
-  numeric::Numeric::MakeConst(numeric::Width::GetWidthFromPtr(args[0].num_.type),
+  numeric::Numeric::MakeConst(numeric::WidthUtil::GetWidthFromPtr(args[0].num_.type),
 			      &value.num_);
   SetReturnValue(thr, value);
 }
@@ -272,7 +272,7 @@ RegisterType Method::BoolType(VM *vm) {
 
 RegisterType Method::IntType(int w) {
   return RegisterType(Value::NUM, nullptr,
-		      numeric::Width::MakeIntPtr(false, w), sym_null,
+		      numeric::WidthUtil::MakeIntPtr(false, w), sym_null,
 		      false);
 }
 

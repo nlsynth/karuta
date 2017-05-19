@@ -7,18 +7,17 @@
 
 namespace numeric {
 
-class Width : public iroha::NumericWidth {
+class WidthUtil {
 public:
-  Width(bool is_signed, int width);
-
-  static const Width *MakeIntPtr(bool is_signed, int int_part);
-  static const Width *CommonWidth(const Width *w1,
-				  const Width *w2);
-  static void Dump(const Width *w, ostream &os);
-  static bool IsEqual(const Width *w1, const Width *w2);
+  static const iroha::NumericWidth *MakeIntPtr(bool is_signed, int int_part);
+  static const iroha::NumericWidth *CommonWidth(const iroha::NumericWidth *w1,
+						const iroha::NumericWidth *w2);
+  static void Dump(const iroha::NumericWidth *w, ostream &os);
+  static bool IsEqual(const iroha::NumericWidth *w1, const iroha::NumericWidth *w2);
   // Checks if w1 is wider than w2.
-  static bool IsWide(const Width *w1, const Width *w2);
-  static int GetWidthFromPtr(const Width *w);
+  static bool IsWide(const iroha::NumericWidth *w1,
+		     const iroha::NumericWidth *w2);
+  static int GetWidthFromPtr(const iroha::NumericWidth *w);
 };
 
 class Number {
@@ -27,7 +26,7 @@ public:
   void Dump(ostream &os) const;
   //
   uint64_t int_part;
-  const Width *type;
+  const iroha::NumericWidth *type;
 };
 
 enum CompareOp {
@@ -51,7 +50,7 @@ public:
 
   static bool IsZero(const Number &n);
   // Gets required width to store given number.
-  static const Width *ValueWidth(const Number &n);
+  static const iroha::NumericWidth *ValueWidth(const Number &n);
   static void Add(const Number &x, const Number &y, Number *a);
   static void Sub(const Number &x, const Number &y, Number *a);
   static void Minus(const Number &num, Number *res);
@@ -63,7 +62,7 @@ public:
   static void SelectBits(const Number &num, int h, int l, Number *res);
   static void BitInv(const Number &num, Number *res);
   // cuts upper bits
-  static void FixupWidth(const Width *w, Number *num);
+  static void FixupWidth(const iroha::NumericWidth *w, Number *num);
   static uint64_t GetInt(const Number &x);
 };
 

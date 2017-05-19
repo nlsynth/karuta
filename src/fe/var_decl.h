@@ -22,8 +22,8 @@ public:
   void SetNameExpr(Expr *name);
   sym_t GetType() const;
   void SetType(sym_t type);
-  const numeric::Width *GetWidth() const;
-  void SetWidth(const numeric::Width *width);
+  const iroha::NumericWidth *GetWidth() const;
+  void SetWidth(const iroha::NumericWidth *width);
   sym_t GetObjectName() const;
   void SetObjectName(sym_t object_name);
   Expr *GetInitialVal() const;
@@ -40,7 +40,7 @@ private:
   // int, bool, string, object and so on.
   sym_t type_;
 
-  const numeric::Width *width_;
+  const iroha::NumericWidth *width_;
   // for numeric object.
   sym_t object_name_;
   Expr *initial_val_;

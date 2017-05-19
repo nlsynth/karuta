@@ -17,7 +17,7 @@ public:
 
   int GetNumArgRegisters() const;
   int GetNumReturnRegisters() const;
-  const numeric::Width *GetNthArgWidth(int i);
+  const iroha::NumericWidth *GetNthArgWidth(int i);
   const char *AlternativeImplementation();
   const string &GetSynthName() const;
   void SetSynthName(const string &s);

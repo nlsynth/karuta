@@ -9,9 +9,9 @@ class Annotation;
 class DumpStream;
 class AnnotationValueSet;
 
-namespace numeric {
-class Width;
-}  // namespace numeric
+namespace iroha {
+class NumericWidth;
+}  // namespace iroha
 
 namespace vm {
 class Method;

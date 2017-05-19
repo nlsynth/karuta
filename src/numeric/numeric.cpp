@@ -6,25 +6,24 @@
 
 namespace numeric {
 
-static const Width *g_int_width;
-static vector<Width *> Width_list;
-static Pool<Width> pool;
+static const iroha::NumericWidth *g_int_width;
+static vector<iroha::NumericWidth *> Width_list;
+static Pool<iroha::NumericWidth> pool;
 
-const Width *Width::MakeIntPtr(bool is_signed, int int_part) {
-  vector<Width *>::iterator it;
-  for (Width *nw : Width_list) {
+const iroha::NumericWidth *WidthUtil::MakeIntPtr(bool is_signed, int int_part) {
+  for (auto *nw : Width_list) {
     if (nw->IsSigned() == is_signed &&
 	nw->GetWidth() == int_part) {
       return nw;
     }
   }
-  Width *nw = new Width(is_signed, int_part);
+  auto *nw = new iroha::NumericWidth(is_signed, int_part);
   pool.Add(nw);
   Width_list.push_back(nw);
   return nw;
 }
 
-const Width *Numeric::ValueWidth(const Number &src_num) {
+const iroha::NumericWidth *Numeric::ValueWidth(const Number &src_num) {
   bool is_signed = false;
   Number num = src_num;
   Number zero;
@@ -39,11 +38,11 @@ const Width *Numeric::ValueWidth(const Number &src_num) {
   n = Numeric::GetInt(num);
   int w;
   for (w = 0; n > 0; w++, n /= 2);
-  return Width::MakeIntPtr(is_signed, w);
+  return WidthUtil::MakeIntPtr(is_signed, w);
 }
 
-const Width *Width::CommonWidth(const Width *w1,
-				const Width *w2) {
+const iroha::NumericWidth *WidthUtil::CommonWidth(const iroha::NumericWidth *w1,
+						  const iroha::NumericWidth *w2) {
   if (!w1) {
     return w2;
   }
@@ -56,15 +55,15 @@ const Width *Width::CommonWidth(const Width *w1,
   if (w2->GetWidth() > w1->GetWidth()) {
     int_part = w2->GetWidth();
   }
-  return Width::MakeIntPtr(is_signed, int_part);
+  return WidthUtil::MakeIntPtr(is_signed, int_part);
 }
 
-bool Width::IsWide(const Width *w1,
-		   const Width *w2) {
+bool WidthUtil::IsWide(const iroha::NumericWidth *w1,
+		       const iroha::NumericWidth *w2) {
   return w1->GetWidth() >= w2->GetWidth();
 }
 
-int Width::GetWidthFromPtr(const Width *w) {
+int WidthUtil::GetWidthFromPtr(const iroha::NumericWidth *w) {
   if (!w) {
     return 32;
   }
@@ -72,16 +71,11 @@ int Width::GetWidthFromPtr(const Width *w) {
 }
 
 void Numeric::Init() {
-  g_int_width = Width::MakeIntPtr(false, 32);
+  g_int_width = WidthUtil::MakeIntPtr(false, 32);
 }
 
-Width::Width(bool is_signed, int width) {
-  SetIsSigned(is_signed);
-  SetWidth(width);
-}
-
-bool Width::IsEqual(const Width *w1,
-		    const Width *w2) {
+bool WidthUtil::IsEqual(const iroha::NumericWidth *w1,
+			const iroha::NumericWidth *w2) {
   return (w1 == w2);
 }
 
@@ -89,8 +83,8 @@ bool Numeric::IsZero(const Number &n) {
   return n.int_part == 0;
 }
 
-void Width::Dump(const Width *w,
-		 ostream &os) {
+void WidthUtil::Dump(const iroha::NumericWidth *w,
+		     ostream &os) {
   if (!w) {
     os << "<>";
     return ;
@@ -179,7 +173,7 @@ void Numeric::BitInv(const Number &num, Number *res) {
   res->int_part = ~res->int_part;
 }
 
-void Numeric::FixupWidth(const Width *w, Number *num) {
+void Numeric::FixupWidth(const iroha::NumericWidth *w, Number *num) {
   if (!w) {
     w = g_int_width;
   }
@@ -196,13 +190,13 @@ void Numeric::SelectBits(const Number &num, int h, int l, Number *res) {
       res->int_part |= (1UL << i);
     }
   }
-  res->type = Width::MakeIntPtr(false, width);
+  res->type = WidthUtil::MakeIntPtr(false, width);
 }
 
 void Numeric::Concat(const Number &x, const Number &y, Number *a) {
   a->int_part = (x.int_part << y.type->GetWidth()) + y.int_part;
-  a->type = Width::MakeIntPtr(false,
-			      x.type->GetWidth() + y.type->GetWidth());
+  a->type = WidthUtil::MakeIntPtr(false,
+				  x.type->GetWidth() + y.type->GetWidth());
 }
 
 }  // namespace numeric

@@ -15,29 +15,29 @@ IntArray::~IntArray() {
 }
 
 struct npage {
-  npage(const numeric::Width *w);
+  npage(const iroha::NumericWidth *w);
   numeric::Number data[PAGE_SIZE];
 };
 
 class IntArrayImpl : public IntArray {
 public:
-  IntArrayImpl(const numeric::Width *width, int size);
+  IntArrayImpl(const iroha::NumericWidth *width, int size);
   IntArrayImpl(const IntArrayImpl *src);
   virtual void Write(int addr, const numeric::Number &data);
   virtual numeric::Number Read(int addr);
   virtual long long GetLength() const;
-  virtual const numeric::Width *GetWidth() const;
+  virtual const iroha::NumericWidth *GetWidth() const;
   virtual int GetAddressWidth() const;
 
 private:
   npage *find_page(int addr);
 
   int size_;
-  const numeric::Width *width_;
+  const iroha::NumericWidth *width_;
   map<int, npage *> pages_;
 };
 
-npage::npage(const numeric::Width *width) {
+npage::npage(const iroha::NumericWidth *width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
     data[i].int_part = 0;
@@ -45,7 +45,7 @@ npage::npage(const numeric::Width *width) {
   }
 }
 
-IntArray *IntArray::Create(const numeric::Width *width, int size) {
+IntArray *IntArray::Create(const iroha::NumericWidth *width, int size) {
   return new IntArrayImpl(width, size);
 }
 
@@ -54,7 +54,7 @@ IntArray *IntArray::Copy(const IntArray *src) {
   return new IntArrayImpl(si);
 }
 
-IntArrayImpl::IntArrayImpl(const numeric::Width *width,
+IntArrayImpl::IntArrayImpl(const iroha::NumericWidth *width,
 			   int size)
   : size_(size), width_(width) {
 }
@@ -85,7 +85,7 @@ long long IntArrayImpl::GetLength() const {
   return size_;
 }
 
-const numeric::Width *IntArrayImpl::GetWidth() const {
+const iroha::NumericWidth *IntArrayImpl::GetWidth() const {
   return width_;
 }
 

@@ -19,7 +19,7 @@ public:
   string str_;
   VarDecl *decl_;
   EnumDecl *enum_;
-  const numeric::Width *width_;
+  const iroha::NumericWidth *width_;
 
   // IF stmt.
   sym_t label_t_;

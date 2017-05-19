@@ -1888,7 +1888,7 @@ yyreduce:
     {
   // Ditto. Current grammar.
   ScannerInterface::InSemiColonStatement();
-  (yyval.var_decl) = Builder::BuildVarDecl((yyvsp[0].sym), numeric::Width::MakeIntPtr(false, 0),
+  (yyval.var_decl) = Builder::BuildVarDecl((yyvsp[0].sym), numeric::WidthUtil::MakeIntPtr(false, 0),
 			     sym_null, (yyvsp[-3].annotation), (yyvsp[-1].var_decl));
 }
 #line 1895 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
@@ -1911,7 +1911,7 @@ yyreduce:
   case 37:
 #line 194 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.width_spec) = WidthSpec::Int(numeric::Width::MakeIntPtr(false, 32));
+  (yyval.width_spec) = WidthSpec::Int(numeric::WidthUtil::MakeIntPtr(false, 32));
 }
 #line 1917 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1919,7 +1919,7 @@ yyreduce:
   case 38:
 #line 196 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  (yyval.width_spec) = WidthSpec::Int(numeric::Width::MakeIntPtr(false, (yyvsp[0].num)));
+  (yyval.width_spec) = WidthSpec::Int(numeric::WidthUtil::MakeIntPtr(false, (yyvsp[0].num)));
 }
 #line 1925 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;

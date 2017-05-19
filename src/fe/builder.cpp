@@ -10,7 +10,7 @@
 
 namespace fe {
 
-WidthSpec WidthSpec::Int(const numeric::Width *w) {
+WidthSpec WidthSpec::Int(const iroha::NumericWidth *w) {
   WidthSpec s;
   s.width = w;
   s.name = sym_null;
@@ -77,7 +77,7 @@ VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
   return mv;
 }
 
-VarDecl *Builder::BuildVarDecl(sym_t type, const numeric::Width *w,
+VarDecl *Builder::BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
 			       sym_t object_name, Annotation *an,
 			       VarDecl *var) {
   var->SetType(type);
@@ -179,7 +179,7 @@ VarDeclSet *Builder::ReturnDeclList(VarDeclSet *decls, VarDecl *decl) {
   return ArgDeclList(decls, decl);
 }
 
-VarDecl *Builder::ReturnType(sym_t type_name, const numeric::Width *w,
+VarDecl *Builder::ReturnType(sym_t type_name, const iroha::NumericWidth *w,
 			     sym_t object_name) {
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);

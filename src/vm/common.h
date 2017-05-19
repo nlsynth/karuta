@@ -15,9 +15,9 @@ class VarDecl;
 class Stmt;
 }  // namespace fe
 
-namespace numeric {
-class Width;
-}  // namespace numeric
+namespace iroha {
+class NumericWidth;
+}  // namespace iroha
 
 namespace vm {
 

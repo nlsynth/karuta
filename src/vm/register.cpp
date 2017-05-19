@@ -7,7 +7,7 @@
 namespace vm {
 
 RegisterType::RegisterType(Value::ValueType type, const Object *enum_type,
-			   const numeric::Width *width, sym_t object_name,
+			   const iroha::NumericWidth *width, sym_t object_name,
 			   bool is_const)
   : value_type_(type), enum_type_(enum_type), width_(width),
     object_name_(object_name),
@@ -29,7 +29,7 @@ void RegisterType::Dump(DumpStream &ds) {
   }
   if (width_) {
     ds.os << " #";
-    numeric::Width::Dump(width_, ds.os);
+    numeric::WidthUtil::Dump(width_, ds.os);
   }
   if (object_name_ != nullptr) {
     ds.os << "[" << sym_cstr(object_name_) << "]";

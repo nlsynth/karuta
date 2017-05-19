@@ -36,7 +36,7 @@ Executor::Executor(Thread *thread) : thr_(thread) {
 Executor::~Executor() {
 }
 
-Object *Executor::CreateMemoryObject(const numeric::Width *width,
+Object *Executor::CreateMemoryObject(const iroha::NumericWidth *width,
 				     int array_length,
 				     fe::ArrayInitializer *array_initializer,
 				     Annotation *an) {
@@ -52,7 +52,7 @@ Object *Executor::CreateObjectArray(int array_length) {
   return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), array_length);
 }
 
-IntArray *Executor::CreateIntArray(const numeric::Width *width,
+IntArray *Executor::CreateIntArray(const iroha::NumericWidth *width,
 				   int array_length,
 				   fe::ArrayInitializer *array_initializer) {
   IntArray *array = IntArray::Create(width, array_length);
@@ -66,7 +66,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   case OP_NUM:
     {
       int dst = insn->dst_regs_[0]->id_;
-      const numeric::Width *width =
+      const iroha::NumericWidth *width =
 	method->method_regs_[dst]->type_.width_;
       frame->reg_values_[dst].num_ = insn->src_regs_[0]->initial_num_;
       frame->reg_values_[dst].num_.type = width;
@@ -573,7 +573,7 @@ void Executor::SetupCallee(Object *obj, Method *callee_method,
   MethodFrame *frame = thr_->PushMethodFrame(obj, callee_method);
   for (size_t i = 0; i < args.size(); ++i) {
     frame->reg_values_[i] = args[i];
-    const numeric::Width *width = callee_method->GetNthArgWidth(i);
+    const iroha::NumericWidth *width = callee_method->GetNthArgWidth(i);
     if (width) {
       frame->reg_values_[i].num_.type = width;
     }

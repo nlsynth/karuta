@@ -16,7 +16,7 @@ static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
 public:
-  ArrayWrapperData(int size, bool is_int, const numeric::Width *width,
+  ArrayWrapperData(int size, bool is_int, const iroha::NumericWidth *width,
 		   Annotation *an) {
     if (is_int) {
       int_array_ = IntArray::Create(width, size);
@@ -89,7 +89,7 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
 }
 
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
-					 const numeric::Width *width,
+					 const iroha::NumericWidth *width,
 					 Annotation *an) {
   Object *array_obj = vm->root_object_->Clone(vm);
   InstallMethods(vm, array_obj);
@@ -123,7 +123,7 @@ Annotation *ArrayWrapper::GetAnnotation(Object *obj) {
 
 int ArrayWrapper::GetDataWidth(Object *obj) {
   IntArray *a = GetIntArray(obj);
-  return numeric::Width::GetWidthFromPtr(a->GetWidth());
+  return numeric::WidthUtil::GetWidthFromPtr(a->GetWidth());
 }
 
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {

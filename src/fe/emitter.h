@@ -4,10 +4,6 @@
 
 #include "fe/common.h"
 
-namespace numeric {
-class Width;
-}  // namespace numeric
-
 namespace fe {
 
 class EnumDecl;
@@ -47,10 +43,10 @@ public:
   static void EmitReturnStmt(Expr *expr);
   static void EmitThreadDeclStmt(Expr *var, Expr *funcall);
   static void EmitChannelDeclStmt(Expr *var, sym_t type_name,
-				  const numeric::Width *width,
+				  const iroha::NumericWidth *width,
 				  sym_t object_name);
   static void EmitMailboxDeclStmt(Expr *var, sym_t type_name,
-				  const numeric::Width *width,
+				  const iroha::NumericWidth *width,
 				  sym_t object_name);
 
 private:
