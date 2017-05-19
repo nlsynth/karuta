@@ -41,7 +41,7 @@ npage::npage(const iroha::NumericWidth *width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
     data[i].int_part = 0;
-    data[i].type = width;
+    data[i].type_ = numeric::WidthUtil::DeRef(width);
   }
 }
 

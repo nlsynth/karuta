@@ -10,6 +10,8 @@ namespace numeric {
 class WidthUtil {
 public:
   static const iroha::NumericWidth *MakeIntPtr(bool is_signed, int int_part);
+  static const iroha::NumericWidth *ToPtr(const iroha::NumericWidth &w);
+  static const iroha::NumericWidth DeRef(const iroha::NumericWidth *w);
   static const iroha::NumericWidth *CommonWidth(const iroha::NumericWidth *w1,
 						const iroha::NumericWidth *w2);
   static void Dump(const iroha::NumericWidth *w, ostream &os);
@@ -26,7 +28,7 @@ public:
   void Dump(ostream &os) const;
   //
   uint64_t int_part;
-  const iroha::NumericWidth *type;
+  iroha::NumericWidth type_;
 };
 
 enum CompareOp {

@@ -166,7 +166,7 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
   }
   Value value;
   value.type_ = Value::NUM;
-  numeric::Numeric::MakeConst(numeric::WidthUtil::GetWidthFromPtr(args[0].num_.type),
+  numeric::Numeric::MakeConst(args[0].num_.type_.GetWidth(),
 			      &value.num_);
   SetReturnValue(thr, value);
 }

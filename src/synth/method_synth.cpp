@@ -606,7 +606,7 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
     reg->SetInitialValue(iv);
     int w = 0;
     if (value->type_ == vm::Value::NUM) {
-      w = numeric::WidthUtil::GetWidthFromPtr(value->num_.type);
+      w = value->num_.type_.GetWidth();
     }
     reg->value_type_.SetWidth(w);
     member_name_reg_map_[sym_cstr(insn->label_)] = reg;
@@ -632,7 +632,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
     sres->AddOwnerResource(res);
-    int w = numeric::WidthUtil::GetWidthFromPtr(value->num_.type);
+    int w = value->num_.type_.GetWidth();
     auto *params = res->GetParams();
     params->SetWidth(w);
   } else {

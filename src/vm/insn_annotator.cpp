@@ -299,7 +299,7 @@ void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
       value->type_ = Value::INT_ARRAY;
     }
   }
-  value->num_.type = decl->GetWidth();
+  value->num_.type_ = numeric::WidthUtil::DeRef(decl->GetWidth());
   sym_t object_name = decl->GetObjectName();
   if (object_name != sym_null) {
     CHECK(!value->IsObjectType());
@@ -311,7 +311,7 @@ void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
 void InsnAnnotator::AnnotateByValue(Value *value, Register *reg) {
   reg->type_.value_type_ = value->type_;
   if (value->type_ == Value::NUM) {
-    reg->type_.width_ = value->num_.type;
+    reg->type_.width_ = numeric::WidthUtil::ToPtr(value->num_.type_);
   }
   reg->type_.object_name_ = value->type_object_name_;
 }

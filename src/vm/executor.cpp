@@ -69,7 +69,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
       const iroha::NumericWidth *width =
 	method->method_regs_[dst]->type_.width_;
       frame->reg_values_[dst].num_ = insn->src_regs_[0]->initial_num_;
-      frame->reg_values_[dst].num_.type = width;
+      frame->reg_values_[dst].num_.type_ = numeric::WidthUtil::DeRef(width);
     }
     break;
   case OP_STR:
@@ -269,7 +269,7 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
     if (ArrayWrapper::IsIntArray(array_obj)) {
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);
       lhs.num_ = array->Read(index);
-      lhs.num_.type = array->GetWidth();
+      lhs.num_.type_ = numeric::WidthUtil::DeRef(array->GetWidth());
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
       lhs.object_ = ArrayWrapper::Get(array_obj, index);
@@ -574,9 +574,7 @@ void Executor::SetupCallee(Object *obj, Method *callee_method,
   for (size_t i = 0; i < args.size(); ++i) {
     frame->reg_values_[i] = args[i];
     const iroha::NumericWidth *width = callee_method->GetNthArgWidth(i);
-    if (width) {
-      frame->reg_values_[i].num_.type = width;
-    }
+    frame->reg_values_[i].num_.type_ = numeric::WidthUtil::DeRef(width);
   }
 }
 

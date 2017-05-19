@@ -140,7 +140,7 @@ MethodFrame *Thread::PushMethodFrame(Object *obj, Method *method) {
 	Executor::CreateIntArray(reg->type_.width_, reg->GetArrayLength(),
 				 reg->GetArrayInitializer());
     }
-    local_val.num_.type = reg->type_.width_;
+    local_val.num_.type_ = numeric::WidthUtil::DeRef(reg->type_.width_);
   }
   method_stack_.push_back(frame);
   return frame;
