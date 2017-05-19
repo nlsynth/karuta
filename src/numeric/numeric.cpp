@@ -7,16 +7,10 @@
 namespace numeric {
 
 static const Width *g_int_width;
-static const Width *g_nan_width;
 static vector<Width *> Width_list;
 static Pool<Width> pool;
 
-Number::Number() {
-  // NULL means default 32bits unsigned
-  type = NULL;
-}
-
-const Width *Width::MakeInt(bool is_signed, int int_part) {
+const Width *Width::MakeIntPtr(bool is_signed, int int_part) {
   vector<Width *>::iterator it;
   for (Width *nw : Width_list) {
     if (nw->IsSigned() == is_signed &&
@@ -24,10 +18,8 @@ const Width *Width::MakeInt(bool is_signed, int int_part) {
       return nw;
     }
   }
-  Width *nw = new Width();
+  Width *nw = new Width(is_signed, int_part);
   pool.Add(nw);
-  nw->SetIsSigned(is_signed);
-  nw->SetWidth(int_part);
   Width_list.push_back(nw);
   return nw;
 }
@@ -47,7 +39,7 @@ const Width *Numeric::ValueWidth(const Number &src_num) {
   n = Numeric::GetInt(num);
   int w;
   for (w = 0; n > 0; w++, n /= 2);
-  return Width::MakeInt(is_signed, w);
+  return Width::MakeIntPtr(is_signed, w);
 }
 
 const Width *Width::CommonWidth(const Width *w1,
@@ -64,7 +56,7 @@ const Width *Width::CommonWidth(const Width *w1,
   if (w2->GetWidth() > w1->GetWidth()) {
     int_part = w2->GetWidth();
   }
-  return Width::MakeInt(is_signed, int_part);
+  return Width::MakeIntPtr(is_signed, int_part);
 }
 
 bool Width::IsWide(const Width *w1,
@@ -80,18 +72,12 @@ int Width::GetWidthFromPtr(const Width *w) {
 }
 
 void Numeric::Init() {
-  g_int_width = Width::MakeInt(false, 32);
-  Width *nan = new Width();
-  g_nan_width = nan;
-  pool.Add(nan);
+  g_int_width = Width::MakeIntPtr(false, 32);
 }
 
-const Width *Width::Null() {
-  return Width::MakeInt(false, 0);
-}
-
-bool Width::IsNull(const Width *w) {
-  return (w == Width::MakeInt(false, 0));
+Width::Width(bool is_signed, int width) {
+  SetIsSigned(is_signed);
+  SetWidth(width);
 }
 
 bool Width::IsEqual(const Width *w1,
@@ -103,16 +89,8 @@ bool Numeric::IsZero(const Number &n) {
   return n.int_part == 0;
 }
 
-const Width *Width::DefaultInt() {
-  return g_int_width;
-}
-
 void Width::Dump(const Width *w,
 		 ostream &os) {
-  if (w == g_nan_width) {
-    os << "<NaN>";
-    return ;
-  }
   if (!w) {
     os << "<>";
     return ;
@@ -139,6 +117,9 @@ void Numeric::MakeConst(uint64_t int_part, Number *num) {
 
 uint64_t Numeric::GetInt(const Number &x) {
   return x.int_part;
+}
+
+Number::Number() {
 }
 
 void Number::Dump(ostream &os) const {
@@ -215,13 +196,13 @@ void Numeric::SelectBits(const Number &num, int h, int l, Number *res) {
       res->int_part |= (1UL << i);
     }
   }
-  res->type = Width::MakeInt(false, width);
+  res->type = Width::MakeIntPtr(false, width);
 }
 
 void Numeric::Concat(const Number &x, const Number &y, Number *a) {
   a->int_part = (x.int_part << y.type->GetWidth()) + y.int_part;
-  a->type = Width::MakeInt(false,
-			   x.type->GetWidth() + y.type->GetWidth());
+  a->type = Width::MakeIntPtr(false,
+			      x.type->GetWidth() + y.type->GetWidth());
 }
 
 }  // namespace numeric

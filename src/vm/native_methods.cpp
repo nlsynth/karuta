@@ -272,7 +272,7 @@ RegisterType Method::BoolType(VM *vm) {
 
 RegisterType Method::IntType(int w) {
   return RegisterType(Value::NUM, nullptr,
-		      numeric::Width::MakeInt(false, w), sym_null,
+		      numeric::Width::MakeIntPtr(false, w), sym_null,
 		      false);
 }
 

@@ -9,13 +9,12 @@ namespace numeric {
 
 class Width : public iroha::NumericWidth {
 public:
-  static const Width *Null();
-  static const Width *DefaultInt();
-  static const Width *MakeInt(bool is_signed, int int_part);
+  Width(bool is_signed, int width);
+
+  static const Width *MakeIntPtr(bool is_signed, int int_part);
   static const Width *CommonWidth(const Width *w1,
 				  const Width *w2);
   static void Dump(const Width *w, ostream &os);
-  static bool IsNull(const Width *w);
   static bool IsEqual(const Width *w1, const Width *w2);
   // Checks if w1 is wider than w2.
   static bool IsWide(const Width *w1, const Width *w2);
