@@ -46,7 +46,7 @@ public:
 
   int id_;
   RegisterType type_;
-  numeric::Number initial_num_;
+  iroha::Numeric initial_num_;
   sym_t orig_name_;
   Object *type_object_;
 

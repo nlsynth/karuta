@@ -15,7 +15,7 @@ public:
   void Dump(DumpStream &os);
 
   NodeCode type_;
-  numeric::Number num_;
+  iroha::Numeric num_;
   sym_t sym_;
   string str_;
 

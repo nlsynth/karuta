@@ -48,7 +48,7 @@ protected:
   void ExecMemoryRead(MethodFrame *frame, Insn *insn);
   void ExecMemoryWrite(const Method *method, MethodFrame *frame, Insn *insn);
 
-  void MemoryWrite(int addr, const numeric::Number &data);
+  void MemoryWrite(int addr, const iroha::Numeric &data);
 
   Thread *thr_;
 private:
@@ -67,7 +67,7 @@ private:
   void SetupCallee(Object *obj, Method *callee_method,
 		   const vector<Value> &args);
 
-  void MemoryRead(int addr, numeric::Number *res);
+  void MemoryRead(int addr, iroha::Numeric *res);
 
   static void InitializeArray(IntArray *array, fe::ArrayInitializer *array_initializer);
 };

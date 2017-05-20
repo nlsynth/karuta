@@ -19,11 +19,6 @@ public:
   static const iroha::NumericWidth DeRef(const iroha::NumericWidth *w);
 };
 
-class Number : public iroha::Numeric {
-public:
-  //  void Dump(ostream &os) const;
-};
-
 enum CompareOp {
   COMPARE_LT,
   COMPARE_GT,

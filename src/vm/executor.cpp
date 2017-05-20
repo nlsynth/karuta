@@ -338,7 +338,7 @@ void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
     }
     return;
   }
-  numeric::Number res;
+  iroha::Numeric res;
   switch (insn->op_) {
   case OP_BIT_INV:
     numeric::Op::BitInv(value.num_, &res);
@@ -400,9 +400,9 @@ bool Executor::ExecChannelRead(MethodFrame *frame, Insn *insn) {
 
 void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {
   int target = insn->dst_regs_[0]->id_;
-  numeric::Number n1;
+  iroha::Numeric n1;
   numeric::Op::MakeConst(1, &n1);
-  numeric::Number res;
+  iroha::Numeric res;
   if (insn->op_ == OP_PRE_INC) {
     numeric::Op::Add(frame->reg_values_[target].num_, n1, &res);
   } else {
@@ -576,12 +576,12 @@ void Executor::SetupCallee(Object *obj, Method *callee_method,
   }
 }
 
-void Executor::MemoryWrite(int addr, const numeric::Number &data) {
+void Executor::MemoryWrite(int addr, const iroha::Numeric &data) {
   IntArray *mem = thr_->GetVM()->GetDefaultMemory();
   mem->Write(addr, data);
 }
 
-void Executor::MemoryRead(int addr, numeric::Number *res) {
+void Executor::MemoryRead(int addr, iroha::Numeric *res) {
   IntArray *mem = thr_->GetVM()->GetDefaultMemory();
   *res = mem->Read(addr);
 }
@@ -618,7 +618,7 @@ void Executor::ExecBitRange(MethodFrame *frame, Insn *insn) {
 void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_initializer) {
   if (array_initializer) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
-      numeric::Number num;
+      iroha::Numeric num;
       numeric::Op::MakeConst(array_initializer->num_[i], &num);
       array->Write(i, num);
     }

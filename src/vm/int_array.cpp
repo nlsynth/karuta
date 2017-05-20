@@ -16,15 +16,15 @@ IntArray::~IntArray() {
 
 struct npage {
   npage(const iroha::NumericWidth &w);
-  numeric::Number data[PAGE_SIZE];
+  iroha::Numeric data[PAGE_SIZE];
 };
 
 class IntArrayImpl : public IntArray {
 public:
   IntArrayImpl(const iroha::NumericWidth &width, int size);
   IntArrayImpl(const IntArrayImpl *src);
-  virtual void Write(uint64_t addr, const numeric::Number &data);
-  virtual numeric::Number Read(uint64_t addr);
+  virtual void Write(uint64_t addr, const iroha::Numeric &data);
+  virtual iroha::Numeric Read(uint64_t addr);
   virtual long long GetLength() const;
   virtual const iroha::NumericWidth &GetWidth() const;
   virtual int GetAddressWidth() const;
@@ -69,13 +69,13 @@ IntArrayImpl::IntArrayImpl(const IntArrayImpl *src) {
   }
 }
 
-void IntArrayImpl::Write(uint64_t addr, const numeric::Number &data) {
+void IntArrayImpl::Write(uint64_t addr, const iroha::Numeric &data) {
   npage *p = find_page(addr);
   int offset = (addr % PAGE_BYTES);
   p->data[offset] = data;
 }
 
-numeric::Number IntArrayImpl::Read(uint64_t addr) {
+iroha::Numeric IntArrayImpl::Read(uint64_t addr) {
   npage *p = find_page(addr);
   int offset = (addr % PAGE_BYTES);
   return p->data[offset];

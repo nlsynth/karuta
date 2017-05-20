@@ -28,7 +28,7 @@ public:
   set<Thread *> get_waiters_;
   set<Thread *> notify_waiters_;
   set<Thread *> notified_threads_;
-  numeric::Number number_;
+  iroha::Numeric number_;
   bool has_value_;
 };
 
