@@ -47,7 +47,7 @@ void Emitter::SetCurrentFunctionParams() {
       fe::VarDecl *arg = args->decls[i];
       int width = 1;
       if (arg->GetType() == sym_int) {
-	width = numeric::WidthUtil::GetWidthFromPtr(arg->GetWidth());
+	width = arg->GetWidth().GetWidth();
       } else {
 	CHECK(arg->GetType() == sym_bool);
       }

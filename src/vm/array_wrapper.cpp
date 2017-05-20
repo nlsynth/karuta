@@ -16,7 +16,7 @@ static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
 public:
-  ArrayWrapperData(int size, bool is_int, const iroha::NumericWidth *width,
+  ArrayWrapperData(int size, bool is_int, const iroha::NumericWidth &width,
 		   Annotation *an) {
     if (is_int) {
       int_array_ = IntArray::Create(width, size);
@@ -83,13 +83,14 @@ string ArrayWrapper::ToString(Object *obj) {
 Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
   Object *array_obj = vm->root_object_->Clone(vm);
   InstallMethods(vm, array_obj);
-  ArrayWrapperData *data = new ArrayWrapperData(size, false, nullptr, nullptr);
+  iroha::NumericWidth dw;
+  ArrayWrapperData *data = new ArrayWrapperData(size, false, dw, nullptr);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }
 
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
-					 const iroha::NumericWidth *width,
+					 const iroha::NumericWidth &width,
 					 Annotation *an) {
   Object *array_obj = vm->root_object_->Clone(vm);
   InstallMethods(vm, array_obj);
@@ -123,7 +124,7 @@ Annotation *ArrayWrapper::GetAnnotation(Object *obj) {
 
 int ArrayWrapper::GetDataWidth(Object *obj) {
   IntArray *a = GetIntArray(obj);
-  return numeric::WidthUtil::GetWidthFromPtr(a->GetWidth());
+  return a->GetWidth().GetWidth();
 }
 
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {

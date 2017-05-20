@@ -106,7 +106,7 @@ IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
   if (is_owner) {
     vm::IntArray *memory = vm::ArrayWrapper::GetIntArray(obj);
     int address_bits = memory->GetAddressWidth();
-    int data_bits = numeric::WidthUtil::GetWidthFromPtr(memory->GetWidth());
+    int data_bits = memory->GetWidth().GetWidth();
     IValueType data_type;
     data_type.SetWidth(data_bits);
     IArray *array = new IArray(res, address_bits, data_type, false, true);
@@ -231,7 +231,7 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
       if (vd->GetType() == sym_bool) {
 	vt.SetWidth(0);
       } else {
-	vt.SetWidth(numeric::WidthUtil::GetWidthFromPtr(vd->GetWidth()));
+	vt.SetWidth(vd->GetWidth().GetWidth());
       }
       res->input_types_.push_back(vt);
     }
@@ -264,7 +264,7 @@ IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {
   }
   vm::IntArray *memory = vm::ArrayWrapper::GetIntArray(obj);
   int address_bits = memory->GetAddressWidth();
-  int data_bits = numeric::WidthUtil::GetWidthFromPtr(memory->GetWidth());
+  int data_bits = memory->GetWidth().GetWidth();
   IResource *res =
     DesignTool::CreateArrayResource(tab_, address_bits, data_bits, false, true);
   if (memory->GetLength() > 0) {

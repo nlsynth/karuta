@@ -4,14 +4,17 @@
 
 #include "fe/common.h"
 #include "fe/nodecode.h"
+#include "numeric/numeric.h"
 
 namespace fe {
 
 struct WidthSpec {
+  // This should be a pointer (or other primitive type), because this
+  // struct is a part of YYSTYPE union.
   const iroha::NumericWidth *width;
   sym_t name;
 
-  static WidthSpec Int(const iroha::NumericWidth *w);
+  static WidthSpec Int(bool is_signed, int width);
   static WidthSpec Name(sym_t name);
 };
 

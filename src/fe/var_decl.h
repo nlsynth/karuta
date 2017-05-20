@@ -3,6 +3,7 @@
 #define _fe_var_decl_h_
 
 #include "fe/common.h"
+#include "numeric/numeric_type.h"  // from iroha
 
 namespace fe {
 
@@ -22,8 +23,8 @@ public:
   void SetNameExpr(Expr *name);
   sym_t GetType() const;
   void SetType(sym_t type);
-  const iroha::NumericWidth *GetWidth() const;
-  void SetWidth(const iroha::NumericWidth *width);
+  const iroha::NumericWidth &GetWidth() const;
+  void SetWidth(const iroha::NumericWidth &width);
   sym_t GetObjectName() const;
   void SetObjectName(sym_t object_name);
   Expr *GetInitialVal() const;
@@ -40,7 +41,7 @@ private:
   // int, bool, string, object and so on.
   sym_t type_;
 
-  const iroha::NumericWidth *width_;
+  iroha::NumericWidth width_;
   // for numeric object.
   sym_t object_name_;
   Expr *initial_val_;

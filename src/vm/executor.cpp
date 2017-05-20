@@ -36,7 +36,7 @@ Executor::Executor(Thread *thread) : thr_(thread) {
 Executor::~Executor() {
 }
 
-Object *Executor::CreateMemoryObject(const iroha::NumericWidth *width,
+Object *Executor::CreateMemoryObject(const iroha::NumericWidth &width,
 				     int array_length,
 				     fe::ArrayInitializer *array_initializer,
 				     Annotation *an) {
@@ -52,7 +52,7 @@ Object *Executor::CreateObjectArray(int array_length) {
   return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), array_length);
 }
 
-IntArray *Executor::CreateIntArray(const iroha::NumericWidth *width,
+IntArray *Executor::CreateIntArray(const iroha::NumericWidth &width,
 				   int array_length,
 				   fe::ArrayInitializer *array_initializer) {
   IntArray *array = IntArray::Create(width, array_length);
@@ -269,7 +269,7 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
     if (ArrayWrapper::IsIntArray(array_obj)) {
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);
       lhs.num_ = array->Read(index);
-      lhs.num_.type_ = numeric::WidthUtil::DeRef(array->GetWidth());
+      lhs.num_.type_ = array->GetWidth();
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
       lhs.object_ = ArrayWrapper::Get(array_obj, index);
@@ -573,8 +573,8 @@ void Executor::SetupCallee(Object *obj, Method *callee_method,
   MethodFrame *frame = thr_->PushMethodFrame(obj, callee_method);
   for (size_t i = 0; i < args.size(); ++i) {
     frame->reg_values_[i] = args[i];
-    const iroha::NumericWidth *width = callee_method->GetNthArgWidth(i);
-    frame->reg_values_[i].num_.type_ = numeric::WidthUtil::DeRef(width);
+    const iroha::NumericWidth &width = callee_method->GetNthArgWidth(i);
+    frame->reg_values_[i].num_.type_ = width;
   }
 }
 

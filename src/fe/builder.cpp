@@ -10,16 +10,16 @@
 
 namespace fe {
 
-WidthSpec WidthSpec::Int(const iroha::NumericWidth *w) {
+WidthSpec WidthSpec::Int(bool is_signed, int width) {
   WidthSpec s;
-  s.width = w;
+  s.width = numeric::WidthUtil::MakeIntPtr(is_signed, width);
   s.name = sym_null;
   return s;
 }
 
 WidthSpec WidthSpec::Name(sym_t name) {
   WidthSpec s;
-  s.width = nullptr;
+  s.width = numeric::WidthUtil::MakeIntPtr(false, 32);
   s.name = name;
   return s;
 }
@@ -81,7 +81,7 @@ VarDecl *Builder::BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
 			       sym_t object_name, Annotation *an,
 			       VarDecl *var) {
   var->SetType(type);
-  var->SetWidth(w);
+  var->SetWidth(numeric::WidthUtil::DeRef(w));
   var->SetObjectName(object_name);
   var->SetAnnotation(an);
   return var;
@@ -94,9 +94,10 @@ sym_t Builder::TypeNameFromVarDeclSet(VarDeclSet *vds) {
 
 WidthSpec Builder::GetWidthSpecFromVarDeclSet(VarDeclSet *vds) {
   CHECK(vds->decls.size() > 0);
+  auto *vdd = vds->decls[vds->decls.size() - 1];
   WidthSpec ws;
-  ws.width = vds->decls[vds->decls.size() - 1]->GetWidth();
-  ws.name = vds->decls[vds->decls.size() - 1]->GetObjectName();
+  ws.width = numeric::WidthUtil::ToPtr(vdd->GetWidth());
+  ws.name = vdd->GetObjectName();
   return ws;
 }
 
@@ -184,7 +185,7 @@ VarDecl *Builder::ReturnType(sym_t type_name, const iroha::NumericWidth *w,
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
   v->SetType(type_name);
-  v->SetWidth(w);
+  v->SetWidth(numeric::WidthUtil::DeRef(w));
   v->SetObjectName(object_name);
   return v;
 }

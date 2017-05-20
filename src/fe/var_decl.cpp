@@ -6,7 +6,7 @@
 
 namespace fe {
 
-VarDecl::VarDecl() : name_expr_(nullptr), type_(nullptr), width_(nullptr),
+VarDecl::VarDecl() : name_expr_(nullptr), type_(nullptr),
 		     object_name_(sym_null),
 		     initial_val_(nullptr),
 		     array_length_(-1), array_initializer_(nullptr),
@@ -34,11 +34,9 @@ void VarDecl::Dump(DumpStream &ds) {
     ds.indent();
     ds.os << "{null}\n";
   }
-  if (width_) {
-    ds.indent();
-    numeric::WidthUtil::Dump(width_, ds.os);
-    ds.os << "\n";
-  }
+  ds.indent();
+  numeric::WidthUtil::Dump(&width_, ds.os);
+  ds.os << "\n";
   if (object_name_) {
     ds.indent();
     ds.os << "#" << sym_cstr(object_name_) << "\n";
@@ -86,11 +84,11 @@ void VarDecl::SetType(sym_t type) {
   type_ = type;
 }
 
-const iroha::NumericWidth *VarDecl::GetWidth() const {
+const iroha::NumericWidth &VarDecl::GetWidth() const {
   return width_;
 }
 
-void VarDecl::SetWidth(const iroha::NumericWidth *width) {
+void VarDecl::SetWidth(const iroha::NumericWidth &width) {
   width_ = width;
 }
 

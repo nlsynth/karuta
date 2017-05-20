@@ -192,9 +192,9 @@ VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
 }
 
 WIDTH_SPEC : {
-  $$ = WidthSpec::Int(numeric::WidthUtil::MakeIntPtr(false, 32));
+  $$ = WidthSpec::Int(false, 32);
 } | '#' NUM {
-  $$ = WidthSpec::Int(numeric::WidthUtil::MakeIntPtr(false, $2));
+  $$ = WidthSpec::Int(false, $2);
 } | '#' SYM {
   $$ = WidthSpec::Name($2);
 }

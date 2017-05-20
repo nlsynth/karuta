@@ -459,7 +459,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   if (arg_decl->GetType() == sym_bool) {
     w = 0;
   } else if (arg_decl->GetType() == sym_int) {
-    w = numeric::WidthUtil::GetWidthFromPtr(arg_decl->GetWidth());
+    w = arg_decl->GetWidth().GetWidth();
   } else {
     CHECK(false);
   }
