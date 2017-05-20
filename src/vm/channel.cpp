@@ -91,7 +91,7 @@ void Channel::WriteMethod(Thread *thr, Object *obj, const vector<Value> &args) {
 }
 
 void Channel::WriteValue(const Value &value, Object *obj) {
-  int64_t v = numeric::Numeric::GetInt(value.num_);
+  int64_t v = value.num_.GetValue();
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   pipe_data->values_.push_back(v);
   if (pipe_data->blocking_thread_) {

@@ -254,12 +254,12 @@ void Executor::ExecMemoryWrite(const Method *method, MethodFrame *frame,
   Value &src_value = frame->reg_values_[insn->src_regs_[1]->id_];
   Value &dst_value = frame->reg_values_[insn->src_regs_[0]->id_];
   CHECK(dst_value.type_ == Value::NUM);
-  int addr = dst_value.num_.int_part;
+  int addr = dst_value.num_.GetValue();
   MemoryWrite(addr, src_value.num_);
 }
 
 void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
-  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.int_part;
+  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue();
   if (insn->obj_reg_) {
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
     CHECK(array_obj);
@@ -280,13 +280,13 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
     Value &index = frame->reg_values_[insn->src_regs_[0]->id_];
     
     frame->reg_values_[insn->dst_regs_[0]->id_].num_ =
-      array.local_int_array_->Read(numeric::Numeric::GetInt(index.num_));
+      array.local_int_array_->Read(index.num_.GetValue());
     frame->reg_values_[insn->dst_regs_[0]->id_].type_ = Value::NUM;
   }
 }
 
 void Executor::ExecArrayWrite(MethodFrame *frame, Insn *insn) {
-  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.int_part;
+  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue();
   if (insn->obj_reg_) {
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
     CHECK(array_obj);
@@ -362,7 +362,7 @@ void Executor::ExecMemoryRead(MethodFrame *frame, Insn *insn) {
   Value &addr_value = frame->reg_values_[insn->src_regs_[0]->id_];
   CHECK(addr_value.type_ == Value::NUM);
   Value &dst_value = frame->reg_values_[insn->dst_regs_[0]->id_];
-  int addr = addr_value.num_.int_part;
+  int addr = addr_value.num_.GetValue();
   MemoryRead(addr, &dst_value.num_);
   dst_value.type_ = Value::NUM;
 }
@@ -608,8 +608,8 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
 }
 
 void Executor::ExecBitRange(MethodFrame *frame, Insn *insn) {
-  int h = numeric::Numeric::GetInt(frame->reg_values_[insn->src_regs_[1]->id_].num_);
-  int l = numeric::Numeric::GetInt(frame->reg_values_[insn->src_regs_[2]->id_].num_);
+  int h = frame->reg_values_[insn->src_regs_[1]->id_].num_.GetValue();
+  int l = frame->reg_values_[insn->src_regs_[2]->id_].num_.GetValue();
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
   Value &res = frame->reg_values_[insn->dst_regs_[0]->id_];
   numeric::Numeric::SelectBits(value.num_, h, l, &res.num_);

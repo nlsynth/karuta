@@ -40,7 +40,7 @@ private:
 npage::npage(const iroha::NumericWidth &width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
-    data[i].int_part = 0;
+    data[i].SetValue(0);
     data[i].type_ = width;
   }
 }

@@ -46,7 +46,7 @@ iroha::NumericWidth Numeric::ValueWidth(const Number &src_num) {
     is_signed = true;
   }
   uint64_t n;
-  n = Numeric::GetInt(num);
+  n = num.GetValue();
   int w;
   for (w = 0; n > 0; w++, n /= 2);
   return iroha::NumericWidth(is_signed, w);
@@ -68,7 +68,7 @@ void Numeric::Init() {
 }
 
 bool Numeric::IsZero(const Number &n) {
-  return n.int_part == 0;
+  return n.GetValue() == 0;
 }
 
 void WidthUtil::Dump(const iroha::NumericWidth &w,
@@ -82,26 +82,22 @@ void WidthUtil::Dump(const iroha::NumericWidth &w,
 }
 
 void Numeric::Add(const Number &x, const Number &y, Number *a) {
-  a->int_part = x.int_part + y.int_part;
+  a->SetValue(x.GetValue() + y.GetValue());
 }
 
 void Numeric::Sub(const Number &x, const Number &y, Number *a) {
-  a->int_part = x.int_part - y.int_part;
+  a->SetValue(x.GetValue() - y.GetValue());
 }
 
-void Numeric::MakeConst(uint64_t int_part, Number *num) {
-  num->int_part = int_part;
-}
-
-uint64_t Numeric::GetInt(const Number &x) {
-  return x.int_part;
+void Numeric::MakeConst(uint64_t value, Number *num) {
+  num->SetValue(value);
 }
 
 Number::Number() {
 }
 
 void Number::Dump(ostream &os) const {
-  os << int_part;
+  os << GetValue();
 }
 
 void Numeric::CalcBinOp(BinOp op, const Number &x, const Number &y,
@@ -110,42 +106,42 @@ void Numeric::CalcBinOp(BinOp op, const Number &x, const Number &y,
   case BINOP_LSHIFT:
   case BINOP_RSHIFT:
     {
-      int c = Numeric::GetInt(y);
+      int c = y.GetValue();
       if (op == BINOP_LSHIFT) {
-	res->int_part = x.int_part << c;
+	res->SetValue(x.GetValue() << c);
       } else {
-	res->int_part = x.int_part >> c;
+	res->SetValue(x.GetValue() >> c);
       }
     }
     break;
   case BINOP_AND:
-    res->int_part = x.int_part & y.int_part;
+    res->SetValue(x.GetValue() & y.GetValue());
     break;
   case BINOP_OR:
-    res->int_part = x.int_part | y.int_part;
+    res->SetValue(x.GetValue() | y.GetValue());
     break;
   case BINOP_XOR:
-    res->int_part = x.int_part ^ y.int_part;
+    res->SetValue(x.GetValue() ^ y.GetValue());
     break;
   case BINOP_MUL:
-    res->int_part = x.int_part * y.int_part;
+    res->SetValue(x.GetValue() * y.GetValue());
     break;
   }
 }
 
 void Numeric::Minus(const Number &x, Number *res) {
   *res = x;
-  res->int_part *= -1;
+  res->SetValue(res->GetValue() * -1);
 }
 
 bool Numeric::Compare(CompareOp op, const Number &x, const Number &y) {
   switch (op) {
   case COMPARE_LT:
-    return x.int_part < y.int_part;
+    return x.GetValue() < y.GetValue();
   case COMPARE_GT:
-    return x.int_part > y.int_part;
+    return x.GetValue() > y.GetValue();
   case COMPARE_EQ:
-    return x.int_part == y.int_part;
+    return x.GetValue() == y.GetValue();
   default:
     break;
   }
@@ -154,28 +150,28 @@ bool Numeric::Compare(CompareOp op, const Number &x, const Number &y) {
 
 void Numeric::BitInv(const Number &num, Number *res) {
   *res = num;
-  res->int_part = ~res->int_part;
+  res->SetValue(~res->GetValue());
 }
 
 void Numeric::FixupWidth(const iroha::NumericWidth &w, Number *num) {
-  num->int_part &= w.GetMask();
+  num->SetValue(num->GetValue() & w.GetMask());
   num->type_ = w;
 }
 
 void Numeric::SelectBits(const Number &num, int h, int l, Number *res) {
   *res = num;
-  res->int_part = 0;
+  res->SetValue(0);
   int width = h - l + 1;
   for (int i = 0; i < width; ++i) {
-    if ((1UL << (l + i)) & num.int_part) {
-      res->int_part |= (1UL << i);
+    if ((1UL << (l + i)) & num.GetValue()) {
+      res->SetValue(res->GetValue() | (1UL << i));
     }
   }
   res->type_ = *(WidthUtil::MakeIntPtr(false, width));
 }
 
 void Numeric::Concat(const Number &x, const Number &y, Number *a) {
-  a->int_part = (x.int_part << y.type_.GetWidth()) + y.int_part;
+  a->SetValue((x.GetValue() << y.type_.GetWidth()) + y.GetValue());
   a->type_ = *(WidthUtil::MakeIntPtr(false,
 				     x.type_.GetWidth() + y.type_.GetWidth()));
 }

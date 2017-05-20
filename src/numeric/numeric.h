@@ -23,9 +23,16 @@ class Number {
 public:
   Number();
   void Dump(ostream &os) const;
-  //
-  uint64_t int_part;
+
+  uint64_t GetValue() const {
+    return value_;
+  }
+  void SetValue(uint64_t value) {
+    value_ = value;
+  }
+
   iroha::NumericWidth type_;
+  uint64_t value_;
 };
 
 enum CompareOp {
@@ -56,13 +63,12 @@ public:
   static bool Compare(enum CompareOp op, const Number &x, const Number &y);
   static void CalcBinOp(enum BinOp op, const Number &x, const Number &y,
 			Number *res);
-  static void MakeConst(uint64_t int_part, Number *num);
+  static void MakeConst(uint64_t value, Number *num);
   static void Concat(const Number &x, const Number &y, Number *a);
   static void SelectBits(const Number &num, int h, int l, Number *res);
   static void BitInv(const Number &num, Number *res);
   // cuts upper bits
   static void FixupWidth(const iroha::NumericWidth &w, Number *num);
-  static uint64_t GetInt(const Number &x);
 };
 
 }  // namespace numeric

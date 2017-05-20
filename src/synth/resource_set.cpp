@@ -272,7 +272,7 @@ IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {
     IArrayImage *image = new IArrayImage(design);
     design->array_images_.push_back(image);
     for (int i = 0; i < memory->GetLength(); ++i) {
-      image->values_.push_back(numeric::Numeric::GetInt(memory->Read(i)));
+      image->values_.push_back(memory->Read(i).GetValue());
     }
     res->GetArray()->SetArrayImage(image);
   }

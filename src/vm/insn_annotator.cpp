@@ -167,8 +167,8 @@ void InsnAnnotator::TryType(Insn *insn) {
   if (insn->op_ == OP_BIT_RANGE) {
     if (insn->src_regs_[0]->type_.value_type_ == Value::NUM) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-      int w = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_) -
-	numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_) + 1;
+      int w = insn->src_regs_[1]->initial_num_.GetValue() -
+	insn->src_regs_[2]->initial_num_.GetValue() + 1;
       insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
       return;
     }

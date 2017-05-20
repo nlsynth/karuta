@@ -145,7 +145,7 @@ void ArrayWrapper::MemAccess(Thread *thr, Object *obj,
   IntArray *arr = data->int_array_;
   auto length = arr->GetLength();
   const Value &addr_value = args[0];
-  int addr = addr_value.num_.int_part;
+  int addr = addr_value.num_.GetValue();
   for (int i = 0; i < length; ++i) {
     if (is_load) {
       arr->Write(i, mem->Read(addr + i));
