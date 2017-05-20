@@ -7,11 +7,12 @@
 namespace vm {
 
 RegisterType::RegisterType(Value::ValueType type, const Object *enum_type,
-			   const iroha::NumericWidth *width, sym_t object_name,
+			   const iroha::NumericWidth &width, sym_t object_name,
 			   bool is_const)
-  : value_type_(type), enum_type_(enum_type), width_(width),
+  : value_type_(type), enum_type_(enum_type),
     object_name_(object_name),
     is_const_(is_const) {
+  width_ = width;
 }
 
 RegisterType::RegisterType() {
@@ -27,16 +28,15 @@ void RegisterType::Dump(DumpStream &ds) {
   if (enum_type_) {
     ds.os << ":" << EnumTypeWrapper::GetName(enum_type_);
   }
-  if (width_) {
-    ds.os << " #";
-    numeric::WidthUtil::Dump(width_, ds.os);
-  }
+  ds.os << " #";
+  numeric::WidthUtil::Dump(width_, ds.os);
   if (object_name_ != nullptr) {
     ds.os << "[" << sym_cstr(object_name_) << "]";
   }
 }
 
-Register::Register() : type_(Value::NONE, nullptr, nullptr, sym_null, false),
+Register::Register() : type_(Value::NONE, nullptr,
+			     iroha::NumericWidth(false, 32), sym_null, false),
 		       orig_name_(nullptr), type_object_(nullptr),
 		       array_length_(-1), array_initializer_(nullptr),
 		       is_declared_type_(false) {

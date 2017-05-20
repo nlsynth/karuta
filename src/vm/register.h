@@ -11,7 +11,7 @@ namespace vm {
 class RegisterType {
 public:
   RegisterType(Value::ValueType value_type, const Object *enum_type,
-	       const iroha::NumericWidth *width, sym_t object_name,
+	       const iroha::NumericWidth &width, sym_t object_name,
 	       bool is_const);
   void Dump();
   void Dump(DumpStream &ds);
@@ -20,7 +20,7 @@ public:
   enum Value::ValueType value_type_;
   // when value_type_ == ENUM_ITEM
   const Object *enum_type_;
-  const iroha::NumericWidth *width_;
+  iroha::NumericWidth width_;
   sym_t object_name_;
   bool is_const_;
 

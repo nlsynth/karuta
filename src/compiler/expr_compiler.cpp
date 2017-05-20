@@ -456,7 +456,7 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn, fe::Expr *lhs) 
       } else {
 	fe::VarDecl *vd = method->parse_tree_->returns_->decls[0];
 	reg->type_.object_name_ = vd->GetObjectName();
-	reg->type_.width_ = numeric::WidthUtil::ToPtr(vd->GetWidth());
+	reg->type_.width_ = vd->GetWidth();
       }
     }
   }

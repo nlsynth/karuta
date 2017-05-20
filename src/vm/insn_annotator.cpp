@@ -109,7 +109,7 @@ void InsnAnnotator::ClearType() {
   for (auto *reg : method_->method_regs_) {
     if (!reg->GetIsDeclaredType()) {
       reg->type_.value_type_ = Value::NONE;
-      reg->type_.width_ = nullptr;
+      reg->type_.width_ = iroha::NumericWidth(false, 32);
     }
   }
 }
@@ -158,9 +158,9 @@ void InsnAnnotator::TryType(Insn *insn) {
     if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
 	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-      int w = numeric::WidthUtil::GetWidthFromPtr(insn->src_regs_[0]->type_.width_) +
-	numeric::WidthUtil::GetWidthFromPtr(insn->src_regs_[1]->type_.width_);
-      insn->dst_regs_[0]->type_.width_ = numeric::WidthUtil::MakeIntPtr(false, w);
+      int w = insn->src_regs_[0]->type_.width_.GetWidth() +
+	insn->src_regs_[1]->type_.width_.GetWidth();
+      insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
       return;
     }
   }
@@ -169,7 +169,7 @@ void InsnAnnotator::TryType(Insn *insn) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
       int w = numeric::Numeric::GetInt(insn->src_regs_[1]->initial_num_) -
 	numeric::Numeric::GetInt(insn->src_regs_[2]->initial_num_) + 1;
-      insn->dst_regs_[0]->type_.width_ = numeric::WidthUtil::MakeIntPtr(false, w);
+      insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
       return;
     }
   }
@@ -196,7 +196,7 @@ void InsnAnnotator::TryType(Insn *insn) {
   if (insn->op_ == OP_FUNCALL_DONE) {
     // TODO: Look up return type(s).
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-    insn->dst_regs_[0]->type_.width_ = numeric::WidthUtil::MakeIntPtr(false, 32);
+    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, 32);
     return;
   }
   if (insn->op_ == OP_GENERIC_READ || insn->op_ == OP_CHANNEL_READ ||
@@ -241,7 +241,7 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
   if (dst->orig_name_) {
     return;
   }
-  const iroha::NumericWidth *width =
+  iroha::NumericWidth width =
     numeric::WidthUtil::CommonWidth(src1->type_.width_, src2->type_.width_);
   dst->type_.width_ = numeric::WidthUtil::CommonWidth(dst->type_.width_, width);
 }
@@ -264,7 +264,7 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
       reg->type_.enum_type_ = vm->bool_type_;
     }
   }
-  reg->type_.width_ = numeric::WidthUtil::ToPtr(decl->GetWidth());
+  reg->type_.width_ = decl->GetWidth();
   reg->type_.object_name_ = decl->GetObjectName();
   if (reg->type_.object_name_ != sym_null) {
     reg->type_object_ = vm::NumericObject::Get(vm, reg->type_.object_name_);
@@ -307,7 +307,7 @@ void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
 void InsnAnnotator::AnnotateByValue(Value *value, Register *reg) {
   reg->type_.value_type_ = value->type_;
   if (value->type_ == Value::NUM) {
-    reg->type_.width_ = numeric::WidthUtil::ToPtr(value->num_.type_);
+    reg->type_.width_ = value->num_.type_;
   }
   reg->type_.object_name_ = value->type_object_name_;
 }

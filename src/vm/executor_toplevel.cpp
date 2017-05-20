@@ -258,9 +258,8 @@ void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
     if (ArrayWrapper::IsIntArray(array_obj)) {
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);
 
-      const iroha::NumericWidth *width = numeric::WidthUtil::ToPtr(array->GetWidth());
       int dst_id = insn->dst_regs_[0]->id_;
-      method->method_regs_[dst_id]->type_.width_ = width;
+      method->method_regs_[dst_id]->type_.width_ = array->GetWidth();
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
       int dst_id = insn->dst_regs_[0]->id_;

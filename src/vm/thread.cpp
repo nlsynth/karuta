@@ -137,11 +137,11 @@ MethodFrame *Thread::PushMethodFrame(Object *obj, Method *method) {
     local_val.enum_val_.enum_type = reg->type_.enum_type_;
     if (local_val.type_ == Value::INT_ARRAY) {
       local_val.local_int_array_ =
-	Executor::CreateIntArray(numeric::WidthUtil::DeRef(reg->type_.width_),
+	Executor::CreateIntArray(reg->type_.width_,
 				 reg->GetArrayLength(),
 				 reg->GetArrayInitializer());
     }
-    local_val.num_.type_ = numeric::WidthUtil::DeRef(reg->type_.width_);
+    local_val.num_.type_ = reg->type_.width_;
   }
   method_stack_.push_back(frame);
   return frame;

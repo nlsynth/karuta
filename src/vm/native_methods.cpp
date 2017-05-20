@@ -262,17 +262,19 @@ void Method::InstallEnvNativeMethods(VM *vm, Object *env) {
 }
 
 RegisterType Method::ObjectType() {
-  return RegisterType(Value::OBJECT, nullptr, nullptr, sym_null, false);
+  iroha::NumericWidth dw;
+  return RegisterType(Value::OBJECT, nullptr, dw, sym_null, false);
 }
 
 RegisterType Method::BoolType(VM *vm) {
-  return RegisterType(Value::ENUM_ITEM, vm->bool_type_, nullptr,
+  iroha::NumericWidth dw;
+  return RegisterType(Value::ENUM_ITEM, vm->bool_type_, dw,
 		      sym_null, false);
 }
 
 RegisterType Method::IntType(int w) {
   return RegisterType(Value::NUM, nullptr,
-		      numeric::WidthUtil::MakeIntPtr(false, w), sym_null,
+		      iroha::NumericWidth(false, w), sym_null,
 		      false);
 }
 

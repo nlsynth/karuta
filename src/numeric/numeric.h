@@ -12,9 +12,9 @@ public:
   static const iroha::NumericWidth *MakeIntPtr(bool is_signed, int int_part);
   static const iroha::NumericWidth *ToPtr(const iroha::NumericWidth &w);
   static const iroha::NumericWidth DeRef(const iroha::NumericWidth *w);
-  static const iroha::NumericWidth *CommonWidth(const iroha::NumericWidth *w1,
-						const iroha::NumericWidth *w2);
-  static void Dump(const iroha::NumericWidth *w, ostream &os);
+  static const iroha::NumericWidth CommonWidth(const iroha::NumericWidth &w1,
+					       const iroha::NumericWidth &w2);
+  static void Dump(const iroha::NumericWidth &w, ostream &os);
   static bool IsEqual(const iroha::NumericWidth *w1, const iroha::NumericWidth *w2);
   // Checks if w1 is wider than w2.
   static bool IsWide(const iroha::NumericWidth *w1,
@@ -52,7 +52,7 @@ public:
 
   static bool IsZero(const Number &n);
   // Gets required width to store given number.
-  static const iroha::NumericWidth *ValueWidth(const Number &n);
+  static iroha::NumericWidth ValueWidth(const Number &n);
   static void Add(const Number &x, const Number &y, Number *a);
   static void Sub(const Number &x, const Number &y, Number *a);
   static void Minus(const Number &num, Number *res);
@@ -64,7 +64,7 @@ public:
   static void SelectBits(const Number &num, int h, int l, Number *res);
   static void BitInv(const Number &num, Number *res);
   // cuts upper bits
-  static void FixupWidth(const iroha::NumericWidth *w, Number *num);
+  static void FixupWidth(const iroha::NumericWidth &w, Number *num);
   static uint64_t GetInt(const Number &x);
 };
 

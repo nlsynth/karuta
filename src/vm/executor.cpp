@@ -66,10 +66,8 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   case OP_NUM:
     {
       int dst = insn->dst_regs_[0]->id_;
-      const iroha::NumericWidth *width =
-	method->method_regs_[dst]->type_.width_;
       frame->reg_values_[dst].num_ = insn->src_regs_[0]->initial_num_;
-      frame->reg_values_[dst].num_.type_ = numeric::WidthUtil::DeRef(width);
+      frame->reg_values_[dst].num_.type_ = method->method_regs_[dst]->type_.width_;
     }
     break;
   case OP_STR:

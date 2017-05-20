@@ -34,7 +34,7 @@ const iroha::NumericWidth WidthUtil::DeRef(const iroha::NumericWidth *w) {
   return *w;
 }
 
-const iroha::NumericWidth *Numeric::ValueWidth(const Number &src_num) {
+iroha::NumericWidth Numeric::ValueWidth(const Number &src_num) {
   bool is_signed = false;
   Number num = src_num;
   Number zero;
@@ -49,24 +49,18 @@ const iroha::NumericWidth *Numeric::ValueWidth(const Number &src_num) {
   n = Numeric::GetInt(num);
   int w;
   for (w = 0; n > 0; w++, n /= 2);
-  return WidthUtil::MakeIntPtr(is_signed, w);
+  return iroha::NumericWidth(is_signed, w);
 }
 
-const iroha::NumericWidth *WidthUtil::CommonWidth(const iroha::NumericWidth *w1,
-						  const iroha::NumericWidth *w2) {
-  if (!w1) {
-    return w2;
-  }
-  if (!w2) {
-    return w1;
-  }
+const iroha::NumericWidth WidthUtil::CommonWidth(const iroha::NumericWidth &w1,
+						 const iroha::NumericWidth &w2) {
   bool is_signed;
-  int int_part = w1->GetWidth();
-  is_signed = w1->IsSigned() || w2->IsSigned();
-  if (w2->GetWidth() > w1->GetWidth()) {
-    int_part = w2->GetWidth();
+  int int_part = w1.GetWidth();
+  is_signed = w1.IsSigned() || w2.IsSigned();
+  if (w2.GetWidth() > w1.GetWidth()) {
+    int_part = w2.GetWidth();
   }
-  return WidthUtil::MakeIntPtr(is_signed, int_part);
+  return iroha::NumericWidth(is_signed, int_part);
 }
 
 bool WidthUtil::IsWide(const iroha::NumericWidth *w1,
@@ -94,17 +88,13 @@ bool Numeric::IsZero(const Number &n) {
   return n.int_part == 0;
 }
 
-void WidthUtil::Dump(const iroha::NumericWidth *w,
+void WidthUtil::Dump(const iroha::NumericWidth &w,
 		     ostream &os) {
-  if (!w) {
-    os << "<>";
-    return ;
-  }
   os << "<";
-  if (w->IsSigned()) {
+  if (w.IsSigned()) {
     os << "+,";
   }
-  os << w->GetWidth();
+  os << w.GetWidth();
   os << ">";
 }
 
@@ -184,12 +174,9 @@ void Numeric::BitInv(const Number &num, Number *res) {
   res->int_part = ~res->int_part;
 }
 
-void Numeric::FixupWidth(const iroha::NumericWidth *w, Number *num) {
-  if (!w) {
-    w = g_int_width;
-  }
-  num->int_part &= w->GetMask();
-  num->type_ = *w;
+void Numeric::FixupWidth(const iroha::NumericWidth &w, Number *num) {
+  num->int_part &= w.GetMask();
+  num->type_ = w;
 }
 
 void Numeric::SelectBits(const Number &num, int h, int l, Number *res) {
