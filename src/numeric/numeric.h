@@ -19,20 +19,9 @@ public:
   static const iroha::NumericWidth DeRef(const iroha::NumericWidth *w);
 };
 
-class Number {
+class Number : public iroha::Numeric {
 public:
-  Number();
-  void Dump(ostream &os) const;
-
-  uint64_t GetValue() const {
-    return value_;
-  }
-  void SetValue(uint64_t value) {
-    value_ = value;
-  }
-
-  iroha::NumericWidth type_;
-  uint64_t value_;
+  //  void Dump(ostream &os) const;
 };
 
 enum CompareOp {
@@ -50,25 +39,24 @@ enum BinOp {
   BINOP_MUL,
 };
 
-class Numeric {
+class Op {
 public:
-  static void Init();
-
-  static bool IsZero(const Number &n);
+  static void Dump(const iroha::Numeric &num, ostream &os);
+  static bool IsZero(const iroha::Numeric &n);
   // Gets required width to store given number.
-  static iroha::NumericWidth ValueWidth(const Number &n);
-  static void Add(const Number &x, const Number &y, Number *a);
-  static void Sub(const Number &x, const Number &y, Number *a);
-  static void Minus(const Number &num, Number *res);
-  static bool Compare(enum CompareOp op, const Number &x, const Number &y);
-  static void CalcBinOp(enum BinOp op, const Number &x, const Number &y,
-			Number *res);
-  static void MakeConst(uint64_t value, Number *num);
-  static void Concat(const Number &x, const Number &y, Number *a);
-  static void SelectBits(const Number &num, int h, int l, Number *res);
-  static void BitInv(const Number &num, Number *res);
+  static iroha::NumericWidth ValueWidth(const iroha::Numeric &n);
+  static void Add(const iroha::Numeric &x, const iroha::Numeric &y, iroha::Numeric *a);
+  static void Sub(const iroha::Numeric &x, const iroha::Numeric &y, iroha::Numeric *a);
+  static void Minus(const iroha::Numeric &num, iroha::Numeric *res);
+  static bool Compare(enum CompareOp op, const iroha::Numeric &x, const iroha::Numeric &y);
+  static void CalcBinOp(enum BinOp op, const iroha::Numeric &x, const iroha::Numeric &y,
+			iroha::Numeric *res);
+  static void MakeConst(uint64_t value, iroha::Numeric *num);
+  static void Concat(const iroha::Numeric &x, const iroha::Numeric &y, iroha::Numeric *a);
+  static void SelectBits(const iroha::Numeric &num, int h, int l, iroha::Numeric *res);
+  static void BitInv(const iroha::Numeric &num, iroha::Numeric *res);
   // cuts upper bits
-  static void FixupWidth(const iroha::NumericWidth &w, Number *num);
+  static void FixupWidth(const iroha::NumericWidth &w, iroha::Numeric *num);
 };
 
 }  // namespace numeric

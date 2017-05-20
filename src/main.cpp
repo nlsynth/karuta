@@ -280,7 +280,6 @@ int Main::main(int argc, char **argv) {
 
   // Actually initialize modules and params.
   ::sym_table_init();
-  numeric::Numeric::Init();
   iroha::Iroha::Init();
   Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {

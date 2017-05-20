@@ -37,7 +37,7 @@ void Value::Dump(ostream &os) const {
       }
       os << "]";
     }
-    num_.Dump(os);
+    numeric::Op::Dump(num_, os);
     break;
   case ENUM_TYPE:
     os << EnumTypeWrapper::GetName(object_) << " "

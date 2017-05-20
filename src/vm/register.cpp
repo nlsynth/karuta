@@ -51,7 +51,7 @@ void Register::Dump(DumpStream &ds) {
   type_.Dump(ds);
   if (type_.is_const_) {
     ds.os << " ";
-    initial_num_.Dump(ds.os);
+    numeric::Op::Dump(initial_num_, ds.os);
   }
   if (orig_name_) {
     ds.os << "(" << sym_cstr(orig_name_) << ")";

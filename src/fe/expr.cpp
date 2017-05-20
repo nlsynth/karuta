@@ -32,7 +32,7 @@ void Expr::Dump(DumpStream &ds) {
     break;
   case EXPR_NUM:
     ds.indent();
-    num_.Dump(ds.os);
+    numeric::Op::Dump(num_, ds.os);
     ds.os << "\n";
     break;
   case EXPR_FUNCALL:

@@ -179,60 +179,60 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
   int rhs = insn->src_regs_[1]->id_;
   switch (insn->op_) {
   case OP_ADD:
-    numeric::Numeric::Add(frame->reg_values_[lhs].num_,
-			  frame->reg_values_[rhs].num_,
-			  &frame->reg_values_[dst].num_);
+    numeric::Op::Add(frame->reg_values_[lhs].num_,
+		     frame->reg_values_[rhs].num_,
+		     &frame->reg_values_[dst].num_);
     break;
   case OP_SUB:
-    numeric::Numeric::Sub(frame->reg_values_[lhs].num_,
-			  frame->reg_values_[rhs].num_,
-			  &frame->reg_values_[dst].num_);
+    numeric::Op::Sub(frame->reg_values_[lhs].num_,
+		     frame->reg_values_[rhs].num_,
+		     &frame->reg_values_[dst].num_);
     break;
   case OP_MUL:
-    numeric::Numeric::CalcBinOp(numeric::BINOP_MUL,
-				frame->reg_values_[lhs].num_,
-				frame->reg_values_[rhs].num_,
-				&frame->reg_values_[dst].num_);
+    numeric::Op::CalcBinOp(numeric::BINOP_MUL,
+			   frame->reg_values_[lhs].num_,
+			   frame->reg_values_[rhs].num_,
+			   &frame->reg_values_[dst].num_);
     break;
   case OP_ASSIGN:
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
-    numeric::Numeric::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
-				 &frame->reg_values_[dst].num_);
+    numeric::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			    &frame->reg_values_[dst].num_);
     break;
   case OP_AND:
-    numeric::Numeric::CalcBinOp(numeric::BINOP_AND,
-				frame->reg_values_[lhs].num_,
-				frame->reg_values_[rhs].num_,
-				&frame->reg_values_[dst].num_);
+    numeric::Op::CalcBinOp(numeric::BINOP_AND,
+			   frame->reg_values_[lhs].num_,
+			   frame->reg_values_[rhs].num_,
+			   &frame->reg_values_[dst].num_);
     break;
   case OP_OR:
-    numeric::Numeric::CalcBinOp(numeric::BINOP_OR,
-				frame->reg_values_[lhs].num_,
-				frame->reg_values_[rhs].num_,
-				&frame->reg_values_[dst].num_);
+    numeric::Op::CalcBinOp(numeric::BINOP_OR,
+			   frame->reg_values_[lhs].num_,
+			   frame->reg_values_[rhs].num_,
+			   &frame->reg_values_[dst].num_);
     break;
   case OP_XOR:
-    numeric::Numeric::CalcBinOp(numeric::BINOP_XOR,
-				frame->reg_values_[lhs].num_,
-				frame->reg_values_[rhs].num_,
-				&frame->reg_values_[dst].num_);
+    numeric::Op::CalcBinOp(numeric::BINOP_XOR,
+			   frame->reg_values_[lhs].num_,
+			   frame->reg_values_[rhs].num_,
+			   &frame->reg_values_[dst].num_);
     break;
   case OP_CONCAT:
-    numeric::Numeric::Concat(frame->reg_values_[lhs].num_,
-			     frame->reg_values_[rhs].num_,
-			     &frame->reg_values_[dst].num_);
+    numeric::Op::Concat(frame->reg_values_[lhs].num_,
+			frame->reg_values_[rhs].num_,
+			&frame->reg_values_[dst].num_);
     break;
   case OP_LSHIFT:
-    numeric::Numeric::CalcBinOp(numeric::BINOP_LSHIFT,
-				frame->reg_values_[lhs].num_,
-				frame->reg_values_[rhs].num_,
-				&frame->reg_values_[dst].num_);
+    numeric::Op::CalcBinOp(numeric::BINOP_LSHIFT,
+			   frame->reg_values_[lhs].num_,
+			   frame->reg_values_[rhs].num_,
+			   &frame->reg_values_[dst].num_);
     break;
   case OP_RSHIFT:
-    numeric::Numeric::CalcBinOp(numeric::BINOP_RSHIFT,
-				frame->reg_values_[lhs].num_,
-				frame->reg_values_[rhs].num_,
-				&frame->reg_values_[dst].num_);
+    numeric::Op::CalcBinOp(numeric::BINOP_RSHIFT,
+			   frame->reg_values_[lhs].num_,
+			   frame->reg_values_[rhs].num_,
+			   &frame->reg_values_[dst].num_);
     break;
   default:
     CHECK(false) << "unknown binop:" << vm::OpCodeName(insn->op_);
@@ -318,7 +318,7 @@ void Executor::ExecLogicInv(MethodFrame *frame, Insn *insn) {
       val = 0;
     }
   } else if (value.type_ == Value::NUM) {
-    if (!numeric::Numeric::IsZero(value.num_)) {
+    if (!numeric::Op::IsZero(value.num_)) {
       val = 0;
     }
   }
@@ -341,20 +341,20 @@ void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
   numeric::Number res;
   switch (insn->op_) {
   case OP_BIT_INV:
-    numeric::Numeric::BitInv(value.num_, &res);
+    numeric::Op::BitInv(value.num_, &res);
     break;
   case OP_PLUS:
     res = value.num_;
     break;
   case OP_MINUS:
-    numeric::Numeric::Minus(value.num_, &res);
+    numeric::Op::Minus(value.num_, &res);
     break;
   default:
     CHECK(false);
     break;
   }
   int dst_id = insn->dst_regs_[0]->id_;
-  numeric::Numeric::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
+  numeric::Op::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
   dst_value.num_ = res;
 }
 
@@ -401,14 +401,14 @@ bool Executor::ExecChannelRead(MethodFrame *frame, Insn *insn) {
 void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {
   int target = insn->dst_regs_[0]->id_;
   numeric::Number n1;
-  numeric::Numeric::MakeConst(1, &n1);
+  numeric::Op::MakeConst(1, &n1);
   numeric::Number res;
   if (insn->op_ == OP_PRE_INC) {
-    numeric::Numeric::Add(frame->reg_values_[target].num_, n1, &res);
+    numeric::Op::Add(frame->reg_values_[target].num_, n1, &res);
   } else {
-    numeric::Numeric::Sub(frame->reg_values_[target].num_, n1, &res);
+    numeric::Op::Sub(frame->reg_values_[target].num_, n1, &res);
   }
-  numeric::Numeric::FixupWidth(frame->method_->method_regs_[target]->type_.width_, &res);
+  numeric::Op::FixupWidth(frame->method_->method_regs_[target]->type_.width_, &res);
   frame->reg_values_[target].num_ = res;
 }
 
@@ -465,7 +465,7 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
 	  CHECK(false);
 	  break;
 	}
-	r = numeric::Numeric::Compare(op, frame->reg_values_[lhs].num_,
+	r = numeric::Op::Compare(op, frame->reg_values_[lhs].num_,
 				      frame->reg_values_[rhs].num_);
       } else if (frame->reg_values_[rhs].type_ == Value::ENUM_ITEM) {
 	r = (frame->reg_values_[lhs].enum_val_.val ==
@@ -612,14 +612,14 @@ void Executor::ExecBitRange(MethodFrame *frame, Insn *insn) {
   int l = frame->reg_values_[insn->src_regs_[2]->id_].num_.GetValue();
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
   Value &res = frame->reg_values_[insn->dst_regs_[0]->id_];
-  numeric::Numeric::SelectBits(value.num_, h, l, &res.num_);
+  numeric::Op::SelectBits(value.num_, h, l, &res.num_);
 }
 
 void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_initializer) {
   if (array_initializer) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       numeric::Number num;
-      numeric::Numeric::MakeConst(array_initializer->num_[i], &num);
+      numeric::Op::MakeConst(array_initializer->num_[i], &num);
       array->Write(i, num);
     }
   }
