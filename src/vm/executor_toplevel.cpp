@@ -127,7 +127,7 @@ void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
 
 void ExecutorToplevel::ExecChannelDecl(const Method *method,
 				       MethodFrame *frame, Insn *insn) {
-  int width = numeric::WidthUtil::GetWidthFromPtr(insn->insn_stmt_->width_);
+  int width = insn->insn_stmt_->width_.GetWidth();
   Object *channel_obj =
     Channel::NewChannel(thr_->GetVM(), width, insn->label_);
 
@@ -140,7 +140,7 @@ void ExecutorToplevel::ExecChannelDecl(const Method *method,
 
 void ExecutorToplevel::ExecMailboxDecl(const Method *method,
 				       MethodFrame *frame, Insn *insn) {
-  int width = numeric::WidthUtil::GetWidthFromPtr(insn->insn_stmt_->width_);
+  int width = insn->insn_stmt_->width_.GetWidth();
   Object *mailbox_obj =
     MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn->label_);
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;

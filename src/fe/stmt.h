@@ -4,6 +4,7 @@
 
 #include "fe/common.h"
 #include "fe/nodecode.h"
+#include "numeric/numeric.h"
 
 namespace fe {
 
@@ -19,7 +20,7 @@ public:
   string str_;
   VarDecl *decl_;
   EnumDecl *enum_;
-  const iroha::NumericWidth *width_;
+  iroha::NumericWidth width_;
 
   // IF stmt.
   sym_t label_t_;

@@ -63,25 +63,8 @@ const iroha::NumericWidth WidthUtil::CommonWidth(const iroha::NumericWidth &w1,
   return iroha::NumericWidth(is_signed, int_part);
 }
 
-bool WidthUtil::IsWide(const iroha::NumericWidth *w1,
-		       const iroha::NumericWidth *w2) {
-  return w1->GetWidth() >= w2->GetWidth();
-}
-
-int WidthUtil::GetWidthFromPtr(const iroha::NumericWidth *w) {
-  if (!w) {
-    return 32;
-  }
-  return w->GetWidth();
-}
-
 void Numeric::Init() {
   g_int_width = WidthUtil::MakeIntPtr(false, 32);
-}
-
-bool WidthUtil::IsEqual(const iroha::NumericWidth *w1,
-			const iroha::NumericWidth *w2) {
-  return (w1 == w2);
 }
 
 bool Numeric::IsZero(const Number &n) {
