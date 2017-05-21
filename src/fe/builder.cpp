@@ -1,5 +1,6 @@
 #include "fe/builder.h"
 
+#include "base/pool.h"
 #include "fe/common.h"
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
@@ -10,18 +11,45 @@
 
 namespace fe {
 
+static vector<iroha::NumericWidth *> Width_list;
+static Pool<iroha::NumericWidth> pool;
+
 WidthSpec WidthSpec::Int(bool is_signed, int width) {
   WidthSpec s;
-  s.width = numeric::WidthUtil::MakeIntPtr(is_signed, width);
+  s.width = WidthSpec::MakeIntPtr(is_signed, width);
   s.name = sym_null;
   return s;
 }
 
 WidthSpec WidthSpec::Name(sym_t name) {
   WidthSpec s;
-  s.width = numeric::WidthUtil::MakeIntPtr(false, 32);
+  s.width = WidthSpec::MakeIntPtr(false, 32);
   s.name = name;
   return s;
+}
+
+const iroha::NumericWidth *WidthSpec::MakeIntPtr(bool is_signed, int int_part) {
+  for (auto *nw : Width_list) {
+    if (nw->IsSigned() == is_signed &&
+	nw->GetWidth() == int_part) {
+      return nw;
+    }
+  }
+  auto *nw = new iroha::NumericWidth(is_signed, int_part);
+  pool.Add(nw);
+  Width_list.push_back(nw);
+  return nw;
+}
+
+const iroha::NumericWidth *WidthSpec::ToPtr(const iroha::NumericWidth &w) {
+  return MakeIntPtr(w.IsSigned(), w.GetWidth());
+}
+
+const iroha::NumericWidth WidthSpec::DeRef(const iroha::NumericWidth *w) {
+  if (w == nullptr) {
+    return iroha::NumericWidth(false, 32);
+  }
+  return *w;
 }
 
 Expr *Builder::NewExpr(NodeCode type) {
@@ -81,7 +109,7 @@ VarDecl *Builder::BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
 			       sym_t object_name, Annotation *an,
 			       VarDecl *var) {
   var->SetType(type);
-  var->SetWidth(numeric::WidthUtil::DeRef(w));
+  var->SetWidth(WidthSpec::DeRef(w));
   var->SetObjectName(object_name);
   var->SetAnnotation(an);
   return var;
@@ -96,7 +124,7 @@ WidthSpec Builder::GetWidthSpecFromVarDeclSet(VarDeclSet *vds) {
   CHECK(vds->decls.size() > 0);
   auto *vdd = vds->decls[vds->decls.size() - 1];
   WidthSpec ws;
-  ws.width = numeric::WidthUtil::ToPtr(vdd->GetWidth());
+  ws.width = WidthSpec::ToPtr(vdd->GetWidth());
   ws.name = vdd->GetObjectName();
   return ws;
 }
@@ -185,7 +213,7 @@ VarDecl *Builder::ReturnType(sym_t type_name, const iroha::NumericWidth *w,
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
   v->SetType(type_name);
-  v->SetWidth(numeric::WidthUtil::DeRef(w));
+  v->SetWidth(WidthSpec::DeRef(w));
   v->SetObjectName(object_name);
   return v;
 }

@@ -1888,7 +1888,7 @@ yyreduce:
     {
   // Ditto. Current grammar.
   ScannerInterface::InSemiColonStatement();
-  (yyval.var_decl) = Builder::BuildVarDecl((yyvsp[0].sym), numeric::WidthUtil::MakeIntPtr(false, 0),
+  (yyval.var_decl) = Builder::BuildVarDecl((yyvsp[0].sym), WidthSpec::MakeIntPtr(false, 0),
 			     sym_null, (yyvsp[-3].annotation), (yyvsp[-1].var_decl));
 }
 #line 1895 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */

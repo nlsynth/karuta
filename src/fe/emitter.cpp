@@ -198,7 +198,7 @@ void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);
   stmt->sym_ = object_name;
   stmt->expr_ = var;
-  stmt->width_ = numeric::WidthUtil::DeRef(width);
+  stmt->width_ = WidthSpec::DeRef(width);
   EmitStmt(stmt);
 }
 
@@ -208,7 +208,7 @@ void Emitter::EmitMailboxDeclStmt(Expr *var, sym_t type_name,
   Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
   stmt->sym_ = object_name;
   stmt->expr_ = var;
-  stmt->width_ = numeric::WidthUtil::DeRef(width);
+  stmt->width_ = WidthSpec::DeRef(width);
   EmitStmt(stmt);
 }
 
