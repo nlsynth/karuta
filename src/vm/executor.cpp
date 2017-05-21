@@ -179,60 +179,60 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
   int rhs = insn->src_regs_[1]->id_;
   switch (insn->op_) {
   case OP_ADD:
-    numeric::Op::Add(frame->reg_values_[lhs].num_,
-		     frame->reg_values_[rhs].num_,
-		     &frame->reg_values_[dst].num_);
+    iroha::Op::Add(frame->reg_values_[lhs].num_,
+		   frame->reg_values_[rhs].num_,
+		   &frame->reg_values_[dst].num_);
     break;
   case OP_SUB:
-    numeric::Op::Sub(frame->reg_values_[lhs].num_,
-		     frame->reg_values_[rhs].num_,
-		     &frame->reg_values_[dst].num_);
+    iroha::Op::Sub(frame->reg_values_[lhs].num_,
+		   frame->reg_values_[rhs].num_,
+		   &frame->reg_values_[dst].num_);
     break;
   case OP_MUL:
-    numeric::Op::CalcBinOp(numeric::BINOP_MUL,
-			   frame->reg_values_[lhs].num_,
-			   frame->reg_values_[rhs].num_,
-			   &frame->reg_values_[dst].num_);
+    iroha::Op::CalcBinOp(iroha::BINOP_MUL,
+			 frame->reg_values_[lhs].num_,
+			 frame->reg_values_[rhs].num_,
+			 &frame->reg_values_[dst].num_);
     break;
   case OP_ASSIGN:
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
-    numeric::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
-			    &frame->reg_values_[dst].num_);
+    iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			  &frame->reg_values_[dst].num_);
     break;
   case OP_AND:
-    numeric::Op::CalcBinOp(numeric::BINOP_AND,
-			   frame->reg_values_[lhs].num_,
-			   frame->reg_values_[rhs].num_,
-			   &frame->reg_values_[dst].num_);
+    iroha::Op::CalcBinOp(iroha::BINOP_AND,
+			 frame->reg_values_[lhs].num_,
+			 frame->reg_values_[rhs].num_,
+			 &frame->reg_values_[dst].num_);
     break;
   case OP_OR:
-    numeric::Op::CalcBinOp(numeric::BINOP_OR,
-			   frame->reg_values_[lhs].num_,
-			   frame->reg_values_[rhs].num_,
-			   &frame->reg_values_[dst].num_);
+    iroha::Op::CalcBinOp(iroha::BINOP_OR,
+			 frame->reg_values_[lhs].num_,
+			 frame->reg_values_[rhs].num_,
+			 &frame->reg_values_[dst].num_);
     break;
   case OP_XOR:
-    numeric::Op::CalcBinOp(numeric::BINOP_XOR,
-			   frame->reg_values_[lhs].num_,
-			   frame->reg_values_[rhs].num_,
-			   &frame->reg_values_[dst].num_);
+    iroha::Op::CalcBinOp(iroha::BINOP_XOR,
+			 frame->reg_values_[lhs].num_,
+			 frame->reg_values_[rhs].num_,
+			 &frame->reg_values_[dst].num_);
     break;
   case OP_CONCAT:
-    numeric::Op::Concat(frame->reg_values_[lhs].num_,
-			frame->reg_values_[rhs].num_,
-			&frame->reg_values_[dst].num_);
+    iroha::Op::Concat(frame->reg_values_[lhs].num_,
+		      frame->reg_values_[rhs].num_,
+		      &frame->reg_values_[dst].num_);
     break;
   case OP_LSHIFT:
-    numeric::Op::CalcBinOp(numeric::BINOP_LSHIFT,
-			   frame->reg_values_[lhs].num_,
-			   frame->reg_values_[rhs].num_,
-			   &frame->reg_values_[dst].num_);
+    iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
+			 frame->reg_values_[lhs].num_,
+			 frame->reg_values_[rhs].num_,
+			 &frame->reg_values_[dst].num_);
     break;
   case OP_RSHIFT:
-    numeric::Op::CalcBinOp(numeric::BINOP_RSHIFT,
-			   frame->reg_values_[lhs].num_,
-			   frame->reg_values_[rhs].num_,
-			   &frame->reg_values_[dst].num_);
+    iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
+			 frame->reg_values_[lhs].num_,
+			 frame->reg_values_[rhs].num_,
+			 &frame->reg_values_[dst].num_);
     break;
   default:
     CHECK(false) << "unknown binop:" << vm::OpCodeName(insn->op_);
@@ -318,7 +318,7 @@ void Executor::ExecLogicInv(MethodFrame *frame, Insn *insn) {
       val = 0;
     }
   } else if (value.type_ == Value::NUM) {
-    if (!numeric::Op::IsZero(value.num_)) {
+    if (!iroha::Op::IsZero(value.num_)) {
       val = 0;
     }
   }
@@ -341,20 +341,20 @@ void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
   iroha::Numeric res;
   switch (insn->op_) {
   case OP_BIT_INV:
-    numeric::Op::BitInv(value.num_, &res);
+    iroha::Op::BitInv(value.num_, &res);
     break;
   case OP_PLUS:
     res = value.num_;
     break;
   case OP_MINUS:
-    numeric::Op::Minus(value.num_, &res);
+    iroha::Op::Minus(value.num_, &res);
     break;
   default:
     CHECK(false);
     break;
   }
   int dst_id = insn->dst_regs_[0]->id_;
-  numeric::Op::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
+  iroha::Op::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
   dst_value.num_ = res;
 }
 
@@ -401,14 +401,14 @@ bool Executor::ExecChannelRead(MethodFrame *frame, Insn *insn) {
 void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {
   int target = insn->dst_regs_[0]->id_;
   iroha::Numeric n1;
-  numeric::Op::MakeConst(1, &n1);
+  iroha::Op::MakeConst(1, &n1);
   iroha::Numeric res;
   if (insn->op_ == OP_PRE_INC) {
-    numeric::Op::Add(frame->reg_values_[target].num_, n1, &res);
+    iroha::Op::Add(frame->reg_values_[target].num_, n1, &res);
   } else {
-    numeric::Op::Sub(frame->reg_values_[target].num_, n1, &res);
+    iroha::Op::Sub(frame->reg_values_[target].num_, n1, &res);
   }
-  numeric::Op::FixupWidth(frame->method_->method_regs_[target]->type_.width_, &res);
+  iroha::Op::FixupWidth(frame->method_->method_regs_[target]->type_.width_, &res);
   frame->reg_values_[target].num_ = res;
 }
 
@@ -446,27 +446,27 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
     {
       bool r;
       if (frame->reg_values_[rhs].type_ == Value::NUM) {
-	numeric::CompareOp op;
+	iroha::CompareOp op;
 	switch (insn->op_) {
 	case OP_LT:
 	case OP_GTE:
-	  op = numeric::COMPARE_LT;
+	  op = iroha::COMPARE_LT;
 	  break;
 	case OP_GT:
 	case OP_LTE:
-	  op = numeric::COMPARE_GT;
+	  op = iroha::COMPARE_GT;
 	  break;
 	case OP_EQ:
 	case OP_NE:
-	  op = numeric::COMPARE_EQ;
+	  op = iroha::COMPARE_EQ;
 	  break;
 	default:
-	  op = numeric::COMPARE_EQ;
+	  op = iroha::COMPARE_EQ;
 	  CHECK(false);
 	  break;
 	}
-	r = numeric::Op::Compare(op, frame->reg_values_[lhs].num_,
-				      frame->reg_values_[rhs].num_);
+	r = iroha::Op::Compare(op, frame->reg_values_[lhs].num_,
+			       frame->reg_values_[rhs].num_);
       } else if (frame->reg_values_[rhs].type_ == Value::ENUM_ITEM) {
 	r = (frame->reg_values_[lhs].enum_val_.val ==
 	     frame->reg_values_[rhs].enum_val_.val);
@@ -612,14 +612,14 @@ void Executor::ExecBitRange(MethodFrame *frame, Insn *insn) {
   int l = frame->reg_values_[insn->src_regs_[2]->id_].num_.GetValue();
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
   Value &res = frame->reg_values_[insn->dst_regs_[0]->id_];
-  numeric::Op::SelectBits(value.num_, h, l, &res.num_);
+  iroha::Op::SelectBits(value.num_, h, l, &res.num_);
 }
 
 void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_initializer) {
   if (array_initializer) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       iroha::Numeric num;
-      numeric::Op::MakeConst(array_initializer->num_[i], &num);
+      iroha::Op::MakeConst(array_initializer->num_[i], &num);
       array->Write(i, num);
     }
   }

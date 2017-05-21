@@ -166,8 +166,8 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
   }
   Value value;
   value.type_ = Value::NUM;
-  numeric::Op::MakeConst(args[0].num_.type_.GetWidth(),
-			 &value.num_);
+  iroha::Op::MakeConst(args[0].num_.type_.GetWidth(),
+		       &value.num_);
   SetReturnValue(thr, value);
 }
 

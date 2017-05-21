@@ -242,8 +242,8 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
     return;
   }
   iroha::NumericWidth width =
-    numeric::WidthUtil::CommonWidth(src1->type_.width_, src2->type_.width_);
-  dst->type_.width_ = numeric::WidthUtil::CommonWidth(dst->type_.width_, width);
+    iroha::NumericWidth::CommonWidth(src1->type_.width_, src2->type_.width_);
+  dst->type_.width_ = iroha::NumericWidth::CommonWidth(dst->type_.width_, width);
 }
 
 void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,

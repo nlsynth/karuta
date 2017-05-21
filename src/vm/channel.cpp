@@ -80,7 +80,7 @@ bool Channel::ReadValue(Thread *thr, Object *obj, Value *value) {
   value->type_ = Value::NUM;
   int64_t v = *(pipe_data->values_.begin());
   pipe_data->values_.pop_front();
-  numeric::Op::MakeConst(v, &value->num_);
+  iroha::Op::MakeConst(v, &value->num_);
   value->num_.type_ = iroha::NumericWidth(false, pipe_data->width_);
   return true;
 }
