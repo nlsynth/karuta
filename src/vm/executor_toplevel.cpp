@@ -187,13 +187,15 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   value->method_ = new_method;
   Annotation *an = new_method->parse_tree_->annotation_;
   if (an != nullptr) {
+    string name = an->GetName();
+    if (name.empty()) {
+      name = "$thr_" + string(sym_cstr(insn->label_));
+    }
     if (an->IsThreadEntry()) {
-      string t = an->GetName();
-      AddThreadEntry(frame, insn, t);
+      AddThreadEntry(frame, insn, name);
     }
     if (an->IsDataFlowEntry()) {
-      string d = an->GetName();
-      AddThreadEntry(frame, insn, d);
+      AddThreadEntry(frame, insn, name);
     }
   }
 }
