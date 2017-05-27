@@ -16,13 +16,18 @@ static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
 public:
-  ArrayWrapperData(int size, bool is_int, const iroha::NumericWidth &width,
+  ArrayWrapperData(VM *vm, int size, bool is_int,
+		   const iroha::NumericWidth &width,
 		   Annotation *an) {
     if (is_int) {
       int_array_ = IntArray::Create(width, size);
     } else {
       int_array_ = nullptr;
       objs_.resize(size);
+      // Sets non null object so that vm/ doesn't have to care about nullptr.
+      for (int i = 0; i < size; ++i) {
+	objs_[i] = vm->root_object_;
+      }
     }
     an_ = an;
   }
@@ -84,7 +89,7 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
   Object *array_obj = vm->root_object_->Clone(vm);
   InstallMethods(vm, array_obj);
   iroha::NumericWidth dw;
-  ArrayWrapperData *data = new ArrayWrapperData(size, false, dw, nullptr);
+  ArrayWrapperData *data = new ArrayWrapperData(vm, size, false, dw, nullptr);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }
@@ -94,7 +99,7 @@ Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
 					 Annotation *an) {
   Object *array_obj = vm->root_object_->Clone(vm);
   InstallMethods(vm, array_obj);
-  ArrayWrapperData *data = new ArrayWrapperData(size, true, width, an);
+  ArrayWrapperData *data = new ArrayWrapperData(vm, size, true, width, an);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }
