@@ -25,6 +25,7 @@ public:
 
   static void SetLineNumber(int ln, Type t);
 
+  // true if there are messages.
   static bool Check(Type t);
   static bool CheckAll();
   static ostringstream &os(Type t);

@@ -305,12 +305,12 @@ FileImage::~FileImage() {
 FileImage *Scanner::CreateFileImage(const char *fn) {
   struct stat st;
   if (stat(fn, &st) != 0) {
-    return NULL;
+    return nullptr;
   }
   FILE *fp;
   fp = fopen(fn, "r");
   if (!fp) {
-    return NULL;
+    return nullptr;
   }
   FileImage *im = new FileImage();
   im->file_name = string(fn);
@@ -322,7 +322,7 @@ FileImage *Scanner::CreateFileImage(const char *fn) {
   fclose(fp);
   if (s == 0) {
     free(im);
-    return NULL;
+    return nullptr;
   }
   return im;
 }
@@ -338,7 +338,7 @@ void Scanner::Reset() {
 }
 
 void Scanner::ReleaseFileImage() {
-  im_.reset(NULL);
+  im_.reset(nullptr);
 }
 
 void Scanner::InSemiColonStatement() {
@@ -366,7 +366,7 @@ int ScannerInterface::GetToken(ScannerToken *tk) {
   int sub_op;
   int r = Scanner::current_scanner_->GetToken(&sub_op);
   tk->sub_op = 0;
-  tk->str = NULL;
+  tk->str = nullptr;
   if (r == s_info->num_token) {
     tk->num = Scanner::current_scanner_->GetNum();
     if (dbg_scanner) {

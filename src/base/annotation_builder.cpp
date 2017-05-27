@@ -15,10 +15,12 @@ AnnotationValue *AnnotationBuilder::BuildStrParam(sym_t key, const char *str) {
 
 AnnotationValueSet *AnnotationBuilder::BuildParamSet(AnnotationValueSet *params,
 						     AnnotationValue *p) {
-  if (!params) {
+  if (params == nullptr) {
     params = new AnnotationValueSet();
   }
-  params->params_.push_back(p);
+  if (p != nullptr) {
+    params->params_.push_back(p);
+  }
   return params;
 }
 

@@ -134,7 +134,7 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
   Method *parse_tree = ReadFile(file);
   if (!parse_tree) {
     Status::os(Status::USER) << "Failed to load: " << file;
-    return NULL;
+    return nullptr;
   }
   DumpStream ds(cout);
   if (dbg_parser) {
@@ -143,7 +143,8 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 
   // Compile the top level.
   vm::Method *method =
-    compiler::Compiler::CompileMethod(vm, vm->kernel_object_, parse_tree, NULL);
+    compiler::Compiler::CompileMethod(vm, vm->kernel_object_,
+				      parse_tree, nullptr);
 
   return method;
 }
@@ -153,19 +154,19 @@ void FE::RunFile(const string &file, vm::VM *vm) {
   if (!method) {
     return;
   }
-  vm->AddThreadFromMethod(NULL, vm->kernel_object_, method);
+  vm->AddThreadFromMethod(nullptr, vm->kernel_object_, method);
   vm->Run();
 }
 
 Method *FE::ReadFile(const string &file) {
   FileImage *im = GetFileImage(file);
   if (!im) {
-    return NULL;
+    return nullptr;
   }
   std::unique_ptr<Scanner> scanner(ScannerInterface::CreateScanner());
   scanner->SetFileImage(im);
 
-  Emitter::BeginFunction(NULL);
+  Emitter::BeginFunction(nullptr);
   
   ::z_yyparse();
   scanner->ReleaseFileImage();
@@ -186,7 +187,7 @@ FileImage *FE::GetFileImage(const string &fn) {
       paths.push_back(dirname_ + "/" + fn);
     }
   }
-  FileImage *im = NULL;
+  FileImage *im = nullptr;
   for (const string &path : paths) {
     im = Scanner::CreateFileImage(path.c_str());
     if (im) {

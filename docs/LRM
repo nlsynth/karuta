@@ -26,6 +26,9 @@ Kernel.Module
 
 *** Width spec
  var x #32
+ var x int  // Same as 32
+ var x #0
+ var x bool // Same as bool
 
 *** Names
 prefix '__' is reserved for implementation

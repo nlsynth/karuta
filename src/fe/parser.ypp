@@ -108,7 +108,9 @@ ANNOTATION_VALUE : SYM K_ASSIGN STR {
   $$ = $1;
 }
 
-ANNOTATION_VALUE_LIST : ANNOTATION_VALUE {
+ANNOTATION_VALUE_LIST : {
+  $$ = AnnotationBuilder::BuildParamSet(nullptr, nullptr);
+} | ANNOTATION_VALUE {
   $$ = AnnotationBuilder::BuildParamSet(nullptr, $1);
 } | ANNOTATION_VALUE_LIST ',' ANNOTATION_VALUE {
   $$ = AnnotationBuilder::BuildParamSet($1, $3);

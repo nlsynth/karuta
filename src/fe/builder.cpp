@@ -192,7 +192,7 @@ VarDeclSet *Builder::ArgDeclList(VarDeclSet *decls, VarDecl *decl) {
 }
 
 EnumDecl *Builder::EnumItemList(EnumDecl *decl, sym_t item) {
-  if (decl == NULL) {
+  if (decl == nullptr) {
     decl = new EnumDecl;
     NodePool::AddEnumDecl(decl);
   }

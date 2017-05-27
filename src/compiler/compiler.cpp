@@ -29,7 +29,6 @@ public:
   map<sym_t, vm::Register*> local_regs_;
 };
 
-// static
 vm::Method *Compiler::CompileMethod(vm::VM *vm, vm::Object *obj,
 				    const fe::Method *parse_tree,
 				    vm::Method *method) {
@@ -79,6 +78,7 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   // If a jump targets the label at the last insn.
   EmitNop();
   FlushPendingInsns();
+  EmitNop();
   ResolveLabels();
   vm::InsnAnnotator::AnnotateMethod(vm_, obj_, method_);
   if (dbg_bytecode_) {
