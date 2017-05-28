@@ -15,7 +15,7 @@ public:
   virtual ~ObjectSynth();
 
   void Prepare(const char *obj_name, bool is_root);
-  void AddEntryName(const string &task_entry);
+  void AddTaskEntryName(const string &task_entry);
   bool Scan(bool *ok);
   bool Synth();
   void ResolveSubModuleCalls();

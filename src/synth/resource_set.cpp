@@ -14,7 +14,7 @@ namespace synth {
 
 ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   assign_ = nullptr;
-  pseudo_ = nullptr;
+  pseudo_call_ = nullptr;
   mem_if_ = nullptr;
   task_entry_ = nullptr;
   br_ = DesignTool::GetOneResource(tab, resource::kTransition);
@@ -45,11 +45,11 @@ IResource *ResourceSet::BranchResource() {
   return br_;
 }
 
-IResource *ResourceSet::PseudoResource() {
-  if (!pseudo_) {
-    pseudo_ = DesignTool::GetOneResource(tab_, resource::kPseudo);
+IResource *ResourceSet::PseudoCallResource() {
+  if (pseudo_call_ == nullptr) {
+    pseudo_call_ = DesignTool::GetOneResource(tab_, resource::kPseudo);
   }
-  return pseudo_;
+  return pseudo_call_;
 }
 
 IResource *ResourceSet::PrintResource() {

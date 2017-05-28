@@ -31,7 +31,7 @@ void ObjectSynth::Prepare(const char *obj_name, bool is_root) {
   CollectThreads(mod_);
 }
 
-void ObjectSynth::AddEntryName(const string &task_entry) {
+void ObjectSynth::AddTaskEntryName(const string &task_entry) {
   ThreadSynth *th =
     new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), mod_);
   th->SetIsTask(true);

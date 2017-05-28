@@ -71,7 +71,7 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
 void MethodExpander::CollectSubObjCalls(MethodContext *method,
 					map<IState *, IState *> &st_map) {
   // sub obj call resource.
-  IResource *pseudo = thread_->GetResourceSet()->PseudoResource();
+  IResource *pseudo = thread_->GetResourceSet()->PseudoCallResource();
   for (StateWrapper *sw : method->states_) {
     if (!sw->is_sub_obj_call_) {
       continue;
@@ -90,7 +90,7 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
 					map<IState *, IState *> &st_map,
 					map<IRegister *, IRegister *> &reg_map) {
   // call resource.
-  IResource *pseudo = thread_->GetResourceSet()->PseudoResource();
+  IResource *pseudo = thread_->GetResourceSet()->PseudoCallResource();
   for (StateWrapper *sw : method->states_) {
     if (sw->callee_func_name_.empty()) {
       continue;

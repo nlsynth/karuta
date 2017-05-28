@@ -25,7 +25,7 @@ public:
   IResource *AssertResource();
   IResource *AssignResource();
   IResource *BranchResource();
-  IResource *PseudoResource();
+  IResource *PseudoCallResource();
   IResource *PrintResource();
   IResource *GetOpResource(vm::OpCode op, IValueType &vt);
 
@@ -55,7 +55,7 @@ private:
   IResource *br_;
   IResource *print_;
   IResource *mem_if_;
-  IResource *pseudo_;
+  IResource *pseudo_call_;
   IResource *task_entry_;
   IResource *dataflow_in_;
   IResource *task_return_reg_;

@@ -78,7 +78,7 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     obj_->LookupMemberNames(callee_obj, &names);
     CHECK(names.size() > 0);
     callee_synth->Prepare(sym_cstr(names[0]), false);
-    callee_synth->AddEntryName(string(sym_cstr(insn->label_)));
+    callee_synth->AddTaskEntryName(string(sym_cstr(insn->label_)));
     ObjectSynth *this_synth = ds->GetObjectSynth(obj_);
     ds->AddChildObjSynth(this_synth, callee_synth);
   } else {

@@ -362,7 +362,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   }
 
   // Setup arguments.
-  IInsn *iinsn = new IInsn(res_set_->PseudoResource());
+  IInsn *iinsn = new IInsn(res_set_->PseudoCallResource());
   sw->state_->insns_.push_back(iinsn);
   for (vm::Register *arg : insn->src_regs_) {
     IRegister *iarg = FindLocalVarRegister(arg);
@@ -752,7 +752,7 @@ void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
 
 void MethodSynth::EmitEntryInsn(vm::Method *method) {
   // This insn doesn't belong to a state.
-  IResource *pseudo = res_set_->PseudoResource();
+  IResource *pseudo = res_set_->PseudoCallResource();
   context_->method_insn_ = new IInsn(pseudo);
   context_->method_insn_->SetOperand("method_entry");
 
