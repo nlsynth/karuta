@@ -26,6 +26,7 @@ public:
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
   static Annotation *SetAnnotation(sym_t key, AnnotationValueSet *values);
+  static void SetCurrentFunctionAnnotation(Annotation *an);
   static void BeginBlock();
   static void EndBlock();
   static void EmitNop();
@@ -51,8 +52,10 @@ public:
 
 private:
   static vector<MethodDecl> method_stack_;
-  //  static AnnotationValueSet *annotation_value_set_;
+  // For var decl.
   static Annotation *annotation_;
+  // For func decl (may have var decls inside).
+  static Annotation *func_annotation_;
 
   static Stmt *BuildFuncDeclStmt(MethodDecl *decl);
   static MethodDecl &CurrentMethod();

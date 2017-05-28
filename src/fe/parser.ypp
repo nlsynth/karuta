@@ -140,7 +140,7 @@ RETURN_SPEC : {
   $$ = $2;
 }
 
-FUNC_DECL : ANNOTATION_OR_EMPTY FUNC_DECL_HEAD '{' STMT_LIST '}' {
+FUNC_DECL : ANNOTATION_OR_EMPTY {Emitter::SetCurrentFunctionAnnotation($1);} FUNC_DECL_HEAD '{' STMT_LIST '}' {
   Emitter::EndFunction();
 }
 

@@ -66,6 +66,18 @@ IResource *Tool::FindOrCreateTaskReturnValueResource(ITable *caller,
 
 void Tool::InjectDataFlowIn(IState *initialSt, ResourceSet *rset) {
   ITable *tab = initialSt->GetTable();
+  IInsn *wait_insn = RemoveWaitInsn(tab);
+  CHECK(wait_insn);
+  IResource *res = rset->GetDataFlowInResource();
+  res->SetParentResource(wait_insn->GetResource()->GetParentResource());
+  IInsn *insn = new IInsn(res);
+  initialSt->insns_.push_back(insn);
+  for (IRegister *reg : wait_insn->outputs_) {
+    insn->outputs_.push_back(reg);
+  }
+}
+
+IInsn *Tool::RemoveWaitInsn(ITable *tab) {
   IInsn *wait_insn = nullptr;
   IState *wait_st = nullptr;
   int insn_idx;
@@ -85,15 +97,11 @@ void Tool::InjectDataFlowIn(IState *initialSt, ResourceSet *rset) {
     }
   }
   // Replace wait_insn with new DataFlowIn resource.
-  CHECK(wait_insn);
-  wait_st->insns_.erase(wait_st->insns_.begin() + insn_idx);
-  IResource *res = rset->GetDataFlowInResource();
-  res->SetParentResource(wait_insn->GetResource()->GetParentResource());
-  IInsn *insn = new IInsn(res);
-  initialSt->insns_.push_back(insn);
-  for (IRegister *reg : wait_insn->outputs_) {
-    insn->outputs_.push_back(reg);
+  if (wait_insn == nullptr) {
+    return nullptr;
   }
+  wait_st->insns_.erase(wait_st->insns_.begin() + insn_idx);
+  return wait_insn;
 }
 
 }  // namespace synth
