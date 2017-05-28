@@ -285,6 +285,10 @@ TYPE_NAME : K_INT {
 LABEL : SYM ':' {
 }
 
+RETURN : K_RETURN {
+  ScannerInterface::InSemiColonStatement();
+}
+
 STMT : EOS {
   /* empty stmt */
 } | EXPR EOS {
@@ -292,9 +296,9 @@ STMT : EOS {
 } | ENUM_DECL EOS {
 } | K_GOTO FUNCALL EOS {
 } | K_GOTO SYM EOS {
-} | K_RETURN EXPR EOS {
+} | RETURN EXPR EOS {
   Emitter::EmitReturnStmt($2);
-} | K_RETURN EOS {
+} | RETURN EOS {
   Emitter::EmitReturnStmt(nullptr);
 } | BLOCK {
 } | IF_STMT {
@@ -319,16 +323,16 @@ EOS : ';' {
   ScannerInterface::EndSemiColonStatement();
 }
 
-THREAD_DECL_STMT : K_THREAD VAR K_ASSIGN FUNCALL {
-  Emitter::EmitThreadDeclStmt($2, $4);
+THREAD_DECL_STMT : K_THREAD {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN FUNCALL {
+  Emitter::EmitThreadDeclStmt($3, $5);
 }
 
-CHANNEL_DECL_STMT : K_CHANNEL VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
-  Emitter::EmitChannelDeclStmt($2, $4, $5.width, $5.name);
+CHANNEL_DECL_STMT : K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
+  Emitter::EmitChannelDeclStmt($3, $5, $6.width, $6.name);
 }
 
-MAILBOX_DECL_STMT : K_MAILBOX VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
-  Emitter::EmitMailboxDeclStmt($2, $4, $5.width, $5.name);
+MAILBOX_DECL_STMT : K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
+  Emitter::EmitMailboxDeclStmt($3, $5, $6.width, $6.name);
 }
 
 IF_COND_PART : K_IF '(' EXPR ')' {
@@ -514,6 +518,7 @@ FUNCALL_HEAD : SYM '(' {
 }
 
 FUNCALL :  FUNCALL_HEAD ARG_LIST ')' {
+  ScannerInterface::InSemiColonStatement();
   $$ = Builder::FuncallExpr($1, $2);
 }
 
