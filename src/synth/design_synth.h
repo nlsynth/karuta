@@ -27,6 +27,8 @@ private:
   bool SynthObjRec(ObjectSynth *osynth);
   bool ProcessDataFlowIn(ObjectSynth *osynth);
   bool ScanObjs();
+  // Make the tree DAG.
+  void FixupObjTree(ObjectSynth *root);
 
   vm::VM *vm_;
   vm::Object *obj_;

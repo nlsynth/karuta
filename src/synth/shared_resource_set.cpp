@@ -33,11 +33,11 @@ SharedResourceSet::~SharedResourceSet() {
 
 void SharedResourceSet::ResolveResourceTypes() {
   for (auto it : obj_resources_) {
-    ResolveSharedResource(it.second);
+    DetermineOwnerThread(it.second);
   }
   for (auto it : value_resources_) {
     for (auto jt : it.second) {
-      ResolveSharedResource(jt.second);
+      DetermineOwnerThread(jt.second);
     }
   }
 }
@@ -53,7 +53,7 @@ void SharedResourceSet::ResolveResourceAccessors() {
   }
 }
 
-void SharedResourceSet::ResolveSharedResource(SharedResource *res) {
+void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
   CHECK(res->axi_ctrl_thrs_.size() <= 1);
   if (res->axi_ctrl_thrs_.size() == 1) {
     res->owner_thr_ = *(res->axi_ctrl_thrs_.begin());

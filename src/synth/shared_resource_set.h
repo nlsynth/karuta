@@ -51,7 +51,7 @@ public:
   bool HasAccessor(vm::Object *obj);
 
 private:
-  void ResolveSharedResource(SharedResource *res);
+  void DetermineOwnerThread(SharedResource *res);
   void ResolveSharedResourceAccessor(SharedResource *sres);
 
   map<vm::Object *, SharedResource *> obj_resources_;

@@ -1,5 +1,7 @@
 #include "synth/design_synth.h"
 
+#include <list>
+
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "synth/channel_synth.h"
@@ -34,6 +36,7 @@ bool DesignSynth::Synth() {
     return false;
   }
   shared_resources_->ResolveResourceTypes();
+  FixupObjTree(o);
   // Pass 2: Synth.
   if (!SynthObjRec(o)) {
     return false;
@@ -85,12 +88,14 @@ SharedResourceSet *DesignSynth::GetSharedResourceSet() {
 
 bool DesignSynth::ScanObjs() {
   int num_scan;
-  // Loop until every objects don't request rescan.
+  // Loop until every objects stops to request rescan.
   do {
     num_scan = 0;
-    for (auto it : obj_synth_map_) {
+    map<vm::Object *, ObjectSynth *> m = obj_synth_map_;
+    for (auto it : m) {
       bool ok = true;
-      if (it.second->Scan(&ok)) {
+      ObjectSynth *osynth = it.second;
+      if (osynth->Scan(&ok)) {
 	++num_scan;
       }
       if (!ok) {
@@ -128,6 +133,27 @@ bool DesignSynth::ProcessDataFlowIn(ObjectSynth *osynth) {
 
 void DesignSynth::AddChildObjSynth(ObjectSynth *parent, ObjectSynth *child) {
   obj_children_map_[parent].insert(child);
+}
+
+void DesignSynth::FixupObjTree(ObjectSynth *root) {
+  std::list<ObjectSynth *> q;
+  set<ObjectSynth *> seen;
+  q.push_back(root);
+  // BFS traversal.
+  while (q.size() > 0) {
+    ObjectSynth *o = *(q.begin());
+    seen.insert(o);
+    q.pop_front();
+    set<ObjectSynth *> children = obj_children_map_[o];
+    for (ObjectSynth *child : children) {
+      if (seen.find(child) != seen.end()) {
+	// Erase this child as it is already seen.
+	obj_children_map_[o].erase(child);
+      } else {
+	q.push_back(child);
+      }
+    }
+  }
 }
 
 }  // namespace synth
