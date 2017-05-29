@@ -112,16 +112,16 @@ Now some computation is defined within object 'Kernel', so Neon Light Compiler c
 
 * src/
     * Command and common utilities.
+* src/base
+    * Common code for other components.
 * src/compiler
     * Neon Light Script to bytecode.
 * src/fe
     * Neon Light Script parser.
-* src/isynth
-    * Experimental byte code to Iroha IR.
 * src/numeric
     * Numeric operations.
 * src/synth
-    * Bytecode to DFG.
+    * Bytecode to Iroha IR.
 * src/vm
     * Bytecode executor.
 * iroha/

@@ -38,8 +38,8 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
     for (IInsn *insn : ost->insns_) {
       BuildInsnRegCopy(insn, reg_copy_map);
     }
-    BuildInsnRegCopy(method->method_insn_, reg_copy_map);
   }
+  BuildInsnRegCopy(method->method_insn_, reg_copy_map);
   // Copy states.
   for (StateWrapper *sw : method->states_) {
     IState *st = sw->state_;
