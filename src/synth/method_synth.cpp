@@ -31,7 +31,7 @@ MethodSynth::MethodSynth(ThreadSynth *thr_synth,
   : InsnWalker(thr_synth, obj),
     thr_synth_(thr_synth), method_name_(method_name),
     tab_(tab), rsynth_(rsynth), res_set_(res), method_(nullptr),
-    is_task_entry_(false) {
+    is_task_entry_(false), is_root_(false) {
   context_.reset(new MethodContext(this));
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
   method_ = value->method_;
@@ -90,6 +90,10 @@ void MethodSynth::SetTaskEntry() {
   is_task_entry_ = true;
 }
 
+void MethodSynth::SetRoot() {
+  is_root_ = true;
+}
+
 MethodContext *MethodSynth::GetContext() {
   return context_.get();
 }
@@ -130,10 +134,6 @@ void MethodSynth::EmitTaskReturn(IState *last) {
   }
   insn->SetOperand(iroha::operand::kNotify);
   last->insns_.push_back(insn);
-}
-
-void MethodSynth::InjectDataFlowEntry(IState *st) {
-  Tool::InjectDataFlowIn(st, res_set_);
 }
 
 bool MethodSynth::IsDataFlowEntry() const {
@@ -776,6 +776,19 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
     if (rets->decls.size() == 0) {
       IRegister *ireg = thr_synth_->AllocRegister("r_");
       context_->method_insn_->outputs_.push_back(ireg);
+    }
+  }
+  if (is_root_ && IsDataFlowEntry()) {
+    vm::Object *obj = thr_synth_->GetThreadObject();
+    CHECK(obj);
+    IResource *mb = res_set_->GetMailbox(obj, true, false);
+    IResource *df = res_set_->GetDataFlowInResource();
+    df->SetParentResource(mb);
+    IInsn *df_insn = new IInsn(df);
+    StateWrapper *w = AllocState();
+    w->state_->insns_.push_back(df_insn);
+    for (int i = 0; i < context_->method_insn_->inputs_.size(); ++i) {
+      df_insn->outputs_.push_back(context_->method_insn_->inputs_[i]);
     }
   }
 }

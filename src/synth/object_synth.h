@@ -19,7 +19,6 @@ public:
   bool Scan(bool *ok);
   bool Synth();
   void ResolveSubModuleCalls();
-  bool ProcessDataFlowIn();
   DesignSynth *GetDesignSynth();
 
   vm::VM *GetVM() const;

@@ -40,6 +40,7 @@ public:
   // Called after pass 2. Sets the foreign resource for IResource.
   void ResolveResourceAccessors();
 
+  // Declares @thr accesses this.name/obj.
   // NUM
   void AddMemberAccessor(ThreadSynth *thr, sym_t name, vm::Insn *insn);
   // OBJECT, INT_ARRAY, OBJECT_ARRAY

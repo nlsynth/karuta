@@ -15,10 +15,9 @@ public:
 						 ITable *callee);
   static IResource *FindOrCreateTaskReturnValueResource(ITable *caller,
 						 ITable *callee);
-  static void InjectDataFlowIn(IState *initialSt, ResourceSet *rset);
 
 private:
-  static IInsn *RemoveWaitInsn(ITable *tab);
+  static IInsn *FindArgInsn(ITable *tab, IResource *arg_res);
 };
 
 }  // namespace synth

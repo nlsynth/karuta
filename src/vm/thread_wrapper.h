@@ -14,6 +14,7 @@ public:
   struct ThreadEntry {
     string method_name;
     string thread_name;
+    Object *thread_obj;
   };
   static void GetThreadMethods(Object *obj, vector<ThreadEntry> *methods);
 };

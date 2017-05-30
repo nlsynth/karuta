@@ -20,6 +20,7 @@ Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t name, Method *method) {
   Object *thr = vm->root_object_->Clone(vm);
   ThreadWrapperData *data = new ThreadWrapperData;
   data->entry.method_name = string(sym_cstr(name));
+  data->entry.thread_obj = thr;
 
   thr->object_specific_.reset(data);
 

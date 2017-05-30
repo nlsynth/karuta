@@ -16,7 +16,8 @@ class ThreadSynth {
 public:
   ThreadSynth(ObjectSynth *obj_synth,
 	      const string &thread_name,
-	      const string &method_name, IModule *mod);
+	      const string &method_name,
+	      vm::Object *thread_obj);
   virtual ~ThreadSynth();
 
   bool Synth();
@@ -26,7 +27,6 @@ public:
   bool IsPrimary();
   void CollectUnclaimedMembers();
   void MayGenerateExtIOMethod(vm::Method *method, bool is_output);
-  bool ProcessDataFlow();
   void SetIsTask(bool is_task);
   ObjectSynth *GetObjectSynth();
   void RequestMethod(vm::Object *obj, const string &m);
@@ -35,6 +35,7 @@ public:
   MethodContext *GetMethodContext(vm::Object *obj, const string &m);
   ResourceSet *GetResourceSet();
   ITable *GetITable();
+  vm::Object *GetThreadObject();
   vector<SubObjCall> &GetSubObjCalls();
   const string &GetEntryMethodName();
   static void InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
@@ -46,7 +47,10 @@ private:
   const string entry_method_name_;
   bool is_primary_thread_;
   vector<SubObjCall> sub_obj_calls_;
-  IModule *mod_;
+  // (1). The object (obj_synth_->obj_) for main()
+  // (2). Thread object for thread entries.
+  // (3). nullptr for sub module call entries.
+  vm::Object *thread_obj_;
   ITable *tab_;
   bool is_task_;
   std::unique_ptr<ResourceSet> resource_;

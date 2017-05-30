@@ -23,11 +23,12 @@ namespace synth {
 ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 			 const string &thread_name,
 			 const string &entry_method_name,
-			 IModule *mod)
+			 vm::Object *thread_obj)
   : obj_synth_(obj_synth),
     thread_name_(thread_name), entry_method_name_(entry_method_name),
     is_primary_thread_(false),
-    mod_(mod), tab_(nullptr),
+    thread_obj_(thread_obj),
+    tab_(nullptr),
     is_task_(false),
     reg_name_index_(0) {
 }
@@ -36,7 +37,7 @@ ThreadSynth::~ThreadSynth() {
 }
 
 bool ThreadSynth::Scan() {
-  tab_ = new ITable(mod_);
+  tab_ = new ITable(obj_synth_->GetIModule());
   tab_->SetName(thread_name_);
   resource_.reset(new ResourceSet(tab_));
   rsynth_.reset(new ResourceSynth(resource_.get()));
@@ -88,6 +89,9 @@ bool ThreadSynth::Synth() {
   if (is_task_) {
     root_method->SetTaskEntry();
   }
+  if (root_method->IsDataFlowEntry()) {
+    root_method->SetRoot();
+  }
   // Actually synthesize all.
   for (auto &it : obj_methods_) {
     for (auto jt : it.second.methods_) {
@@ -103,7 +107,7 @@ bool ThreadSynth::Synth() {
   MethodExpander expander(root_method->GetContext(), this, &sub_obj_calls_);
   expander.Expand();
 
-  mod_->tables_.push_back(tab_);
+  obj_synth_->GetIModule()->tables_.push_back(tab_);
   return true;
 }
 
@@ -156,15 +160,6 @@ void ThreadSynth::MayGenerateExtIOMethod(vm::Method *method, bool is_output) {
   rsynth_->MayAddExtIO(method, is_output);
 }
 
-bool ThreadSynth::ProcessDataFlow() {
-  MethodSynth *root_method =
-    obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
-  if (root_method->IsDataFlowEntry()) {
-    root_method->InjectDataFlowEntry(tab_->GetInitialState());
-  }
-  return true;
-}
-
 void ThreadSynth::SetIsTask(bool is_task) {
   is_task_ = is_task;
 }
@@ -188,6 +183,10 @@ ObjectSynth *ThreadSynth::GetObjectSynth() {
 
 ITable *ThreadSynth::GetITable() {
   return tab_;
+}
+
+vm::Object *ThreadSynth::GetThreadObject() {
+  return thread_obj_;
 }
 
 void ThreadSynth::AddName(const string &n) {

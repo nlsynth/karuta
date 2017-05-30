@@ -64,44 +64,16 @@ IResource *Tool::FindOrCreateTaskReturnValueResource(ITable *caller,
   return res;
 }
 
-void Tool::InjectDataFlowIn(IState *initialSt, ResourceSet *rset) {
-  ITable *tab = initialSt->GetTable();
-  IInsn *wait_insn = RemoveWaitInsn(tab);
-  CHECK(wait_insn);
-  IResource *res = rset->GetDataFlowInResource();
-  res->SetParentResource(wait_insn->GetResource()->GetParentResource());
-  IInsn *insn = new IInsn(res);
-  initialSt->insns_.push_back(insn);
-  for (IRegister *reg : wait_insn->outputs_) {
-    insn->outputs_.push_back(reg);
-  }
-}
-
-IInsn *Tool::RemoveWaitInsn(ITable *tab) {
-  IInsn *wait_insn = nullptr;
-  IState *wait_st = nullptr;
-  int insn_idx;
+IInsn *Tool::FindArgInsn(ITable *tab, IResource *arg_res) {
   for (size_t i = 0; i < tab->states_.size(); ++i) {
     IState *st = tab->states_[i];
-    int idx = 0;
     for (IInsn *insn : st->insns_) {
-      if (insn->GetOperand() == iroha::operand::kWaitNotify) {
-	wait_insn = insn;
-	wait_st = st;
-	insn_idx = idx;
+      if (insn->GetResource() == arg_res) {
+	return insn;
       }
-      ++idx;
-    }
-    if (wait_insn != nullptr) {
-      break;
     }
   }
-  // Replace wait_insn with new DataFlowIn resource.
-  if (wait_insn == nullptr) {
-    return nullptr;
-  }
-  wait_st->insns_.erase(wait_st->insns_.begin() + insn_idx);
-  return wait_insn;
+  return nullptr;
 }
 
 }  // namespace synth

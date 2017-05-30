@@ -33,7 +33,7 @@ void ObjectSynth::Prepare(const char *obj_name, bool is_root) {
 
 void ObjectSynth::AddTaskEntryName(const string &task_entry) {
   ThreadSynth *th =
-    new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), mod_);
+    new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), nullptr);
   th->SetIsTask(true);
   threads_.push_back(th);
 }
@@ -92,14 +92,14 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   vm::ThreadWrapper::GetThreadMethods(obj_, &thread_entries);
 
   if (thread_entries.size() == 0 && is_root_) {
-    ThreadSynth *ts = new ThreadSynth(this, "main", "main", mod);
+    ThreadSynth *ts = new ThreadSynth(this, "main", "main", obj_);
     // TODO set primary thread if there's no main.
     // (from DesignSynth after scan phase)
     ts->SetPrimary();
     threads_.push_back(ts);
   }
   for (auto &te : thread_entries) {
-    threads_.push_back(new ThreadSynth(this, te.thread_name.c_str(), te.method_name.c_str(), mod));
+    threads_.push_back(new ThreadSynth(this, te.thread_name.c_str(), te.method_name.c_str(), te.thread_obj));
   }
 }
 
@@ -114,15 +114,6 @@ void ObjectSynth::ResolveSubModuleCalls() {
       ThreadSynth::InjectSubModuleCall(c.call_state, c.call_insn, callee_table);
     }
   }
-}
-
-bool ObjectSynth::ProcessDataFlowIn() {
-  for (auto *thr : threads_) {
-    if (!thr->ProcessDataFlow()) {
-      return false;
-    }
-  }
-  return true;
 }
 
 ThreadSynth *ObjectSynth::GetThreadByName(const string &name) {

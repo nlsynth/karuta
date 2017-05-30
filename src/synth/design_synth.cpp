@@ -45,11 +45,6 @@ bool DesignSynth::Synth() {
   for (auto it : obj_synth_map_) {
     it.second->ResolveSubModuleCalls();
   }
-  // Pass 3: Inject dataflow-in.
-  // This should be after ResolveResourceAccessors.
-  if (!ProcessDataFlowIn(o)) {
-    return false;
-  }
 
   channel_synth_->Resolve(i_design_.get());
 
@@ -115,18 +110,6 @@ bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {
       return false;
     }
     child->GetIModule()->SetParentModule(osynth->GetIModule());
-  }
-  return true;
-}
-
-bool DesignSynth::ProcessDataFlowIn(ObjectSynth *osynth) {
-  if (!osynth->ProcessDataFlowIn()) {
-    return false;
-  }
-  for (ObjectSynth *child : obj_children_map_[osynth]) {
-    if (!ProcessDataFlowIn(child)) {
-      return false;
-    }
   }
   return true;
 }
