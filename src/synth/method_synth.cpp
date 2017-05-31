@@ -467,8 +467,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   IRegister *reg = thr_synth_->AllocRegister(reg_name);
   reg->value_type_.SetWidth(w);
   // Add as a local variable if this isn't a native method.
-  if (method->parse_tree_ &&
-      !method->parse_tree_->annotation_) {
+  if (method->parse_tree_ != nullptr) {
     local_reg_map_[method->method_regs_[nth]] = reg;
   }
   return reg;
