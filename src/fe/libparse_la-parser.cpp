@@ -1898,7 +1898,7 @@ yyreduce:
     {
   // Current grammar.
   ScannerInterface::InSemiColonStatement();
-  (yyval.var_decl) = Builder::BuildVarDecl(sym_int, (yyvsp[0].width_spec).width, (yyvsp[0].width_spec).name, (yyvsp[-3].annotation), (yyvsp[-1].var_decl));
+  (yyval.var_decl) = Builder::BuildVarDecl(sym_null, (yyvsp[0].width_spec).width, (yyvsp[0].width_spec).name, (yyvsp[-3].annotation), (yyvsp[-1].var_decl));
 }
 #line 1904 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */
     break;
@@ -1908,7 +1908,7 @@ yyreduce:
     {
   // Ditto. Current grammar.
   ScannerInterface::InSemiColonStatement();
-  (yyval.var_decl) = Builder::BuildVarDecl((yyvsp[0].sym), WidthSpec::MakeIntPtr(false, 0),
+  (yyval.var_decl) = Builder::BuildVarDecl((yyvsp[0].sym), nullptr,
 			     sym_null, (yyvsp[-3].annotation), (yyvsp[-1].var_decl));
 }
 #line 1915 "src/fe/libparse_la-parser.cpp" /* yacc.c:1646  */

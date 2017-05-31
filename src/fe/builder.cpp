@@ -45,11 +45,16 @@ const iroha::NumericWidth *WidthSpec::ToPtr(const iroha::NumericWidth &w) {
   return MakeIntPtr(w.IsSigned(), w.GetWidth());
 }
 
-const iroha::NumericWidth WidthSpec::DeRef(const iroha::NumericWidth *w) {
-  if (w == nullptr) {
-    return iroha::NumericWidth(false, 32);
+const iroha::NumericWidth WidthSpec::GetWidth(sym_t name,
+					      const iroha::NumericWidth *w) {
+  if (w != nullptr) {
+    return *w;
   }
-  return *w;
+  if (name == sym_bool) {
+    return iroha::NumericWidth(false, 0);
+  }
+  // sym_int.
+  return iroha::NumericWidth(false, 32);
 }
 
 Expr *Builder::NewExpr(NodeCode type) {
@@ -109,7 +114,7 @@ VarDecl *Builder::BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
 			       sym_t object_name, Annotation *an,
 			       VarDecl *var) {
   var->SetType(type);
-  var->SetWidth(WidthSpec::DeRef(w));
+  var->SetWidth(WidthSpec::GetWidth(type, w));
   var->SetObjectName(object_name);
   var->SetAnnotation(an);
   return var;
@@ -213,7 +218,7 @@ VarDecl *Builder::ReturnType(sym_t type_name, const iroha::NumericWidth *w,
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
   v->SetType(type_name);
-  v->SetWidth(WidthSpec::DeRef(w));
+  v->SetWidth(WidthSpec::GetWidth(type_name, w));
   v->SetObjectName(object_name);
   return v;
 }

@@ -20,7 +20,8 @@ struct WidthSpec {
   // Code to convert to/from pointer form of NumericWidth.
   static const iroha::NumericWidth *MakeIntPtr(bool is_signed, int int_part);
   static const iroha::NumericWidth *ToPtr(const iroha::NumericWidth &w);
-  static const iroha::NumericWidth DeRef(const iroha::NumericWidth *w);
+  static const iroha::NumericWidth GetWidth(sym_t name,
+					    const iroha::NumericWidth *w);
 };
 
 class Builder {
