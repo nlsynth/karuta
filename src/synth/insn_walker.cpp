@@ -55,9 +55,6 @@ vm::Object *InsnWalker::GetObject() {
 
 bool InsnWalker::IsNativeFuncall(vm::Insn *insn) {
   vm::Object *obj = GetCalleeObject(insn);
-  if (obj == nullptr) {
-    obj = obj_;
-  }
   sym_t func_name = insn->label_;
   vm::Value *value = obj->LookupValue(func_name, false);
   CHECK(value != nullptr && value->type_ == vm::Value::METHOD);
@@ -69,12 +66,13 @@ vm::Object *InsnWalker::GetCalleeObject(vm::Insn *insn) {
   if (insn->obj_reg_ != nullptr) {
     return member_reg_to_obj_map_[insn->obj_reg_];
   }
-  return nullptr;
+  // self.
+  return obj_;
 }
 
 bool InsnWalker::IsSubObjCall(vm::Insn *insn) {
   vm::Object *callee_obj = GetCalleeObject(insn);
-  if (insn->obj_reg_ != nullptr && callee_obj != obj_) {
+  if (callee_obj != obj_) {
     if (vm::NumericObject::IsNumericObject(vm_, callee_obj)) {
       return false;
     }
