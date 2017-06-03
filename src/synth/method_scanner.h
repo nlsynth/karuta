@@ -20,6 +20,7 @@ private:
   void MemberAccess(vm::Insn *insn);
   void ArrayAccess(vm::Insn *insn);
   void NativeFuncall(vm::Insn *insn);
+  void RequestSubObj(vm::Object *callee_obj);
 
   ThreadSynth *thr_synth_;
   vm::Method *method_;

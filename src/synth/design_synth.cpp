@@ -30,7 +30,7 @@ bool DesignSynth::Synth() {
   }
 
   ObjectSynth *o = GetObjectSynth(obj_);
-  o->Prepare("main", true);
+  o->Prepare("main", true /* is_root */);
   // Pass 1: Scan.
   if (!ScanObjs()) {
     return false;

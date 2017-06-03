@@ -90,7 +90,7 @@ void z_yyerror(const char *msg) {
   fe::ScannerPos pos;
   fe::ScannerInterface::GetPosition(&pos);
   Status::os(Status::USER)
-    << "Failed to parse [" << msg << "] at line: " << pos.line
+    << "[" << msg << "] at line: " << pos.line
     << " in " << pos.file;
 }
 

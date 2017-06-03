@@ -70,25 +70,36 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     NativeFuncall(insn);
     return;
   }
-  if (IsDataFlowCall(insn)) {
-    // TODO: synth callee obj if it's not obj_.
-  }
   vm::Object *callee_obj = GetCalleeObject(insn);
+  if (IsDataFlowCall(insn)) {
+    if (callee_obj != obj_) {
+      RequestSubObj(callee_obj);
+    }
+    return;
+  }
   if (IsSubObjCall(insn)) {
+    RequestSubObj(callee_obj);
+    // Add the entry point.
     DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
     ObjectSynth *callee_synth = ds->GetObjectSynth(callee_obj);
-    vector<sym_t> names;
-    obj_->LookupMemberNames(callee_obj, &names);
-    CHECK(names.size() > 0);
-    callee_synth->Prepare(sym_cstr(names[0]), false);
     callee_synth->AddTaskEntryName(string(sym_cstr(insn->label_)));
-    ObjectSynth *this_synth = ds->GetObjectSynth(obj_);
-    ds->AddChildObjSynth(this_synth, callee_synth);
   } else {
     // Normal method or numeric call.
     thr_synth_->RequestMethod(callee_obj,
 			      string(sym_cstr(insn->label_)));
   }
+}
+
+void MethodScanner::RequestSubObj(vm::Object *callee_obj) {
+  DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
+  ObjectSynth *callee_synth = ds->GetObjectSynth(callee_obj);
+  ObjectSynth *this_synth = ds->GetObjectSynth(obj_);
+  ds->AddChildObjSynth(this_synth, callee_synth);
+
+  vector<sym_t> names;
+  obj_->LookupMemberNames(callee_obj, &names);
+  CHECK(names.size() > 0);
+  callee_synth->Prepare(sym_cstr(names[0]), false);
 }
 
 void MethodScanner::MemberAccess(vm::Insn *insn) {
