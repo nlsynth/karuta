@@ -76,4 +76,16 @@ IInsn *Tool::FindArgInsn(ITable *tab, IResource *arg_res) {
   return nullptr;
 }
 
+IResource *Tool::FindOrCreateDataFlowCaller(ITable *caller,
+					    IResource *sreg) {
+  for (IResource *res : caller->resources_) {
+    if (res->GetParentResource() == sreg) {
+      return res;
+    }
+  }
+  IResource *res = DesignTool::CreateSharedRegWriterResource(caller,
+							     sreg);
+  return res;
+}
+
 }  // namespace synth

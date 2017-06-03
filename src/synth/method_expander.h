@@ -21,7 +21,8 @@ public:
 class MethodExpander {
 public:
   MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
-		 vector<SubObjCall> *sub_obj_calls);
+		 vector<TableCall> *sub_obj_calls,
+		 vector<TableCall> *data_flow_calls);
 
   bool Expand();
 
@@ -37,13 +38,15 @@ private:
   void ExpandCalleeStates(MethodContext *method,
 			  map<IState *, IState *> &st_map,
 			  map<IRegister *, IRegister *> &reg_map);
-  void CollectSubObjCalls(MethodContext *method,
-			  map<IState *, IState *> &st_map);
+  // Fills sub_obj_calls_ or data_flow_calls_
+  void CollectTableCalls(MethodContext *method,
+			 map<IState *, IState *> &st_map);
 
   MethodContext *root_method_;
   ThreadSynth *thread_;
   ITable *tab_;
-  vector<SubObjCall> *sub_obj_calls_;
+  vector<TableCall> *sub_obj_calls_;
+  vector<TableCall> *data_flow_calls_;
 };
 
 }  // namespace synth

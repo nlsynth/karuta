@@ -99,20 +99,35 @@ void ObjectSynth::CollectThreads(IModule *mod) {
     threads_.push_back(ts);
   }
   for (auto &te : thread_entries) {
-    threads_.push_back(new ThreadSynth(this, te.thread_name.c_str(), te.method_name.c_str(), te.thread_obj));
+    threads_.push_back(new ThreadSynth(this, te.thread_name.c_str(),
+				       te.method_name.c_str(), te.thread_obj));
   }
 }
 
-void ObjectSynth::ResolveSubModuleCalls() {
+void ObjectSynth::ResolveTableCallsAll() {
   for (auto *thr : threads_) {
-    vector<SubObjCall> &calls = thr->GetSubObjCalls();
-    for (auto &c : calls) {
-      ObjectSynth *callee_osynth =
-	design_synth_->GetObjectSynth(c.callee_obj);
-      ThreadSynth *callee_thr = callee_osynth->GetThreadByName(c.callee_func);
-      ITable *callee_table = callee_thr->GetITable();
-      ThreadSynth::InjectSubModuleCall(c.call_state, c.call_insn, callee_table);
+    vector<TableCall> &sub_obj_calls = thr->GetSubObjCalls();
+    for (auto &c : sub_obj_calls) {
+      ResolveTableCall(c);
     }
+    vector<TableCall> &data_flow_calls = thr->GetDataFlowCalls();
+    for (auto &c : data_flow_calls) {
+      ResolveTableCall(c);
+    }
+  }
+}
+
+void ObjectSynth::ResolveTableCall(const TableCall &call) {
+  ObjectSynth *callee_osynth =
+    design_synth_->GetObjectSynth(call.callee_obj);
+  ThreadSynth *callee_thr = callee_osynth->GetThreadByName(call.callee_func);
+  ITable *callee_table = callee_thr->GetITable();
+  if (call.is_sub_obj_call) {
+    ThreadSynth::InjectSubModuleCall(call.call_state, call.call_insn,
+				     callee_table);
+  } else {
+    ThreadSynth::InjectDataFlowCall(call.call_state, call.call_insn,
+				    callee_table);
   }
 }
 

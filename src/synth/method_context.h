@@ -14,9 +14,10 @@ public:
   MethodContext *callee_method_;
   string callee_func_name_;
   vm::Insn *vm_insn_;
-  // for sub obj task call.
+  // for sub obj task call or data flow call.
   string obj_name_;
   bool is_sub_obj_call_;
+  bool is_data_flow_call_;
   vm::Object *callee_vm_obj_;
 };
 

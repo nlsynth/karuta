@@ -26,6 +26,7 @@ protected:
   void MaybeLoadMemberObject(vm::Insn *insn);
   bool IsNativeFuncall(vm::Insn *insn);
   bool IsSubObjCall(vm::Insn *insn);
+  bool IsDataFlowCall(vm::Insn *insn);
   vm::Object *GetCalleeObject(vm::Insn *insn);
 
   ThreadSynth *thr_synth_;
@@ -33,6 +34,9 @@ protected:
   vm::Object *obj_;
   SharedResourceSet *shared_resource_set_;
   map<vm::Register *, vm::Object *> member_reg_to_obj_map_;
+
+private:
+  vm::Method *GetCalleeMethod(vm::Insn *insn);
 };
 
 }  // namespace synth

@@ -1,5 +1,7 @@
 #include "synth/insn_walker.h"
 
+#include "base/annotation.h"
+#include "fe/method.h"
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
 #include "synth/shared_resource_set.h"
@@ -54,12 +56,16 @@ vm::Object *InsnWalker::GetObject() {
 }
 
 bool InsnWalker::IsNativeFuncall(vm::Insn *insn) {
+  vm::Method *method = GetCalleeMethod(insn);
+  return !(method->GetSynthName().empty());
+}
+
+vm::Method *InsnWalker::GetCalleeMethod(vm::Insn *insn) {
   vm::Object *obj = GetCalleeObject(insn);
   sym_t func_name = insn->label_;
   vm::Value *value = obj->LookupValue(func_name, false);
   CHECK(value != nullptr && value->type_ == vm::Value::METHOD);
-  vm::Method *method = value->method_;
-  return !(method->GetSynthName().empty());
+  return value->method_;
 }
 
 vm::Object *InsnWalker::GetCalleeObject(vm::Insn *insn) {
@@ -76,6 +82,19 @@ bool InsnWalker::IsSubObjCall(vm::Insn *insn) {
     if (vm::NumericObject::IsNumericObject(vm_, callee_obj)) {
       return false;
     }
+    if (IsDataFlowCall(insn)) {
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+bool InsnWalker::IsDataFlowCall(vm::Insn *insn) {
+  vm::Method *method = GetCalleeMethod(insn);
+  if (method->parse_tree_ != nullptr &&
+      method->parse_tree_->annotation_ != nullptr &&
+      method->parse_tree_->annotation_->IsDataFlowEntry()) {
     return true;
   }
   return false;

@@ -104,7 +104,8 @@ bool ThreadSynth::Synth() {
     }
   }
 
-  MethodExpander expander(root_method->GetContext(), this, &sub_obj_calls_);
+  MethodExpander expander(root_method->GetContext(), this,
+			  &sub_obj_calls_, &data_flow_calls_);
   expander.Expand();
 
   obj_synth_->GetIModule()->tables_.push_back(tab_);
@@ -206,8 +207,12 @@ IRegister *ThreadSynth::AllocRegister(const string &prefix) {
   return reg;
 }
 
-vector<SubObjCall> &ThreadSynth::GetSubObjCalls() {
+vector<TableCall> &ThreadSynth::GetSubObjCalls() {
   return sub_obj_calls_;
+}
+
+vector<TableCall> &ThreadSynth::GetDataFlowCalls() {
+  return data_flow_calls_;
 }
 
 const string &ThreadSynth::GetEntryMethodName() {
@@ -245,6 +250,23 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   next_st->insns_.push_back(ret_insn);
   for (IRegister *reg : pseudo_call_insn->outputs_) {
     ret_insn->outputs_.push_back(reg);
+  }
+}
+
+void ThreadSynth::InjectDataFlowCall(IState *st, IInsn *pseudo_call_insn,
+				     ITable *callee_tab) {
+  vector<IResource *> df;
+  DesignUtil::FindResourceByClassName(callee_tab, resource::kDataFlowIn,
+				      &df);
+  CHECK(df.size() == 1);
+  IResource *sreg = df[0]->GetParentResource();
+  ITable *caller_tab = st->GetTable();
+  IResource *w = Tool::FindOrCreateDataFlowCaller(caller_tab, sreg);
+  IInsn *iinsn = new IInsn(w);
+  iinsn->SetOperand(iroha::operand::kNotify);
+  st->insns_.push_back(iinsn);
+  for (IRegister *reg : pseudo_call_insn->inputs_) {
+    iinsn->inputs_.push_back(reg);
   }
 }
 

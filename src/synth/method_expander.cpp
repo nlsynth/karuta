@@ -11,10 +11,12 @@
 namespace synth {
 
 MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
-			       vector<SubObjCall> *sub_obj_calls)
+			       vector<TableCall> *sub_obj_calls,
+			       vector<TableCall> *data_flow_calls)
   : root_method_(root), thread_(thread_synth),
     tab_(thread_synth->GetITable()),
-    sub_obj_calls_(sub_obj_calls)
+    sub_obj_calls_(sub_obj_calls),
+    data_flow_calls_(data_flow_calls)
 {
 }
 
@@ -47,7 +49,7 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
     tab_->states_.push_back(nst);
     CopyState(st, st_copy_map, reg_copy_map, nst);
   }
-  CollectSubObjCalls(method, st_copy_map);
+  CollectTableCalls(method, st_copy_map);
   ExpandCalleeStates(method, st_copy_map, reg_copy_map);
   // Add registers.
   for (auto it : reg_copy_map) {
@@ -68,21 +70,27 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   return p;
 }
 
-void MethodExpander::CollectSubObjCalls(MethodContext *method,
-					map<IState *, IState *> &st_map) {
+void MethodExpander::CollectTableCalls(MethodContext *method,
+				       map<IState *, IState *> &st_map) {
   // sub obj call resource.
   IResource *pseudo = thread_->GetResourceSet()->PseudoCallResource();
   for (StateWrapper *sw : method->states_) {
-    if (!sw->is_sub_obj_call_) {
+    if (!sw->is_sub_obj_call_ && !sw->is_data_flow_call_) {
       continue;
     }
-    SubObjCall call;
+    TableCall call;
     IState *st = st_map[sw->state_];
     call.call_insn = DesignUtil::FindInsnByResource(st, pseudo);
     call.call_state = st;
     call.callee_obj = sw->callee_vm_obj_;
     call.callee_func = sw->callee_func_name_;
-    sub_obj_calls_->push_back(call);
+    if (sw->is_sub_obj_call_) {
+      call.is_sub_obj_call = true;
+      sub_obj_calls_->push_back(call);
+    } else {
+      call.is_sub_obj_call = false;
+      data_flow_calls_->push_back(call);
+    }
   }
 }
 
@@ -95,7 +103,7 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
     if (sw->callee_func_name_.empty()) {
       continue;
     }
-    if (sw->is_sub_obj_call_) {
+    if (sw->is_sub_obj_call_ || sw->is_data_flow_call_) {
       continue;
     }
     MethodContext *callee =

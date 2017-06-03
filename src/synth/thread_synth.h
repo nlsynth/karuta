@@ -36,9 +36,12 @@ public:
   ResourceSet *GetResourceSet();
   ITable *GetITable();
   vm::Object *GetThreadObject();
-  vector<SubObjCall> &GetSubObjCalls();
+  vector<TableCall> &GetSubObjCalls();
+  vector<TableCall> &GetDataFlowCalls();
   const string &GetEntryMethodName();
   static void InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
+				  ITable *callee_tab);
+  static void InjectDataFlowCall(IState *st, IInsn *pseudo_call_insn,
 				  ITable *callee_tab);
 
 private:
@@ -46,7 +49,8 @@ private:
   const string thread_name_;
   const string entry_method_name_;
   bool is_primary_thread_;
-  vector<SubObjCall> sub_obj_calls_;
+  vector<TableCall> sub_obj_calls_;
+  vector<TableCall> data_flow_calls_;
   // (1). The object (obj_synth_->obj_) for main()
   // (2). Thread object for thread entries.
   // (3). nullptr for sub module call entries.

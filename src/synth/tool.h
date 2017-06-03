@@ -15,6 +15,8 @@ public:
 						 ITable *callee);
   static IResource *FindOrCreateTaskReturnValueResource(ITable *caller,
 						 ITable *callee);
+  static IResource *FindOrCreateDataFlowCaller(ITable *caller,
+					       IResource *sreg);
 
 private:
   static IInsn *FindArgInsn(ITable *tab, IResource *arg_res);

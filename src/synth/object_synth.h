@@ -18,7 +18,7 @@ public:
   void AddTaskEntryName(const string &task_entry);
   bool Scan(bool *ok);
   bool Synth();
-  void ResolveSubModuleCalls();
+  void ResolveTableCallsAll();
   DesignSynth *GetDesignSynth();
 
   vm::VM *GetVM() const;
@@ -30,6 +30,7 @@ public:
 private:
   void CollectThreads(IModule *mod);
   void CollectSubModuleCalls();
+  void ResolveTableCall(const TableCall &call);
 
   vm::Object *obj_;
   string obj_name_;

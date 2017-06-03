@@ -47,11 +47,14 @@ class StateWrapper;
 class SharedResource;
 class SharedResourceSet;
 
-struct SubObjCall {
+// sub obj call or data flow call.
+struct TableCall {
   IInsn *call_insn;
   IState *call_state;
   vm::Object *callee_obj;
   string callee_func;
+  // sub obj call (true) or data flow call (false).
+  bool is_sub_obj_call;
 };
 
 }  // namespace synth

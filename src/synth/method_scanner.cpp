@@ -70,6 +70,9 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     NativeFuncall(insn);
     return;
   }
+  if (IsDataFlowCall(insn)) {
+    // TODO: synth callee obj if it's not obj_.
+  }
   vm::Object *callee_obj = GetCalleeObject(insn);
   if (IsSubObjCall(insn)) {
     DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();

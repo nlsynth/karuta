@@ -43,7 +43,7 @@ bool DesignSynth::Synth() {
   }
   shared_resources_->ResolveResourceAccessors();
   for (auto it : obj_synth_map_) {
-    it.second->ResolveSubModuleCalls();
+    it.second->ResolveTableCallsAll();
   }
 
   channel_synth_->Resolve(i_design_.get());
