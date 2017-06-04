@@ -787,11 +787,15 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
     IResource *df = res_set_->GetDataFlowInResource();
     df->SetParentResource(mb);
     IInsn *df_insn = new IInsn(df);
-    StateWrapper *w = AllocState();
-    w->state_->insns_.push_back(df_insn);
+    StateWrapper *sw = AllocState();
+    sw->state_->insns_.push_back(df_insn);
+    int width = 0;
     for (int i = 0; i < context_->method_insn_->inputs_.size(); ++i) {
-      df_insn->outputs_.push_back(context_->method_insn_->inputs_[i]);
+      IRegister *arg = context_->method_insn_->inputs_[i];
+      df_insn->outputs_.push_back(arg);
+      width += arg->value_type_.GetWidth();
     }
+    mb->GetParams()->SetWidth(width);
   }
 }
 
