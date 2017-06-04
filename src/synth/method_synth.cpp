@@ -347,8 +347,24 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
     SynthNative(insn);
     return;
   }
-  vm::Object *callee_obj = GetCalleeObject(insn);
+
+  // Setup arguments.
+  vector<IRegister *> iargs;
+  for (vm::Register *arg : insn->src_regs_) {
+    IRegister *iarg = FindLocalVarRegister(arg);
+    iargs.push_back(iarg);
+  }
+  if (IsDataFlowCall(insn)) {
+    AdjustDataFlowArgs(insn, &iargs);
+  }
+  IInsn *iinsn = new IInsn(res_set_->PseudoCallResource());
   StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
+  for (IRegister *iarg : iargs) {
+    iinsn->inputs_.push_back(iarg);
+  }
+
+  vm::Object *callee_obj = GetCalleeObject(insn);
   sym_t func_name = insn->label_;
   sw->callee_func_name_ = string(sym_cstr(func_name));
   sw->callee_vm_obj_ = callee_obj;
@@ -363,13 +379,30 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
     CHECK(names.size() > 0);
     sw->obj_name_ = string(sym_cstr(names[0]));
   }
+}
 
-  // Setup arguments.
-  IInsn *iinsn = new IInsn(res_set_->PseudoCallResource());
-  sw->state_->insns_.push_back(iinsn);
-  for (vm::Register *arg : insn->src_regs_) {
-    IRegister *iarg = FindLocalVarRegister(arg);
-    iinsn->inputs_.push_back(iarg);
+void MethodSynth::AdjustDataFlowArgs(vm::Insn *insn,
+				     vector<IRegister *> *args) {
+  vm::Object *callee_obj = GetCalleeObject(insn);
+  vm::Value *value = callee_obj->LookupValue(insn->label_, false);
+  CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(insn->label_);
+  vm::Method *method = value->method_;
+  int num_args = method->GetNumArgRegisters();
+  CHECK(num_args == args->size());
+  for (int i = 0; i < args->size(); ++i) {
+    IRegister *arg = args->at(i);
+    const iroha::NumericWidth &actual_width = method->GetNthArgWidth(i);
+    if (arg->value_type_.GetWidth() != actual_width.GetWidth()) {
+      IResource *assign = res_set_->AssignResource();
+      IRegister *lhs = thr_synth_->AllocRegister("df_arg_");
+      lhs->value_type_.SetWidth(actual_width.GetWidth());
+      IInsn *a = new IInsn(assign);
+      a->inputs_.push_back(arg);
+      a->outputs_.push_back(lhs);
+      StateWrapper *sw = AllocState();
+      sw->state_->insns_.push_back(a);
+      (*args)[i] = lhs;
+    }
   }
 }
 

@@ -64,6 +64,11 @@ private:
   void EmitEntryInsn(vm::Method *method);
   void EmitTaskEntry(IState *st);
   void EmitTaskReturn(IState *last);
+  // Data flow call uses one shared-reg to pass multiple arguments,
+  // so the width of each argument should be exactly same as
+  // the callee. This function allocate a register with appropriate width
+  // and copies arguments, if necessary.
+  void AdjustDataFlowArgs(vm::Insn *insn, vector<IRegister *> *args);
 
   ThreadSynth *thr_synth_;
   const string method_name_;
