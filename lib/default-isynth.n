@@ -16,6 +16,5 @@ def Kernel.compile() {
  ack = "ack",
  file= "copy",
  module= "wait_cycles")
-def Kernel.__wait(int cycles)
-  {
+def Kernel.__wait(var cycles int) {
 }
