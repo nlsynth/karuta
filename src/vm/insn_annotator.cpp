@@ -273,7 +273,8 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 }
 
 Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
-  if (sym == sym_int) {
+  if (sym == sym_int || sym == sym_null) {
+    // Assumes width is specified instead for sym_null.
     return Value::NUM;
   } else if (sym == sym_object) {
     return Value::OBJECT;
