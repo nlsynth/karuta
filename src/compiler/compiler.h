@@ -76,6 +76,7 @@ private:
   vm::Register *GetNthReturnRegister(int nth);
   vm::Register *TraverseMemberPath(fe::Expr *e);
   int InsnIndexFromLabel(sym_t label);
+  void SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg);
 
   static bool dbg_bytecode_;
 

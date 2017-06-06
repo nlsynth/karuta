@@ -201,10 +201,18 @@ void Compiler::SetupDeclSetRegisters(fe::VarDeclSet &vds,
     if (reg->orig_name_) {
       scope->local_regs_[reg->orig_name_] = reg;
     }
-    vm::InsnAnnotator::AnnotateByDecl(vm_, decl, reg);
+    SetWidthByDecl(decl, reg);
     if (types) {
       types->push_back(reg->type_);
     }
+  }
+}
+
+void Compiler::SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg) {
+  vm::InsnAnnotator::AnnotateByDecl(vm_, decl, reg);
+  if (decl->IsPtr()) {
+    // TODO: Get address width from obj_.
+    reg->type_.width_ = iroha::NumericWidth(false, 32);
   }
 }
 
@@ -344,8 +352,8 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
   if (var_expr->type_ == fe::EXPR_ELM_SYM_REF) {
     CHECK(IsTopLevel());
-    if (rhs_val) {
-      vm::InsnAnnotator::AnnotateByDecl(vm_, stmt->decl_, rhs_val);
+    if (rhs_val != nullptr) {
+      SetWidthByDecl(stmt->decl_, rhs_val);
     }
     CompileMemberDeclStmt(stmt, var_expr, vm::OP_VARDECL, rhs_val);
     return;
@@ -358,7 +366,7 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   reg->orig_name_ = name;
   VarScope *scope = CurrentScope();
   scope->local_regs_[name] = reg;
-  vm::InsnAnnotator::AnnotateByDecl(vm_, stmt->decl_, reg);
+  SetWidthByDecl(stmt->decl_, reg);
   if (stmt->decl_->GetObjectName() != sym_null) {
     if (IsTopLevel()) {
       // Set type object later.

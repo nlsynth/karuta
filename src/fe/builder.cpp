@@ -107,6 +107,9 @@ VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
   VarDecl *mv = new VarDecl;
   NodePool::AddVarDecl(mv);
   mv->SetNameExpr(var);
+  if (is_ptr) {
+    mv->SetPtr(true);
+  }
   return mv;
 }
 

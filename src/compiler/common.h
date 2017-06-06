@@ -8,6 +8,7 @@ namespace fe {
 class Expr;
 class Method;
 class Stmt;
+class VarDecl;
 class VarDeclSet;
 }  // namespace fe
 

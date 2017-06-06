@@ -23,6 +23,9 @@ public:
   void SetNameExpr(Expr *name);
   sym_t GetType() const;
   void SetType(sym_t type);
+  bool IsPtr() const;
+  void SetPtr(bool is_ptr);
+  // Indicates pointee width if IsPtr() is true.
   const iroha::NumericWidth &GetWidth() const;
   void SetWidth(const iroha::NumericWidth &width);
   sym_t GetObjectName() const;
@@ -40,6 +43,7 @@ private:
   Expr *name_expr_;
   // int, bool, string, object and so on.
   sym_t type_;
+  bool is_ptr_;
 
   iroha::NumericWidth width_;
   // for numeric object.
