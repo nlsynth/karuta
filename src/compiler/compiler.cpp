@@ -211,8 +211,8 @@ void Compiler::SetupDeclSetRegisters(fe::VarDeclSet &vds,
 void Compiler::SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg) {
   vm::InsnAnnotator::AnnotateByDecl(vm_, decl, reg);
   if (decl->IsPtr()) {
-    // TODO: Get address width from obj_.
-    reg->type_.width_ = iroha::NumericWidth(false, 32);
+    int w = vm_->GetAddressSpaceWidth(obj_);
+    reg->type_.width_ = iroha::NumericWidth(false, w);
   }
 }
 

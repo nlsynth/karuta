@@ -20,6 +20,7 @@ public:
   void AddThreadFromMethod(Thread *parent, Object *object, Method *method);
   void GC();
   IntArray *GetDefaultMemory();
+  int GetAddressSpaceWidth(Object *obj);
 
   Method *NewMethod(bool is_toplevel);
   Object *NewObject();
