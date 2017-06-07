@@ -68,7 +68,7 @@ Now some computation is defined within object 'Kernel', so Neon Light Compiler c
 * Prototype based object system
     * Object.clone() to create derivative designs
 * Interger with width
-    * Declaration like "int #32 x;"
+    * Declaration like "var x #32"
 * Threads
 * Channels
 * Verilog embedding

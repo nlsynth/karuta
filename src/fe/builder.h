@@ -4,7 +4,6 @@
 
 #include "fe/common.h"
 #include "fe/nodecode.h"
-#include "numeric/numeric.h"
 
 namespace fe {
 

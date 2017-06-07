@@ -28,8 +28,7 @@ void RegisterType::Dump(DumpStream &ds) {
   if (enum_type_) {
     ds.os << ":" << EnumTypeWrapper::GetName(enum_type_);
   }
-  ds.os << " #";
-  numeric::WidthUtil::Dump(width_, ds.os);
+  ds.os << " #" << width_.Format();
   if (object_name_ != nullptr) {
     ds.os << "[" << sym_cstr(object_name_) << "]";
   }
@@ -50,8 +49,7 @@ void Register::Dump() {
 void Register::Dump(DumpStream &ds) {
   type_.Dump(ds);
   if (type_.is_const_) {
-    ds.os << " ";
-    numeric::Op::Dump(initial_num_, ds.os);
+    ds.os << " " << initial_num_.Format();
   }
   if (orig_name_) {
     ds.os << "(" << sym_cstr(orig_name_) << ")";

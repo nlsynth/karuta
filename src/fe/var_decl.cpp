@@ -41,7 +41,7 @@ void VarDecl::Dump(DumpStream &ds) {
     ds.os << "{null}\n";
   }
   ds.indent();
-  numeric::WidthUtil::Dump(width_, ds.os);
+  ds.os << width_.Format();
   ds.os << "\n";
   if (object_name_) {
     ds.indent();

@@ -1,6 +1,5 @@
 #include "vm/mailbox_wrapper.h"
 
-#include "numeric/numeric.h"
 #include "synth/object_method_names.h"
 #include "vm/method.h"
 #include "vm/object.h"

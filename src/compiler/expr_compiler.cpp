@@ -5,6 +5,7 @@
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
+#include "numeric/numeric_op.h"  // from iroha
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/method.h"

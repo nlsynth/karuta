@@ -3,7 +3,7 @@
 #define _vm_value_h_
 
 #include "vm/common.h"
-#include "numeric/numeric.h"
+#include "numeric/numeric_type.h"  // from iroha
 
 namespace vm {
 

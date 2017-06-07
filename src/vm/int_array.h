@@ -2,7 +2,7 @@
 #ifndef _vm_int_array_h_
 #define _vm_int_array_h_
 
-#include "numeric/numeric.h"
+#include "numeric/numeric_type.h"  // from iroha
 
 namespace vm {
 

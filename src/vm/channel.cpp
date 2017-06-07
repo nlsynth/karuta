@@ -1,5 +1,6 @@
 #include "vm/channel.h"
 
+#include "numeric/numeric_op.h"  // from iroha
 #include "vm/object.h"
 #include "vm/thread.h"
 #include "vm/method.h"

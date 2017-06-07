@@ -9,6 +9,7 @@
 #include "fe/method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "numeric/numeric_op.h"  // from iroha
 #include "vm/array_wrapper.h"
 #include "vm/method.h"
 #include "vm/channel.h"
