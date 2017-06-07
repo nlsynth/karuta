@@ -114,13 +114,15 @@ VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
 }
 
 VarDecl *Builder::BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
-			       sym_t object_name, Annotation *an,
-			       VarDecl *var) {
+			       sym_t object_name, VarDecl *var) {
   var->SetType(type);
   var->SetWidth(WidthSpec::GetWidth(type, w));
   var->SetObjectName(object_name);
-  var->SetAnnotation(an);
   return var;
+}
+
+void Builder::SetVarDeclAnnotation(VarDecl *decl, Annotation *an) {
+  decl->SetAnnotation(an);
 }
 
 sym_t Builder::TypeNameFromVarDeclSet(VarDeclSet *vds) {

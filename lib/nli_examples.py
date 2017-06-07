@@ -79,7 +79,7 @@ Kernel.writeHdl("sum.v");
            's' : '''channel Kernel.in = int;
 channel Kernel.out = int;
 
-def Kernel.f(int arg) (int) {
+def Kernel.f(arg int) (int) {
   int i;
   int t = 0;
   for (i = 0; i < arg; i++) {
@@ -130,7 +130,7 @@ Kernel.writeHdl("thr.v");
            's' : '''object O = Kernel.clone();
 object M = Kernel.clone();
 object O.M = M;
-def M.f(int a) (int) {
+def M.f(a int) (int) {
   return a + 1;
 }
 
@@ -146,7 +146,7 @@ O.writeHdl("call.v");
            's' : '''object L = Kernel.clone();
 
 @embed(output = "led")
-def L.f(bool b) {
+def L.f(b bool) {
   // print(b);
 }
 
@@ -171,7 +171,7 @@ L.writeHdl("led.v");
     ack = "ack",
     file= "copy",
     module= "wait_cycles")
-def M.my_wait(int cycles) {
+def M.my_wait(cycles int) {
   print(cycles);
 }
 

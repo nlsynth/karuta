@@ -1,14 +1,14 @@
 // Native methods.
 // Adding __ prefix so that users can overwrite the original one.
-print("default-isynth.n loaded");
+print("default-isynth.n loaded")
 
 // Kludge to run a regression test.
 def Kernel.enable_wire_insn() {
 }
 
 def Kernel.compile() {
-  __compile("");
-  __compile("clean_unused_resource,clean_empty_state,clean_unreachable_state,array_to_mem");
+  __compile("")
+  __compile("clean_unused_resource,clean_empty_state,clean_unreachable_state,array_to_mem")
 }
 
 @embed(resource = "wait_cycles",
@@ -16,5 +16,5 @@ def Kernel.compile() {
  ack = "ack",
  file= "copy",
  module= "wait_cycles")
-def Kernel.__wait(var cycles int) {
+def Kernel.__wait(cycles int) {
 }

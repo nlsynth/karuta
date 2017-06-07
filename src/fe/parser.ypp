@@ -34,7 +34,7 @@ extern void yyerror(const char *msg);
 
 %type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
 %type <num> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
-%type <var_decl> MODIFIED_VAR MAYBE_PTR_VAR VAR_DECL
+%type <var_decl> MODIFIED_VAR MAYBE_PTR_VAR VAR_DECL VAR_DECL_TAIL
 %type <var_decl_set> VAR_DECL_STMT
 %type <array> ARRAY_INITIALIZER ARRAY_ELM_LIST
 %type <block> BLOCK IF_STMT FOR_STMT
@@ -177,18 +177,21 @@ MAYBE_PTR_VAR : VAR {
   $$ = Builder::ModifiedVar($1, true, $2);
 }
 
+VAR_DECL_TAIL : MAYBE_PTR_VAR TYPE_NAME {
+  $$ = Builder::BuildVarDecl($2, nullptr,
+			     sym_null, $1);
+} | MAYBE_PTR_VAR WIDTH_SPEC {
+  $$ = Builder::BuildVarDecl(sym_null, $2.width, $2.name, $1);
+}
+
 VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
   // Obsoleted grammar.
-  $$ = Builder::BuildVarDecl($1, $2.width, $2.name, nullptr, $3);
-} | ANNOTATION_OR_EMPTY K_VAR MAYBE_PTR_VAR WIDTH_SPEC {
+  $$ = Builder::BuildVarDecl($1, $2.width, $2.name, $3);
+} | ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
   // Current grammar.
   ScannerInterface::InSemiColonStatement();
-  $$ = Builder::BuildVarDecl(sym_null, $4.width, $4.name, $1, $3);
-} | ANNOTATION_OR_EMPTY K_VAR MAYBE_PTR_VAR TYPE_NAME {
-  // Ditto. Current grammar.
-  ScannerInterface::InSemiColonStatement();
-  $$ = Builder::BuildVarDecl($4, nullptr,
-			     sym_null, $1, $3);
+  Builder::SetVarDeclAnnotation($3, $1);
+  $$ = $3;
 } | K_ENUM TYPE_NAME MODIFIED_VAR {
 } | ENUM_DECL MODIFIED_VAR {
 }
@@ -208,13 +211,10 @@ ARG_DECL : {
   $$ = $1;
 }
 
-ARG_DECL_LIST : VAR_DECL {
+ARG_DECL_LIST : VAR_DECL_TAIL {
   $$ = Builder::ArgDeclList(nullptr, $1);
-} | ARG_DECL_LIST ',' VAR_DECL {
+} | ARG_DECL_LIST ',' VAR_DECL_TAIL {
   $$ = Builder::ArgDeclList($1, $3);
-} | ARG_DECL_LIST ',' MODIFIED_VAR {
-  /* un-typed argument */
-  $$ = nullptr;
 }
 
 ARRAY_SPEC : '[' ']' {
@@ -265,7 +265,7 @@ VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
   WidthSpec w = Builder::GetWidthSpecFromVarDeclSet($1);
   $$ = Builder::VarDeclList($1,
 			    Builder::BuildVarDecl(type, w.width, w.name,
-						  nullptr, $3));
+						  $3));
 } | VAR_DECL_STMT ',' MODIFIED_VAR K_ASSIGN EXPR {
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::VarDeclList($1, $3);

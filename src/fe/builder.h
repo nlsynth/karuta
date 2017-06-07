@@ -52,8 +52,8 @@ class Builder {
   static VarDecl *ModifiedVar(Expr *var, bool is_ptr, sym_t ns);
   static VarDecl *BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
 			       sym_t object_name,
-			       Annotation *an,
 			       VarDecl *var);
+  static void SetVarDeclAnnotation(VarDecl *decl, Annotation *an);
   static sym_t TypeNameFromVarDeclSet(VarDeclSet *vds);
   static WidthSpec GetWidthSpecFromVarDeclSet(VarDeclSet *vds);
   static Stmt *DoWhileStmt();
