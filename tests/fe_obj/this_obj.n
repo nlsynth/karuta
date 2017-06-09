@@ -1,6 +1,6 @@
 // test current object
 
-object X;
+var X object
 X = Kernel.clone();
 
 def Kernel.func() (bool) {

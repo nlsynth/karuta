@@ -1,11 +1,11 @@
 /* this caused an error. it cleared label information for "for"
    when new function is defined.
    */
-int i;
+var i int
 for (i = 0; i < 10; ++i) {
 }
 
-def f(int p, int q) {
+def f(p int, q int) {
   print(p);
   print(q);
 }

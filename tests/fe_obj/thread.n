@@ -1,7 +1,7 @@
-int Kernel.x = 9;
+var Kernel.x int = 9;
 
-object M = Kernel.clone();
-int M.x = 10;
+var M object = Kernel.clone();
+var M.x int = 10;
 
 def M.f() {
   // *this* should be M.

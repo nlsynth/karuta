@@ -6,7 +6,7 @@
 /*comment*/
 /*
 */
-int x;
+var x int
 x = 2147483648;
 assert(65536 * 32768 == x);
 

@@ -14,7 +14,7 @@ assert(false==false);
 assert(true!=false);
 print("done");
 
-int x = 10;
+var  x int = 10;
 assert(x == 10);
 assert(x != 0);
 assert(x >= 10);
@@ -41,7 +41,7 @@ assert(x == 10);
 x = 1, 2;
 assert(x == 1);
 
-bool p;
+var p bool;
 p = (false, false, true);
 assert(p);
 p = (true, true, false);
