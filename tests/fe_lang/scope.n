@@ -1,9 +1,9 @@
-int x = 9;
-int Kernel.x = 10;
+var x int = 9;
+var Kernel.x int = 10;
 
 def Kernel.main() {
   assert(x == 10);
-  int x = 11;
+  var x int = 11;
   assert(x == 11);
 }
 

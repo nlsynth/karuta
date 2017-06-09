@@ -1,5 +1,5 @@
 /**/
-int Global.x = 10;
+var Global.x int = 10;
 import "imported_file.n";
 
 assert(Global.x == 0);

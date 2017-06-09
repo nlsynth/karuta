@@ -1,6 +1,6 @@
 /* string operations */
 
-string p = "x";
+var p string = "x";
 
 assert("x" == "x");
 assert("x" != "y");
