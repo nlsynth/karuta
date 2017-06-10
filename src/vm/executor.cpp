@@ -597,14 +597,14 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
   Value *member = obj->LookupValue(insn->label_, false);
   CHECK(member) << sym_cstr(insn->label_);
   if (insn->op_ == OP_MEMBER_READ) {
-    frame->reg_values_[insn->dst_regs_[0]->id_] = *member;
+    frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member);
   } else {
     // OP_MEMBER_WRITE
     CHECK(insn->src_regs_.size() == 2);
     CHECK(insn->src_regs_[0]->id_ == insn->dst_regs_[0]->id_);
     // src: value, obj
     Value &src = frame->reg_values_[insn->src_regs_[0]->id_];
-    *member = src;
+    member->CopyDataFrom(src);
   }
 }
 

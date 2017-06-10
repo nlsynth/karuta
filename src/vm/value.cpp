@@ -107,4 +107,13 @@ bool Value::IsObjectType() const {
     type_ == INT_ARRAY || type_ == OBJECT_ARRAY;
 }
 
+void Value::CopyDataFrom(const Value &src) {
+  iroha::NumericWidth w = num_.type_;
+  int pw = pointee_width_;
+  *this = src;
+  // Writes back saved parameters.
+  num_.type_ = w;
+  pointee_width_ = pw;
+}
+
 }  // namespace vm
