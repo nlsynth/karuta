@@ -27,6 +27,7 @@ Scanner::Scanner() {
   token_len_ = 0;
   current_scanner_ = this;
   in_semicolon_ = false;
+  in_array_elm_ = false;
 }
 
 int Scanner::GetToken(int *sub) {
@@ -218,7 +219,7 @@ struct OperatorTableEntry *Scanner::lookup_op() {
   buf[1] = next_char();
   buf[2] = read_ahead(2);
   buf[3] = 0;
-  if (in_semicolon_ && buf[0] == '\n') {
+  if (UseReturn() && buf[0] == '\n') {
     buf[0] = ';';
   }
   for (struct OperatorTableEntry *op = op_tab; op->str; op++) {
@@ -264,7 +265,7 @@ bool Scanner::is_dec(char c) {
 }
 
 bool Scanner::is_space(char c) {
-  if (in_semicolon_ && c == '\n') {
+  if (UseReturn() && c == '\n') {
     return false;
   }
   if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
@@ -337,6 +338,10 @@ void Scanner::Reset() {
   ln_ = 1;
 }
 
+bool Scanner::UseReturn() {
+  return in_semicolon_ && !in_array_elm_;
+}
+
 void Scanner::ReleaseFileImage() {
   im_.reset(nullptr);
 }
@@ -348,6 +353,15 @@ void Scanner::InSemiColonStatement() {
 void Scanner::EndSemiColonStatement() {
   in_semicolon_ = false;
 }
+
+void Scanner::InArrayElmDecl() {
+  in_array_elm_ = true;
+}
+
+void Scanner::EndArrayElmDecl() {
+  in_array_elm_ = false;
+}
+
 
 ScannerPos::ScannerPos() {
   line = -1;
@@ -402,6 +416,14 @@ void ScannerInterface::InSemiColonStatement() {
 
 void ScannerInterface::EndSemiColonStatement() {
   Scanner::current_scanner_->EndSemiColonStatement();
+}
+
+void ScannerInterface::InArrayElmDecl() {
+  Scanner::current_scanner_->InArrayElmDecl();
+}
+
+void ScannerInterface::EndArrayElmDecl() {
+  Scanner::current_scanner_->EndArrayElmDecl();
 }
 
 }  // namespace fe

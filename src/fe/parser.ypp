@@ -242,8 +242,8 @@ ARRAY_ELM_LIST : ARRAY_ELM {
   $$ = $1;
 }
 
-ARRAY_INITIALIZER : '{' ARRAY_ELM_LIST '}' {
-  $$ = $2;
+ARRAY_INITIALIZER : '{' { ScannerInterface::InArrayElmDecl(); } ARRAY_ELM_LIST {ScannerInterface::EndArrayElmDecl(); } '}' {
+  $$ = $3;
 }
 
 VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {

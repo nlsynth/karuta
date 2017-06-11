@@ -61,11 +61,14 @@ public:
   void GetPosition(ScannerPos *pos);
   void InSemiColonStatement();
   void EndSemiColonStatement();
+  void InArrayElmDecl();
+  void EndArrayElmDecl();
 
   static Scanner *current_scanner_;
 
 private:
   void Reset();
+  bool UseReturn();
   char cur_char();
   char next_char();
   char read_ahead(int a);
@@ -101,6 +104,7 @@ private:
   int token_len_;
   int ln_;
   bool in_semicolon_;
+  bool in_array_elm_;
 };
 
 class ScannerInterface {
@@ -110,6 +114,8 @@ public:
   static void GetPosition(ScannerPos *pos);
   static void InSemiColonStatement();
   static void EndSemiColonStatement();
+  static void InArrayElmDecl();
+  static void EndArrayElmDecl();
 };
 
 }  // namespace fe
