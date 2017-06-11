@@ -8,7 +8,7 @@ def Kernel.f(x int, y int) (int) {
 }
 
 def Kernel.main() {
-  int x;
+  var x int;
   x = 65535;
   if (x < 10) {
     x = 0xff & x;

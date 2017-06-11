@@ -1,12 +1,12 @@
 // VERILOG_OUTPUT: a.v 
 def Kernel.main() {
-  int x = 0xaaaa;
+  var x int = 0xaaaa;
   assert(x[1:1] == 1);
   assert(x[0:0] == 0);
   assert(x[15:1] == 0x5555);
 
-  int #1 p = 1;
-  int #2 c;
+  var p #1 = 1;
+  var c #2;
   c = p :: p;
   assert(c == 3);
 }

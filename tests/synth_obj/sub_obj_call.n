@@ -1,5 +1,5 @@
 // VERILOG_OUTPUT: a.v
-object Kernel.X = Kernel.clone();
+var Kernel.X object = Kernel.clone();
 
 def X.f() {
   print(1);

@@ -8,9 +8,9 @@ def Kernel.main() {
   assert(1 + 1 == 2);
   assert(1 + 1 != 3);
 
-  int #64 p;
+  var p #64;
   p = 65536 * 65536 + 65536;
-  int s = p[31:0];
+  var s int = p[31:0];
   assert(s == 65536);
 }
 

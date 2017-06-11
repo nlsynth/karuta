@@ -1,6 +1,6 @@
 // VERILOG_OUTPUT: a.v
 def Kernel.main() {
-  int y = 0;
+  var y int = 0;
   if (y > 0) {
     assert(false);
   }

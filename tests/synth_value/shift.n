@@ -1,6 +1,6 @@
 // VERILOG_OUTPUT: a.v
 def Kernel.main() {
-  int p = 1;
+  var p int = 1;
   p = p << 16;
   assert(p == 65536);
   p = p >> 16;

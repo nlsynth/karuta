@@ -10,7 +10,7 @@ def Kernel.ex()
 
 def Kernel.main()
 {
- int *p;
+ var p *int;
  *p = 0;
  ex();
  *p = f(*p);

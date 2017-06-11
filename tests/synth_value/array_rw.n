@@ -1,5 +1,5 @@
 // VERILOG_OUTPUT: a.v 
-int Kernel.x[] = {1,2,3,4};
+var Kernel.x int[] = {1,2,3,4};
 
 def Kernel.main() {
   assert(x[1] == 2);
