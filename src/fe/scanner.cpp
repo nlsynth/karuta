@@ -1,4 +1,4 @@
-// Copyright Yusuke Tabata 2007-2015
+// Copyright Yusuke Tabata 2007-2017
 
 #include "fe/scanner.h"
 
@@ -32,9 +32,9 @@ Scanner::Scanner() {
 
 int Scanner::GetToken(int *sub) {
   *sub = 0;
-  skip_non_token();
+  SkipNonToken();
   //
-  char c = cur_char();
+  char c = CurChar();
   if (is_dec(c)) {
     return read_num();
   }
@@ -80,63 +80,63 @@ void Scanner::GetPosition(ScannerPos *pos) {
   pos->file = im_->file_name;
 }
 
-char Scanner::cur_char() {
+char Scanner::CurChar() {
   return im_->buf[cur_];
 }
 
-char Scanner::next_char() {
-  return read_ahead(1);
+char Scanner::NextChar() {
+  return ReadAhead(1);
 }
 
-char Scanner::read_ahead(int a) {
+char Scanner::ReadAhead(int a) {
   if (cur_ + a < (int)im_->buf.size()) {
     return im_->buf.data()[cur_ + a];
   }
   return -1;
 }
 
-void Scanner::skip_non_token() {
+void Scanner::SkipNonToken() {
   while (true) {
-    if ((is_space(cur_char()))) {
-      go_ahead();
-    } else if (is_comment_start()) {
-      skip_comment();
+    if ((is_space(CurChar()))) {
+      GoAhead();
+    } else if (IsCommentStart()) {
+      SkipComment();
     } else {
       return ;
     }
   }
 }
 
-void Scanner::skip_comment() {
-  if (!is_comment_start()) {
+void Scanner::SkipComment() {
+  if (!IsCommentStart()) {
     return ;
   }
-  char c = next_char();
+  char c = NextChar();
   if (c == '/') {
-    while (cur_char() != '\n' && cur_char() != 0) {
-      go_ahead();
+    while (CurChar() != '\n' && CurChar() != 0) {
+      GoAhead();
     }
-    go_ahead();
+    GoAhead();
   } else {
-    go_ahead();
-    go_ahead();
-    while (cur_char() != '*' || next_char() != '/') {
-      go_ahead();
+    GoAhead();
+    GoAhead();
+    while (CurChar() != '*' || NextChar() != '/') {
+      GoAhead();
     }
-    go_ahead();
-    go_ahead();
+    GoAhead();
+    GoAhead();
   }
 }
 
-bool Scanner::is_comment_start() {
-  if (cur_char() == '/' &&
-      (next_char() == '*' || next_char() == '/')) {
+bool Scanner::IsCommentStart() {
+  if (CurChar() == '/' &&
+      (NextChar() == '*' || NextChar() == '/')) {
     return true;
   }
   return false;
 }
 
-void Scanner::push_char(char c) {
+void Scanner::PushChar(char c) {
   if (token_len_ > MAX_TOKEN - 2) {
     // ignore
     return ;
@@ -147,18 +147,18 @@ void Scanner::push_char(char c) {
 }
 
 int Scanner::read_num() {
-  clear_token();
+  ClearToken();
   bool hex_dec_mode = false;
-  if (cur_char() == '0' &&
-      next_char() == 'x') {
-    push_char(cur_char());
-    go_ahead();
-    push_char(cur_char());
-    go_ahead();
+  if (CurChar() == '0' &&
+      NextChar() == 'x') {
+    PushChar(CurChar());
+    GoAhead();
+    PushChar(CurChar());
+    GoAhead();
     hex_dec_mode = true;
   }
   while (true) {
-    char c = cur_char();
+    char c = CurChar();
     if (hex_dec_mode) {
       if (!is_hex_dec(c)) {
 	break;
@@ -168,39 +168,39 @@ int Scanner::read_num() {
 	break;
       }
     }
-    push_char(cur_char());
-    go_ahead();
+    PushChar(CurChar());
+    GoAhead();
   }
   return s_info->num_token;
 }
 
 int Scanner::read_sym() {
-  clear_token();
-  while (is_symbody(cur_char())) {
-    push_char(cur_char());
-    go_ahead();
+  ClearToken();
+  while (is_symbody(CurChar())) {
+    PushChar(CurChar());
+    GoAhead();
   }
   return s_info->sym_token;
 }
 
 int Scanner::read_str() {
-  clear_token();
-  go_ahead();
+  ClearToken();
+  GoAhead();
   while (1) {
-    int c = cur_char();
+    int c = CurChar();
     if (c == '\n') {
       return -1;
     }
     if (c == '\"') {
-      go_ahead();
+      GoAhead();
       break;
     }
     if (c == '\\') {
-      go_ahead();
-      c = cur_char();
+      GoAhead();
+      c = CurChar();
     }
-    push_char(c);
-    go_ahead();
+    PushChar(c);
+    GoAhead();
   }
   return s_info->str_token;
 }
@@ -208,18 +208,18 @@ int Scanner::read_str() {
 int Scanner::read_op(struct OperatorTableEntry *op) {
   int i;
   for (i = strlen(op->str); i > 0; i--) {
-    go_ahead();
+    GoAhead();
   }
   return op->op;
 }
 
 struct OperatorTableEntry *Scanner::lookup_op() {
   char buf[4];
-  buf[0] = cur_char();
-  buf[1] = next_char();
-  buf[2] = read_ahead(2);
+  buf[0] = CurChar();
+  buf[1] = NextChar();
+  buf[2] = ReadAhead(2);
   buf[3] = 0;
-  if (UseReturn() && buf[0] == '\n') {
+  if (UseReturnAsSep() && buf[0] == '\n') {
     buf[0] = ';';
   }
   for (struct OperatorTableEntry *op = op_tab; op->str; op++) {
@@ -231,17 +231,17 @@ struct OperatorTableEntry *Scanner::lookup_op() {
   return 0;
 }
 
-void Scanner::go_ahead() {
-  if (cur_char()) {
+void Scanner::GoAhead() {
+  if (CurChar()) {
     cur_ ++;
   }
-  char c = cur_char();
+  char c = CurChar();
   if (c == '\n') {
     ln_ ++;
   }
 }
 
-void Scanner::clear_token() {
+void Scanner::ClearToken() {
   token_len_ = 0;
   token_[0] = 0;
 }
@@ -265,7 +265,7 @@ bool Scanner::is_dec(char c) {
 }
 
 bool Scanner::is_space(char c) {
-  if (UseReturn() && c == '\n') {
+  if (UseReturnAsSep() && c == '\n') {
     return false;
   }
   if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
@@ -338,7 +338,7 @@ void Scanner::Reset() {
   ln_ = 1;
 }
 
-bool Scanner::UseReturn() {
+bool Scanner::UseReturnAsSep() {
   return in_semicolon_ && !in_array_elm_;
 }
 

@@ -68,19 +68,19 @@ public:
 
 private:
   void Reset();
-  bool UseReturn();
-  char cur_char();
-  char next_char();
-  char read_ahead(int a);
+  bool UseReturnAsSep();
+  char CurChar();
+  char NextChar();
+  char ReadAhead(int a);
 
-  void skip_non_token();
-  void skip_comment();
-  bool is_comment_start();
+  void SkipNonToken();
+  void SkipComment();
+  bool IsCommentStart();
 
-  void go_ahead();
+  void GoAhead();
 
-  void clear_token();
-  void push_char(char c);
+  void ClearToken();
+  void PushChar(char c);
 
   int read_num();
   int read_sym();
@@ -121,4 +121,3 @@ public:
 }  // namespace fe
 
 #endif  // _fe_scanner_h_
-
