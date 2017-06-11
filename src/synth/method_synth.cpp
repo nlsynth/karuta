@@ -502,8 +502,10 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   string reg_name(sym_cstr(arg_decl->GetNameExpr()->sym_));
   IRegister *reg = thr_synth_->AllocRegister(reg_name);
   reg->value_type_.SetWidth(w);
-  // Add as a local variable if this isn't a native method.
-  if (method->parse_tree_ != nullptr) {
+  // Add as a local variable if this isn't an imported method.
+  if (!(method->parse_tree_ != nullptr &&
+	method->parse_tree_->annotation_ != nullptr &&
+	method->parse_tree_->annotation_->IsImportedModule())) {
     local_reg_map_[method->method_regs_[nth]] = reg;
   }
   return reg;
