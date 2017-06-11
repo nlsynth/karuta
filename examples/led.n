@@ -1,14 +1,14 @@
 // This generates a blinking output port "ext_led".
 
-object L = Kernel.clone();
+var L object = Kernel.clone();
 
 @embed(output = "led")
-def L.f(bool b) {
+def L.f(b bool) {
   // print(b);
 }
 
 def L.main() {
-  bool b = false;
+  var b bool = false;
   while (true) {
     wait(10000000);
     f(b);

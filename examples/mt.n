@@ -42,19 +42,19 @@
 //      }
 //  }
 
-object MT = Kernel.clone();
-object Global.MT = MT;
+var MT object = Kernel.clone();
+var Global.MT object = MT;
 
-int MT.MT[1024] = {0};
-int MT.seed = 0;
-int MT.index = 0;
+var MT.MT int[1024] = {0};
+var MT.seed int = 0;
+var MT.index int = 0;
 
 def MT.initializeGenerator() {
   MT[0] = seed;
-  int i;
+  var i int;
   for (i = 1; i < 624; ++i) {
-    int prev = MT[i - 1];
-    int #64 cur;
+    var prev int = MT[i - 1];
+    var cur #64;
     cur = (1812433253 * (prev ^ (prev >> 30)) + i);
     MT[i] = cur[31:0];
   }
@@ -64,7 +64,7 @@ def MT.extractNumbers() (int) {
   if (index == 0) {
     generateNumbers();
   }
-  int y = MT[index];
+  var y int = MT[index];
   y = y ^ (y >> 11);
   y = y ^ ((y << 7) & 2636928640);
   y = y ^ ((y << 15) & 4022730752);
@@ -78,14 +78,14 @@ def MT.extractNumbers() (int) {
 }
 
 def MT.generateNumbers() {
-  int i;
+  var i int;
   for (i = 0; i < 624; ++i) {
-    int next_idx = i + 1;
+    var next_idx int = i + 1;
     if (next_idx > 623) {
       next_idx = 0;
     }
-    int y = (MT[i] & 0x80000000) | MT[next_idx][30:0];
-    int next_idx_397 = i + 397;
+    var y int = (MT[i] & 0x80000000) | MT[next_idx][30:0];
+    var next_idx_397 int = i + 397;
     if (next_idx_397 > 623) {
       next_idx_397 -= 624;
     }
@@ -98,8 +98,8 @@ def MT.generateNumbers() {
 
 def MT.main() {
   initializeGenerator();
-  int *p = 0;
-  int i;
+  var p *int = 0;
+  var i int;
   for (i = 0; i < 624; ++i) {
     *p = extractNumbers();
     p++;

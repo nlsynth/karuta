@@ -1,8 +1,8 @@
 // This is not yet tested well
 // TODO: test this.
-object M = Kernel.clone();
+var M object = Kernel.clone();
 
-int M.a[16];
+var M.a int[16];
 
 def M.main() {
   a.load(0);

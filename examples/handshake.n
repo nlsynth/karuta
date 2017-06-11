@@ -1,4 +1,4 @@
-object HS = Kernel.clone();
+var HS object = Kernel.clone();
 
 // Output channel:
 //

@@ -9,7 +9,7 @@ def Kernel.f() {
 
 @thread_entry(name = "t2")
 def Kernel.g() {
-  int g = m1.get();
+  var g int = m1.get();
   print(g);
   m2.put(g + 1);
 }
