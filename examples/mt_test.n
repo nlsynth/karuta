@@ -1,8 +1,8 @@
 import "mt.n";
 
-MT = Global.MT;
+var MT object = Global.MT;
 
-MT_test = MT.clone();
+var MT_test object = MT.clone();
 
 def MT_test.main() {
   initializeGenerator();
