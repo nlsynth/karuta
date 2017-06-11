@@ -6,22 +6,17 @@
 
 namespace fe {
 
-class EnumDecl;
-class Expr;
-class Method;
-class Stmt;
-class VarDecl;
-class VarDeclSet;
-
 struct MethodDecl {
   Method *method_;
-  Expr *name_;
+  Expr *name_expr_;
+  string name_;
 };
 
 class Emitter {
 public:
   static void BeginFunction(Expr *name);
   static MethodDecl EndFunction();
+  static string GetFunctionName();
   static void SetCurrentFunctionParams();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
@@ -49,6 +44,7 @@ public:
   static void EmitMailboxDeclStmt(Expr *var, sym_t type_name,
 				  const iroha::NumericWidth *width,
 				  sym_t object_name);
+  static string FormatMethodName(Expr *name);
 
 private:
   static vector<MethodDecl> method_stack_;

@@ -20,7 +20,8 @@ void Emitter::BeginFunction(Expr *name) {
   Method *method = new Method;
   MethodDecl decl;
   decl.method_ = method;
-  decl.name_ = name;
+  decl.name_expr_ = name;
+  decl.name_ = FormatMethodName(name);
   method_stack_.push_back(decl);
   NodePool::AddMethod(method);
 }
@@ -28,11 +29,16 @@ void Emitter::BeginFunction(Expr *name) {
 MethodDecl Emitter::EndFunction() {
   MethodDecl new_decl = CurrentMethod();
   method_stack_.pop_back();
-  if (new_decl.name_) {
+  if (new_decl.name_expr_) {
     Stmt *stmt = BuildFuncDeclStmt(&new_decl);
     EmitStmt(stmt);
   }
   return new_decl;
+}
+
+string Emitter::GetFunctionName() {
+  MethodDecl &decl = CurrentMethod();
+  return decl.name_;
 }
 
 void Emitter::SetCurrentFunctionParams() {
@@ -104,7 +110,7 @@ void Emitter::EmitExprStmt(Expr *expr) {
 
 Stmt *Emitter::BuildFuncDeclStmt(MethodDecl *decl) {
   Stmt *stmt = NewStmt(STMT_FUNCDECL);
-  stmt->expr_ = decl->name_;
+  stmt->expr_ = decl->name_expr_;
   stmt->method_def_ = decl->method_;
   return stmt;
 }
@@ -223,6 +229,28 @@ void Emitter::EmitStmt(Stmt *stmt) {
 
 Stmt *Emitter::NewStmt(int type) {
   return Builder::NewStmt(type);
+}
+
+string Emitter::FormatMethodName(Expr *name) {
+  if (name == nullptr) {
+    return "";
+  }
+  string n;
+  Expr *e = name;
+  while (e->type_ == EXPR_ELM_SYM_REF) {
+    if (n.empty()) {
+      n = string(sym_cstr(e->sym_));
+    } else {
+      n = string(sym_cstr(e->sym_)) + "." + n;
+    }
+    e = e->args_;
+  }
+  if (n.empty()) {
+    n = sym_cstr(e->sym_);
+  } else {
+    n = string(sym_cstr(e->sym_)) + "." + n;
+  }
+  return n;
 }
 
 }  // namespace fe

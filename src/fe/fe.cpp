@@ -89,9 +89,13 @@ int z_yylex() {
 void z_yyerror(const char *msg) {
   fe::ScannerPos pos;
   fe::ScannerInterface::GetPosition(&pos);
-  Status::os(Status::USER)
-    << "[" << msg << "] at line: " << pos.line
-    << " in " << pos.file;
+  ostream &os = Status::os(Status::USER);
+  os << "[" << msg << "] at line: " << pos.line;
+  string fn = Emitter::GetFunctionName();
+  if (!fn.empty()) {
+    os << " in function " << fn;
+  }
+  os << " in " << pos.file;
 }
 
 namespace fe {
