@@ -1,12 +1,12 @@
 // VERILOG_OUTPUT: a.v
 
-int Kernel.MT[1024] = {0};
-int Kernel.index = 0;
+var Kernel.MT int[1024] = {0};
+var Kernel.index int = 0;
 
 def main() {
-  int i;
+  var i int;
   for (i = 0; i < 1; ++i) {
-    int y = MT[index];
+    var y int = MT[index];
 
     index = index + 1;
     if (index > 623) {

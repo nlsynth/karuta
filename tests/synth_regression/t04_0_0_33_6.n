@@ -1,10 +1,10 @@
 // VERILOG_OUTPUT: a.v
 
 def main() {
-  int k = 0;
-  int i;
+  var k int = 0;
+  var i int;
   for (i = 0; i < 4; ++i) {
-    int j;
+    var j int;
     for (j = 0; j < 4; ++j) {
       ++k;
     }

@@ -3,9 +3,9 @@
 // regression in ssa conversion. ssa position mistake.
 
 def generateNumbers() {
-  int i = 0;
-  int y = 0;
-  int t = 1;
+  var i int = 0;
+  var y int = 0;
+  var t int = 1;
   t = t;
   if ((t & 1) == 1) {
     t = t ^ 100;
@@ -14,7 +14,7 @@ def generateNumbers() {
 }
 
 def main() {
-  int index = 0;
+  var index int = 0;
   if (index == 0) {
     generateNumbers();
   }

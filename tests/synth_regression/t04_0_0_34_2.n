@@ -2,10 +2,10 @@
 
 // regression in wire insn optimizer.
 
-int Kernel.MT[1024] = {0};
+var Kernel.MT int[1024] = {0};
 
 def main() {
-  int x = MT[0];
+  var x int = MT[0];
   x = x ^ (x >> 30);
   MT[0] = x;
 }

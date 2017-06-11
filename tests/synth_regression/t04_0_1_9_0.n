@@ -3,11 +3,11 @@
 // github issue #1
 
 def main() {
-  int param = 2;
-  int curr;
-  int next;
-  int prev;
-  int i;
+  var param int = 2;
+  var curr int;
+  var next int;
+  var prev int;
+  var i int;
   curr = 0;
   next = 1;
   for (i = 0; i < param; ++i) {

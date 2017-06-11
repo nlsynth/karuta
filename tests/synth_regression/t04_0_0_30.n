@@ -2,11 +2,11 @@
 
 // fix for memory access reordering.
 
-int Kernel.MT[1024] = {0};
+var Kernel.MT int[1024] = {0};
 
 def main() {
   MT[0] = 0;
-  int prev = MT[0];
+  var prev int = MT[0];
   prev = prev + 1;
   MT[1] = prev;
   assert(MT[1] == 1);

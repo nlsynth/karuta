@@ -3,9 +3,9 @@
 // regression test in SSA conversion.
 
 def main() {
-  int i;
-  int z;
-  int p = 0;
+  var i int;
+  var z int;
+  var p int = 0;
   for (i = 1; i < 2; ++i) {
     z = p + 1;
   }

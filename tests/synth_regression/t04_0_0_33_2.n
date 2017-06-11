@@ -3,8 +3,8 @@
 // regression test in bb conditions.
 
 def main() {
-  int x = 0;
-  int i;
+  var x int = 0;
+  var i int;
   for (i = 0; i < 10; ++i) {
     x = x + 1;
     if (x > 5) {

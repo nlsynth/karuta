@@ -2,13 +2,13 @@
 
 // infinite loop.
 
-int Kernel.MT[1024] = {0};
+var Kernel.MT int[1024] = {0};
 
 def main() {
-  int i;
+  var i int;
   for (i = 1; i < 10; ++i) {
-    int prev = 0;
-    int #64 cur;
+    var prev int = 0;
+    var cur #64;
     cur = prev ^ (prev >> 30);
     MT[i] = cur[31:0];
   }

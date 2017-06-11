@@ -1,8 +1,8 @@
 // VERILOG_OUTPUT: a.v
 
 def main() {
-  int x = 6;
-  int y = 0;
+  var x int = 6;
+  var y int = 0;
   if (x > 5) {
     x = 10;
   } else {

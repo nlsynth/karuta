@@ -2,13 +2,13 @@
 
 // regression in wire insn optimizer.
 
-int Kernel.MT[1024] = {0};
+var Kernel.MT int[1024] = {0};
 
 def main() {
-  int i;
+  var i int;
   for (i = 1; i < 624; ++i) {
-    int prev = MT[i - 1];
-    int #64 cur;
+    var prev int = MT[i - 1];
+    var cur #64;
     cur = prev ^ (prev >> 30);
   }
 }

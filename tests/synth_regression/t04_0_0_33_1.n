@@ -3,7 +3,7 @@
 // regression test in selector generation.
 
 def main() {
-  int x = 11;
+  var x int = 11;
   if (x > 10) {
     x = 10;
   }

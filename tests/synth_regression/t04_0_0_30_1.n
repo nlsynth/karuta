@@ -2,13 +2,13 @@
 
 // additional fix
 
-int Kernel.MT[1024] = {0};
+var Kernel.MT int[1024] = {0};
 
 def main() {
-  int i;
+  var i int;
   i = 1;
-  int cur;
-  int prev;
+  var cur int;
+  var prev int;
   prev = MT[0];
   cur = prev + 1;
   MT[i] = cur;
