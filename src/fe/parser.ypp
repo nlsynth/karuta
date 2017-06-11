@@ -184,10 +184,7 @@ VAR_DECL_TAIL : MAYBE_PTR_VAR TYPE_NAME {
   $$ = Builder::BuildVarDecl(sym_null, $2.width, $2.name, $1);
 }
 
-VAR_DECL : TYPE_NAME WIDTH_SPEC MODIFIED_VAR {
-  // Obsoleted grammar.
-  $$ = Builder::BuildVarDecl($1, $2.width, $2.name, $3);
-} | ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
+VAR_DECL : ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
   // Current grammar.
   ScannerInterface::InSemiColonStatement();
   Builder::SetVarDeclAnnotation($3, $1);
