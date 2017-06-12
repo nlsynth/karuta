@@ -2,10 +2,13 @@
 #ifndef _base_sym_h_
 #define _base_sym_h_
 
+#include <string>
+
 typedef class sym *sym_t;
 void sym_table_init();
 sym_t sym_lookup(const char *str);
-const char *sym_cstr(const sym_t );
+const char *sym_cstr(const sym_t s);
+std::string sym_str(const sym_t s);
 sym_t sym_alloc_tmp_sym(const char *suffix);
 sym_t sym_append_prefix(sym_t sym, const char *prefix);
 sym_t sym_append_idx(sym_t sym, int idx);

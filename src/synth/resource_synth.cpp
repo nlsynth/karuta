@@ -45,7 +45,7 @@ void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
   vector<sym_t> slots;
   owner_obj->LookupMemberNames(array_obj, &slots);
   if (slots.size() == 1) {
-    res->GetParams()->SetPortNamePrefix(string(sym_cstr(slots[0])) + "_");
+    res->GetParams()->SetPortNamePrefix(sym_str(slots[0]) + "_");
   }
 }
 

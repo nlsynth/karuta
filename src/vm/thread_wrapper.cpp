@@ -19,7 +19,7 @@ public:
 Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t name, Method *method) {
   Object *thr = vm->root_object_->Clone(vm);
   ThreadWrapperData *data = new ThreadWrapperData;
-  data->entry.method_name = string(sym_cstr(name));
+  data->entry.method_name = sym_str(name);
   data->entry.thread_obj = thr;
 
   thr->object_specific_.reset(data);
@@ -54,7 +54,7 @@ void ThreadWrapper::GetThreadMethods(Object *obj,
     ThreadWrapperData *data =
       (ThreadWrapperData *)member_obj->object_specific_.get();
     ThreadEntry entry = data->entry;
-    entry.thread_name = string(sym_cstr(it->first));
+    entry.thread_name = sym_str(it->first);
     methods->push_back(entry);
   }
 }

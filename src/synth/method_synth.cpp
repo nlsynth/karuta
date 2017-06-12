@@ -366,7 +366,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
 
   vm::Object *callee_obj = GetCalleeObject(insn);
   sym_t func_name = insn->label_;
-  sw->callee_func_name_ = string(sym_cstr(func_name));
+  sw->callee_func_name_ = sym_str(func_name);
   sw->callee_vm_obj_ = callee_obj;
   if (IsDataFlowCall(insn)) {
     sw->is_data_flow_call_ = true;
@@ -377,7 +377,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
     vector<sym_t> names;
     obj_->LookupMemberNames(callee_obj, &names);
     CHECK(names.size() > 0);
-    sw->obj_name_ = string(sym_cstr(names[0]));
+    sw->obj_name_ = sym_str(names[0]);
   }
 }
 
@@ -499,7 +499,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   } else {
     CHECK(false);
   }
-  string reg_name(sym_cstr(arg_decl->GetNameExpr()->sym_));
+  string reg_name = sym_str(arg_decl->GetNameExpr()->sym_);
   IRegister *reg = thr_synth_->AllocRegister(reg_name);
   reg->value_type_.SetWidth(w);
   // Add as a local variable if this isn't an imported method.

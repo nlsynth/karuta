@@ -239,16 +239,16 @@ string Emitter::FormatMethodName(Expr *name) {
   Expr *e = name;
   while (e->type_ == EXPR_ELM_SYM_REF) {
     if (n.empty()) {
-      n = string(sym_cstr(e->sym_));
+      n = sym_str(e->sym_);
     } else {
-      n = string(sym_cstr(e->sym_)) + "." + n;
+      n = sym_str(e->sym_) + "." + n;
     }
     e = e->args_;
   }
   if (n.empty()) {
     n = sym_cstr(e->sym_);
   } else {
-    n = string(sym_cstr(e->sym_)) + "." + n;
+    n = sym_str(e->sym_) + "." + n;
   }
   return n;
 }

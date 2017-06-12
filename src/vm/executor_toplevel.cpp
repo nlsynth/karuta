@@ -196,7 +196,7 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   if (an != nullptr) {
     string name = an->GetName();
     if (name.empty()) {
-      name = "$thr_" + string(sym_cstr(insn->label_));
+      name = "$thr_" + sym_str(insn->label_);
     }
     if (an->IsThreadEntry()) {
       AddThreadEntry(frame, insn, name);

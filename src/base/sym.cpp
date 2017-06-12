@@ -115,11 +115,15 @@ sym_t sym_lookup(const char *str) {
   return SymTable.lookup(str);
 }
 
-const char *sym_cstr(sym_t s) {
+const char *sym_cstr(const sym_t s) {
   if (s == sym_null) {
     return "null";
   }
   return s->str();
+}
+
+std::string sym_str(const sym_t s) {
+  return std::string(sym_cstr(s));
 }
 
 sym_t sym_alloc_tmp_sym(const char *suffix) {

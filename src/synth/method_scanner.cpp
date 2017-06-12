@@ -82,11 +82,11 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     // Add the entry point.
     DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
     ObjectSynth *callee_synth = ds->GetObjectSynth(callee_obj);
-    callee_synth->AddTaskEntryName(string(sym_cstr(insn->label_)));
+    callee_synth->AddTaskEntryName(sym_str(insn->label_));
   } else {
     // Normal method or numeric call.
     thr_synth_->RequestMethod(callee_obj,
-			      string(sym_cstr(insn->label_)));
+			      sym_str(insn->label_));
   }
 }
 

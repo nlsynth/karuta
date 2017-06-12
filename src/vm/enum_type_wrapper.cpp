@@ -36,7 +36,7 @@ void EnumTypeWrapper::AddItem(Object *obj, sym_t item) {
 
 string EnumTypeWrapper::GetName(const Object *obj) {
   EnumTypeWrapperData *d = (EnumTypeWrapperData *)obj->object_specific_.get();
-  return string(sym_cstr(d->name_));
+  return sym_str(d->name_);
 }
 
 int EnumTypeWrapper::GetNumItems(const Object *obj) {

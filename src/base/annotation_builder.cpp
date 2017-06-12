@@ -8,7 +8,7 @@ void AnnotationBuilder::AddStrParam(AnnotationValue *p, const char *str) {
 
 AnnotationValue *AnnotationBuilder::BuildStrParam(sym_t key, const char *str) {
   AnnotationValue *p = new AnnotationValue();
-  p->key_ = string(sym_cstr(key));
+  p->key_ = sym_str(key);
   AddStrParam(p, str);
   return p;
 }
@@ -32,6 +32,6 @@ Annotation *AnnotationBuilder::Build(sym_t name, AnnotationValueSet *values) {
     values = new AnnotationValueSet;
   }
   Annotation *a = new Annotation(values);
-  a->AddParam(annotation::kAnnotationKey, string(sym_cstr(name)));
+  a->AddParam(annotation::kAnnotationKey, sym_str(name));
   return a;
 }
