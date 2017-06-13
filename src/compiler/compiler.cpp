@@ -46,7 +46,7 @@ void Compiler::SetByteCodeDebug(bool enable) {
 
 Compiler::Compiler(vm::VM *vm, vm::Object *obj, const fe::Method *parse_tree)
   : vm_(vm), obj_(obj), tree_(parse_tree), last_queued_insn_(nullptr) {
-  exc_ = new ExprCompiler(this);
+  exc_.reset(new ExprCompiler(this));
 }
 
 vm::Method *Compiler::Compile(vm::Method *method) {
@@ -78,7 +78,6 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   // If a jump targets the label at the last insn.
   EmitNop();
   FlushPendingInsns();
-  EmitNop();
   ResolveLabels();
   vm::InsnAnnotator::AnnotateMethod(vm_, obj_, method_);
   if (dbg_bytecode_) {

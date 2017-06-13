@@ -92,7 +92,7 @@ private:
   vector<fe::Expr*> post_inc_dec_exprs_;
   map<vm::Register *, vm::Object *> reg_obj_map_;
 
-  ExprCompiler *exc_;
+  std::unique_ptr<ExprCompiler> exc_;
 };
 
 }  // namespace compiler
