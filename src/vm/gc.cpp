@@ -81,6 +81,7 @@ void GC::Sweep() {
   LOG(INFO) << "GC: Garbages count=" << garbages.size();
   for (Object *o : garbages) {
     objs_->erase(o);
+    delete o;
   }
 }
 

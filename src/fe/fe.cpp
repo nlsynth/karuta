@@ -129,6 +129,7 @@ void FE::Run(bool vanilla, const vector<string>& files) {
   for (size_t i = 0; i < files.size(); ++i) {
     RunFile(files[i], &vm);
   }
+  vm.GC();
 
   NodePool::Release();
 }
