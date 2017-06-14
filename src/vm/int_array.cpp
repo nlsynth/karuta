@@ -1,10 +1,11 @@
 // memory model for interpreted neon
-#include <map>
 #include "vm/int_array.h"
+
+#include <map>
 
 using std::map;
 
-#define PAGE_SIZE 1024
+static const int PAGE_SIZE = 1024;
 #define DATA_WIDTH 4
 #define PAGE_BYTES (PAGE_SIZE * DATA_WIDTH)
 
@@ -21,18 +22,18 @@ struct npage {
 
 class IntArrayImpl : public IntArray {
 public:
-  IntArrayImpl(const iroha::NumericWidth &width, int size);
+  IntArrayImpl(const iroha::NumericWidth &width, uint64_t size);
   IntArrayImpl(const IntArrayImpl *src);
   virtual void Write(uint64_t addr, const iroha::Numeric &data);
   virtual iroha::Numeric Read(uint64_t addr);
-  virtual long long GetLength() const;
+  virtual uint64_t GetLength() const;
   virtual const iroha::NumericWidth &GetWidth() const;
   virtual int GetAddressWidth() const;
 
 private:
-  npage *find_page(uint64_t addr);
+  npage *FindPage(uint64_t addr);
 
-  int size_;
+  uint64_t size_;
   iroha::NumericWidth width_;
   map<uint64_t, npage *> pages_;
 };
@@ -45,8 +46,9 @@ npage::npage(const iroha::NumericWidth &width) {
   }
 }
 
-IntArray *IntArray::Create(const iroha::NumericWidth &width, int size) {
-  return new IntArrayImpl(width, size);
+IntArray *IntArray::Create(const iroha::NumericWidth &data_width,
+			   uint64_t length) {
+  return new IntArrayImpl(data_width, length);
 }
 
 IntArray *IntArray::Copy(const IntArray *src) {
@@ -55,7 +57,7 @@ IntArray *IntArray::Copy(const IntArray *src) {
 }
 
 IntArrayImpl::IntArrayImpl(const iroha::NumericWidth &width,
-			   int size)
+			   uint64_t size)
   : size_(size), width_(width) {
 }
 
@@ -70,18 +72,18 @@ IntArrayImpl::IntArrayImpl(const IntArrayImpl *src) {
 }
 
 void IntArrayImpl::Write(uint64_t addr, const iroha::Numeric &data) {
-  npage *p = find_page(addr);
-  int offset = (addr % PAGE_BYTES);
+  npage *p = FindPage(addr);
+  int offset = (addr % PAGE_SIZE);
   p->data[offset] = data;
 }
 
 iroha::Numeric IntArrayImpl::Read(uint64_t addr) {
-  npage *p = find_page(addr);
-  int offset = (addr % PAGE_BYTES);
+  npage *p = FindPage(addr);
+  int offset = (addr % PAGE_SIZE);
   return p->data[offset];
 }
 
-long long IntArrayImpl::GetLength() const {
+uint64_t IntArrayImpl::GetLength() const {
   return size_;
 }
 
@@ -91,19 +93,19 @@ const iroha::NumericWidth &IntArrayImpl::GetWidth() const {
 
 int IntArrayImpl::GetAddressWidth() const {
   int address_bits;
-  for (address_bits = 0; (1 << address_bits) < size_;
-       ++address_bits) {
-    // do nothing here.
+  uint64_t s = size_ - 1;
+  for (address_bits = 0; s > 0; ++address_bits) {
+    s >>= 1;
   }
   return address_bits;
 }
 
-npage *IntArrayImpl::find_page(uint64_t addr) {
-  uint64_t idx = addr / PAGE_BYTES;
-  npage *p = pages_[idx];
+npage *IntArrayImpl::FindPage(uint64_t addr) {
+  uint64_t page_idx = addr / PAGE_SIZE;
+  npage *p = pages_[page_idx];
   if (!p) {
     p = new npage(width_);
-    pages_[idx] = p;
+    pages_[page_idx] = p;
   }
   return p;
 }
