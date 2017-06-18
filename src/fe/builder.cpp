@@ -103,7 +103,7 @@ Expr *Builder::FuncallExpr(Expr *func, Expr *args) {
   return expr;
 }
 
-VarDecl *Builder::ModifiedVar(Expr *var, bool is_ptr, sym_t ns) {
+VarDecl *Builder::MaybePtrVar(Expr *var, bool is_ptr) {
   VarDecl *mv = new VarDecl;
   NodePool::AddVarDecl(mv);
   mv->SetNameExpr(var);

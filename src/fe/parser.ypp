@@ -34,7 +34,7 @@ extern void yyerror(const char *msg);
 
 %type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
 %type <num> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
-%type <var_decl> MODIFIED_VAR MAYBE_PTR_VAR VAR_DECL VAR_DECL_TAIL
+%type <var_decl> MAYBE_PTR_VAR VAR_DECL VAR_DECL_TAIL
 %type <var_decl_set> VAR_DECL_STMT
 %type <array> ARRAY_INITIALIZER ARRAY_ELM_LIST
 %type <block> BLOCK IF_STMT FOR_STMT
@@ -161,20 +161,10 @@ STMT_LIST : {
 } | STMT_LIST STMT {
 }
 
-MODIFIED_VAR : VAR {
-  $$ = Builder::ModifiedVar($1, false, nullptr);
-} | '*' VAR {
-  $$ = Builder::ModifiedVar($2, true, nullptr);
-} | '*' SYM VAR {
-  $$ = Builder::ModifiedVar($3, true, $2);
-}
-
 MAYBE_PTR_VAR : VAR {
-  $$ = Builder::ModifiedVar($1, false, nullptr);
+  $$ = Builder::MaybePtrVar($1, false);
 } | VAR '*' {
-  $$ = Builder::ModifiedVar($1, true, nullptr);
-} | VAR SYM '*' {
-  $$ = Builder::ModifiedVar($1, true, $2);
+  $$ = Builder::MaybePtrVar($1, true);
 }
 
 VAR_DECL_TAIL : MAYBE_PTR_VAR TYPE_NAME {
@@ -189,8 +179,8 @@ VAR_DECL : ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
   ScannerInterface::InSemiColonStatement();
   Builder::SetVarDeclAnnotation($3, $1);
   $$ = $3;
-} | K_ENUM TYPE_NAME MODIFIED_VAR {
-} | ENUM_DECL MODIFIED_VAR {
+} | K_ENUM TYPE_NAME MAYBE_PTR_VAR {
+} | ENUM_DECL MAYBE_PTR_VAR {
 }
 
 WIDTH_SPEC : {
@@ -256,14 +246,14 @@ VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
   Builder::SetArrayLength($1, $2);
   Builder::SetArrayInitializer($1, $4);
   $$ = Builder::VarDeclList(nullptr, $1);
-} | VAR_DECL_STMT ',' MODIFIED_VAR {
+} | VAR_DECL_STMT ',' MAYBE_PTR_VAR {
   ScannerInterface::InSemiColonStatement();
   sym_t type = Builder::TypeNameFromVarDeclSet($1);
   WidthSpec w = Builder::GetWidthSpecFromVarDeclSet($1);
   $$ = Builder::VarDeclList($1,
 			    Builder::BuildVarDecl(type, w.width, w.name,
 						  $3));
-} | VAR_DECL_STMT ',' MODIFIED_VAR K_ASSIGN EXPR {
+} | VAR_DECL_STMT ',' MAYBE_PTR_VAR K_ASSIGN EXPR {
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::VarDeclList($1, $3);
 }
