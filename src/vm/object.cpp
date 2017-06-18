@@ -21,6 +21,10 @@ void Object::Dump() {
   Dump(ds);
 }
 
+Object::Object() {
+  address_width_ = 32;
+}
+
 const char *Object::ObjectTypeKey() {
   if (object_specific_.get()) {
     return object_specific_->ObjectTypeKey();

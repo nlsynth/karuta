@@ -65,6 +65,20 @@ void NativeMethods::Run(Thread *thr, Object *obj,
   ThreadWrapper::Run(thr->GetVM(), obj);
 }
 
+void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
+				    const vector<Value> &args) {
+  if (args.size() != 1 || args[0].type_ != Value::NUM) {
+    Status::os(Status::USER) << "Only 1 int argument is allowed";
+    return;
+  }
+  int w = args[0].num_.GetValue();
+  if (w == 32 || w == 64) {
+    obj->address_width_ = w;
+  } else {
+    Status::os(Status::USER) << w << " is invalid address width.";
+  }
+}
+
 void NativeMethods::SetDump(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   SetMemberString(thr, "$dump_file_name", obj, args);
@@ -222,6 +236,7 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
+  InstallNativeMethod(vm, obj, "setAddressWidth", &NativeMethods::SetAddressWidth, rets);
   InstallNativeMethod(vm, obj, "setDump", &NativeMethods::SetDump, rets);
   InstallNativeMethod(vm, obj, "setIROutput", &NativeMethods::SetIROutput, rets);
   InstallNativeMethod(vm, obj, "setIrohaPath", &NativeMethods::SetIrohaPath, rets);

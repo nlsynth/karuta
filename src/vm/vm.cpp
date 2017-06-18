@@ -114,8 +114,7 @@ IntArray *VM::GetDefaultMemory() {
 }
 
 int VM::GetAddressSpaceWidth(Object *obj) {
-  // TODO: Make this configureable.
-  return 32;
+  return obj->address_width_;
 }
 
 Method *VM::NewMethod(bool is_toplevel) {
