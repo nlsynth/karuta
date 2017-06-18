@@ -2,6 +2,7 @@
 
 #include "base/annotation.h"
 #include "base/annotation_builder.h"
+#include "base/status.h"
 #include "fe/builder.h"
 #include "fe/common.h"
 #include "fe/expr.h"
@@ -130,6 +131,11 @@ void Emitter::EmitSpawnStmt(Expr *expr){
 void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
   for (size_t i = 0; i < vds->decls.size(); ++i) {
     VarDecl *vd = vds->decls[i];
+    if (vd->GetArrayLength() > 0) {
+      if (method_stack_.size() > 1) {
+	Status::os(Status::USER) << "Array declaration is allowed only in the top level.";
+      }
+    }
     Stmt *stmt = NewStmt(STMT_VARDECL);
     stmt->decl_ = vd;
     EmitStmt(stmt);
