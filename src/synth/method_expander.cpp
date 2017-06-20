@@ -82,6 +82,7 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
     IState *st = st_map[sw->state_];
     call.call_insn = DesignUtil::FindInsnByResource(st, pseudo);
     call.call_state = st;
+    call.caller_thread = thread_;
     call.callee_obj = sw->callee_vm_obj_;
     call.callee_func = sw->callee_func_name_;
     if (sw->is_sub_obj_call_) {

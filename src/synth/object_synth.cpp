@@ -126,7 +126,8 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
     ThreadSynth::InjectSubModuleCall(call.call_state, call.call_insn,
 				     callee_table);
   } else {
-    ThreadSynth::InjectDataFlowCall(call.call_state, call.call_insn,
+    ThreadSynth::InjectDataFlowCall(call.caller_thread,
+				    call.call_state, call.call_insn,
 				    callee_table);
   }
 }

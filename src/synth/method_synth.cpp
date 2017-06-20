@@ -830,6 +830,10 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
       df_insn->outputs_.push_back(arg);
       width += arg->value_type_.GetWidth();
     }
+    // 1 for dummy argument.
+    if (width == 0) {
+      width = 1;
+    }
     mb->GetParams()->SetWidth(width);
   }
 }

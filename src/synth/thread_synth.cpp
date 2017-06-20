@@ -253,7 +253,8 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   }
 }
 
-void ThreadSynth::InjectDataFlowCall(IState *st, IInsn *pseudo_call_insn,
+void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
+				     IState *st, IInsn *pseudo_call_insn,
 				     ITable *callee_tab) {
   vector<IResource *> df;
   DesignUtil::FindResourceByClassName(callee_tab, resource::kDataFlowIn,
@@ -267,6 +268,16 @@ void ThreadSynth::InjectDataFlowCall(IState *st, IInsn *pseudo_call_insn,
   st->insns_.push_back(iinsn);
   for (IRegister *reg : pseudo_call_insn->inputs_) {
     iinsn->inputs_.push_back(reg);
+  }
+  if (pseudo_call_insn->inputs_.size() == 0) {
+    // Adds a dummy argument.
+    IRegister *reg = thr->AllocRegister("df_arg");
+    reg->value_type_.SetWidth(1);
+    iroha::Numeric iv;
+    iv.SetValue(0);
+    reg->SetInitialValue(iv);
+    iinsn->inputs_.push_back(reg);
+    thr->GetITable()->registers_.push_back(reg);
   }
 }
 

@@ -40,3 +40,16 @@ prefix '__' is reserved for implementation
 if statement can take number as its condition.
 
 *** Imported resource
+
+*** Threads
+
+ @ThreadEntry()
+ def f() {
+   print("hello?")
+ }
+
+*** Data flow
+
+ @DataFlowEntry()
+ def f(x int) {
+ }

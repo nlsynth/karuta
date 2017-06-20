@@ -41,8 +41,9 @@ public:
   const string &GetEntryMethodName();
   static void InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 				  ITable *callee_tab);
-  static void InjectDataFlowCall(IState *st, IInsn *pseudo_call_insn,
-				  ITable *callee_tab);
+  static void InjectDataFlowCall(ThreadSynth *thr,
+				 IState *st, IInsn *pseudo_call_insn,
+				 ITable *callee_tab);
 
 private:
   ObjectSynth *obj_synth_;

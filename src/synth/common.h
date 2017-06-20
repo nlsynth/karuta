@@ -51,6 +51,7 @@ class SharedResourceSet;
 struct TableCall {
   IInsn *call_insn;
   IState *call_state;
+  ThreadSynth *caller_thread;
   vm::Object *callee_obj;
   string callee_func;
   // sub obj call (true) or data flow call (false).
