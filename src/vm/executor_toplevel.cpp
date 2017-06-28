@@ -268,7 +268,7 @@ void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);
 
       int dst_id = insn->dst_regs_[0]->id_;
-      method->method_regs_[dst_id]->type_.width_ = array->GetWidth();
+      method->method_regs_[dst_id]->type_.width_ = array->GetDataWidth();
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
       int dst_id = insn->dst_regs_[0]->id_;

@@ -129,7 +129,7 @@ Annotation *ArrayWrapper::GetAnnotation(Object *obj) {
 
 int ArrayWrapper::GetDataWidth(Object *obj) {
   IntArray *a = GetIntArray(obj);
-  return a->GetWidth().GetWidth();
+  return a->GetDataWidth().GetWidth();
 }
 
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {

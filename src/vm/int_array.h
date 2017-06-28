@@ -17,8 +17,8 @@ public:
   virtual iroha::Numeric Read(uint64_t addr) = 0;
   // 0 means unlimited (is actually 2^64). typically for main memory space.
   virtual uint64_t GetLength() const = 0;
-  virtual const iroha::NumericWidth &GetWidth() const = 0;
   virtual int GetAddressWidth() const = 0;
+  virtual const iroha::NumericWidth &GetDataWidth() const = 0;
 };
 
 }  // namespace vm

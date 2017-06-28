@@ -268,7 +268,7 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
     if (ArrayWrapper::IsIntArray(array_obj)) {
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);
       lhs.num_ = array->Read(index);
-      lhs.num_.type_ = array->GetWidth();
+      lhs.num_.type_ = array->GetDataWidth();
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
       lhs.object_ = ArrayWrapper::Get(array_obj, index);
