@@ -252,11 +252,14 @@ void Executor::ExecChannelWrite(const Method *method, MethodFrame *frame,
 
 void Executor::ExecMemoryWrite(const Method *method, MethodFrame *frame,
 			       Insn *insn) {
-  Value &src_value = frame->reg_values_[insn->src_regs_[1]->id_];
+  // addr
   Value &dst_value = frame->reg_values_[insn->src_regs_[0]->id_];
+  // data
+  Value &src_value = frame->reg_values_[insn->src_regs_[1]->id_];
   CHECK(dst_value.type_ == Value::NUM);
   int addr = dst_value.num_.GetValue();
-  MemoryWrite(addr, src_value.num_);
+  int data_width = insn->src_regs_[0]->type_.pointee_width_;
+  MemoryWrite(addr, data_width, src_value.num_);
 }
 
 void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
@@ -364,7 +367,8 @@ void Executor::ExecMemoryRead(MethodFrame *frame, Insn *insn) {
   CHECK(addr_value.type_ == Value::NUM);
   Value &dst_value = frame->reg_values_[insn->dst_regs_[0]->id_];
   int addr = addr_value.num_.GetValue();
-  MemoryRead(addr, &dst_value.num_);
+  int data_width = insn->src_regs_[0]->type_.pointee_width_;
+  MemoryRead(addr, data_width, &dst_value.num_);
   dst_value.type_ = Value::NUM;
 }
 
@@ -577,14 +581,17 @@ void Executor::SetupCallee(Object *obj, Method *callee_method,
   }
 }
 
-void Executor::MemoryWrite(int addr, const iroha::Numeric &data) {
+void Executor::MemoryWrite(uint64_t addr, int data_width,
+			   const iroha::Numeric &data) {
+  iroha::Numeric d = data;
+  d.type_.SetWidth(data_width);
   IntArray *mem = thr_->GetVM()->GetDefaultMemory();
-  mem->Write(addr, data);
+  mem->WriteWide(addr, d);
 }
 
-void Executor::MemoryRead(int addr, iroha::Numeric *res) {
+void Executor::MemoryRead(int addr, int data_width, iroha::Numeric *res) {
   IntArray *mem = thr_->GetVM()->GetDefaultMemory();
-  *res = mem->Read(addr);
+  *res = mem->ReadWide(addr, data_width);
 }
 
 void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {

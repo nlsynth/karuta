@@ -14,7 +14,10 @@ public:
 
   virtual ~IntArray();
   virtual void Write(uint64_t addr, const iroha::Numeric &data) = 0;
+  virtual void WriteWide(uint64_t addr, const iroha::Numeric &data) = 0;
   virtual iroha::Numeric Read(uint64_t addr) = 0;
+  virtual iroha::Numeric ReadWide(uint64_t addr, int width) = 0;
+
   // 0 means unlimited (is actually 2^64). typically for main memory space.
   virtual uint64_t GetLength() const = 0;
   virtual int GetAddressWidth() const = 0;

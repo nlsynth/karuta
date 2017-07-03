@@ -1,6 +1,8 @@
 // memory model for interpreted neon
 #include "vm/int_array.h"
 
+#include "numeric/numeric_op.h"  // from iroha
+
 #include <map>
 
 using std::map;
@@ -35,7 +37,9 @@ public:
   IntArrayImpl(const iroha::NumericWidth &width, uint64_t size);
   IntArrayImpl(const IntArrayImpl *src);
   virtual void Write(uint64_t addr, const iroha::Numeric &data);
+  virtual void WriteWide(uint64_t addr, const iroha::Numeric &data);
   virtual iroha::Numeric Read(uint64_t addr);
+  virtual iroha::Numeric ReadWide(uint64_t addr, int width);
   virtual uint64_t GetLength() const;
   virtual int GetAddressWidth() const;
   virtual const iroha::NumericWidth &GetDataWidth() const;
@@ -79,10 +83,38 @@ void IntArrayImpl::Write(uint64_t addr, const iroha::Numeric &data) {
   p->data[offset] = data;
 }
 
+void IntArrayImpl::WriteWide(uint64_t addr, const iroha::Numeric &data) {
+  int mw = data_width_.GetWidth();
+  addr /= (mw / 8);
+  int c = data.type_.GetWidth() / mw;
+  for (int i = 0; i < c; ++i) {
+    int l = mw * i;
+    iroha::Numeric d;
+    iroha::Op::SelectBits(data, l + mw - 1, l, &d);
+    Write(addr + i, d);
+  }
+}
+
 iroha::Numeric IntArrayImpl::Read(uint64_t addr) {
   ArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
   return p->data[offset];
+}
+
+iroha::Numeric IntArrayImpl::ReadWide(uint64_t addr, int width) {
+  int mw = data_width_.GetWidth();
+  addr /= (mw / 8);
+  iroha::Numeric n;
+  n.type_.SetWidth(0);
+  int c = width / mw;
+  for (int i = 0; i < c; ++i) {
+    iroha::Numeric d;
+    d = Read(addr + i);
+    iroha::Numeric t;
+    iroha::Op::Concat(d, n, &t);
+    n = t;
+  }
+  return n;
 }
 
 uint64_t IntArrayImpl::GetLength() const {
