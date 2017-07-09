@@ -14,17 +14,21 @@ namespace fe {
 static vector<iroha::NumericWidth *> Width_list;
 static Pool<iroha::NumericWidth> pool;
 
-WidthSpec WidthSpec::Int(bool is_signed, int width) {
+WidthSpec WidthSpec::Int(bool is_signed, int width, bool is_ptr) {
   WidthSpec s;
   s.width = WidthSpec::MakeIntPtr(is_signed, width);
   s.name = sym_null;
+  s.is_primitive = false;
+  s.is_ptr = is_ptr;
   return s;
 }
 
-WidthSpec WidthSpec::Name(sym_t name) {
+WidthSpec WidthSpec::Name(sym_t name, bool is_primitive, bool is_ptr) {
   WidthSpec s;
   s.width = WidthSpec::MakeIntPtr(false, 32);
   s.name = name;
+  s.is_primitive = is_primitive;
+  s.is_ptr = is_ptr;
   return s;
 }
 
@@ -113,30 +117,24 @@ VarDecl *Builder::MaybePtrVar(Expr *var, bool is_ptr) {
   return mv;
 }
 
-VarDecl *Builder::BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
-			       sym_t object_name, VarDecl *var) {
-  var->SetType(type);
-  var->SetWidth(WidthSpec::GetWidth(type, w));
-  var->SetObjectName(object_name);
+VarDecl *Builder::BuildVarDecl(bool is_primitive,
+			       sym_t type, const iroha::NumericWidth *w,
+			       VarDecl *var) {
+  sym_t obj_name = sym_null;
+  sym_t type_name = sym_null;
+  if (is_primitive) {
+    type_name = type;
+  } else {
+    obj_name = type;
+  }
+  var->SetType(type_name);
+  var->SetWidth(WidthSpec::GetWidth(type_name, w));
+  var->SetObjectName(obj_name);
   return var;
 }
 
 void Builder::SetVarDeclAnnotation(VarDecl *decl, Annotation *an) {
   decl->SetAnnotation(an);
-}
-
-sym_t Builder::TypeNameFromVarDeclSet(VarDeclSet *vds) {
-  CHECK(vds->decls.size() > 0);
-  return vds->decls[vds->decls.size() - 1]->GetType();
-}
-
-WidthSpec Builder::GetWidthSpecFromVarDeclSet(VarDeclSet *vds) {
-  CHECK(vds->decls.size() > 0);
-  auto *vdd = vds->decls[vds->decls.size() - 1];
-  WidthSpec ws;
-  ws.width = WidthSpec::ToPtr(vdd->GetWidth());
-  ws.name = vdd->GetObjectName();
-  return ws;
 }
 
 Expr *Builder::IncDecExpr(Expr *val, int op, bool is_post) {

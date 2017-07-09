@@ -8,13 +8,16 @@
 namespace fe {
 
 struct WidthSpec {
-  // This should be a pointer (or other primitive type), because this
+  // Each member should be a pointer (or other primitive type), because this
   // struct is a part of YYSTYPE union.
   const iroha::NumericWidth *width;
   sym_t name;
+  // name is primitive type name (either int, bool, object or string).
+  bool is_primitive;
+  bool is_ptr;
 
-  static WidthSpec Int(bool is_signed, int width);
-  static WidthSpec Name(sym_t name);
+  static WidthSpec Int(bool is_signed, int width, bool is_ptr);
+  static WidthSpec Name(sym_t name, bool is_primitive, bool is_ptr);
 
   // Code to convert to/from pointer form of NumericWidth.
   static const iroha::NumericWidth *MakeIntPtr(bool is_signed, int int_part);
@@ -49,12 +52,10 @@ class Builder {
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);
 
   static VarDecl *MaybePtrVar(Expr *var, bool is_ptr);
-  static VarDecl *BuildVarDecl(sym_t type, const iroha::NumericWidth *w,
-			       sym_t object_name,
+  static VarDecl *BuildVarDecl(bool is_primitive, sym_t type,
+			       const iroha::NumericWidth *w,
 			       VarDecl *var);
   static void SetVarDeclAnnotation(VarDecl *decl, Annotation *an);
-  static sym_t TypeNameFromVarDeclSet(VarDeclSet *vds);
-  static WidthSpec GetWidthSpecFromVarDeclSet(VarDeclSet *vds);
   static Stmt *DoWhileStmt();
 
   static Stmt *NewStmt(int type);
