@@ -133,12 +133,12 @@ int ArrayWrapper::GetDataWidth(Object *obj) {
 }
 
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {
-  CHECK(args.size() == 1) << "load requires an address";
+  CHECK(args.size() > 0) << "load requires an address";
   MemAccess(thr, obj, args, true);
 }
 
 void ArrayWrapper::Store(Thread *thr, Object *obj, const vector<Value> &args) {
-  CHECK(args.size() == 1) << "store requires an address";
+  CHECK(args.size() > 0) << "store requires an address";
   MemAccess(thr, obj, args, false);
 }
 
@@ -148,15 +148,30 @@ void ArrayWrapper::MemAccess(Thread *thr, Object *obj,
   IntArray *mem = thr->GetVM()->GetDefaultMemory();
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = data->int_array_;
-  auto length = arr->GetLength();
-  const Value &addr_value = args[0];
-  int addr = addr_value.num_.GetValue();
-  for (int i = 0; i < length; ++i) {
+  uint64_t length = arr->GetLength();
+  // Mem addr
+  int mem_addr_step = arr->GetDataWidth().GetWidth() / 8;
+  uint64_t mem_addr = args[0].num_.GetValue();
+  // Count
+  int count = length;
+  if (args.size() >= 2) {
+    count = args[1].num_.GetValue() + 1;
+  }
+  // Start
+  uint64_t array_addr = 0;
+  if (args.size() >= 3) {
+    array_addr = args[2].num_.GetValue();
+  }
+  // Do the copy.
+  for (int i = 0; i < count; ++i) {
     if (is_load) {
-      arr->Write(i, mem->Read(addr + i));
+      arr->Write(array_addr, mem->ReadWide(mem_addr, mem_addr_step));
     } else {
-      mem->Write(i, arr->Read(addr + i));
+      mem->WriteWide(mem_addr, arr->Read(array_addr));
     }
+    mem_addr += mem_addr_step;
+    ++array_addr;
+    array_addr %= length;
   }
 }
 
