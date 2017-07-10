@@ -173,11 +173,14 @@ Method *FE::ReadFile(const string &file) {
 
   Emitter::BeginFunction(nullptr);
   
-  ::z_yyparse();
+  int r = ::z_yyparse();
   scanner->ReleaseFileImage();
 
   MethodDecl decl = Emitter::EndFunction();
   if (Status::Check(Status::USER)) {
+    return nullptr;
+  }
+  if (r != 0) {
     return nullptr;
   }
   return decl.method_;

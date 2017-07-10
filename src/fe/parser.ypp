@@ -1,6 +1,7 @@
 // -*- C++ -*-
 %{
 #include "base/annotation_builder.h"
+#include "base/status.h"
 #include "base/sym.h"
 #include "fe/builder.h"
 #include "fe/emitter.h"
@@ -161,9 +162,10 @@ STMT_LIST : {
 } | STMT_LIST STMT {
 }
 
-VAR_DECL_TAIL : VAR TYPE_NAME {
+VAR_DECL_TAIL : VAR TYPE_NAME EMPTY_OR_ARRAY_SPEC {
   auto *vd = Builder::MaybePtrVar($1, false);
   $$ = Builder::BuildVarDecl(true, $2, nullptr, vd);
+  Builder::SetArrayLength($$, $3);
 } | VAR '*' TYPE_NAME {
   auto *vd = Builder::MaybePtrVar($1, true);
   $$ = Builder::BuildVarDecl(true, $3, nullptr, vd);
@@ -199,6 +201,10 @@ ARG_DECL : {
 
 ARG_DECL_LIST : VAR_DECL_TAIL {
   $$ = Builder::ArgDeclList(nullptr, $1);
+  if ($1->GetArrayLength() >= 0) {
+    yyerror("Array can't be passed to a method");
+    YYABORT;
+  }
 } | ARG_DECL_LIST ',' VAR_DECL_TAIL {
   $$ = Builder::ArgDeclList($1, $3);
 }
@@ -232,18 +238,20 @@ ARRAY_INITIALIZER : '{' { ScannerInterface::InArrayElmDecl(); } ARRAY_ELM_LIST {
   $$ = $3;
 }
 
-VAR_DECL_STMT : VAR_DECL EMPTY_OR_ARRAY_SPEC {
+VAR_DECL_STMT : VAR_DECL {
   ScannerInterface::InSemiColonStatement();
-  Builder::SetArrayLength($1, $2);
   $$ = Builder::VarDeclList(nullptr, $1);
 } | VAR_DECL K_ASSIGN EXPR {
   ScannerInterface::InSemiColonStatement();
   $1->SetInitialVal($3);
   $$ = Builder::VarDeclList(nullptr, $1);
-} | VAR_DECL ARRAY_SPEC K_ASSIGN ARRAY_INITIALIZER {
+} | VAR_DECL K_ASSIGN ARRAY_INITIALIZER {
   ScannerInterface::InSemiColonStatement();
-  Builder::SetArrayLength($1, $2);
-  Builder::SetArrayInitializer($1, $4);
+  if ($1->GetArrayLength() < 0) {
+    yyerror("Array initializer to non array");
+    YYABORT;
+  }
+  Builder::SetArrayInitializer($1, $3);
   $$ = Builder::VarDeclList(nullptr, $1);
 }
 
