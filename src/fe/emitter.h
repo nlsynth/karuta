@@ -38,12 +38,12 @@ public:
   static void EmitGoto(sym_t label);
   static void EmitReturnStmt(Expr *expr);
   static void EmitThreadDeclStmt(Expr *var, Expr *funcall);
-  static void EmitChannelDeclStmt(Expr *var, sym_t type_name,
-				  const iroha::NumericWidth *width,
-				  sym_t object_name);
-  static void EmitMailboxDeclStmt(Expr *var, sym_t type_name,
-				  const iroha::NumericWidth *width,
-				  sym_t object_name);
+  static void EmitChannelDeclStmt(Expr *var, bool is_primitive,
+				  sym_t type_name,
+				  const iroha::NumericWidth *width);
+  static void EmitMailboxDeclStmt(Expr *var, bool is_primitive,
+				  sym_t type_name,
+				  const iroha::NumericWidth *width);
   static string FormatMethodName(Expr *name);
 
 private:
@@ -56,6 +56,9 @@ private:
   static Stmt *BuildFuncDeclStmt(MethodDecl *decl);
   static MethodDecl &CurrentMethod();
   static void EmitStmt(Stmt *stmt);
+  static void EmitTypedObjStmt(Stmt *stmt, Expr *var,
+			       bool is_primitive, sym_t name,
+			       const iroha::NumericWidth *width);
 
   static Stmt *NewStmt(int type);
 };

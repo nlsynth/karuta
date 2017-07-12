@@ -123,10 +123,8 @@ ANNOTATION_OR_EMPTY : {
   $$ = Emitter::SetAnnotation($2, $4);
 }
 
-RETURN_TYPE : TYPE_NAME WIDTH_SPEC {
-  $$ = Builder::ReturnType($1, $2.width, $2.name);
-} | WIDTH_SPEC {
-  $$ = Builder::ReturnType(sym_int, $1.width, $1.name);
+RETURN_TYPE : WIDTH_SPEC {
+  $$ = Builder::ReturnType($1.is_primitive, $1.name, $1.width);
 }
 
 RETURN_TYPE_LIST : RETURN_TYPE {
@@ -162,16 +160,10 @@ STMT_LIST : {
 } | STMT_LIST STMT {
 }
 
-VAR_DECL_TAIL : VAR TYPE_NAME EMPTY_OR_ARRAY_SPEC {
-  auto *vd = Builder::MaybePtrVar($1, false);
-  $$ = Builder::BuildVarDecl(true, $2, nullptr, vd);
-  Builder::SetArrayLength($$, $3);
-} | VAR '*' TYPE_NAME {
-  auto *vd = Builder::MaybePtrVar($1, true);
-  $$ = Builder::BuildVarDecl(true, $3, nullptr, vd);
-} | VAR WIDTH_SPEC {
+VAR_DECL_TAIL : VAR WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
   auto *vd = Builder::MaybePtrVar($1, $2.is_ptr);
-  $$ = Builder::BuildVarDecl(false, $2.name, $2.width, vd);
+  $$ = Builder::BuildVarDecl($2.is_primitive, $2.name, $2.width, vd);
+  Builder::SetArrayLength($$, $3);
 }
 
 VAR_DECL : ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
@@ -182,8 +174,8 @@ VAR_DECL : ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
 } | ENUM_DECL VAR {
 }
 
-WIDTH_SPEC : {
-  $$ = WidthSpec::Int(false, 32, false);
+WIDTH_SPEC : TYPE_NAME {
+  $$ = WidthSpec::Name($1, true, false);
 } | '#' NUM {
   $$ = WidthSpec::Int(false, $2, false);
 } | '#' SYM {
@@ -311,12 +303,12 @@ THREAD_DECL_STMT : K_THREAD {ScannerInterface::InSemiColonStatement();} VAR K_AS
   Emitter::EmitThreadDeclStmt($3, $5);
 }
 
-CHANNEL_DECL_STMT : K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
-  Emitter::EmitChannelDeclStmt($3, $5, $6.width, $6.name);
+CHANNEL_DECL_STMT : K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN WIDTH_SPEC {
+  Emitter::EmitChannelDeclStmt($3, $5.is_primitive, $5.name, $5.width);
 }
 
-MAILBOX_DECL_STMT : K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN TYPE_NAME WIDTH_SPEC {
-  Emitter::EmitMailboxDeclStmt($3, $5, $6.width, $6.name);
+MAILBOX_DECL_STMT : K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN WIDTH_SPEC {
+  Emitter::EmitMailboxDeclStmt($3, $5.is_primitive, $5.name, $5.width);
 }
 
 IF_COND_PART : K_IF '(' EXPR ')' {

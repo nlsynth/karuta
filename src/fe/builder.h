@@ -39,12 +39,12 @@ class Builder {
   static Expr *ElmSymRefExpr(Expr *expr, sym_t sym);
   static Expr *LogicInvertExpr(Expr *expr);
   static Expr *BitInvertExpr(Expr *expr);
+  static ExprSet *ExprList(ExprSet *exprs, Expr *expr);
   static EnumDecl *EnumItemList(EnumDecl *decls, sym_t item);
   static VarDeclSet *VarDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ArgDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ReturnDeclList(VarDeclSet *decls, VarDecl *decl);
-  static VarDecl *ReturnType(sym_t type_name, const iroha::NumericWidth *w,
-			     sym_t object_name);
+  static VarDecl *ReturnType(bool is_primitive, sym_t type_name, const iroha::NumericWidth *w);
   static void SetArrayLength(VarDecl *decl, int length);
   static Expr *ArrayRefExpr(Expr *array, Expr *index);
   static Expr *BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb);

@@ -208,21 +208,31 @@ void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
   EmitStmt(stmt);
 }
 
-void Emitter::EmitChannelDeclStmt(Expr *var, sym_t type_name,
-				  const iroha::NumericWidth *width,
-				  sym_t object_name) {
+void Emitter::EmitChannelDeclStmt(Expr *var, bool is_primitive,
+				  sym_t name,
+				  const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);
-  stmt->sym_ = object_name;
-  stmt->expr_ = var;
-  stmt->width_ = WidthSpec::GetWidth(type_name, width);
-  EmitStmt(stmt);
+  EmitTypedObjStmt(stmt, var, is_primitive, name, width);
 }
 
-void Emitter::EmitMailboxDeclStmt(Expr *var, sym_t type_name,
-				  const iroha::NumericWidth *width,
-				  sym_t object_name) {
+void Emitter::EmitMailboxDeclStmt(Expr *var, bool is_primitive,
+				  sym_t name,
+				  const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
-  stmt->sym_ = object_name;
+  EmitTypedObjStmt(stmt, var, is_primitive, name, width);
+}
+
+void Emitter::EmitTypedObjStmt(Stmt *stmt, Expr *var,
+			       bool is_primitive, sym_t name,
+			       const iroha::NumericWidth *width) {
+  sym_t type_name = sym_null;
+  sym_t obj_name = sym_null;
+  if (is_primitive) {
+    type_name = name;
+  } else {
+    obj_name = name;
+  }
+  stmt->sym_ = obj_name;
   stmt->expr_ = var;
   stmt->width_ = WidthSpec::GetWidth(type_name, width);
   EmitStmt(stmt);

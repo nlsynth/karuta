@@ -104,4 +104,10 @@ void Expr::Dump(DumpStream &ds) {
   }
 }
 
+void ExprSet::Dump(DumpStream &ds) {
+  for (size_t i = 0; i < exprs.size(); ++i) {
+    exprs[i]->Dump(ds);
+  }
+}
+
 }  // namespace fe

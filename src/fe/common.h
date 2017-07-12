@@ -23,6 +23,7 @@ namespace fe {
 class ArrayInitializer;
 class EnumDecl;
 class Expr;
+class ExprSet;
 class FileImage;
 class Method;
 class ScannerInfo;
@@ -37,12 +38,14 @@ public:
 
   static void AddEnumDecl(EnumDecl *decl);
   static void AddExpr(Expr *expr);
+  static void AddExprSet(ExprSet *expr_set);
   static void AddStmt(Stmt *stmt);
   static void AddMethod(Method *method);
   static void AddVarDecl(VarDecl *decl);
   static void AddVarDeclSet(VarDeclSet *decl_set);
 
   static Pool<Expr> *exprs_;
+  static Pool<ExprSet> *expr_sets_;
   static Pool<EnumDecl> *enums_;
   static Pool<Method> *methods_;
   static Pool<Stmt> *stmts_;

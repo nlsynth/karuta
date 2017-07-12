@@ -199,6 +199,15 @@ VarDeclSet *Builder::ArgDeclList(VarDeclSet *decls, VarDecl *decl) {
   return decls;
 }
 
+ExprSet *Builder::ExprList(ExprSet *exprs, Expr *expr) {
+  if (exprs == nullptr) {
+    exprs = new ExprSet;
+    NodePool::AddExprSet(exprs);
+  }
+  exprs->exprs.push_back(expr);
+  return exprs;
+}
+
 EnumDecl *Builder::EnumItemList(EnumDecl *decl, sym_t item) {
   if (decl == nullptr) {
     decl = new EnumDecl;
@@ -216,13 +225,20 @@ VarDeclSet *Builder::ReturnDeclList(VarDeclSet *decls, VarDecl *decl) {
   return ArgDeclList(decls, decl);
 }
 
-VarDecl *Builder::ReturnType(sym_t type_name, const iroha::NumericWidth *w,
-			     sym_t object_name) {
+VarDecl *Builder::ReturnType(bool is_primitive, sym_t type,
+			     const iroha::NumericWidth *w) {
   VarDecl *v = new VarDecl;
   NodePool::AddVarDecl(v);
+  sym_t type_name = sym_null;
+  sym_t obj_name = sym_null;
+  if (is_primitive) {
+    type_name = type;
+  } else {
+    obj_name = type;
+  }
   v->SetType(type_name);
   v->SetWidth(WidthSpec::GetWidth(type_name, w));
-  v->SetObjectName(object_name);
+  v->SetObjectName(obj_name);
   return v;
 }
 

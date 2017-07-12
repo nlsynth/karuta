@@ -24,6 +24,13 @@ public:
   Expr *rhs_;
 };
 
+// mainly for multiple var decls (e.g. var x, y int).
+class ExprSet {
+public:
+  void Dump(DumpStream &os);
+  vector<Expr*> exprs;
+};
+
 }  // namespace fe
 
 #endif  // _fe_expr_h_
