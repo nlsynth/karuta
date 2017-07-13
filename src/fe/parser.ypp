@@ -19,6 +19,7 @@ extern void yyerror(const char *msg);
 %union {
   class ArrayInitializer *array;
   class Expr *expr;
+  class ExprSet *expr_set;
   class EnumDecl *enum_decl;
   class Stmt *stmt;
   class VarDecl *var_decl;
@@ -34,9 +35,9 @@ extern void yyerror(const char *msg);
 }
 
 %type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
+%type <expr_set> VAR_LIST
 %type <num> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
-%type <var_decl> VAR_DECL VAR_DECL_TAIL
-%type <var_decl_set> VAR_DECL_STMT
+%type <var_decl_set> VAR_DECL_STMT VAR_DECL VAR_DECL_TAIL
 %type <array> ARRAY_INITIALIZER ARRAY_ELM_LIST
 %type <block> BLOCK IF_STMT FOR_STMT
 %type <block> WHILE_STMT DO_WHILE_STMT SWITCH_STMT
@@ -160,15 +161,23 @@ STMT_LIST : {
 } | STMT_LIST STMT {
 }
 
-VAR_DECL_TAIL : VAR WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
-  auto *vd = Builder::MaybePtrVar($1, $2.is_ptr);
-  $$ = Builder::BuildVarDecl($2.is_primitive, $2.name, $2.width, vd);
-  Builder::SetArrayLength($$, $3);
+VAR_DECL_TAIL : VAR_LIST WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
+  VarDeclSet *vds = nullptr;
+  for (Expr *var : $1->exprs) {
+    VarDecl *vd = Builder::BuildVarDecl(var,
+					$2.is_primitive, $2.is_ptr, $2.name,
+					$2.width);
+    Builder::SetArrayLength(vd, $3);
+    vds = Builder::VarDeclList(vds, vd);
+  }
+  $$ = vds;
 }
 
 VAR_DECL : ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
   ScannerInterface::InSemiColonStatement();
-  Builder::SetVarDeclAnnotation($3, $1);
+  for (VarDecl *vd : $3->decls) {
+    Builder::SetVarDeclAnnotation(vd, $1);
+  }
   $$ = $3;
 } | K_ENUM TYPE_NAME VAR {
 } | ENUM_DECL VAR {
@@ -192,13 +201,21 @@ ARG_DECL : {
 }
 
 ARG_DECL_LIST : VAR_DECL_TAIL {
-  $$ = Builder::ArgDeclList(nullptr, $1);
-  if ($1->GetArrayLength() >= 0) {
+  VarDeclSet *vds = nullptr;
+  for (VarDecl *vd : $1->decls) {
+    vds = Builder::ArgDeclList(vds, vd);
+  }
+  if ($1->decls[0]->GetArrayLength() >= 0) {
     yyerror("Array can't be passed to a method");
     YYABORT;
   }
+  $$ = vds;
 } | ARG_DECL_LIST ',' VAR_DECL_TAIL {
-  $$ = Builder::ArgDeclList($1, $3);
+  VarDeclSet *vds = $1;
+  for (VarDecl *vd : $3->decls) {
+    vds = Builder::ArgDeclList($1, vd);
+  }
+  $$ = vds;
 }
 
 ARRAY_SPEC : '[' ']' {
@@ -232,19 +249,27 @@ ARRAY_INITIALIZER : '{' { ScannerInterface::InArrayElmDecl(); } ARRAY_ELM_LIST {
 
 VAR_DECL_STMT : VAR_DECL {
   ScannerInterface::InSemiColonStatement();
-  $$ = Builder::VarDeclList(nullptr, $1);
+  $$ = $1;
 } | VAR_DECL K_ASSIGN EXPR {
   ScannerInterface::InSemiColonStatement();
-  $1->SetInitialVal($3);
-  $$ = Builder::VarDeclList(nullptr, $1);
+  if ($1->decls.size() > 1) {
+    yyerror("More than 1 LHS to initialize");
+    YYABORT;
+  }
+  $1->decls[0]->SetInitialVal($3);
+  $$ = Builder::VarDeclList(nullptr, $1->decls[0]);
 } | VAR_DECL K_ASSIGN ARRAY_INITIALIZER {
   ScannerInterface::InSemiColonStatement();
-  if ($1->GetArrayLength() < 0) {
+  if ($1->decls.size() > 1) {
+    yyerror("More than 1 LHS to initialize");
+    YYABORT;
+  }
+  if ($1->decls[0]->GetArrayLength() < 0) {
     yyerror("Array initializer to non array");
     YYABORT;
   }
-  Builder::SetArrayInitializer($1, $3);
-  $$ = Builder::VarDeclList(nullptr, $1);
+  Builder::SetArrayInitializer($1->decls[0], $3);
+  $$ = Builder::VarDeclList(nullptr, $1->decls[0]);
 }
 
 TYPE_NAME : K_INT {
@@ -487,6 +512,12 @@ VAR : SYM {
   $$ = Builder::SymExpr($1);
 } | VAR '.' SYM {
   $$ = Builder::ElmSymRefExpr($1, $3);
+}
+
+VAR_LIST : VAR {
+  $$ = Builder::ExprList(nullptr, $1);
+} | VAR_LIST ',' VAR {
+  $$ = Builder::ExprList($1, $3);
 }
 
 FUNCALL_HEAD : SYM '(' {

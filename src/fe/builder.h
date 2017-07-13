@@ -51,10 +51,9 @@ class Builder {
   static Expr *RefExpr(Expr *addr);
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);
 
-  static VarDecl *MaybePtrVar(Expr *var, bool is_ptr);
-  static VarDecl *BuildVarDecl(bool is_primitive, sym_t type,
-			       const iroha::NumericWidth *w,
-			       VarDecl *var);
+  static VarDecl *BuildVarDecl(Expr *var_expr, bool is_primitive, bool is_ptr,
+			       sym_t type,
+			       const iroha::NumericWidth *w);
   static void SetVarDeclAnnotation(VarDecl *decl, Annotation *an);
   static Stmt *DoWhileStmt();
 

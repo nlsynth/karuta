@@ -138,6 +138,7 @@ union YYSTYPE
 
   class ArrayInitializer *array;
   class Expr *expr;
+  class ExprSet *expr_set;
   class EnumDecl *enum_decl;
   class Stmt *stmt;
   class VarDecl *var_decl;
@@ -151,7 +152,7 @@ union YYSTYPE
   class AnnotationValue *annotation_value;
   class AnnotationValueSet *annotation_value_set;
 
-#line 155 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
+#line 156 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

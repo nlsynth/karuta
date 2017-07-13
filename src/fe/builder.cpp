@@ -107,19 +107,14 @@ Expr *Builder::FuncallExpr(Expr *func, Expr *args) {
   return expr;
 }
 
-VarDecl *Builder::MaybePtrVar(Expr *var, bool is_ptr) {
-  VarDecl *mv = new VarDecl;
-  NodePool::AddVarDecl(mv);
-  mv->SetNameExpr(var);
+VarDecl *Builder::BuildVarDecl(Expr *var_expr, bool is_primitive, bool is_ptr,
+			       sym_t type, const iroha::NumericWidth *w) {
+  VarDecl *var = new VarDecl;
+  NodePool::AddVarDecl(var);
+  var->SetNameExpr(var_expr);
   if (is_ptr) {
-    mv->SetPtr(true);
+    var->SetPtr(true);
   }
-  return mv;
-}
-
-VarDecl *Builder::BuildVarDecl(bool is_primitive,
-			       sym_t type, const iroha::NumericWidth *w,
-			       VarDecl *var) {
   sym_t obj_name = sym_null;
   sym_t type_name = sym_null;
   if (is_primitive) {
