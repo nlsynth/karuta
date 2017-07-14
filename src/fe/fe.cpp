@@ -13,7 +13,7 @@
 #include "vm/thread.h"
 #include "vm/vm.h"
 // This should be the last.
-#include "fe/libparse_la-parser.hpp"
+#include "fe/parser.h"
 
 static sym_t sym_def, sym_func, sym_enum, sym_import, sym_spawn, sym_var;
 

@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_Z_YY_SRC_FE_LIBPARSE_LA_PARSER_HPP_INCLUDED
-# define YY_Z_YY_SRC_FE_LIBPARSE_LA_PARSER_HPP_INCLUDED
+#ifndef YY_Z_YY_SRC_FE_PARSER_H_INCLUDED
+# define YY_Z_YY_SRC_FE_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -152,7 +152,7 @@ union YYSTYPE
   class AnnotationValue *annotation_value;
   class AnnotationValueSet *annotation_value_set;
 
-#line 156 "src/fe/libparse_la-parser.hpp" /* yacc.c:1909  */
+#line 156 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -165,4 +165,4 @@ extern YYSTYPE z_yylval;
 
 int z_yyparse (void);
 
-#endif /* !YY_Z_YY_SRC_FE_LIBPARSE_LA_PARSER_HPP_INCLUDED  */
+#endif /* !YY_Z_YY_SRC_FE_PARSER_H_INCLUDED  */
