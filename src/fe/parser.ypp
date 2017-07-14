@@ -173,12 +173,11 @@ VAR_DECL_TAIL : VAR_LIST WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
   $$ = vds;
 }
 
-VAR_DECL : ANNOTATION_OR_EMPTY K_VAR VAR_DECL_TAIL {
-  ScannerInterface::InSemiColonStatement();
-  for (VarDecl *vd : $3->decls) {
+VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::InSemiColonStatement();} K_VAR VAR_DECL_TAIL {
+  for (VarDecl *vd : $4->decls) {
     Builder::SetVarDeclAnnotation(vd, $1);
   }
-  $$ = $3;
+  $$ = $4;
 } | K_ENUM TYPE_NAME VAR {
 } | ENUM_DECL VAR {
 }
