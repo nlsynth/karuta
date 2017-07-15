@@ -30,14 +30,14 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_Z_YY_SRC_FE_PARSER_H_INCLUDED
-# define YY_Z_YY_SRC_FE_PARSER_H_INCLUDED
+#ifndef YY_YY_SRC_FE_PARSER_H_INCLUDED
+# define YY_YY_SRC_FE_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int z_yydebug;
+extern int yydebug;
 #endif
 
 /* Token type.  */
@@ -161,8 +161,8 @@ typedef union YYSTYPE YYSTYPE;
 #endif
 
 
-extern YYSTYPE z_yylval;
+extern YYSTYPE yylval;
 
-int z_yyparse (void);
+int yyparse (void);
 
-#endif /* !YY_Z_YY_SRC_FE_PARSER_H_INCLUDED  */
+#endif /* !YY_YY_SRC_FE_PARSER_H_INCLUDED  */

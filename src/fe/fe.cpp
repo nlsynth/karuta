@@ -66,27 +66,27 @@ static struct OperatorTableEntry op_tab[] = {
   {0, 0, 0}
 };
 
-int z_yylex() {
+int yylex() {
   ScannerToken tk;
   tk.sub_op = 0;
   int r = ScannerInterface::GetToken(&tk);
   if (r == SYM) {
-    z_yylval.sym = tk.sym;
+    yylval.sym = tk.sym;
   } else if (r == NUM) {
-    z_yylval.num = tk.num;
+    yylval.num = tk.num;
   } else if (r == STR) {
-    z_yylval.str = tk.str;
+    yylval.str = tk.str;
   } else if (r == K_ASSIGN || r == K_ADD_SUB ||
 	     r == K_INC_DEC || r == K_LG_COMPARE ||
 	     r == K_EQ_COMPARE || r == K_SHIFT) {
-    z_yylval.num = tk.sub_op;
+    yylval.num = tk.sub_op;
   } else {
-    z_yylval.sym = sym_null;
+    yylval.sym = sym_null;
   }
   return r;
 }
 
-void z_yyerror(const char *msg) {
+void yyerror(const char *msg) {
   fe::ScannerPos pos;
   fe::ScannerInterface::GetPosition(&pos);
   ostream &os = Status::os(Status::USER);
@@ -173,7 +173,7 @@ Method *FE::ReadFile(const string &file) {
 
   Emitter::BeginFunction(nullptr);
   
-  int r = ::z_yyparse();
+  int r = ::yyparse();
   scanner->ReleaseFileImage();
 
   MethodDecl decl = Emitter::EndFunction();

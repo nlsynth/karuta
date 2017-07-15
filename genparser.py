@@ -6,7 +6,9 @@ import os
 import shutil
 import tempfile
 
-r = os.system("bison -y -d -p z_yy src/fe/parser.ypp")
+# -y yacc mode
+# -d prodces header file
+r = os.system("bison -y -d src/fe/parser.ypp")
 if r != 0:
     exit(r)
 
