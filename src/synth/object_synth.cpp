@@ -9,22 +9,18 @@
 namespace synth {
 
 ObjectSynth::ObjectSynth(vm::Object *obj,
-			 DesignSynth *design_synth)
+			 DesignSynth *design_synth,
+			 bool is_root, const string &name)
   : obj_(obj),
-    design_synth_(design_synth), mod_(nullptr), is_root_(false) {
+    design_synth_(design_synth), mod_(nullptr), is_root_(is_root),
+    obj_name_(name) {
+  mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
+  design_synth_->GetIDesign()->modules_.push_back(mod_);
+  CollectThreads(mod_);
 }
 
 ObjectSynth::~ObjectSynth() {
   STLDeleteValues(&threads_);
-}
-
-void ObjectSynth::Prepare(const char *obj_name, bool is_root) {
-  CHECK(mod_ == nullptr);
-  obj_name_ = string(obj_name);
-  mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
-  design_synth_->GetIDesign()->modules_.push_back(mod_);
-  is_root_ = is_root;
-  CollectThreads(mod_);
 }
 
 void ObjectSynth::AddTaskEntryName(const string &task_entry) {

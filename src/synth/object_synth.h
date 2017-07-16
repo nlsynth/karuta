@@ -11,21 +11,21 @@ namespace synth {
 class ObjectSynth {
 public:
   ObjectSynth(vm::Object *obj,
-	      DesignSynth *design_synth);
+	      DesignSynth *design_synth,
+	      bool is_root, const string &name);
   virtual ~ObjectSynth();
 
-  void Prepare(const char *obj_name, bool is_root);
   void AddTaskEntryName(const string &task_entry);
   bool Scan(bool *ok);
   bool Synth();
   void ResolveTableCallsAll();
-  DesignSynth *GetDesignSynth();
 
   vm::VM *GetVM() const;
   vm::Object *GetObject() const;
   ChannelSynth *GetChannelSynth() const;
   IModule *GetIModule();
   ThreadSynth *GetThreadByName(const string &name);
+  DesignSynth *GetDesignSynth();
 
 private:
   void CollectThreads(IModule *mod);

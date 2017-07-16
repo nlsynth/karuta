@@ -48,7 +48,6 @@ bool DesignSynth::Synth() {
 bool DesignSynth::SynthObjects() {
   obj_tree_->Build();
   ObjectSynth *o = GetObjectSynth(root_obj_);
-  o->Prepare("main", true /* is_root */);
   // Pass 1: Scan.
   if (!ScanObjs()) {
     return false;
@@ -82,11 +81,12 @@ ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
   if (it != obj_synth_map_.end()) {
     return it->second;
   }
-  ObjectSynth *osynth = new ObjectSynth(obj, this);
+  bool is_root = (obj == root_obj_);
   string name = obj_tree_->GetObjectName(obj);
-  if (!name.empty()) {
-    osynth->Prepare(name.c_str(), false);
+  if (name.empty()) {
+    name = "main";
   }
+  ObjectSynth *osynth = new ObjectSynth(obj, this, is_root, name);
   obj_synth_map_[obj] = osynth;
   return osynth;
 }
