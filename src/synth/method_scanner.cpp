@@ -94,7 +94,6 @@ void MethodScanner::RequestSubObj(vm::Object *callee_obj) {
   DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
   ObjectSynth *callee_synth = ds->GetObjectSynth(callee_obj);
   ObjectSynth *this_synth = ds->GetObjectSynth(obj_);
-  ds->AddChildObjSynth(this_synth, callee_synth);
 
   vector<sym_t> names;
   obj_->LookupMemberNames(callee_obj, &names);

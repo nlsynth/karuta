@@ -87,6 +87,8 @@
         'synth/object_method_names.h',
         'synth/object_synth.cpp',
         'synth/object_synth.h',
+        'synth/object_tree.cpp',
+        'synth/object_tree.h',
         'synth/resource_set.cpp',
         'synth/resource_set.h',
         'synth/resource_synth.cpp',

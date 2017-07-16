@@ -7,6 +7,7 @@
 #include "synth/channel_synth.h"
 #include "synth/shared_resource_set.h"
 #include "synth/object_synth.h"
+#include "synth/object_tree.h"
 
 namespace synth {
 
@@ -15,6 +16,7 @@ DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj)
   channel_synth_.reset(new ChannelSynth);
   i_design_.reset(new IDesign);
   shared_resources_.reset(new SharedResourceSet);
+  obj_tree_.reset(new ObjectTree(obj));
 }
 
 DesignSynth::~DesignSynth() {
@@ -44,6 +46,7 @@ bool DesignSynth::Synth() {
 }
 
 bool DesignSynth::SynthObjects() {
+  obj_tree_->Build();
   ObjectSynth *o = GetObjectSynth(root_obj_);
   o->Prepare("main", true /* is_root */);
   // Pass 1: Scan.
@@ -51,7 +54,6 @@ bool DesignSynth::SynthObjects() {
     return false;
   }
   shared_resources_->DetermineOwnerThreadAll();
-  FixupObjTree(o);
   // Pass 2: Synth.
   if (!SynthObjRec(o)) {
     return false;
@@ -113,38 +115,19 @@ bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {
   if (!osynth->Synth()) {
     return false;
   }
-  for (ObjectSynth *child : obj_children_map_[osynth]) {
-    if (!SynthObjRec(child)) {
-      return false;
+  auto m = obj_tree_->GetChildObjects(osynth->GetObject());
+  for (auto it : m) {
+    vm::Object *cobj = it.first;
+    auto cit = obj_synth_map_.find(cobj);
+    if (cit != obj_synth_map_.end()) {
+      ObjectSynth *csynth = cit->second;
+      if (!SynthObjRec(csynth)) {
+	return false;
+      }
+      csynth->GetIModule()->SetParentModule(osynth->GetIModule());
     }
-    child->GetIModule()->SetParentModule(osynth->GetIModule());
   }
   return true;
-}
-
-void DesignSynth::AddChildObjSynth(ObjectSynth *parent, ObjectSynth *child) {
-  obj_children_map_[parent].insert(child);
-}
-
-void DesignSynth::FixupObjTree(ObjectSynth *root) {
-  std::list<ObjectSynth *> q;
-  set<ObjectSynth *> seen;
-  q.push_back(root);
-  // BFS traversal.
-  while (q.size() > 0) {
-    ObjectSynth *o = *(q.begin());
-    seen.insert(o);
-    q.pop_front();
-    set<ObjectSynth *> children = obj_children_map_[o];
-    for (ObjectSynth *child : children) {
-      if (seen.find(child) != seen.end()) {
-	// Erase this child as it is already seen.
-	obj_children_map_[o].erase(child);
-      } else {
-	q.push_back(child);
-      }
-    }
-  }
 }
 
 }  // namespace synth

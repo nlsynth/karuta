@@ -40,6 +40,7 @@ class InsnWalker;
 class MethodContext;
 class MethodSynth;
 class ObjectSynth;
+class ObjectTree;
 class ThreadSynth;
 class ResourceSet;
 class ResourceSynth;
