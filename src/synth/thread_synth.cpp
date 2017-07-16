@@ -40,7 +40,7 @@ bool ThreadSynth::Scan() {
   tab_ = new ITable(obj_synth_->GetIModule());
   tab_->SetName(thread_name_);
   resource_.reset(new ResourceSet(tab_));
-  rsynth_.reset(new ResourceSynth(resource_.get()));
+  rsynth_.reset(new ResourceSynth(resource_.get(), this));
   // Entry method of this thread.
   RequestMethod(obj_synth_->GetObject(), entry_method_name_);
   int num_scan;

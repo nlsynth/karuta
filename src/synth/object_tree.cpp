@@ -30,10 +30,25 @@ void ObjectTree::Build() {
     seen.insert(o);
     CheckObject(o, seen, &q);
   }
+  // Builds parent_map_.
+  for (auto it : obj_children_map_) {
+    for (auto jt : it.second) {
+      parent_map_[jt.first] = it.first;
+    }
+  }
 }
 
 std::map<vm::Object *, string> ObjectTree::GetChildObjects(vm::Object *o) {
   return obj_children_map_[o];
+}
+
+string ObjectTree::GetObjectName(vm::Object *o) {
+  vm::Object *parent = parent_map_[o];
+  if (parent == nullptr) {
+    return "";
+  }
+  auto m = obj_children_map_[parent];
+  return m[o];
 }
 
 void ObjectTree::CheckObject(vm::Object *o, std::set<vm::Object *> &seen,

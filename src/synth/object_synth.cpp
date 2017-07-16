@@ -19,12 +19,8 @@ ObjectSynth::~ObjectSynth() {
 }
 
 void ObjectSynth::Prepare(const char *obj_name, bool is_root) {
+  CHECK(mod_ == nullptr);
   obj_name_ = string(obj_name);
-  // This method can be called multiple times, if multiple callers depend
-  // on this object.
-  if (mod_ != nullptr) {
-    return;
-  }
   mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
   design_synth_->GetIDesign()->modules_.push_back(mod_);
   is_root_ = is_root;

@@ -3,14 +3,18 @@
 #include "base/annotation.h"
 #include "fe/method.h"
 #include "iroha/iroha.h"
+#include "synth/design_synth.h"
 #include "synth/resource_set.h"
+#include "synth/object_synth.h"
+#include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
 #include "vm/method.h"
 #include "vm/object.h"
 
 namespace synth {
 
-ResourceSynth::ResourceSynth(ResourceSet *rset) : rset_(rset) {
+ResourceSynth::ResourceSynth(ResourceSet *rset, ThreadSynth *thr_synth)
+  : rset_(rset), thr_synth_(thr_synth) {
 }
 
 void ResourceSynth::MayAddAxiMasterPort(vm::Object *owner_obj,
@@ -42,10 +46,10 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
 
 void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
 				 IResource *res) {
-  vector<sym_t> slots;
-  owner_obj->LookupMemberNames(array_obj, &slots);
-  if (slots.size() == 1) {
-    res->GetParams()->SetPortNamePrefix(sym_str(slots[0]) + "_");
+  DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
+  string name = ds->GetObjectName(array_obj);
+  if (!name.empty()) {
+    res->GetParams()->SetPortNamePrefix(name + "_");
   }
 }
 

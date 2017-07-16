@@ -21,6 +21,7 @@ public:
   IDesign *GetIDesign();
   ObjectSynth *GetObjectSynth(vm::Object *obj);
   SharedResourceSet *GetSharedResourceSet();
+  string GetObjectName(vm::Object *obj);
 
 private:
   bool SynthObjects();

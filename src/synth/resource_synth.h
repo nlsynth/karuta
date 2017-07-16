@@ -8,7 +8,7 @@ namespace synth {
 
 class ResourceSynth {
 public:
-  ResourceSynth(ResourceSet *rset);
+  ResourceSynth(ResourceSet *rset, ThreadSynth *thr_synth_);
 
   void MayAddAxiMasterPort(vm::Object *owner_obj, vm::Object *array_obj);
   void MayAddAxiSlavePort(vm::Object *owner_obj, vm::Object *array_obj);
@@ -18,6 +18,7 @@ private:
   void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj, IResource *res);
 
   ResourceSet *rset_;
+  ThreadSynth *thr_synth_;
 };
 
 }  // namespace synth

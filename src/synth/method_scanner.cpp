@@ -92,13 +92,7 @@ void MethodScanner::Funcall(vm::Insn *insn) {
 
 void MethodScanner::RequestSubObj(vm::Object *callee_obj) {
   DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
-  ObjectSynth *callee_synth = ds->GetObjectSynth(callee_obj);
-  ObjectSynth *this_synth = ds->GetObjectSynth(obj_);
-
-  vector<sym_t> names;
-  obj_->LookupMemberNames(callee_obj, &names);
-  CHECK(names.size() > 0);
-  callee_synth->Prepare(sym_cstr(names[0]), false);
+  (void) ds->GetObjectSynth(callee_obj);
 }
 
 void MethodScanner::MemberAccess(vm::Insn *insn) {

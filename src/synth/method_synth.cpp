@@ -7,6 +7,7 @@
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
 #include "synth/channel_synth.h"
+#include "synth/design_synth.h"
 #include "synth/method_context.h"
 #include "synth/object_method.h"
 #include "synth/object_synth.h"
@@ -374,10 +375,8 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   if (IsSubObjCall(insn)) {
     CHECK(callee_obj);
     sw->is_sub_obj_call_ = true;
-    vector<sym_t> names;
-    obj_->LookupMemberNames(callee_obj, &names);
-    CHECK(names.size() > 0);
-    sw->obj_name_ = sym_str(names[0]);
+    DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
+    sw->obj_name_ = ds->GetObjectName(callee_obj);
   }
 }
 

@@ -83,12 +83,20 @@ ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
     return it->second;
   }
   ObjectSynth *osynth = new ObjectSynth(obj, this);
+  string name = obj_tree_->GetObjectName(obj);
+  if (!name.empty()) {
+    osynth->Prepare(name.c_str(), false);
+  }
   obj_synth_map_[obj] = osynth;
   return osynth;
 }
 
 SharedResourceSet *DesignSynth::GetSharedResourceSet() {
   return shared_resources_.get();
+}
+
+string DesignSynth::GetObjectName(vm::Object *obj) {
+  return obj_tree_->GetObjectName(obj);
 }
 
 bool DesignSynth::ScanObjs() {
