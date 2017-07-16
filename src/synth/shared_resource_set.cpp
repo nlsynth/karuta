@@ -31,7 +31,7 @@ SharedResourceSet::~SharedResourceSet() {
   }
 }
 
-void SharedResourceSet::ResolveResourceTypes() {
+void SharedResourceSet::DetermineOwnerThreadAll() {
   for (auto it : obj_resources_) {
     DetermineOwnerThread(it.second);
   }

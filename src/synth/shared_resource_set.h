@@ -36,7 +36,7 @@ public:
 
   // Called between pass 1 and 2.
   // Determines an owner thread (ThreadSynth).
-  void ResolveResourceTypes();
+  void DetermineOwnerThreadAll();
   // Called after pass 2. Sets the foreign resource for IResource.
   void ResolveResourceAccessors();
 

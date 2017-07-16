@@ -24,13 +24,14 @@ public:
   void AddChildObjSynth(ObjectSynth *parent, ObjectSynth *child);
 
 private:
+  bool SynthObjects();
   bool SynthObjRec(ObjectSynth *osynth);
   bool ScanObjs();
   // Make the tree DAG.
   void FixupObjTree(ObjectSynth *root);
 
   vm::VM *vm_;
-  vm::Object *obj_;
+  vm::Object *root_obj_;
   std::unique_ptr<ChannelSynth> channel_synth_;
   std::unique_ptr<IDesign> i_design_;
   std::unique_ptr<SharedResourceSet> shared_resources_;

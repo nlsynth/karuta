@@ -58,7 +58,7 @@ bool ObjectSynth::Scan(bool *ok) {
 }
 
 bool ObjectSynth::Synth() {
-  ThreadSynth *primary = nullptr;
+  ThreadSynth *primary_thr = nullptr;
   for (auto *thr : threads_) {
     if (!thr->Synth()) {
       Status::os(Status::USER) << "Failed to synthesize object: " << obj_name_;
@@ -66,11 +66,11 @@ bool ObjectSynth::Synth() {
       return false;
     }
     if (thr->IsPrimary()) {
-      primary = thr;
+      primary_thr = thr;
     }
   }
-  if (primary != nullptr) {
-    primary->CollectUnclaimedMembers();
+  if (primary_thr != nullptr) {
+    primary_thr->CollectUnclaimedMembers();
   }
   return true;
 }

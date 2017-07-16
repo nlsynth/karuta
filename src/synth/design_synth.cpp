@@ -10,7 +10,8 @@
 
 namespace synth {
 
-DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj) : vm_(vm), obj_(obj) {
+DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj)
+  : vm_(vm), root_obj_(obj) {
   channel_synth_.reset(new ChannelSynth);
   i_design_.reset(new IDesign);
   shared_resources_.reset(new SharedResourceSet);
@@ -29,13 +30,27 @@ bool DesignSynth::Synth() {
     params->SetModuleNamePrefix(prefix + "_");
   }
 
-  ObjectSynth *o = GetObjectSynth(obj_);
+  if (!SynthObjects()) {
+    return false;
+  }
+
+  channel_synth_->Resolve(i_design_.get());
+
+  DesignTool::Validate(i_design_.get());
+
+  iroha::OptAPI *optimizer = iroha::Iroha::CreateOptimizer(i_design_.get());
+  optimizer->ApplyPhase("clean_pseudo_resource");
+  return true;
+}
+
+bool DesignSynth::SynthObjects() {
+  ObjectSynth *o = GetObjectSynth(root_obj_);
   o->Prepare("main", true /* is_root */);
   // Pass 1: Scan.
   if (!ScanObjs()) {
     return false;
   }
-  shared_resources_->ResolveResourceTypes();
+  shared_resources_->DetermineOwnerThreadAll();
   FixupObjTree(o);
   // Pass 2: Synth.
   if (!SynthObjRec(o)) {
@@ -45,13 +60,6 @@ bool DesignSynth::Synth() {
   for (auto it : obj_synth_map_) {
     it.second->ResolveTableCallsAll();
   }
-
-  channel_synth_->Resolve(i_design_.get());
-
-  DesignTool::Validate(i_design_.get());
-
-  iroha::OptAPI *optimizer = iroha::Iroha::CreateOptimizer(i_design_.get());
-  optimizer->ApplyPhase("clean_pseudo_resource");
   return true;
 }
 
