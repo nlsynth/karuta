@@ -68,7 +68,7 @@ void ObjectMethod::Scan() {
 
 IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   IResource *res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
-  rsynth_->MayAddAxiSlavePort(synth_->GetObject(), array_obj);
+  rsynth_->MayAddAxiMasterPort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(res);
   if (is_store) {
     iinsn->SetOperand("write");

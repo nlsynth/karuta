@@ -64,6 +64,7 @@ public:
   bool IsAxiMaster();
   bool IsAxiSlave();
   int GetAddrWidth();
+  bool IsAxiExclusive();
 
   void AddPinDecl(sym_t name, bool is_out, int width);
   int GetNrPinDecls();
