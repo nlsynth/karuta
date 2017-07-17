@@ -20,6 +20,8 @@ public:
 	      vm::Object *thread_obj);
   virtual ~ThreadSynth();
 
+  static bool HasResource(vm::Object *obj);
+
   bool Synth();
   bool Scan();
   // One primary thread in an object and takes care of unaccessed resources.

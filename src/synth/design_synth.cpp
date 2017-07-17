@@ -47,8 +47,9 @@ bool DesignSynth::Synth() {
 
 bool DesignSynth::SynthObjects() {
   obj_tree_->Build();
-  ObjectSynth *o = GetObjectSynth(root_obj_);
   // Pass 1: Scan.
+  ObjectSynth *o = GetObjectSynth(root_obj_);
+  CollectScanRootObjRec(root_obj_);
   if (!ScanObjs()) {
     return false;
   }
@@ -117,6 +118,18 @@ bool DesignSynth::ScanObjs() {
     }
   } while (num_scan > 0);
   return true;
+}
+
+void DesignSynth::CollectScanRootObjRec(vm::Object *obj) {
+  if (obj_synth_map_.find(obj) == obj_synth_map_.end()) {
+    if (ObjectSynth::HasResource(obj)) {
+      (void) GetObjectSynth(obj);
+    }
+  }
+  auto m = obj_tree_->GetChildObjects(obj);
+  for (auto it : m) {
+    CollectScanRootObjRec(it.first);
+  }
 }
 
 bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {

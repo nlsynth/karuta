@@ -36,6 +36,31 @@ ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 ThreadSynth::~ThreadSynth() {
 }
 
+bool ThreadSynth::HasResource(vm::Object *obj) {
+  map<sym_t, vm::Object *> member_objs;
+  obj->GetAllMemberObjs(&member_objs);
+  for (auto it : member_objs) {
+    vm::Object *member_obj = it.second;
+    if (vm::ArrayWrapper::IsIntArray(member_obj)) {
+      Annotation *a = vm::ArrayWrapper::GetAnnotation(member_obj);
+      if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave())) {
+	return true;
+      }
+    }
+  }
+  map<sym_t, vm::Method *> member_methods;
+  obj->GetAllMemberMethods(&member_methods);
+  for (auto it : member_methods) {
+    vm::Method *method = it.second;
+    if (method->parse_tree_ != nullptr &&
+	method->parse_tree_->annotation_ != nullptr &&
+	method->parse_tree_->annotation_->IsExtIO()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool ThreadSynth::Scan() {
   tab_ = new ITable(obj_synth_->GetIModule());
   tab_->SetName(thread_name_);

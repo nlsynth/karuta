@@ -11,6 +11,9 @@ def Kernel.compile() {
   __compile("clean_unused_resource,clean_empty_state,clean_unreachable_state,array_to_mem")
 }
 
+def Kernel.main() {
+}
+
 @embed(resource = "wait_cycles",
  verilog = "nli_wait.v",
  ack = "ack",

@@ -27,6 +27,7 @@ private:
   bool SynthObjects();
   bool SynthObjRec(ObjectSynth *osynth);
   bool ScanObjs();
+  void CollectScanRootObjRec(vm::Object *obj);
 
   vm::VM *vm_;
   vm::Object *root_obj_;

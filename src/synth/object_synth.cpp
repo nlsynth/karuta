@@ -23,6 +23,11 @@ ObjectSynth::~ObjectSynth() {
   STLDeleteValues(&threads_);
 }
 
+
+bool ObjectSynth::HasResource(vm::Object *obj) {
+  return ThreadSynth::HasResource(obj);
+}
+
 void ObjectSynth::AddTaskEntryName(const string &task_entry) {
   ThreadSynth *th =
     new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), nullptr);

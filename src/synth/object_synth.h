@@ -15,6 +15,8 @@ public:
 	      bool is_root, const string &name);
   virtual ~ObjectSynth();
 
+  static bool HasResource(vm::Object *obj);
+
   void AddTaskEntryName(const string &task_entry);
   bool Scan(bool *ok);
   bool Synth();
