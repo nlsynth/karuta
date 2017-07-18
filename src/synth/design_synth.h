@@ -28,6 +28,7 @@ private:
   bool SynthObjRec(ObjectSynth *osynth);
   bool ScanObjs();
   void CollectScanRootObjRec(vm::Object *obj);
+  void DeterminePrimaryThread();
 
   vm::VM *vm_;
   vm::Object *root_obj_;

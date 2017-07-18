@@ -66,9 +66,8 @@ bool ObjectSynth::Synth() {
       primary_thr = thr;
     }
   }
-  if (primary_thr != nullptr) {
-    primary_thr->CollectUnclaimedMembers();
-  }
+  CHECK(primary_thr != nullptr);
+  primary_thr->CollectUnclaimedMembers();
   return true;
 }
 
@@ -88,11 +87,8 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   vector<vm::ThreadWrapper::ThreadEntry> thread_entries;
   vm::ThreadWrapper::GetThreadMethods(obj_, &thread_entries);
 
-  if (thread_entries.size() == 0 && is_root_) {
+  if (thread_entries.size() == 0) {
     ThreadSynth *ts = new ThreadSynth(this, "main", "main", obj_);
-    // TODO set primary thread if there's no main.
-    // (from DesignSynth after scan phase)
-    ts->SetPrimary();
     threads_.push_back(ts);
   }
   for (auto &te : thread_entries) {
@@ -144,6 +140,21 @@ IModule *ObjectSynth::GetIModule() {
 
 DesignSynth *ObjectSynth::GetDesignSynth() {
   return design_synth_;
+}
+
+void ObjectSynth::DeterminePrimaryThread() {
+  for (auto *thr : threads_) {
+    if (thr->GetEntryMethodName() == "main") {
+      thr->SetPrimary();
+      return;
+    }
+  }
+  if (threads_.size() == 1) {
+    threads_[0]->SetPrimary();
+    return;
+  }
+  // TODO: fix ordering instability.
+  threads_[0]->SetPrimary();
 }
 
 }  // namespace synth

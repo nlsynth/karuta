@@ -53,6 +53,7 @@ bool DesignSynth::SynthObjects() {
   if (!ScanObjs()) {
     return false;
   }
+  DeterminePrimaryThread();
   shared_resources_->DetermineOwnerThreadAll();
   // Pass 2: Synth.
   if (!SynthObjRec(o)) {
@@ -129,6 +130,12 @@ void DesignSynth::CollectScanRootObjRec(vm::Object *obj) {
   auto m = obj_tree_->GetChildObjects(obj);
   for (auto it : m) {
     CollectScanRootObjRec(it.first);
+  }
+}
+
+void DesignSynth::DeterminePrimaryThread() {
+  for (auto it : obj_synth_map_) {
+    it.second->DeterminePrimaryThread();
   }
 }
 

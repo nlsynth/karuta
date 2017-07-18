@@ -21,6 +21,7 @@ public:
   bool Scan(bool *ok);
   bool Synth();
   void ResolveTableCallsAll();
+  void DeterminePrimaryThread();
 
   vm::VM *GetVM() const;
   vm::Object *GetObject() const;
