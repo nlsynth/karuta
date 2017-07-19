@@ -50,6 +50,11 @@ void NativeMethods::Exit(Thread *thr, Object *obj,
   thr->Exit();
 }
 
+void NativeMethods::Main(Thread *thr, Object *obj,
+			 const vector<Value> &args) {
+  // do nothing.
+}
+
 void NativeMethods::Print(Thread *thr, Object *obj,
 			  const vector<Value> &args) {
   cout << "print: ";
@@ -236,6 +241,8 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
+  m = InstallNativeMethod(vm, obj, "main", &NativeMethods::Main, rets);
+  m->SetSynthName(synth::kMain);
   InstallNativeMethod(vm, obj, "setAddressWidth", &NativeMethods::SetAddressWidth, rets);
   InstallNativeMethod(vm, obj, "setDump", &NativeMethods::SetDump, rets);
   InstallNativeMethod(vm, obj, "setIROutput", &NativeMethods::SetIROutput, rets);

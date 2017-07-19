@@ -10,6 +10,7 @@
 #include "synth/design_synth.h"
 #include "synth/method_context.h"
 #include "synth/object_method.h"
+#include "synth/object_method_names.h"
 #include "synth/object_synth.h"
 #include "synth/resource_set.h"
 #include "synth/resource_synth.h"
@@ -49,11 +50,12 @@ bool MethodSynth::Synth() {
   if (method_ == nullptr) {
     return false;
   }
-  if (method_->parse_tree_ == nullptr) {
+  if (method_->parse_tree_ == nullptr && method_->GetSynthName() != kMain) {
     SynthNativeImplMethod(method_);
     return true;
   }
-  if (method_->parse_tree_->annotation_ != nullptr &&
+  if (method_->parse_tree_ != nullptr &&
+      method_->parse_tree_->annotation_ != nullptr &&
       method_->parse_tree_->annotation_->IsExtIO()) {
     SynthExtIOMethod();
     return true;
@@ -792,7 +794,10 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
   context_->method_insn_ = new IInsn(pseudo);
   context_->method_insn_->SetOperand("method_entry");
 
-  fe::VarDeclSet *args = method->parse_tree_->args_;
+  fe::VarDeclSet *args = nullptr;
+  if (method->parse_tree_ != nullptr) {
+    args = method->parse_tree_->args_;
+  }
   int num_args = 0;
   if (args) {
     num_args = args->decls.size();
@@ -801,7 +806,10 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
       context_->method_insn_->inputs_.push_back(ireg);
     }
   }
-  fe::VarDeclSet *rets = method->parse_tree_->returns_;
+  fe::VarDeclSet *rets = nullptr;
+  if (method->parse_tree_ != nullptr) {
+    rets = method->parse_tree_->returns_;
+  }
   if (rets) {
     for (size_t i = 0; i < rets->decls.size(); ++i) {
       vm::Register *vreg = method->method_regs_[i + num_args];
