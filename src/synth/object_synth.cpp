@@ -172,11 +172,8 @@ void ObjectSynth::CollectExtEntries(vector<string> *entries) {
   obj_->GetAllMemberMethods(&member_methods);
   for (auto it : member_methods) {
     vm::Method *method = it.second;
-    if (method->parse_tree_ != nullptr &&
-	method->parse_tree_->annotation_ != nullptr) {
-      if (method->parse_tree_->annotation_->IsExtEntry()) {
-	entries->push_back(sym_str(it.first));
-      }
+    if (method->GetAnnotation()->IsExtEntry()) {
+      entries->push_back(sym_str(it.first));
     }
   }
 }

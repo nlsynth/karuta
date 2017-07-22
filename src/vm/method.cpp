@@ -1,5 +1,6 @@
 #include "vm/method.h"
 
+#include "base/annotation.h"
 #include "base/dump_stream.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
@@ -47,6 +48,14 @@ void Method::SetSynthName(const string &s) {
 
 bool Method::IsTopLevel() const {
   return is_toplevel_;
+}
+
+Annotation *Method::GetAnnotation() const {
+  if (parse_tree_ != nullptr &&
+      parse_tree_->annotation_ != nullptr) {
+    return parse_tree_->annotation_;
+  }
+  return Annotation::EmptyAnnotation();
 }
 
 void Method::Dump() {

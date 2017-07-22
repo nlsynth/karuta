@@ -59,7 +59,7 @@ void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
 IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
 				      bool is_output) {
   string name;
-  Annotation *an = method->parse_tree_->annotation_;
+  Annotation *an = method->GetAnnotation();
   int nth_reg;
   if (is_output) {
     name = an->GetOutputPinName();

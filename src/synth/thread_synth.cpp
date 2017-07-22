@@ -52,9 +52,7 @@ bool ThreadSynth::HasResource(vm::Object *obj) {
   obj->GetAllMemberMethods(&member_methods);
   for (auto it : member_methods) {
     vm::Method *method = it.second;
-    if (method->parse_tree_ != nullptr &&
-	method->parse_tree_->annotation_ != nullptr &&
-	method->parse_tree_->annotation_->IsExtIO()) {
+    if (method->GetAnnotation()->IsExtIO()) {
       return true;
     }
   }
@@ -168,18 +166,15 @@ void ThreadSynth::CollectUnclaimedMembers() {
   obj->GetAllMemberMethods(&member_methods);
   for (auto it : member_methods) {
     vm::Method *method = it.second;
-    if (method->parse_tree_ != nullptr &&
-	method->parse_tree_->annotation_ != nullptr) {
-      if (method->parse_tree_->annotation_->IsExtIO()) {
-	compiler::Compiler::CompileMethod(obj_synth_->GetVM(),
-					  obj, method->parse_tree_,
-					  method);
-	if (method->parse_tree_->annotation_->IsExtInput()) {
-	  MayGenerateExtIOMethod(method, false);
-	}
-	if (method->parse_tree_->annotation_->IsExtOutput()) {
-	  MayGenerateExtIOMethod(method, true);
-	}
+    if (method->GetAnnotation()->IsExtIO()) {
+      compiler::Compiler::CompileMethod(obj_synth_->GetVM(),
+					obj, method->parse_tree_,
+					method);
+      if (method->GetAnnotation()->IsExtInput()) {
+	MayGenerateExtIOMethod(method, false);
+      }
+      if (method->GetAnnotation()->IsExtOutput()) {
+	MayGenerateExtIOMethod(method, true);
       }
     }
   }

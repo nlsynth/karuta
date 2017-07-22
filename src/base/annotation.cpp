@@ -17,6 +17,7 @@ static const char kClock[] = "clock";
 static const char kReset[] = "reset";
 
 static Pool<Annotation> resource_params_pool;
+std::unique_ptr<Annotation> Annotation::empty_annotation_;
 
 string AnnotationValue::GetNthValue(int nth) {
   if (nth < (int)values_.size()) {
@@ -30,14 +31,19 @@ AnnotationValueSet::~AnnotationValueSet() {
 }
 
 Annotation::Annotation(AnnotationValueSet *params) {
-  resource_params_pool.Add(this);
-  params_ = params;
+  if (params == nullptr) {
+    params = new AnnotationValueSet();
+  } else {
+    // the pool manages all non empty params instances.
+    resource_params_pool.Add(this);
+  }
+  params_.reset(params);
 }
 
 Annotation::Annotation(const Annotation &that) {
   resource_params_pool.Add(this);
   pins_ = that.pins_;
-  params_ = new AnnotationValueSet;
+  params_.reset(new AnnotationValueSet);
   for (AnnotationValue *param : that.params_->params_) {
     AnnotationValue *value = new AnnotationValue;
     *value = *param;
@@ -46,7 +52,6 @@ Annotation::Annotation(const Annotation &that) {
 }
 
 Annotation::~Annotation() {
-  delete params_;
 }
 
 void Annotation::Dump(ostream &os) const {
@@ -82,6 +87,13 @@ void Annotation::Dump(ostream &os) const {
 
 Annotation *Annotation::Copy(Annotation *params) {
   return new Annotation(*params);
+}
+
+Annotation *Annotation::EmptyAnnotation() {
+  if (empty_annotation_.get() == nullptr) {
+    empty_annotation_.reset(new Annotation(nullptr));
+  }
+  return empty_annotation_.get();
 }
 
 bool Annotation::IsImportedModule() {

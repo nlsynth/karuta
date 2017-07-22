@@ -22,6 +22,7 @@ public:
   const string &GetSynthName() const;
   void SetSynthName(const string &s);
   bool IsTopLevel() const;
+  Annotation *GetAnnotation() const;
 
   typedef void (*method_func)(Thread *thr, Object *obj,
 			      const vector<Value> &args);

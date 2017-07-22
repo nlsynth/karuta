@@ -92,9 +92,7 @@ bool InsnWalker::IsSubObjCall(vm::Insn *insn) {
 
 bool InsnWalker::IsDataFlowCall(vm::Insn *insn) {
   vm::Method *method = GetCalleeMethod(insn);
-  if (method->parse_tree_ != nullptr &&
-      method->parse_tree_->annotation_ != nullptr &&
-      method->parse_tree_->annotation_->IsDataFlowEntry()) {
+  if (method->GetAnnotation()->IsDataFlowEntry()) {
     return true;
   }
   return false;

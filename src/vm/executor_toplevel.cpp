@@ -192,7 +192,7 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   Method *new_method = thr_->GetVM()->NewMethod(false /* not toplevel */);
   new_method->parse_tree_ = insn->insn_stmt_->method_def_;
   value->method_ = new_method;
-  Annotation *an = new_method->parse_tree_->annotation_;
+  Annotation *an = new_method->GetAnnotation();
   if (an != nullptr) {
     string name = an->GetName();
     if (name.empty()) {

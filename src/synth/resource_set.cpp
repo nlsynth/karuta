@@ -224,7 +224,7 @@ IResource *ResourceSet::GetExtTaskDoneResource() {
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   Annotation *dparams =
-    method->parse_tree_->annotation_;
+    method->GetAnnotation();
 
   string name = dparams->GetResourceName();
   for (IResource *res : imported_resources_) {

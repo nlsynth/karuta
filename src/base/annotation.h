@@ -31,12 +31,14 @@ public:
 
 class Annotation {
 public:
+  // Takes ownership of params.
   explicit Annotation(AnnotationValueSet *params);
   Annotation(const Annotation &that);
   ~Annotation();
 
   void Dump(ostream &os) const;
   static Annotation *Copy(Annotation *params);
+  static Annotation *EmptyAnnotation();
 
   bool IsImportedModule();
   bool IsExtIO();
@@ -78,8 +80,10 @@ private:
   string LookupStrParam(const string &key, const string &dflt);
   AnnotationValue *LookupParam(const string &key);
 
-  AnnotationValueSet *params_;
+  std::unique_ptr<AnnotationValueSet> params_;
   vector<ResourceParams_pin> pins_;
+
+  static std::unique_ptr<Annotation> empty_annotation_;
 };
 
 #endif  // _base_annotation_h_

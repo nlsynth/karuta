@@ -54,9 +54,7 @@ bool MethodSynth::Synth() {
     SynthNativeImplMethod(method_);
     return true;
   }
-  if (method_->parse_tree_ != nullptr &&
-      method_->parse_tree_->annotation_ != nullptr &&
-      method_->parse_tree_->annotation_->IsExtIO()) {
+  if (method_->GetAnnotation()->IsExtIO()) {
     SynthExtIOMethod();
     return true;
   }
@@ -168,11 +166,7 @@ void MethodSynth::EmitTaskReturn(IState *last) {
 
 void MethodSynth::EmitExtTaskEntry(IState *st) {
   IResource *ext_task = res_set_->GetExtTaskResource();
-  string name;
-  if (method_->parse_tree_ != nullptr &&
-      method_->parse_tree_->annotation_ != nullptr) {
-    name = method_->parse_tree_->annotation_->GetName();
-  }
+  string name = method_->GetAnnotation()->GetName();
   if (name.empty()) {
     name = method_name_;
   }
@@ -206,19 +200,11 @@ void MethodSynth::EmitExtTaskDone(IState *st) {
 }
 
 bool MethodSynth::IsDataFlowEntry() const {
-  if (method_->parse_tree_ == nullptr ||
-      method_->parse_tree_->annotation_ == nullptr) {
-    return false;
-  }
-  return method_->parse_tree_->annotation_->IsDataFlowEntry();
+  return method_->GetAnnotation()->IsDataFlowEntry();
 }
 
 bool MethodSynth::IsExtEntry() const {
-  if (method_->parse_tree_ == nullptr ||
-      method_->parse_tree_->annotation_ == nullptr) {
-    return false;
-  }
-  return method_->parse_tree_->annotation_->IsExtEntry();
+  return method_->GetAnnotation()->IsExtEntry();
 }
 
 void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
@@ -226,9 +212,7 @@ void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
   vm::Value *value = obj_->LookupValue(name, false);
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(name);
   vm::Method *alt_method = value->method_;
-  CHECK(alt_method->parse_tree_ &&
-	alt_method->parse_tree_->annotation_ &&
-	alt_method->parse_tree_->annotation_->IsImportedModule()) << sym_cstr(name);
+  CHECK(alt_method->GetAnnotation()->IsImportedModule()) << sym_cstr(name);
 
   SynthEmbeddedMethod(alt_method);
 }
@@ -245,7 +229,7 @@ void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
 
 void MethodSynth::SynthExtIOMethod() {
   EmitEntryInsn(method_);
-  Annotation *an = method_->parse_tree_->annotation_;
+  Annotation *an = method_->GetAnnotation();
   if (an->IsExtOutput()) {
     DoSynthExtIO(true);
   }
@@ -578,9 +562,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   IRegister *reg = thr_synth_->AllocRegister(reg_name);
   reg->value_type_.SetWidth(w);
   // Add as a local variable if this isn't an imported method.
-  if (!(method->parse_tree_ != nullptr &&
-	method->parse_tree_->annotation_ != nullptr &&
-	method->parse_tree_->annotation_->IsImportedModule())) {
+  if (!(method->GetAnnotation()->IsImportedModule())) {
     local_reg_map_[method->method_regs_[nth]] = reg;
   }
   return reg;
