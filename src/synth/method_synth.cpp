@@ -86,6 +86,10 @@ bool MethodSynth::Synth() {
     EmitTaskEntry(context_->states_[0]->state_);
     EmitTaskReturn(context_->states_[context_->states_.size() - 1]->state_);
   }
+  if (is_root_ && IsExtEntry()) {
+    EmitExtTaskEntry(context_->states_[0]->state_);
+    EmitExtTaskDone(context_->states_[context_->states_.size() - 1]->state_);
+  }
   return true;
 }
 
@@ -139,12 +143,59 @@ void MethodSynth::EmitTaskReturn(IState *last) {
   last->insns_.push_back(insn);
 }
 
+void MethodSynth::EmitExtTaskEntry(IState *st) {
+  IResource *ext_task = res_set_->GetExtTaskResource();
+  string name;
+  if (method_->parse_tree_ != nullptr &&
+      method_->parse_tree_->annotation_ != nullptr) {
+    name = method_->parse_tree_->annotation_->GetName();
+  }
+  if (name.empty()) {
+    name = method_name_;
+  }
+  ext_task->GetParams()->SetExtTaskName(name);
+  IInsn *task_insn = new IInsn(ext_task);
+  // Args
+  for (IRegister *arg : context_->method_insn_->inputs_) {
+    task_insn->outputs_.push_back(arg);
+    ext_task->output_types_.push_back(arg->value_type_);
+  }
+  st->insns_.push_back(task_insn);
+}
+
+void MethodSynth::EmitExtTaskDone(IState *st) {
+  IResource *ext_task_done = res_set_->GetExtTaskDoneResource();
+  IResource *ext_task = res_set_->GetExtTaskResource();
+  ext_task_done->SetParentResource(ext_task);
+  IInsn *task_done_insn = new IInsn(ext_task_done);
+  st->insns_.push_back(task_done_insn);
+  int num_rets = method_->GetNumReturnRegisters();
+  if (num_rets == 0) {
+    return;
+  }
+  int num_args = method_->GetNumArgRegisters();
+  for (int i = 0; i < num_rets; ++i) {
+    vm::Register *ret = method_->method_regs_[i + num_args];
+    IRegister *reg = local_reg_map_[ret];
+    task_done_insn->inputs_.push_back(reg);
+    ext_task_done->input_types_.push_back(reg->value_type_);
+  }
+}
+
 bool MethodSynth::IsDataFlowEntry() const {
   if (method_->parse_tree_ == nullptr ||
       method_->parse_tree_->annotation_ == nullptr) {
     return false;
   }
   return method_->parse_tree_->annotation_->IsDataFlowEntry();
+}
+
+bool MethodSynth::IsExtEntry() const {
+  if (method_->parse_tree_ == nullptr ||
+      method_->parse_tree_->annotation_ == nullptr) {
+    return false;
+  }
+  return method_->parse_tree_->annotation_->IsExtEntry();
 }
 
 void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
@@ -832,8 +883,7 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
     StateWrapper *sw = AllocState();
     sw->state_->insns_.push_back(df_insn);
     int width = 0;
-    for (int i = 0; i < context_->method_insn_->inputs_.size(); ++i) {
-      IRegister *arg = context_->method_insn_->inputs_[i];
+    for (IRegister *arg : context_->method_insn_->inputs_) {
       df_insn->outputs_.push_back(arg);
       width += arg->value_type_.GetWidth();
     }

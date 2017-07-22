@@ -34,6 +34,7 @@ private:
   void CollectThreads(IModule *mod);
   void CollectSubModuleCalls();
   void ResolveTableCall(const TableCall &call);
+  void CollectExtEntries(vector<string> *entries);
 
   vm::Object *obj_;
   string obj_name_;

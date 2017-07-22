@@ -144,6 +144,14 @@ bool Annotation::IsDataFlowEntry() {
   return (s == "DataFlowEntry") || (s == "dataflow_entry");
 }
 
+bool Annotation::IsExtEntry() {
+  return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtEntry");
+}
+
+bool Annotation::IsExtStub() {
+  return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtStub");
+}
+
 bool Annotation::IsExtIO() {
   if (IsExtInput() || IsExtOutput()) {
     return true;

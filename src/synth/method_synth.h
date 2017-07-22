@@ -22,6 +22,7 @@ public:
   void SetTaskEntry();
   void SetRoot();
   bool IsDataFlowEntry() const;
+  bool IsExtEntry() const;
 
   // for ObjectMethod
   ResourceSet *GetResourceSet();
@@ -64,6 +65,8 @@ private:
   void EmitEntryInsn(vm::Method *method);
   void EmitTaskEntry(IState *st);
   void EmitTaskReturn(IState *last);
+  void EmitExtTaskEntry(IState *st);
+  void EmitExtTaskDone(IState *last);
   // Data flow call uses one shared-reg to pass multiple arguments,
   // so the width of each argument should be exactly same as
   // the callee. This function allocate a register with appropriate width

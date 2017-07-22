@@ -44,6 +44,8 @@ public:
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
   IResource *GetTaskReturnRegWriter(int width);
   IResource *GetExtIO(const string &name, bool is_output, int width);
+  IResource *GetExtTaskResource();
+  IResource *GetExtTaskDoneResource();
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -60,6 +62,8 @@ private:
   IResource *dataflow_in_;
   IResource *task_return_reg_;
   IResource *task_return_reg_writer_;
+  IResource *ext_task_;
+  IResource *ext_task_done_;
 
   class ResourceEntry {
   public:

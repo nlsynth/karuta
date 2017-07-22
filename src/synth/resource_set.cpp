@@ -22,6 +22,8 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   dataflow_in_ = nullptr;
   task_return_reg_ = nullptr;
   task_return_reg_writer_ = nullptr;
+  ext_task_ = nullptr;
+  ext_task_done_ = nullptr;
 }
 
 ResourceSet::~ResourceSet() {
@@ -204,6 +206,20 @@ IResource *ResourceSet::GetExtIO(const string &name,
   res->input_types_.push_back(vt);
   ext_io_[name] = res;
   return res;
+}
+
+IResource *ResourceSet::GetExtTaskResource() {
+  if (ext_task_ == nullptr) {
+    ext_task_ = DesignTool::GetOneResource(tab_, resource::kExtTask);
+  }
+  return ext_task_;
+}
+
+IResource *ResourceSet::GetExtTaskDoneResource() {
+  if (ext_task_done_ == nullptr) {
+    ext_task_done_ = DesignTool::GetOneResource(tab_, resource::kExtTaskDone);
+  }
+  return ext_task_done_;
 }
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {

@@ -57,6 +57,8 @@ public:
 
   bool IsThreadEntry();
   bool IsDataFlowEntry();
+  bool IsExtEntry();
+  bool IsExtStub();
   string GetName();
 
   bool ResetPolarity();

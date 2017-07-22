@@ -117,6 +117,9 @@ bool ThreadSynth::Synth() {
   if (root_method->IsDataFlowEntry()) {
     root_method->SetRoot();
   }
+  if (root_method->IsExtEntry()) {
+    root_method->SetRoot();
+  }
   // Actually synthesize all.
   for (auto &it : obj_methods_) {
     for (auto jt : it.second.methods_) {

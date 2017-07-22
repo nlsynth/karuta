@@ -1,9 +1,13 @@
 #include "synth/object_synth.h"
 
+#include "base/annotation.h"
 #include "base/status.h"
+#include "fe/method.h"
 #include "iroha/i_design.h"
 #include "synth/design_synth.h"
 #include "synth/thread_synth.h"
+#include "vm/method.h"
+#include "vm/object.h"
 #include "vm/thread_wrapper.h"
 
 namespace synth {
@@ -87,13 +91,19 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   vector<vm::ThreadWrapper::ThreadEntry> thread_entries;
   vm::ThreadWrapper::GetThreadMethods(obj_, &thread_entries);
 
+  vector<string> ext_entries;
+  CollectExtEntries(&ext_entries);
+
   if (thread_entries.size() == 0) {
     ThreadSynth *ts = new ThreadSynth(this, "main", "main", obj_);
     threads_.push_back(ts);
   }
   for (auto &te : thread_entries) {
-    threads_.push_back(new ThreadSynth(this, te.thread_name.c_str(),
-				       te.method_name.c_str(), te.thread_obj));
+    threads_.push_back(new ThreadSynth(this, te.thread_name,
+				       te.method_name, te.thread_obj));
+  }
+  for (string &ee : ext_entries) {
+    threads_.push_back(new ThreadSynth(this, ee, ee, obj_));
   }
 }
 
@@ -155,6 +165,20 @@ void ObjectSynth::DeterminePrimaryThread() {
   }
   // TODO: fix ordering instability.
   threads_[0]->SetPrimary();
+}
+
+void ObjectSynth::CollectExtEntries(vector<string> *entries) {
+  map<sym_t, vm::Method *> member_methods;
+  obj_->GetAllMemberMethods(&member_methods);
+  for (auto it : member_methods) {
+    vm::Method *method = it.second;
+    if (method->parse_tree_ != nullptr &&
+	method->parse_tree_->annotation_ != nullptr) {
+      if (method->parse_tree_->annotation_->IsExtEntry()) {
+	entries->push_back(sym_str(it.first));
+      }
+    }
+  }
 }
 
 }  // namespace synth
