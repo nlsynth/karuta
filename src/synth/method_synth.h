@@ -63,6 +63,7 @@ private:
 
   void GenNeg(IRegister *src, IRegister *dst);
   void EmitEntryInsn(vm::Method *method);
+  void EmitDataFlowEntry(IState *st);
   void EmitTaskEntry(IState *st);
   void EmitTaskReturn(IState *last);
   void EmitExtTaskEntry(IState *st);

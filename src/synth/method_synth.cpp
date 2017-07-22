@@ -90,6 +90,9 @@ bool MethodSynth::Synth() {
     EmitExtTaskEntry(context_->states_[0]->state_);
     EmitExtTaskDone(context_->states_[context_->states_.size() - 1]->state_);
   }
+  if (is_root_ && IsDataFlowEntry()) {
+    EmitDataFlowEntry(context_->states_[0]->state_);
+  }
   return true;
 }
 
@@ -103,6 +106,26 @@ void MethodSynth::SetRoot() {
 
 MethodContext *MethodSynth::GetContext() {
   return context_.get();
+}
+
+void MethodSynth::EmitDataFlowEntry(IState *st) {
+  vm::Object *obj = thr_synth_->GetThreadObject();
+  CHECK(obj);
+  IResource *mb = res_set_->GetMailbox(obj, true, false);
+  IResource *df = res_set_->GetDataFlowInResource();
+  df->SetParentResource(mb);
+  IInsn *df_insn = new IInsn(df);
+  st->insns_.push_back(df_insn);
+  int width = 0;
+  for (IRegister *arg : context_->method_insn_->inputs_) {
+    df_insn->outputs_.push_back(arg);
+    width += arg->value_type_.GetWidth();
+  }
+  // 1 for dummy argument.
+  if (width == 0) {
+    width = 1;
+  }
+  mb->GetParams()->SetWidth(width);
 }
 
 void MethodSynth::EmitTaskEntry(IState *st) {
@@ -872,26 +895,6 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
       IRegister *ireg = thr_synth_->AllocRegister("r_");
       context_->method_insn_->outputs_.push_back(ireg);
     }
-  }
-  if (is_root_ && IsDataFlowEntry()) {
-    vm::Object *obj = thr_synth_->GetThreadObject();
-    CHECK(obj);
-    IResource *mb = res_set_->GetMailbox(obj, true, false);
-    IResource *df = res_set_->GetDataFlowInResource();
-    df->SetParentResource(mb);
-    IInsn *df_insn = new IInsn(df);
-    StateWrapper *sw = AllocState();
-    sw->state_->insns_.push_back(df_insn);
-    int width = 0;
-    for (IRegister *arg : context_->method_insn_->inputs_) {
-      df_insn->outputs_.push_back(arg);
-      width += arg->value_type_.GetWidth();
-    }
-    // 1 for dummy argument.
-    if (width == 0) {
-      width = 1;
-    }
-    mb->GetParams()->SetWidth(width);
   }
 }
 
