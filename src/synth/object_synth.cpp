@@ -109,16 +109,8 @@ void ObjectSynth::CollectThreads(IModule *mod) {
 
 void ObjectSynth::ResolveTableCallsAll() {
   for (auto *thr : threads_) {
-    vector<TableCall> &sub_obj_calls = thr->GetSubObjCalls();
-    for (auto &c : sub_obj_calls) {
-      ResolveTableCall(c);
-    }
-    vector<TableCall> &data_flow_calls = thr->GetDataFlowCalls();
-    for (auto &c : data_flow_calls) {
-      ResolveTableCall(c);
-    }
-    vector<TableCall> &ext_stub_calls = thr->GetExtStubCalls();
-    for (auto &c : ext_stub_calls) {
+    vector<TableCall> &table_calls = thr->GetTableCalls();
+    for (auto &c : table_calls) {
       ResolveTableCall(c);
     }
   }

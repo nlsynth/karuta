@@ -131,8 +131,7 @@ bool ThreadSynth::Synth() {
   }
 
   MethodExpander expander(root_method->GetContext(), this,
-			  &sub_obj_calls_, &data_flow_calls_,
-			  &ext_stub_calls_);
+			  &table_calls_);
   expander.Expand();
 
   obj_synth_->GetIModule()->tables_.push_back(tab_);
@@ -231,16 +230,8 @@ IRegister *ThreadSynth::AllocRegister(const string &prefix) {
   return reg;
 }
 
-vector<TableCall> &ThreadSynth::GetSubObjCalls() {
-  return sub_obj_calls_;
-}
-
-vector<TableCall> &ThreadSynth::GetDataFlowCalls() {
-  return data_flow_calls_;
-}
-
-vector<TableCall> &ThreadSynth::GetExtStubCalls() {
-  return ext_stub_calls_;
+vector<TableCall> &ThreadSynth::GetTableCalls() {
+  return table_calls_;
 }
 
 const string &ThreadSynth::GetEntryMethodName() {

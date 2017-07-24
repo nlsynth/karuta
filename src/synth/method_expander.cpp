@@ -11,15 +11,10 @@
 namespace synth {
 
 MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
-			       vector<TableCall> *sub_obj_calls,
-			       vector<TableCall> *data_flow_calls,
-			       vector<TableCall> *ext_stub_calls)
+			       vector<TableCall> *table_calls)
   : root_method_(root), thread_(thread_synth),
     tab_(thread_synth->GetITable()),
-    sub_obj_calls_(sub_obj_calls),
-    data_flow_calls_(data_flow_calls),
-    ext_stub_calls_(ext_stub_calls)
-{
+    table_calls_(table_calls) {
 }
 
 bool MethodExpander::Expand() {
@@ -90,18 +85,16 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
     call.callee_func = sw->callee_func_name_;
     if (sw->is_sub_obj_call_) {
       call.is_sub_obj_call = true;
-      sub_obj_calls_->push_back(call);
     } else if (sw->is_data_flow_call_) {
       call.is_data_flow_call = true;
-      data_flow_calls_->push_back(call);
     } else if (sw->is_ext_stub_call_) {
       call.is_ext_stub_call = true;
       // TODO: Use the value in annotation.
       call.ext_name = sw->callee_func_name_;
-      ext_stub_calls_->push_back(call);
     } else {
       CHECK(false);
     }
+    table_calls_->push_back(call);
   }
 }
 
