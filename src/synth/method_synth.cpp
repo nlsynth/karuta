@@ -429,6 +429,9 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   sym_t func_name = insn->label_;
   sw->callee_func_name_ = sym_str(func_name);
   sw->callee_vm_obj_ = callee_obj;
+  if (IsExtStubCall(insn)) {
+    sw->is_ext_stub_call_ = true;
+  }
   if (IsDataFlowCall(insn)) {
     sw->is_data_flow_call_ = true;
   }
@@ -475,7 +478,7 @@ void MethodSynth::SynthFuncallDone(vm::Insn *insn) {
     iinsn->outputs_.push_back(iret);
   }
 
-  if (IsSubObjCall(insn)) {
+  if (IsSubObjCall(insn) || IsExtStubCall(insn)) {
     // state for capturing return value.
     AllocState();
   }

@@ -22,7 +22,8 @@ class MethodExpander {
 public:
   MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
 		 vector<TableCall> *sub_obj_calls,
-		 vector<TableCall> *data_flow_calls);
+		 vector<TableCall> *data_flow_calls,
+		 vector<TableCall> *ext_stub_calls);
 
   bool Expand();
 
@@ -47,6 +48,7 @@ private:
   ITable *tab_;
   vector<TableCall> *sub_obj_calls_;
   vector<TableCall> *data_flow_calls_;
+  vector<TableCall> *ext_stub_calls_;
 };
 
 }  // namespace synth

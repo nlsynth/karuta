@@ -77,6 +77,9 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     }
     return;
   }
+  if (IsExtStubCall(insn)) {
+    return;
+  }
   if (IsSubObjCall(insn)) {
     RequestSubObj(callee_obj);
     // Add the entry point.

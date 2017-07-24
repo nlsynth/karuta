@@ -11,6 +11,7 @@ public:
   StateWrapper();
 
   IState *state_;
+  // TODO: Figure out if this member is necessary.
   MethodContext *callee_method_;
   string callee_func_name_;
   vm::Insn *vm_insn_;
@@ -18,6 +19,7 @@ public:
   string obj_name_;
   bool is_sub_obj_call_;
   bool is_data_flow_call_;
+  bool is_ext_stub_call_;
   vm::Object *callee_vm_obj_;
 };
 

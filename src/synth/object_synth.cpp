@@ -117,6 +117,10 @@ void ObjectSynth::ResolveTableCallsAll() {
     for (auto &c : data_flow_calls) {
       ResolveTableCall(c);
     }
+    vector<TableCall> &ext_stub_calls = thr->GetExtStubCalls();
+    for (auto &c : ext_stub_calls) {
+      ResolveTableCall(c);
+    }
   }
 }
 
@@ -124,14 +128,22 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
   ObjectSynth *callee_osynth =
     design_synth_->GetObjectSynth(call.callee_obj);
   ThreadSynth *callee_thr = callee_osynth->GetThreadByName(call.callee_func);
-  ITable *callee_table = callee_thr->GetITable();
+  ITable *callee_table = nullptr;
+  if (callee_thr != nullptr) {
+    callee_table = callee_thr->GetITable();
+  }
   if (call.is_sub_obj_call) {
     ThreadSynth::InjectSubModuleCall(call.call_state, call.call_insn,
 				     callee_table);
-  } else {
+  } else if (call.is_data_flow_call) {
     ThreadSynth::InjectDataFlowCall(call.caller_thread,
 				    call.call_state, call.call_insn,
 				    callee_table);
+  } else {
+    CHECK(call.is_ext_stub_call);
+    // TODO: Use the method name in annotation.
+    ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn,
+				   call.ext_name);
   }
 }
 

@@ -131,7 +131,8 @@ bool ThreadSynth::Synth() {
   }
 
   MethodExpander expander(root_method->GetContext(), this,
-			  &sub_obj_calls_, &data_flow_calls_);
+			  &sub_obj_calls_, &data_flow_calls_,
+			  &ext_stub_calls_);
   expander.Expand();
 
   obj_synth_->GetIModule()->tables_.push_back(tab_);
@@ -238,6 +239,10 @@ vector<TableCall> &ThreadSynth::GetDataFlowCalls() {
   return data_flow_calls_;
 }
 
+vector<TableCall> &ThreadSynth::GetExtStubCalls() {
+  return ext_stub_calls_;
+}
+
 const string &ThreadSynth::GetEntryMethodName() {
   return entry_method_name_;
 }
@@ -301,6 +306,36 @@ void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
     reg->SetInitialValue(iv);
     iinsn->inputs_.push_back(reg);
     thr->GetITable()->registers_.push_back(reg);
+  }
+}
+
+void ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
+				    const string &name) {
+  // ext-task-call
+  ITable *caller_tab = st->GetTable();
+  IResource *call = Tool::FindOrCreateExtStubCallResource(caller_tab, name);
+  IInsn *insn = new IInsn(call);
+  st->insns_.push_back(insn);
+  bool need_width =
+    pseudo_call_insn->inputs_.size() > call->input_types_.size();
+  for (IRegister *reg : pseudo_call_insn->inputs_) {
+    insn->inputs_.push_back(reg);
+    if (need_width) {
+      call->input_types_.push_back(reg->value_type_);
+    }
+  }
+  // ext-task-wait
+  IState *next_st = Tool::GetNextState(st);
+  IResource *wait = Tool::FindOrCreateExtStubWaitResource(caller_tab, name);
+  IInsn *wait_insn = new IInsn(wait);
+  next_st->insns_.push_back(wait_insn);
+  need_width =
+    pseudo_call_insn->outputs_.size() > wait->output_types_.size();
+  for (IRegister *reg : pseudo_call_insn->outputs_) {
+    wait_insn->outputs_.push_back(reg);
+    if (need_width) {
+      wait->output_types_.push_back(reg->value_type_);
+    }
   }
 }
 

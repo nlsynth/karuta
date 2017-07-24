@@ -27,6 +27,7 @@ protected:
   bool IsNativeFuncall(vm::Insn *insn);
   bool IsSubObjCall(vm::Insn *insn);
   bool IsDataFlowCall(vm::Insn *insn);
+  bool IsExtStubCall(vm::Insn *insn);
   vm::Object *GetCalleeObject(vm::Insn *insn);
 
   ThreadSynth *thr_synth_;
