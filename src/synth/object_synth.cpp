@@ -133,9 +133,16 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
 				    callee_table);
   } else {
     CHECK(call.is_ext_stub_call);
-    // TODO: Use the method name in annotation.
+    vm::Value *value =
+      call.callee_obj->LookupValue(sym_lookup(call.callee_func.c_str()), false);
+    CHECK(value && value->type_ == vm::Value::METHOD);
+    vm::Method *method = value->method_;
+    string name = method->GetAnnotation()->GetName();
+    if (name.empty()) {
+      name = call.callee_func;
+    }
     ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn,
-				   call.ext_name);
+				   name);
   }
 }
 

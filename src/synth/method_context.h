@@ -11,8 +11,6 @@ public:
   StateWrapper();
 
   IState *state_;
-  // TODO: Figure out if this member is necessary.
-  MethodContext *callee_method_;
   string callee_func_name_;
   vm::Insn *vm_insn_;
   // for sub obj task call or data flow call.

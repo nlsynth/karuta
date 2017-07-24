@@ -57,7 +57,6 @@ struct TableCall {
   ThreadSynth *caller_thread;
   vm::Object *callee_obj;
   string callee_func;
-  string ext_name;
   // type
   bool is_sub_obj_call;
   bool is_data_flow_call;

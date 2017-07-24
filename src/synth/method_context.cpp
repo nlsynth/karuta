@@ -5,8 +5,8 @@
 namespace synth {
 
 StateWrapper::StateWrapper()
-  : state_(nullptr), callee_method_(nullptr),
-    vm_insn_(nullptr), is_sub_obj_call_(false), is_data_flow_call_(false),
+  : state_(nullptr), vm_insn_(nullptr),
+    is_sub_obj_call_(false), is_data_flow_call_(false),
     is_ext_stub_call_(false), callee_vm_obj_(nullptr) {
 }
 

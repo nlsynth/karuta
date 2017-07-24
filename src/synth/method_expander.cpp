@@ -89,8 +89,6 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
       call.is_data_flow_call = true;
     } else if (sw->is_ext_stub_call_) {
       call.is_ext_stub_call = true;
-      // TODO: Use the value in annotation.
-      call.ext_name = sw->callee_func_name_;
     } else {
       CHECK(false);
     }
