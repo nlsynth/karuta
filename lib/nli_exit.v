@@ -1,13 +1,16 @@
-module exit(clk, rst, req, a);
+module exit(clk, rst, req_valid, req_ready);
   input clk;
   input rst;
-  input req;
-  input a;
+  input req_valid;
+  output req_ready;
+
+  reg req_ready;
 
   always @(posedge clk) begin
     if (rst) begin
+       req_ready <= 0;
     end else begin
-      if (req) begin
+      if (req_valid) begin
         $display("exit!");
         $finish();
       end

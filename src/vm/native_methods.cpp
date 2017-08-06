@@ -240,7 +240,7 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   m->SetSynthName(synth::kAssert);
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
-  InstallNativeMethod(vm, obj, "exit", &NativeMethods::Exit, rets);
+  InstallNativeMethodWithAltImpl(vm, obj, "exit", &NativeMethods::Exit, rets, "__exit");
   m = InstallNativeMethod(vm, obj, "main", &NativeMethods::Main, rets);
   m->SetSynthName(synth::kMain);
   InstallNativeMethod(vm, obj, "setAddressWidth", &NativeMethods::SetAddressWidth, rets);

@@ -209,6 +209,7 @@ bool MethodSynth::IsExtEntry() const {
 
 void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
   sym_t name = sym_lookup(method->AlternativeImplementation());
+  CHECK(name != sym_null);
   vm::Value *value = obj_->LookupValue(name, false);
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(name);
   vm::Method *alt_method = value->method_;

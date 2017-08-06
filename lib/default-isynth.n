@@ -13,8 +13,14 @@ def Kernel.compile() {
 
 @embed(resource = "wait_cycles",
  verilog = "nli_wait.v",
- ack = "ack",
  file= "copy",
  module= "wait_cycles")
 def Kernel.__wait(cycles int) {
+}
+
+@embed(resource = "exit",
+ verilog = "nli_exit.v",
+ file = "copy",
+ module = "nli_exit")
+def Kernel.__exit() {
 }
