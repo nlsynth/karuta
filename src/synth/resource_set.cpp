@@ -238,11 +238,9 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
     DesignTool::CreateEmbedResource(tab_, name, fn);
   iroha::ResourceParams *iparams = res->GetParams();
 
-  vector<string> args;
   fe::VarDeclSet *a = method->parse_tree_->args_;
   if (a) {
     for (fe::VarDecl *vd : a->decls) {
-      args.push_back(sym_cstr(vd->GetNameExpr()->sym_));
       IValueType vt;
       if (vd->GetType() == sym_bool) {
 	vt.SetWidth(0);
@@ -251,16 +249,6 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
       }
       res->input_types_.push_back(vt);
     }
-  }
-  iparams->SetValues(resource::kEmbeddedModuleArgs, args);
-  args.clear();
-  args.push_back("req");
-  iparams->SetValues(resource::kEmbeddedModuleReq, args);
-  string ack = dparams->GetAckPinName();
-  if (!ack.empty()) {
-    args.clear();
-    args.push_back(ack);
-    iparams->SetValues(resource::kEmbeddedModuleAck, args);
   }
   return res;
 }

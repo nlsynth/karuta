@@ -1,11 +1,11 @@
-module wait_cycles(clk, rst, req, cycles, ack);
+module wait_cycles(clk, rst, req_valid, req_0, req_ready);
    input 	clk;
    input 	rst;
-   input 	req;
-   input [31:0] cycles;
-   output 	ack;
+   input 	req_valid;
+   input [31:0] req_0;
+   output 	req_ready;
 
-   reg 		ack;
+   reg 		req_ready;
 
    reg [1:0] 	st;
    reg [31:0] 	cycles_left;
@@ -14,12 +14,12 @@ module wait_cycles(clk, rst, req, cycles, ack);
       if (rst) begin
 	 st <= 0;
 	 cycles_left <= 0;
-	 ack <= 0;
+	 req_ready <= 0;
       end else begin
 	 case (st)
 	   0: begin
-	      if (req == 1) begin
-		 cycles_left <= cycles;
+	      if (req_valid == 1) begin
+		 cycles_left <= req_0;
 		 st <= 1;
 	      end
 	   end
@@ -27,12 +27,12 @@ module wait_cycles(clk, rst, req, cycles, ack);
 	      cycles_left <= cycles_left - 1;
 	      if (cycles_left == 0) begin
 		 st <= 2;
-		 ack <= 1;
+		 req_ready <= 1;
 	      end
 	   end
 	   2: begin
 	      st <= 0;
-	      ack <= 0;
+	      req_ready <= 0;
 	   end
 	 endcase
       end
