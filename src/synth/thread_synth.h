@@ -46,7 +46,7 @@ public:
 				 IState *st, IInsn *pseudo_call_insn,
 				 ITable *callee_tab);
   static void InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
-				const string &name);
+				const string &name, bool is_flow);
 
 private:
   ObjectSynth *obj_synth_;

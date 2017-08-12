@@ -18,9 +18,11 @@ public:
   static IResource *FindOrCreateDataFlowCaller(ITable *caller,
 					       IResource *sreg);
   static IResource *FindOrCreateExtStubCallResource(ITable *caller,
-						    const string &name);
+						    const string &name,
+						    bool is_flow);
   static IResource *FindOrCreateExtStubWaitResource(ITable *caller,
-						    const string &name);
+						    const string &name,
+						    bool is_flow);
 
 private:
   static IInsn *FindArgInsn(ITable *tab, IResource *arg_res);

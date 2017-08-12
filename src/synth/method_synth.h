@@ -72,7 +72,9 @@ private:
   // so the width of each argument should be exactly same as
   // the callee. This function allocate a register with appropriate width
   // and copies arguments, if necessary.
-  void AdjustDataFlowArgs(vm::Insn *insn, vector<IRegister *> *args);
+  // Ext-task and flow also requires exactly same width.
+  // TODO: Fix this in compiler side.
+  void AdjustArgWidth(vm::Insn *insn, vector<IRegister *> *args);
 
   ThreadSynth *thr_synth_;
   const string method_name_;

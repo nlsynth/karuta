@@ -160,8 +160,12 @@ bool Annotation::IsExtEntry() {
   return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtEntry");
 }
 
-bool Annotation::IsExtStub() {
+bool Annotation::IsExtMethodStub() {
   return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtStub");
+}
+
+bool Annotation::IsExtFlowStub() {
+  return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtFlowStub");
 }
 
 bool Annotation::IsExtIO() {

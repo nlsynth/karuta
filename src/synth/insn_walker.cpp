@@ -97,7 +97,13 @@ bool InsnWalker::IsDataFlowCall(vm::Insn *insn) {
 
 bool InsnWalker::IsExtStubCall(vm::Insn *insn) {
   vm::Method *method = GetCalleeMethod(insn);
-  return method->GetAnnotation()->IsExtStub();
+  return method->GetAnnotation()->IsExtMethodStub() ||
+    method->GetAnnotation()->IsExtFlowStub();
+}
+
+bool InsnWalker::IsExtFlowStubCall(vm::Insn *insn) {
+  vm::Method *method = GetCalleeMethod(insn);
+  return method->GetAnnotation()->IsExtFlowStub();
 }
 
 vm::Object *InsnWalker::GetObjByReg(vm::Register *reg) {

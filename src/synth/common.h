@@ -50,8 +50,8 @@ class SharedResourceSet;
 
 // sub obj call, data flow call or ext stub call.
 struct TableCall {
-  TableCall() : is_sub_obj_call(false),
-		is_data_flow_call(false), is_ext_stub_call(false) {}
+  TableCall() : is_sub_obj_call(false),	is_data_flow_call(false),
+		is_ext_stub_call(false), is_ext_flow_stub_call(false) {}
   IInsn *call_insn;
   IState *call_state;
   ThreadSynth *caller_thread;
@@ -61,6 +61,7 @@ struct TableCall {
   bool is_sub_obj_call;
   bool is_data_flow_call;
   bool is_ext_stub_call;
+  bool is_ext_flow_stub_call;
 };
 
 }  // namespace synth

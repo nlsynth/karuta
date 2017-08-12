@@ -142,7 +142,7 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
       name = call.callee_func;
     }
     ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn,
-				   name);
+				   name, call.is_ext_flow_stub_call);
   }
 }
 

@@ -301,10 +301,11 @@ void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
 }
 
 void ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
-				    const string &name) {
-  // ext-task-call
+				    const string &name, bool is_flow) {
+  // ext-task-call or ext-flow-call
   ITable *caller_tab = st->GetTable();
-  IResource *call = Tool::FindOrCreateExtStubCallResource(caller_tab, name);
+  IResource *call = Tool::FindOrCreateExtStubCallResource(caller_tab, name,
+							  is_flow);
   IInsn *insn = new IInsn(call);
   st->insns_.push_back(insn);
   bool need_width =
@@ -315,9 +316,10 @@ void ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
       call->input_types_.push_back(reg->value_type_);
     }
   }
-  // ext-task-wait
+  // ext-task-wait or ext-flow-result.
   IState *next_st = Tool::GetNextState(st);
-  IResource *wait = Tool::FindOrCreateExtStubWaitResource(caller_tab, name);
+  IResource *wait = Tool::FindOrCreateExtStubWaitResource(caller_tab, name,
+							  is_flow);
   IInsn *wait_insn = new IInsn(wait);
   next_st->insns_.push_back(wait_insn);
   need_width =

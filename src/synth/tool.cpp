@@ -89,17 +89,29 @@ IResource *Tool::FindOrCreateDataFlowCaller(ITable *caller,
 }
 
 IResource *Tool::FindOrCreateExtStubCallResource(ITable *caller,
-						 const string &name) {
+						 const string &name,
+						 bool is_flow) {
   for (IResource *res : caller->resources_) {
-    if (resource::IsExtTaskCall(*res->GetClass())) {
-      if (res->GetParams()->GetExtTaskName() == name) {
-	return res;
+    if (is_flow) {
+      if (!resource::IsExtFlowCall(*res->GetClass())) {
+	continue;
+      }
+    } else {
+      if (!resource::IsExtTaskCall(*res->GetClass())) {
+	continue;
       }
     }
+    if (res->GetParams()->GetExtTaskName() == name) {
+      return res;
+    }
+  }
+  auto rcn = resource::kExtTaskCall;
+  if (is_flow) {
+    rcn = resource::kExtFlowCall;
   }
   IResourceClass *rc =
     DesignUtil::FindResourceClass(caller->GetModule()->GetDesign(),
-				  resource::kExtTaskCall);
+				  rcn);
   IResource *call = new IResource(caller, rc);
   caller->resources_.push_back(call);
   call->GetParams()->SetExtTaskName(name);
@@ -107,15 +119,23 @@ IResource *Tool::FindOrCreateExtStubCallResource(ITable *caller,
 }
 
 IResource *Tool::FindOrCreateExtStubWaitResource(ITable *caller,
-						 const string &name) {
+						 const string &name,
+						 bool is_flow) {
   for (IResource *res : caller->resources_) {
-    if (resource::IsExtTaskWait(*res->GetClass())) {
-      if (res->GetParentResource()->GetParams()->GetExtTaskName() == name) {
-	return res;
+    if (is_flow) {
+      if (!resource::IsExtFlowResult(*res->GetClass())) {
+	continue;
+      }
+    } else {
+      if (!resource::IsExtTaskWait(*res->GetClass())) {
+	continue;
       }
     }
+    if (res->GetParentResource()->GetParams()->GetExtTaskName() == name) {
+      return res;
+    }
   }
-  IResource *call = FindOrCreateExtStubCallResource(caller, name);
+  IResource *call = FindOrCreateExtStubCallResource(caller, name, is_flow);
   IResourceClass *rc =
     DesignUtil::FindResourceClass(caller->GetModule()->GetDesign(),
 				  resource::kExtTaskWait);

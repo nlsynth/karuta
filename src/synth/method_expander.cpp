@@ -89,6 +89,7 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
       call.is_data_flow_call = true;
     } else if (sw->is_ext_stub_call_) {
       call.is_ext_stub_call = true;
+      call.is_ext_flow_stub_call = sw->is_ext_flow_stub_call_;
     } else {
       CHECK(false);
     }

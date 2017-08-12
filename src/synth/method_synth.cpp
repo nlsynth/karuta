@@ -416,8 +416,8 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
     IRegister *iarg = FindLocalVarRegister(arg);
     iargs.push_back(iarg);
   }
-  if (IsDataFlowCall(insn)) {
-    AdjustDataFlowArgs(insn, &iargs);
+  if (IsDataFlowCall(insn) || IsExtStubCall(insn)) {
+    AdjustArgWidth(insn, &iargs);
   }
   IInsn *iinsn = new IInsn(res_set_->PseudoCallResource());
   StateWrapper *sw = AllocState();
@@ -432,6 +432,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   sw->callee_vm_obj_ = callee_obj;
   if (IsExtStubCall(insn)) {
     sw->is_ext_stub_call_ = true;
+    sw->is_ext_flow_stub_call_ = IsExtFlowStubCall(insn);
   }
   if (IsDataFlowCall(insn)) {
     sw->is_data_flow_call_ = true;
@@ -444,8 +445,8 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   }
 }
 
-void MethodSynth::AdjustDataFlowArgs(vm::Insn *insn,
-				     vector<IRegister *> *args) {
+void MethodSynth::AdjustArgWidth(vm::Insn *insn,
+				 vector<IRegister *> *args) {
   vm::Object *callee_obj = GetCalleeObject(insn);
   vm::Value *value = callee_obj->LookupValue(insn->label_, false);
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(insn->label_);
