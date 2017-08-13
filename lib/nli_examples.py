@@ -8,80 +8,80 @@
 EXAMPLES = {
     'h0': {'i' : 0,
            'n' : '00 - Hello World!',
-           's' : 'print("Hello World!");'},
+           's' : 'print("Hello World!")'},
     'h1': {'i' : 1,
            'n' : '01 - Function',
            's' : '''def Kernel.main() {
-  print("Hello World!");
+  print("Hello World!")
 }
 
-main();
+main()
 '''},
     'h2': {'i' : 2,
            'n' : '02 - Synth',
            's' : '''def Kernel.main() {
-  int i;
-  int t = 0;
+  var i int
+  var t int = 0
   for (i = 0; i < 10; i++) {
-    print(i);
-    t += i;
+    print(i)
+    t += i
   }
-  print(t);
+  print(t)
 }
 
-Kernel.main();
-Kernel.compile();
-Kernel.writeHdl("sum.v");
+Kernel.main()
+Kernel.compile()
+Kernel.writeHdl("sum.v")
 
 '''},
     'h3': {'i' : 3,
            'n' : '03 - Memory',
            's' : '''def Kernel.main() {
-  int i;
-  int t = 0;
-  int *p = 0;
+  var i int
+  var t int = 0
+  var p *int = 0
   for (i = 0; i < 10; i++) {
-    t += i;
+    t += i
   }
-  *p = t;
+  *p = t
 }
 
-int *q = 0;
-print(*q);
-Kernel.main();
-print(*q);
+var q *int = 0
+print(*q)
+Kernel.main()
+print(*q)
 
-Kernel.compile();
-Kernel.writeHdl("sum.v");
+Kernel.compile()
+Kernel.writeHdl("sum.v")
 
 '''},
-    'h3': {'i' : 3,
-           'n' : '03 - Channel',
-           's' : '''channel Kernel.in = int #64;
-channel Kernel.out = int #64;
+    'h4': {'i' : 4,
+           'n' : '04 - Channel',
+           's' : '''channel Kernel.in = #64;
+channel Kernel.out = #64;
 
 def Kernel.main() {
-  int #64 arg = *in;
-  int i;
-  int #64 t = 0;
+  var arg #64 = *in
+  var i int
+  var t #64 = 0
   for (i = 0; i < arg; i++) {
     t += i;
   }
   *out = t;
 }
 
-Kernel.compile();
-Kernel.writeHdl("sum.v");
+Kernel.compile()
+Kernel.writeHdl("sum.v")
 
 '''},
-    'h4': {'i' : 4,
-           'n' : '04 - Test',
+    'h5': {'i' : 5,
+           'n' : '05 - Test',
            's' : '''channel Kernel.in = int;
 channel Kernel.out = int;
 
 def Kernel.f(arg int) (int) {
-  int i;
-  int t = 0;
+  var i int
+  var t int = 0;
   for (i = 0; i < arg; i++) {
     t += i;
   }
@@ -95,7 +95,7 @@ def Kernel.main() {
 Kernel.compile();
 Kernel.writeHdl("sum.v");
 
-object T = Kernel.clone();
+var T object = Kernel.clone();
 def T.main() {
   assert(f(10) == 45);
 }
@@ -105,8 +105,8 @@ T.compile();
 T.writeHdl("sum_test.v");
 
 '''},
-    'h5': {'i' : 5,
-           'n' : '05 - Thread',
+    'h6': {'i' : 6,
+           'n' : '06 - Thread',
            's' : '''channel Kernel.req = int;
 channel Kernel.resp = int;
 
@@ -125,11 +125,11 @@ thread Kernel.t2 = g();
 Kernel.compile();
 Kernel.writeHdl("thr.v");
 '''},
-    'h6': {'i' : 6,
-           'n' : '06 - Member',
-           's' : '''object O = Kernel.clone();
-object M = Kernel.clone();
-object O.M = M;
+    'h7': {'i' : 7,
+           'n' : '07 - Member',
+           's' : '''var O object = Kernel.clone();
+var M object = Kernel.clone();
+var O.M object = M;
 def M.f(a int) (int) {
   return a + 1;
 }
@@ -141,9 +141,9 @@ def O.main() {
 O.compile();
 O.writeHdl("call.v");
 '''},
-    'h7': {'i' : 7,
-           'n' : '07 - External port',
-           's' : '''object L = Kernel.clone();
+    'h8': {'i' : 8,
+           'n' : '08 - External port',
+           's' : '''var L object = Kernel.clone();
 
 @embed(output = "led")
 def L.f(b bool) {
@@ -151,7 +151,7 @@ def L.f(b bool) {
 }
 
 def L.main() {
-  bool b = false;
+  var b bool = false;
   while (true) {
     wait(10000000);
     f(b);
@@ -162,9 +162,9 @@ def L.main() {
 L.compile();
 L.writeHdl("led.v");
 '''},
-    'h8': {'i' : 8,
-           'n' : '08 - Embedded module',
-           's' : '''object M = Kernel.clone();
+    'h9': {'i' : 9,
+           'n' : '09 - Embedded module',
+           's' : '''var M object = Kernel.clone();
 
 @embed(    resource = "wait_cycles",
     verilog = "nli_wait.v",
@@ -182,12 +182,12 @@ def M.main() {
 M.compile();
 M.writeHdl("wait.v");
 '''},
-    'h9': {'i' : 9,
-           'n' : '09 - Misc',
+    'h10': {'i' : 10,
+           'n' : '10 - Misc',
            's' : '''object M = Kernel.clone();
 
 def M.main() {
-  int i;
+  var i int
   for (i = 0; i < 10; i++) {
   }
 }
@@ -201,8 +201,8 @@ M.writeHdl("dummy.cpp");
     'default': {'i' : 999,
                 'n' : 'Synth example',
          's' : '''def main() {
-  int i;
-  int s = 0;
+  var i int
+  var s int = 0;
   for (i = 0; i < 10; ++i) {
     s += i;
   }
