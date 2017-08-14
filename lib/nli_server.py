@@ -7,6 +7,7 @@ from http.server import HTTPServer
 import os
 import os.path
 from socketserver import ThreadingMixIn
+import sys
 import tempfile
 import urllib
 
@@ -17,6 +18,10 @@ workdir = '/tmp'
 nli_version = 'nli-0.0.0-unknown'
 nli_interpreter = '../nli'
 log_fn = workdir + '/nli.log'
+
+if sys.version_info[0] == 2:
+    print("please use python3")
+    exit()
 
 
 def scrape_version():
