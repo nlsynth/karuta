@@ -309,10 +309,10 @@ STMT : EOS {
 } | VAR_DECL_STMT EOS {
   Emitter::EmitVarDeclStmtSet($1);
 } | LABEL
-  | K_IMPORT STR EOS {
-  Emitter::EmitImportStmt($2);
-} | K_SPAWN FUNCALL EOS {
-  Emitter::EmitSpawnStmt($2);
+  | K_IMPORT {ScannerInterface::InSemiColonStatement();} STR EOS {
+  Emitter::EmitImportStmt($3);
+} | K_SPAWN {ScannerInterface::InSemiColonStatement();} FUNCALL EOS {
+  Emitter::EmitSpawnStmt($3);
 } | THREAD_DECL_STMT EOS {
 } | CHANNEL_DECL_STMT EOS {
 } | MAILBOX_DECL_STMT EOS {
