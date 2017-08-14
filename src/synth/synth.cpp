@@ -72,6 +72,8 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
     lang = "-h";
   } else if (::Util::IsCCFileName(fn)) {
     lang = "-c";
+  } else if (::Util::IsIrFileName(fn)) {
+    lang = "";
   }
   string ofn;
   Env::GetOutputPath(fn.c_str(), &ofn);

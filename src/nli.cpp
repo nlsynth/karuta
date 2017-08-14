@@ -13,6 +13,23 @@ string Env::module_prefix_;
 bool Env::sandbox_mode_;
 string Env::argv0_;
 
+namespace {
+
+bool CheckFileSuffix(const string &fn,
+		     const set<string> &suffixes) {
+  const char *p = strrchr(fn.c_str(), '.');
+  if (!p) {
+    return false;
+  }
+  ++p;
+  if (suffixes.find(p) != suffixes.end()) {
+    return true;
+  }
+  return false;
+}
+
+}  // namespace
+
 const string &Env::GetVersion() {
   static string v(VERSION);
   return v;
@@ -67,15 +84,16 @@ bool Util::IsCCFileName(const string &fn) {
     suffixes.insert("cpp");
     suffixes.insert("cxx");
   }
-  const char *p = strrchr(fn.c_str(), '.');
-  if (!p) {
-    return false;
+  return CheckFileSuffix(fn, suffixes);
+}
+
+bool Util::IsIrFileName(const string &fn) {
+  static set<string> suffixes;
+  if (suffixes.size() == 0) {
+    suffixes.insert("ir");
+    suffixes.insert("iroha");
   }
-  ++p;
-  if (suffixes.find(p) != suffixes.end()) {
-    return true;
-  }
-  return false;
+  return CheckFileSuffix(fn, suffixes);
 }
 
 bool Util::CopyFile(const char *fn, ostream &os) {
