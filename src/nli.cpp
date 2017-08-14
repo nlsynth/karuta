@@ -100,7 +100,7 @@ bool Util::CopyFile(const char *fn, ostream &os) {
   vector<string> paths;
   Env::SearchPathList(fn, &paths);
 
-  FILE *fp = NULL;
+  FILE *fp = nullptr;
   for (string &path : paths) {
     fp = fopen(path.c_str(), "r");
     if (fp) {
@@ -125,7 +125,7 @@ bool Util::RewriteFile(const char *fn, const char *tag,
 		       const char *content) {
   std::unique_ptr<std::ifstream> ifs;
   ifs.reset(new std::ifstream(fn));
-  if (ifs.get() == NULL) {
+  if (ifs.get() == nullptr) {
     return false;
   }
   string output;

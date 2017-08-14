@@ -119,7 +119,7 @@ ArgParser::ArgParser() : enable_logging_(false) {
 }
 
 void ArgParser::RegisterBoolFlag(const char *name, const char *canonical) {
-  if (canonical == NULL) {
+  if (canonical == nullptr) {
     canonical = name;
   }
   registered_flags_[string(name)] = string(canonical);
@@ -133,7 +133,7 @@ void ArgParser::RegisterValueFlag(const char *name, const char *canonical) {
 bool ArgParser::Parse(int argc, char **argv) {
   for (int i = 1; i < argc; i++) {
     char *arg = argv[i];
-    char *next_arg = NULL;
+    char *next_arg = nullptr;
     string flag_name;
     string flag_value;
     bool has_value = StripFlagName(arg, &flag_name, &flag_value);
@@ -223,7 +223,7 @@ void Main::InstallTimeout() {
   memset(&sa, 0, sizeof(sa));
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = SA_RESTART;
-  sigaction(SIGALRM, &sa, NULL);
+  sigaction(SIGALRM, &sa, nullptr);
   struct itimerval ival;
   timeout *= 1000;
   int sec = timeout / 1000000;
@@ -232,21 +232,21 @@ void Main::InstallTimeout() {
   ival.it_interval.tv_usec = 0;
   ival.it_value.tv_sec = sec;
   ival.it_value.tv_usec = usec;
-  setitimer(ITIMER_VIRTUAL, &ival, NULL);
+  setitimer(ITIMER_VIRTUAL, &ival, nullptr);
 }
 
 void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterBoolFlag("h", "help");
-  parser->RegisterBoolFlag("help", NULL);
+  parser->RegisterBoolFlag("help", nullptr);
   parser->RegisterBoolFlag("version", "help");
-  parser->RegisterBoolFlag("iroha", NULL);
-  parser->RegisterBoolFlag("vanilla", NULL);
-  parser->RegisterBoolFlag("print_exit_status", NULL);
-  parser->RegisterValueFlag("timeout", NULL);
-  parser->RegisterValueFlag("root", NULL);
-  parser->RegisterValueFlag("output_marker", NULL);
-  parser->RegisterValueFlag("module_prefix", NULL);
-  parser->RegisterBoolFlag("z", NULL);
+  parser->RegisterBoolFlag("iroha", nullptr);
+  parser->RegisterBoolFlag("vanilla", nullptr);
+  parser->RegisterBoolFlag("print_exit_status", nullptr);
+  parser->RegisterValueFlag("timeout", nullptr);
+  parser->RegisterValueFlag("root", nullptr);
+  parser->RegisterValueFlag("output_marker", nullptr);
+  parser->RegisterValueFlag("module_prefix", nullptr);
+  parser->RegisterBoolFlag("z", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
   }
