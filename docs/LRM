@@ -1,55 +1,212 @@
-Language Reference Manual
+# Language Reference Manual
 
-*** Built in methods
+## Progmram structure
 
-* Object
- * Kernel
-  * Module
+A program is comprised of top level enviroment and method environment.
+Methods and various things can be declared only in top level environment.
 
-Object.clone
-Object.dump
-Object.setDump
-Object.assert
-Object.Kernel
+    // * Top level environment
+    // Modifying objects by declaring member variables.
+    //
+    def f() {
+      // * Method environment
+      // Object modification is not allowed (hence synthesizable).
+    }
 
-Kernel.abort
-Kernel.compile
-Kernel.exit
-Kernel.print
-Kernel.writeHdl
-Kernel.bool
-Kernel.Object
-Kernel.Module 
+TODO: Consider non synthesizable methods.
 
-*.$compiled_module
-*.$dump_file_name
+### Methods
 
-*** Width spec
- var x #32
- var x int  // Same as 32
- var x #0
- var x bool // Same as bool
+    @Annotation(key1="value1", key2="value2")
+    def mod.f(x, y #32) (#16, #16) {
+      return (0, 0)
+    }
 
-*** Names
+### Threads
+
+    @ThreadEntry()
+    def f() {
+      print("hello?")
+    }
+
+### Data flow
+
+    @DataFlowEntry()
+    def f(x int) {
+    }
+
+### Object hierarchy
+
+    var O.m1 = SubObj
+    def O.f() {
+      m1.h()
+    }
+
+## Types
+
+### Width spec
+
+    var x #32
+    var x int  // Same as #32
+    var x #0
+    var x bool // Same as bool
+
+### Strings
+
+    var s string = "abc"
+    s = s + "1"
+
+### Objects
+
+    var o object = Kernel
+
+### Arrays
+
+    var M.x int[32]
+    var M.y #16[4] = {1,2,3,4}
+
+### Pointers
+
+    var x *int
+
+## Expressions
+
+### Names
+
 prefix '__' is reserved for implementation
 
-*** Expressions
-[l:r] range should be constant.
+### Numerics
 
-*** Statements
-if statement can take number as its condition.
+    123
 
-*** Imported resource
+### Operators
 
-*** Threads
+* +, -
+ * Addition and subtraction.
+* *
+* << >>
+ * shift amount should be constant.
+* :: bit concat
+* [l:r] range should be constant.
 
- @ThreadEntry()
- def f() {
-   print("hello?")
- }
+## Statements
 
-*** Data flow
+### Control
 
- @DataFlowEntry()
- def f(x int) {
- }
+* if
+ * "if" statement can take a non bool number as its condition.
+* for
+
+TODO: switch/case statement
+
+### Declarations
+
+As for variable declaration, please see types section.
+
+### Import
+
+    import "fn.n"
+
+## External communication
+
+### Ext I/O
+
+    @ExtIO(output = "o")
+    def L.f(b bool) {
+    }
+
+    @ExtIO(input = "i")
+    def L.g() (bool) {
+      return true
+    }
+
+### Ext call/stub with method interface
+
+    @ExtEntry(name="e")
+    def f(x int) (int) {
+    }
+
+    @ExtStub(name="e")
+    def f(x int) (int) {
+    }
+
+#### Ext data flow
+
+    @ExtFlowStub(name="e")
+    def f(x int) (int) {
+    }
+
+#### AXI
+
+    @AxiMasterPort()
+    var M.x[32]
+    x.load(mem_addr, count, array_addr)
+
+    @AxiSlavePort()
+    var M.x[32]
+
+### Channel
+
+    channel M.m1 = int
+
+## Misc features (or to be classified)
+
+### Built in methods
+
+* Object
+    * Kernel
+        * Module
+
+* Object.clone()
+* Object.dump()
+* Object.setDump()
+* Object.assert()
+* Object.Kernel()
+
+* Kernel.abort()
+* Kernel.compile()
+* Kernel.exit()
+* Kernel.print()
+* Kernel.writeHdl()
+* Kernel.bool()
+* Kernel.Object()
+* Kernel.Module ()
+
+* .$compiled_module
+* .$dump_file_name
+
+#### Iroha related methods
+
+* setIrohaPath(p string)
+* setIROuput(p string)
+* runIroha(opts string)
+
+### Mailbox
+
+    mailbox M.m1 = int
+    def M.f() {
+      m1.put(1)
+      m1.get()
+    }
+
+### Shared register
+
+    var M.x int
+
+### Type class
+
+    var Numerics.Int32 object = Object.clone()
+    func Numerics.Int32.Build(arg #32) (#32) {
+      return arg
+    }
+    func Numerics.Int32.Add(lhs, rhs #32) (#32) {
+      return lhs + rhs
+    }
+
+## RTL generation
+
+When compilation is requested by calling compile() method, the synthesizer takes a snapshot of the object and generates IR from the structure and computation.
+
+## Format this document
+
+ markdown LRM > LRM.html
