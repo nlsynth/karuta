@@ -385,21 +385,21 @@ vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
   return nullptr;
 }
 
-vm::Register *ExprCompiler::CompileFuncallExpr(vm::Register *obj,
+vm::Register *ExprCompiler::CompileFuncallExpr(vm::Register *obj_reg,
 					       fe::Expr *expr) {
-  return CompileMultiValueFuncall(obj, expr, nullptr);
+  return CompileMultiValueFuncall(obj_reg, expr, nullptr);
 }
 
-vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj,
+vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
 						     fe::Expr *funcall,
-						     fe::Expr *lhs) {
+						     fe::Expr *top_lhs) {
   vm::Insn *call_insn = new vm::Insn;
   call_insn->op_ = vm::OP_FUNCALL;
   call_insn->insn_expr_ = funcall;
-  if (obj == nullptr) {
+  if (obj_reg == nullptr) {
     call_insn->obj_reg_ = compiler_->CompilePathHead(funcall->func_);
   } else {
-    call_insn->obj_reg_ = obj;
+    call_insn->obj_reg_ = obj_reg;
   }
   call_insn->label_ = funcall->func_->sym_;
 
@@ -414,10 +414,31 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj,
   }
   compiler_->EmitInsn(call_insn);
 
-  return EmitFuncallDone(call_insn, lhs);
+  return EmitFuncallDone(call_insn, top_lhs);
 }
 
-vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn, fe::Expr *lhs) {
+vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
+					    fe::Expr *top_lhs) {
+  vm::Insn *done_insn = new vm::Insn;
+  done_insn->op_ = vm::OP_FUNCALL_DONE;
+  done_insn->insn_expr_ = call_insn->insn_expr_;
+  done_insn->obj_reg_ = call_insn->obj_reg_;
+  done_insn->label_ = call_insn->label_;
+
+  if (top_lhs != nullptr) {
+    // Multiple assignment in top level. The number of return values
+    // can be determined only from LHS expression.
+    CHECK(compiler_->IsTopLevel());
+    vector<fe::Expr*> values;
+    FlattenCommas(top_lhs, &values);
+    for (size_t i = 0; i < values.size(); ++i) {
+      vm::Register *reg = CompileSymExpr(values[i]);
+      done_insn->dst_regs_.push_back(reg);
+    }
+    compiler_->EmitInsn(done_insn);
+    return nullptr;
+  }
+
   vm::Method *method = nullptr;
   if (!compiler_->IsTopLevel()) {
     vm::Object *obj = compiler_->GetVMObject(call_insn->obj_reg_);
@@ -430,39 +451,35 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn, fe::Expr *lhs) 
     method = method_value->method_;
   }
 
-  vm::Insn *done_insn = new vm::Insn;
-  done_insn->op_ = vm::OP_FUNCALL_DONE;
-  done_insn->insn_expr_ = call_insn->insn_expr_;
-  done_insn->obj_reg_ = call_insn->obj_reg_;
-  done_insn->label_ = call_insn->label_;
-  if (lhs) {
-    vector<fe::Expr*> values;
-    FlattenCommas(lhs, &values);
-    for (size_t i = 0; i < values.size(); ++i) {
-      vm::Register *reg = CompileSymExpr(values[i]);
-      done_insn->dst_regs_.push_back(reg);
-    }
+  if (method == nullptr) {
+    // This can be unused, if the callee returns void.
+    vm::Register *reg = compiler_->AllocRegister();
+    reg->type_.value_type_ = vm::Value::NUM;
+    done_insn->dst_regs_.push_back(reg);
     compiler_->EmitInsn(done_insn);
-    return nullptr;
+    return reg;
   }
-  // This can be a dummy value, if the callee return void.
-  vm::Register *reg = compiler_->AllocRegister();
-  reg->type_.value_type_ = vm::Value::NUM;
-  done_insn->dst_regs_.push_back(reg);
-  if (method != nullptr) {
-    int num_rets = method->GetNumReturnRegisters();
-    if (num_rets == 1) {
-      if (method->return_types_.size() > 0) {
-	reg->type_ = method->return_types_[0];
-      } else {
-	fe::VarDecl *vd = method->parse_tree_->returns_->decls[0];
-	reg->type_.object_name_ = vd->GetObjectName();
-	reg->type_.width_ = vd->GetWidth();
-      }
+
+  int num_rets = method->GetNumReturnRegisters();
+  vector<vm::Register *> rets;
+  for (int i = 0; i < num_rets; ++i) {
+    vm::Register *reg = compiler_->AllocRegister();
+    reg->type_.value_type_ = vm::Value::NUM;
+    if (method->return_types_.size() > i) {
+      reg->type_ = method->return_types_[i];
+    } else {
+      fe::VarDecl *vd = method->parse_tree_->returns_->decls[i];
+      reg->type_.object_name_ = vd->GetObjectName();
+      reg->type_.width_ = vd->GetWidth();
     }
+    done_insn->dst_regs_.push_back(reg);
+    rets.push_back(reg);
   }
   compiler_->EmitInsn(done_insn);
-  return reg;
+  if (rets.size() > 0) {
+    return rets[0];
+  }
+  return nullptr;
 }
 
 vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
@@ -470,7 +487,11 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
   // (x, y) = f(...)
   if (expr->rhs_->type_ == fe::EXPR_FUNCALL &&
       expr->lhs_->type_ == fe::BINOP_COMMA) {
-    return CompileMultiValueFuncall(nullptr, expr->rhs_, expr->lhs_);
+    fe::Expr *top_lhs = nullptr;
+    if (compiler_->IsTopLevel()) {
+      top_lhs = expr->lhs_;
+    }
+    return CompileMultiValueFuncall(nullptr, expr->rhs_, top_lhs);
   }
 
   vm::Insn *insn = new vm::Insn;

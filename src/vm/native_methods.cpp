@@ -258,12 +258,12 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
 Method *Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
 					       const char *name,
 					       method_func func,
-					       const vector<RegisterType> &types,
+					       const vector<RegisterType> &ret_types,
 					       const char *alt) {
   Method *method = vm->NewMethod(false /* not toplevel */);
   method->method_fn_ = func;
   method->alt_impl_ = alt;
-  method->return_types_ = types;
+  method->return_types_ = ret_types;
   Value value;
   value.type_ = Value::METHOD;
   value.method_ = method;
@@ -273,8 +273,9 @@ Method *Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
 
 Method *Method::InstallNativeMethod(VM *vm, Object *obj, const char *name,
 				    method_func func,
-				    const vector<RegisterType> &types) {
-  return InstallNativeMethodWithAltImpl(vm, obj, name, func, types, nullptr);
+				    const vector<RegisterType> &ret_types) {
+  return InstallNativeMethodWithAltImpl(vm, obj, name, func, ret_types,
+					nullptr);
 }
 
 void Method::InstallEnvNativeMethods(VM *vm, Object *env) {

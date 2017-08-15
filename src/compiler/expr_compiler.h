@@ -33,9 +33,9 @@ private:
   vm::Register *CompileComma(fe::Expr *expr);
   vm::Register *CompileElmRef(fe::Expr *expr);
   vm::Register *CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
-  vm::Register *CompileMultiValueFuncall(vm::Register *obj,
+  vm::Register *CompileMultiValueFuncall(vm::Register *obj_reg,
 					 fe::Expr *funcall,
-					 fe::Expr *lhs);
+					 fe::Expr *top_lhs);
   vm::Register *CompileSimpleExpr(fe::Expr *expr);
   vm::Register *CompileRef(fe::Expr *expr);
   vm::Register *CompileRefLhsExpr(fe::Expr *lhs_expr, vm::Insn *insn);
@@ -49,7 +49,7 @@ private:
   void PropagateRegisterType(vm::Insn *insn,
 			     vm::Register *lhs, vm::Register *rhs,
 			     vm::RegisterType *t);
-  vm::Register *EmitFuncallDone(vm::Insn *call_insn, fe::Expr *lhs);
+  vm::Register *EmitFuncallDone(vm::Insn *call_insn, fe::Expr *top_lhs);
 
   Compiler *compiler_;
 };

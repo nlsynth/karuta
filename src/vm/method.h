@@ -42,11 +42,12 @@ public:
   static void InstallNativeRootObjectMethods(VM *vm, Object *obj);
   static void InstallNativeKernelObjectMethods(VM *vm, Object *obj);
   static Method *InstallNativeMethod(VM *vm, Object *obj, const char *name,
-				     method_func func, const vector<RegisterType> &types);
+				     method_func func,
+				     const vector<RegisterType> &ret_types);
   static Method *InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
 						const char *name,
 						method_func func,
-						const vector<RegisterType> &types,
+						const vector<RegisterType> &ret_types,
 						const char *alt);
   static void InstallEnvNativeMethods(VM *vm, Object *obj);
 

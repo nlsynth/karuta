@@ -27,6 +27,12 @@ int Method::GetNumArgRegisters() const {
 }
 
 int Method::GetNumReturnRegisters() const {
+  // return_types_ is 0 before compilation, so use the parse tree instead.
+  if (parse_tree_ != nullptr &&
+      parse_tree_->returns_ != nullptr) {
+    return parse_tree_->returns_->decls.size();
+  }
+  // Use the value for a non native method.
   return return_types_.size();
 }
 
