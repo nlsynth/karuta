@@ -392,7 +392,7 @@ vm::Register *ExprCompiler::CompileFuncallExpr(vm::Register *obj_reg,
 
 vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
 						     fe::Expr *funcall,
-						     fe::Expr *top_lhs) {
+						     vector<vm::Register *> *lhs_regs) {
   vm::Insn *call_insn = new vm::Insn;
   call_insn->op_ = vm::OP_FUNCALL;
   call_insn->insn_expr_ = funcall;
@@ -414,25 +414,22 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   }
   compiler_->EmitInsn(call_insn);
 
-  return EmitFuncallDone(call_insn, top_lhs);
+  return EmitFuncallDone(call_insn, lhs_regs);
 }
 
 vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
-					    fe::Expr *top_lhs) {
+					    vector<vm::Register *> *lhs_regs) {
   vm::Insn *done_insn = new vm::Insn;
   done_insn->op_ = vm::OP_FUNCALL_DONE;
   done_insn->insn_expr_ = call_insn->insn_expr_;
   done_insn->obj_reg_ = call_insn->obj_reg_;
   done_insn->label_ = call_insn->label_;
 
-  if (top_lhs != nullptr) {
-    // Multiple assignment in top level. The number of return values
+  if (lhs_regs != nullptr) {
+    // Multi value assignment in top level. The number of return values
     // can be determined only from LHS expression.
     CHECK(compiler_->IsTopLevel());
-    vector<fe::Expr*> values;
-    FlattenCommas(top_lhs, &values);
-    for (size_t i = 0; i < values.size(); ++i) {
-      vm::Register *reg = CompileSymExpr(values[i]);
+    for (auto *reg : *lhs_regs) {
       done_insn->dst_regs_.push_back(reg);
     }
     compiler_->EmitInsn(done_insn);
@@ -487,11 +484,17 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
   // (x, y) = f(...)
   if (expr->rhs_->type_ == fe::EXPR_FUNCALL &&
       expr->lhs_->type_ == fe::BINOP_COMMA) {
-    fe::Expr *top_lhs = nullptr;
+    vector<vm::Register *> *lhs_regs_ptr = nullptr;
+    vector<vm::Register *> lhs_regs;
     if (compiler_->IsTopLevel()) {
-      top_lhs = expr->lhs_;
+      vector<fe::Expr*> values;
+      FlattenCommas(expr->lhs_, &values);
+      for (auto *v : values) {
+	lhs_regs.push_back(CompileSymExpr(v));
+      }
+      lhs_regs_ptr = &lhs_regs;
     }
-    return CompileMultiValueFuncall(nullptr, expr->rhs_, top_lhs);
+    return CompileMultiValueFuncall(nullptr, expr->rhs_, lhs_regs_ptr);
   }
 
   vm::Insn *insn = new vm::Insn;

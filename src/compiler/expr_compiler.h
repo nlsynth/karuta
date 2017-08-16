@@ -35,7 +35,7 @@ private:
   vm::Register *CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
   vm::Register *CompileMultiValueFuncall(vm::Register *obj_reg,
 					 fe::Expr *funcall,
-					 fe::Expr *top_lhs);
+					 vector<vm::Register *> *lhs_regs);
   vm::Register *CompileSimpleExpr(fe::Expr *expr);
   vm::Register *CompileRef(fe::Expr *expr);
   vm::Register *CompileRefLhsExpr(fe::Expr *lhs_expr, vm::Insn *insn);
@@ -49,7 +49,8 @@ private:
   void PropagateRegisterType(vm::Insn *insn,
 			     vm::Register *lhs, vm::Register *rhs,
 			     vm::RegisterType *t);
-  vm::Register *EmitFuncallDone(vm::Insn *call_insn, fe::Expr *top_lhs);
+  vm::Register *EmitFuncallDone(vm::Insn *call_insn,
+				vector<vm::Register *> *lhs_regs);
 
   Compiler *compiler_;
 };
