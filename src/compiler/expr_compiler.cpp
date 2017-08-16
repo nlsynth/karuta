@@ -387,12 +387,14 @@ vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
 
 vm::Register *ExprCompiler::CompileFuncallExpr(vm::Register *obj_reg,
 					       fe::Expr *expr) {
-  return CompileMultiValueFuncall(obj_reg, expr, nullptr);
+  vector<vm::Register *> lhs_regs;
+  lhs_regs.push_back(compiler_->AllocRegister());
+  return CompileMultiValueFuncall(obj_reg, expr, lhs_regs);
 }
 
 vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
 						     fe::Expr *funcall,
-						     vector<vm::Register *> *lhs_regs) {
+						     vector<vm::Register *> &lhs_regs) {
   vm::Insn *call_insn = new vm::Insn;
   call_insn->op_ = vm::OP_FUNCALL;
   call_insn->insn_expr_ = funcall;
@@ -418,49 +420,43 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
 }
 
 vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
-					    vector<vm::Register *> *lhs_regs) {
+					    vector<vm::Register *> &lhs_regs) {
   vm::Insn *done_insn = new vm::Insn;
   done_insn->op_ = vm::OP_FUNCALL_DONE;
   done_insn->insn_expr_ = call_insn->insn_expr_;
   done_insn->obj_reg_ = call_insn->obj_reg_;
   done_insn->label_ = call_insn->label_;
 
-  if (lhs_regs != nullptr) {
-    // Multi value assignment in top level. The number of return values
-    // can be determined only from LHS expression.
-    CHECK(compiler_->IsTopLevel());
-    for (auto *reg : *lhs_regs) {
+  // If this is top level, The number of return values
+  // can be determined only from LHS expression.
+  // Types are also unknown, so let the executor see them later.
+  if (compiler_->IsTopLevel()) {
+    for (auto *reg : lhs_regs) {
       done_insn->dst_regs_.push_back(reg);
     }
     compiler_->EmitInsn(done_insn);
-    return nullptr;
+    CHECK(lhs_regs.size() > 0);
+    return lhs_regs[0];
   }
 
-  vm::Method *method = nullptr;
-  if (!compiler_->IsTopLevel()) {
-    vm::Object *obj = compiler_->GetVMObject(call_insn->obj_reg_);
-    CHECK(obj) << "Failed to find corresponding object to r:"
-	       << call_insn->obj_reg_->id_ << " "
-	       << sym_cstr(call_insn->label_);
-    vm::Value *method_value = obj->LookupValue(call_insn->label_, false);
-    CHECK(method_value && method_value->type_ == vm::Value::METHOD)
-      << "method=" << sym_cstr(call_insn->label_);
-    method = method_value->method_;
-  }
-
-  if (method == nullptr) {
-    // This can be unused, if the callee returns void.
-    vm::Register *reg = compiler_->AllocRegister();
-    reg->type_.value_type_ = vm::Value::NUM;
-    done_insn->dst_regs_.push_back(reg);
-    compiler_->EmitInsn(done_insn);
-    return reg;
-  }
+  vm::Object *obj = compiler_->GetVMObject(call_insn->obj_reg_);
+  CHECK(obj) << "Failed to find corresponding object to r:"
+	     << call_insn->obj_reg_->id_ << " "
+	     << sym_cstr(call_insn->label_);
+  vm::Value *method_value = obj->LookupValue(call_insn->label_, false);
+  CHECK(method_value && method_value->type_ == vm::Value::METHOD)
+    << "method=" << sym_cstr(call_insn->label_);
+  vm::Method *method = method_value->method_;
 
   int num_rets = method->GetNumReturnRegisters();
   vector<vm::Register *> rets;
   for (int i = 0; i < num_rets; ++i) {
-    vm::Register *reg = compiler_->AllocRegister();
+    vm::Register *reg;
+    if (i < lhs_regs.size()) {
+      reg = lhs_regs[i];
+    } else {
+      reg = compiler_->AllocRegister();
+    }
     reg->type_.value_type_ = vm::Value::NUM;
     if (method->return_types_.size() > i) {
       reg->type_ = method->return_types_[i];
@@ -484,17 +480,13 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
   // (x, y) = f(...)
   if (expr->rhs_->type_ == fe::EXPR_FUNCALL &&
       expr->lhs_->type_ == fe::BINOP_COMMA) {
-    vector<vm::Register *> *lhs_regs_ptr = nullptr;
     vector<vm::Register *> lhs_regs;
-    if (compiler_->IsTopLevel()) {
-      vector<fe::Expr*> values;
-      FlattenCommas(expr->lhs_, &values);
-      for (auto *v : values) {
-	lhs_regs.push_back(CompileSymExpr(v));
-      }
-      lhs_regs_ptr = &lhs_regs;
+    vector<fe::Expr*> values;
+    FlattenCommas(expr->lhs_, &values);
+    for (auto *v : values) {
+      lhs_regs.push_back(CompileSymExpr(v));
     }
-    return CompileMultiValueFuncall(nullptr, expr->rhs_, lhs_regs_ptr);
+    return CompileMultiValueFuncall(nullptr, expr->rhs_, lhs_regs);
   }
 
   vm::Insn *insn = new vm::Insn;

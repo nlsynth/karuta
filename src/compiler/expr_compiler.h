@@ -35,7 +35,7 @@ private:
   vm::Register *CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
   vm::Register *CompileMultiValueFuncall(vm::Register *obj_reg,
 					 fe::Expr *funcall,
-					 vector<vm::Register *> *lhs_regs);
+					 vector<vm::Register *> &lhs_regs);
   vm::Register *CompileSimpleExpr(fe::Expr *expr);
   vm::Register *CompileRef(fe::Expr *expr);
   vm::Register *CompileRefLhsExpr(fe::Expr *lhs_expr, vm::Insn *insn);
@@ -50,7 +50,7 @@ private:
 			     vm::Register *lhs, vm::Register *rhs,
 			     vm::RegisterType *t);
   vm::Register *EmitFuncallDone(vm::Insn *call_insn,
-				vector<vm::Register *> *lhs_regs);
+				vector<vm::Register *> &lhs_regs);
 
   Compiler *compiler_;
 };
