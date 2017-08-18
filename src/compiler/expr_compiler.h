@@ -50,7 +50,9 @@ private:
 			     vm::Register *lhs, vm::Register *rhs,
 			     vm::RegisterType *t);
   vm::Register *EmitFuncallDone(vm::Insn *call_insn,
+				vm::Method *method,
 				vector<vm::Register *> &lhs_regs);
+  vm::Method *GetCalleeMethod(vm::Insn *call_insn);
 
   Compiler *compiler_;
 };

@@ -416,10 +416,17 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   }
   compiler_->EmitInsn(call_insn);
 
-  return EmitFuncallDone(call_insn, lhs_regs);
+  vm::Method *method = GetCalleeMethod(call_insn);
+  if (method != nullptr) {
+    int num_args = method->GetNumArgRegisters();
+    CHECK(args.size() >= num_args) << "Insufficient number of arguments " <<
+      args.size() << " < " << num_args;
+  }
+  return EmitFuncallDone(call_insn, method, lhs_regs);
 }
 
 vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
+					    vm::Method *method,
 					    vector<vm::Register *> &lhs_regs) {
   vm::Insn *done_insn = new vm::Insn;
   done_insn->op_ = vm::OP_FUNCALL_DONE;
@@ -439,16 +446,10 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
     return lhs_regs[0];
   }
 
-  vm::Object *obj = compiler_->GetVMObject(call_insn->obj_reg_);
-  CHECK(obj) << "Failed to find corresponding object to r:"
-	     << call_insn->obj_reg_->id_ << " "
-	     << sym_cstr(call_insn->label_);
-  vm::Value *method_value = obj->LookupValue(call_insn->label_, false);
-  CHECK(method_value && method_value->type_ == vm::Value::METHOD)
-    << "method=" << sym_cstr(call_insn->label_);
-  vm::Method *method = method_value->method_;
-
   int num_rets = method->GetNumReturnRegisters();
+  if (!(num_rets == 0 && lhs_regs.size() == 1)) {
+    CHECK(lhs_regs.size() <= num_rets) << sym_cstr(call_insn->label_) << " " << num_rets << "return values, but " << lhs_regs.size() << " lhs";
+  }
   vector<vm::Register *> rets;
   for (int i = 0; i < num_rets; ++i) {
     vm::Register *reg;
@@ -473,6 +474,20 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
     return rets[0];
   }
   return nullptr;
+}
+
+vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
+  if (compiler_->IsTopLevel()) {
+    return nullptr;
+  }
+  vm::Object *obj = compiler_->GetVMObject(call_insn->obj_reg_);
+  CHECK(obj) << "Failed to find corresponding object to r:"
+	     << call_insn->obj_reg_->id_ << " "
+	     << sym_cstr(call_insn->label_);
+  vm::Value *method_value = obj->LookupValue(call_insn->label_, false);
+  CHECK(method_value && method_value->type_ == vm::Value::METHOD)
+    << "method=" << sym_cstr(call_insn->label_);
+  return method_value->method_;
 }
 
 vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
