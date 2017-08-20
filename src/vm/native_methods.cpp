@@ -73,14 +73,14 @@ void NativeMethods::Run(Thread *thr, Object *obj,
 void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
 				    const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
-    Status::os(Status::USER) << "Only 1 int argument is allowed";
+    Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
     return;
   }
   int w = args[0].num_.GetValue();
   if (w == 32 || w == 64) {
     obj->address_width_ = w;
   } else {
-    Status::os(Status::USER) << w << " is invalid address width.";
+    Status::os(Status::USER_ERROR) << w << " is invalid address width.";
   }
 }
 
@@ -103,13 +103,13 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
 			     const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
       !StringWrapper::IsString(args[0].object_)) {
-    Status::os(Status::USER) << "Missing argument for runIroha()";
+    Status::os(Status::USER_ERROR) << "Missing argument for runIroha()";
     return;
   }
   int res =
     synth::Synth::RunIroha(obj, StringWrapper::String(args[0].object_));
   if (res != 0) {
-    Status::os(Status::USER) << "runIroha() failed: " << res;
+    Status::os(Status::USER_ERROR) << "runIroha() failed: " << res;
   }
 }
 
@@ -146,13 +146,13 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     bool ok = synth::Synth::Synthesize(thr->GetVM(), obj,
 				       synth::Synth::IrPath(obj));
     if (!ok) {
-      Status::os(Status::USER) << "failed synthesize the design.";
+      Status::os(Status::USER_ERROR) << "failed synthesize the design.";
       thr->UserError();
     }
   } else {
     int res = synth::Synth::RunIrohaOpt(phase, obj);
     if (res > 0) {
-      Status::os(Status::USER) << "compile(" << phase << ") failed.";
+      Status::os(Status::USER_ERROR) << "compile(" << phase << ") failed.";
       thr->UserError();
     }
   }
@@ -163,7 +163,7 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
   if (args.size() != 2 ||
       !StringWrapper::IsString(args[0].object_) ||
       !StringWrapper::IsString(args[1].object_)) {
-    Status::os(Status::USER) << "Invalid argument type of setSynthParam()";
+    Status::os(Status::USER_ERROR) << "Invalid argument type of setSynthParam()";
     return;
   }
   sym_t synth_params = sym_lookup("$synth_params");
@@ -180,8 +180,8 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
 void NativeMethods::WidthOf(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
-    Status::os(Status::USER) << "Invalid argument to widthof()";
-    MessageFlush::Get(Status::USER);
+    Status::os(Status::USER_ERROR) << "Invalid argument to widthof()";
+    MessageFlush::Get(Status::USER_ERROR);
     return;
   }
   Value value;

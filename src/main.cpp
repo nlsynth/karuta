@@ -161,8 +161,8 @@ bool ArgParser::Parse(int argc, char **argv) {
       }
     } else {
       if (arg[0] == '-') {
-	Status::os(Status::USER) << "Unknown command line flag:" << arg;
-	MessageFlush::Get(Status::USER);
+	Status::os(Status::USER_ERROR) << "Unknown command line flag:" << arg;
+	MessageFlush::Get(Status::USER_ERROR);
 	return false;
       }
       source_files.push_back(arg);
@@ -300,7 +300,7 @@ int Main::main(int argc, char **argv) {
   string exit_status;
   LOG(INFO) << "NLI-" << Env::GetVersion();
   RunFiles(args.source_files);
-  Status::CheckAll();
+  Status::CheckAllErrors(true);
   if (print_exit_status) {
     // Used to confirm this program was finished normally.
     // (without SEGV and so on)

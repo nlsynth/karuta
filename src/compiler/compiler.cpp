@@ -157,8 +157,8 @@ void Compiler::CompileIncDecExpr(fe::Expr *expr) {
   }
   vm::Register *reg = exc_->CompileSymExpr(expr->args_);
   if (!reg) {
-    Status::os(Status::USER) << "Invalid inc/dec";
-    MessageFlush::Get(Status::USER);
+    Status::os(Status::USER_ERROR) << "Invalid inc/dec";
+    MessageFlush::Get(Status::USER_ERROR);
     return;
   }
   insn->dst_regs_.push_back(reg);

@@ -547,9 +547,9 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
   *obj = obj_value.object_;
   Value *value = (*obj)->LookupValue(insn->label_, false);
   if (!value) {
-    Status::os(Status::USER) << "method not found: "
-			       << sym_cstr(insn->label_);
-    Status::Check(Status::USER);
+    Status::os(Status::USER_ERROR) << "method not found: "
+				   << sym_cstr(insn->label_);
+    Status::Check(Status::USER_ERROR, true);
     thr_->UserError();
     return nullptr;
   }

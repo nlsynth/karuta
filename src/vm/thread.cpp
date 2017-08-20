@@ -117,7 +117,7 @@ vector<MethodFrame*> &Thread::MethodStack() {
 }
 
 void Thread::UserError() {
-  Status::Check(Status::USER);
+  Status::Check(Status::USER_ERROR, true);
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
   frame->pc_ = method->insns_.size();

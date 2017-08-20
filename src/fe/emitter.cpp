@@ -133,7 +133,8 @@ void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
     VarDecl *vd = vds->decls[i];
     if (vd->GetArrayLength() > 0) {
       if (method_stack_.size() > 1) {
-	Status::os(Status::USER) << "Array declaration is allowed only in the top level.";
+	Status::os(Status::USER_ERROR)
+	  << "Array declaration is allowed only in the top level.";
       }
     }
     Stmt *stmt = NewStmt(STMT_VARDECL);

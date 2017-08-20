@@ -13,19 +13,20 @@ void Status::SetLineNumber(int ln, Type t) {
 
 ostringstream &Status::os(Type t) {
   Context *context = GetContext(t);
+  context->has_message_ = true;
   if (!context->ss_.str().empty()) {
     context->ss_ << "\n";
   }
   return context->ss_;
 }
 
-bool Status::Check(Type t) {
+void Status::Flush(Type t) {
   Context *context = GetContext(t);
   if (context->ss_.str().empty()) {
-    return false;
+    return;
   }
   string s;
-  if (t == USER) {
+  if (t == USER_ERROR) {
     s += "U:";
   } else if (t == INFO) {
      s += "I:";
@@ -40,14 +41,24 @@ bool Status::Check(Type t) {
 
   context->ss_.str("");
   context->ln_ = -1;
-  return true;
 }
 
-bool Status::CheckAll() {
+bool Status::Check(Type t, bool clear) {
+  Context *context = GetContext(t);
+  bool had_message = context->has_message_;
+  if (clear) {
+    context->has_message_ = false;
+  }
+  Flush(t);
+  return had_message;
+}
+
+bool Status::CheckAllErrors(bool clear) {
   bool b = false;
   // Ignores INFO.
-  b |= Check(USER);
-  b |= Check(ICE);
+  Flush(INFO);
+  b |= Check(USER_ERROR, clear);
+  b |= Check(ICE, clear);
   return b;
 }
 

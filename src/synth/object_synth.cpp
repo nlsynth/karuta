@@ -62,8 +62,9 @@ bool ObjectSynth::Synth() {
   ThreadSynth *primary_thr = nullptr;
   for (auto *thr : threads_) {
     if (!thr->Synth()) {
-      Status::os(Status::USER) << "Failed to synthesize object: " << obj_name_;
-      MessageFlush::Get(Status::USER);
+      Status::os(Status::USER_ERROR)
+	<< "Failed to synthesize object: " << obj_name_;
+      MessageFlush::Get(Status::USER_ERROR);
       return false;
     }
     if (thr->IsPrimary()) {

@@ -23,8 +23,8 @@ MethodScanner::MethodScanner(ThreadSynth *thr_synth,
 bool MethodScanner::Scan() {
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
   if (!value || value->type_ != vm::Value::METHOD) {
-    Status::os(Status::USER) << "Failed to find method: " << method_name_;
-    MessageFlush::Get(Status::USER);
+    Status::os(Status::USER_ERROR) << "Failed to find method: " << method_name_;
+    MessageFlush::Get(Status::USER_ERROR);
     return false;
   }
   vm::Method *method = value->method_;

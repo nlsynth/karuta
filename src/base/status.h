@@ -16,27 +16,33 @@ class Status {
 public:
   enum Type {
     // Maybe user's issue.
-    USER,
+    USER_ERROR,
+    // Internal Compiler Error.
+    ICE,
     // Debug message.
     INFO,
-    ICE,
     NUM_TYPES,
   };
 
   static void SetLineNumber(int ln, Type t);
 
+  // Called from MessageFlush.
+  static void Flush(Type t);
   // true if there are messages.
-  static bool Check(Type t);
-  static bool CheckAll();
+  static bool Check(Type t, bool clear);
+  // Checks if there are USER_ERROR, ICE
+  static bool CheckAllErrors(bool clear);
+  static void Clear();
   static ostringstream &os(Type t);
 
 private:
   class Context {
   public:
-    Context() : ln_(-1) {
+    Context() : ln_(-1), has_message_(false) {
     }
     ostringstream ss_;
     int ln_;
+    bool has_message_;
   };
 
   static Context context_[NUM_TYPES];
@@ -49,7 +55,7 @@ public:
   MessageFlush(Status::Type t) : t_(t) {
   }
   ~MessageFlush() {
-    Status::Check(t_);
+    Status::Flush(t_);
   }
   static MessageFlush Get(Status::Type t) {
     MessageFlush m(t);

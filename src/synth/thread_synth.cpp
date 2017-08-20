@@ -83,9 +83,10 @@ bool ThreadSynth::Scan() {
 	++num_scan;
 	MethodScanner ms(this, obj, name);
 	if (!ms.Scan()) {
-	  Status::os(Status::USER) << "Failed to scan thread: "
-				   << thread_name_ << "." << entry_method_name_;
-	  MessageFlush::Get(Status::USER);
+	  Status::os(Status::USER_ERROR)
+	    << "Failed to scan thread: "
+	    << thread_name_ << "." << entry_method_name_;
+	  MessageFlush::Get(Status::USER_ERROR);
 	  return false;
 	}
 	scanned[obj].insert(name);
@@ -122,9 +123,10 @@ bool ThreadSynth::Synth() {
   for (auto &it : obj_methods_) {
     for (auto jt : it.second.methods_) {
       if (!jt.second->Synth()) {
-	Status::os(Status::USER) << "Failed to synthesize thread: "
-				 << thread_name_ << "." << entry_method_name_;
-	MessageFlush::Get(Status::USER);
+	Status::os(Status::USER_ERROR)
+	  << "Failed to synthesize thread: "
+	  << thread_name_ << "." << entry_method_name_;
+	MessageFlush::Get(Status::USER_ERROR);
 	return false;
       }
     }

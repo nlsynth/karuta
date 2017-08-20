@@ -43,11 +43,11 @@ void VM::Run() {
 
   for (Thread *thr : threads_) {
     if (!thr->IsDone()) {
-      Status::os(Status::USER) << "Remaining thread";
-      MessageFlush::Get(Status::USER);
+      Status::os(Status::USER_ERROR) << "Remaining thread";
+      MessageFlush::Get(Status::USER_ERROR);
     }
   }
-  Status::CheckAll();
+  Status::CheckAllErrors(true);
 }
 
 void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method) {

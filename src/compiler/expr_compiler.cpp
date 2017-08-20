@@ -168,9 +168,9 @@ vm::Value::ValueType ExprCompiler::GetVariableType(sym_t name) {
   } else {
     vm::Value *value = compiler_->GetObj()->LookupValue(name, false);
     if (!value) {
-      Status::os(Status::USER)
+      Status::os(Status::USER_ERROR)
 	<< "'" << sym_cstr(name) << "' is not a member of the object";
-      MessageFlush::Get(Status::USER);
+      MessageFlush::Get(Status::USER_ERROR);
       return vm::Value::NONE;
     }
     return value->type_;

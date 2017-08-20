@@ -89,7 +89,7 @@ int yylex() {
 void yyerror(const char *msg) {
   fe::ScannerPos pos;
   fe::ScannerInterface::GetPosition(&pos);
-  ostream &os = Status::os(Status::USER);
+  ostream &os = Status::os(Status::USER_ERROR);
   os << "[" << msg << "] at line: " << pos.line;
   string fn = Emitter::GetFunctionName();
   if (!fn.empty()) {
@@ -138,7 +138,7 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 			    vm::VM *vm) {
   Method *parse_tree = ReadFile(file);
   if (!parse_tree) {
-    Status::os(Status::USER) << "Failed to load: " << file;
+    Status::os(Status::USER_ERROR) << "Failed to load: " << file;
     return nullptr;
   }
   DumpStream ds(cout);
@@ -177,7 +177,7 @@ Method *FE::ReadFile(const string &file) {
   scanner->ReleaseFileImage();
 
   MethodDecl decl = Emitter::EndFunction();
-  if (Status::Check(Status::USER)) {
+  if (Status::Check(Status::USER_ERROR, true)) {
     return nullptr;
   }
   if (r != 0) {
