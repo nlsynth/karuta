@@ -7,9 +7,9 @@ def f() {
 }
 
 // NLI_NEXT_TEST
-def f(int x) (int) {
+def f(x int) (int) {
   if (x == 0) {
-    return 1;
+    return 1
   }
 }
 // NLI_NEXT_TEST
