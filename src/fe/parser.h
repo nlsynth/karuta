@@ -146,13 +146,14 @@ union YYSTYPE
   class NstBlock *block;
   const char *str;
   sym_t sym;
-  uint64_t num;
+  NumericLiteral num;
+  int sub_op;
   struct WidthSpec width_spec;
   class Annotation *annotation;
   class AnnotationValue *annotation_value;
   class AnnotationValueSet *annotation_value_set;
 
-#line 156 "src/fe/parser.h" /* yacc.c:1909  */
+#line 157 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -19,6 +19,11 @@ struct OperatorTableEntry {
   int sub_op;
 };
 
+struct NumericLiteral {
+  // This struct can be a part of YYSTYPE union.
+  uint64_t value;
+};
+
 // Language dependent scanner configuration.
 class ScannerInfo {
 public:
@@ -33,7 +38,7 @@ public:
 
 struct ScannerToken {
   sym_t sym;
-  uint64_t num;
+  NumericLiteral num;
   int sub_op;
   const char *str;
 };

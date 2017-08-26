@@ -79,7 +79,7 @@ int yylex() {
   } else if (r == K_ASSIGN || r == K_ADD_SUB ||
 	     r == K_INC_DEC || r == K_LG_COMPARE ||
 	     r == K_EQ_COMPARE || r == K_SHIFT) {
-    yylval.num = tk.sub_op;
+    yylval.sub_op = tk.sub_op;
   } else {
     yylval.sym = sym_null;
   }
