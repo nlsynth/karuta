@@ -14,6 +14,7 @@ namespace synth {
 
 ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   assign_ = nullptr;
+  assert_ = nullptr;
   pseudo_call_ = nullptr;
   mem_if_ = nullptr;
   task_entry_ = nullptr;
