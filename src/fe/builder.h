@@ -4,6 +4,7 @@
 
 #include "fe/common.h"
 #include "fe/nodecode.h"
+#include "fe/scanner.h"
 
 namespace fe {
 
@@ -30,7 +31,7 @@ class Builder {
  public:
   static Expr *StrExpr(const string &str);
   static Expr *SymExpr(sym_t num);
-  static Expr *NumExpr(uint64_t num);
+  static Expr *NumExpr(NumericLiteral nl);
   static Expr *BinopExpr(Expr *lhs, Expr *rhs, int op);
   static Expr *FuncallExpr(Expr *func, Expr *args);
   static Expr *IncDecExpr(Expr *expr, int op, bool is_post);

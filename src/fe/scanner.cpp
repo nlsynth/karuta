@@ -56,14 +56,17 @@ int Scanner::GetToken(int *sub) {
   return -1;
 }
 
-uint64_t Scanner::GetNum() {
+NumericLiteral Scanner::GetNum() {
+  NumericLiteral nl;
   if (token_[0] == '0' &&
       token_[1] == 'x') {
     uint64_t num;
     sscanf(token_, "%llx", (long long unsigned int *)&num);
-    return num;
+    nl.value = num;
+    return nl;
   }
-  return atoll(token_);
+  nl.value = atoll(token_);
+  return nl;
 }
 
 sym_t Scanner::GetSym() {
@@ -382,7 +385,7 @@ int ScannerInterface::GetToken(ScannerToken *tk) {
   tk->sub_op = 0;
   tk->str = nullptr;
   if (r == s_info->num_token) {
-    tk->num.value = Scanner::current_scanner_->GetNum();
+    tk->num = Scanner::current_scanner_->GetNum();
     if (dbg_scanner) {
       printf("num=(%lu)\n", tk->num.value);
     }

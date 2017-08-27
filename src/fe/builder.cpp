@@ -87,9 +87,9 @@ Expr *Builder::SymExpr(sym_t sym) {
   return expr;
 }
 
-Expr *Builder::NumExpr(uint64_t num) {
+Expr *Builder::NumExpr(NumericLiteral num) {
   Expr *expr = NewExpr(EXPR_NUM);
-  iroha::Op::MakeConst(num, &expr->num_);
+  iroha::Op::MakeConst(num.value, &expr->num_);
   return expr;
 }
 

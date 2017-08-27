@@ -505,7 +505,7 @@ EXPR : SYM {
   $$ = Builder::StrExpr($1);
 } | NUM {
   ScannerInterface::InSemiColonStatement();
-  $$ = Builder::NumExpr($1.value);
+  $$ = Builder::NumExpr($1);
 }
 
 VAR : SYM {

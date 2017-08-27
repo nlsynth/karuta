@@ -2739,7 +2739,7 @@ yyreduce:
 #line 506 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   ScannerInterface::InSemiColonStatement();
-  (yyval.expr) = Builder::NumExpr((yyvsp[0].num).value);
+  (yyval.expr) = Builder::NumExpr((yyvsp[0].num));
 }
 #line 2745 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;

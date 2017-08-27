@@ -60,7 +60,7 @@ public:
   void ReleaseFileImage();
 
   int GetToken(int *sub);
-  uint64_t GetNum();
+  NumericLiteral GetNum();
   sym_t GetSym();
   const char *GetStr();
   void GetPosition(ScannerPos *pos);

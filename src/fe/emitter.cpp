@@ -99,7 +99,9 @@ MethodDecl &Emitter::CurrentMethod() {
 }
 
 void Emitter::EmitNop() {
-  EmitExprStmt(Builder::NumExpr(0));
+  NumericLiteral nl;
+  nl.value = 0;
+  EmitExprStmt(Builder::NumExpr(nl));
 }
 
 void Emitter::EmitExprStmt(Expr *expr) {
