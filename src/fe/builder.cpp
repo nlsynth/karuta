@@ -90,6 +90,9 @@ Expr *Builder::SymExpr(sym_t sym) {
 Expr *Builder::NumExpr(NumericLiteral num) {
   Expr *expr = NewExpr(EXPR_NUM);
   iroha::Op::MakeConst(num.value, &expr->num_);
+  if (num.width > -1) {
+    expr->num_.type_.SetWidth(num.width);
+  }
   return expr;
 }
 

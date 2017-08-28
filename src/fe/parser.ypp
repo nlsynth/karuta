@@ -51,7 +51,7 @@ extern void yyerror(const char *msg);
 %type <enum_decl> ENUM_DECL ENUM_ITEM_LIST
 %type <str> STR
 %type <sym> SYM TYPE_NAME
-%type <num> NUM ARRAY_ELM K_BIT_CONCAT
+%type <num> NUM NUM_EXPR ARRAY_ELM K_BIT_CONCAT
 %type <sub_op> K_ASSIGN K_LG_COMPARE K_EQ_COMPARE
 %type <sub_op> K_ADD_SUB K_INC_DEC K_SHIFT
 %type <num> K_LOGIC_AND K_LOGIC_OR
@@ -504,9 +504,16 @@ EXPR : SYM {
 } | STR {
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::StrExpr($1);
-} | NUM {
+} | NUM_EXPR {
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::NumExpr($1);
+}
+
+NUM_EXPR : NUM {
+  $$ = $1;
+} | NUM '#' NUM {
+  $$ = $1;
+  $$.width = $3.value;
 }
 
 VAR : SYM {

@@ -58,6 +58,7 @@ int Scanner::GetToken(int *sub) {
 
 NumericLiteral Scanner::GetNum() {
   NumericLiteral nl;
+  nl.width = -1;
   if (token_[0] == '0' &&
       token_[1] == 'x') {
     uint64_t num;

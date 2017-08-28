@@ -19,9 +19,11 @@ struct OperatorTableEntry {
   int sub_op;
 };
 
+// This struct can be a part of YYSTYPE union.
 struct NumericLiteral {
-  // This struct can be a part of YYSTYPE union.
   uint64_t value;
+  // non negative if defined.
+  int width;
 };
 
 // Language dependent scanner configuration.
