@@ -66,6 +66,7 @@ private:
     // name to method.
     map<string, MethodSynth *> methods_;
   };
+  // This or member object to its methods.
   // TODO: fix ordering by something stable instead of pointers to Object.
   map<vm::Object *, PerObject> obj_methods_;
   int reg_name_index_;

@@ -2,6 +2,7 @@
 
 #include <list>
 
+#include "base/stl_util.h"
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "synth/channel_synth.h"
@@ -20,6 +21,7 @@ DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj)
 }
 
 DesignSynth::~DesignSynth() {
+  STLDeleteSecondElements(&obj_synth_map_);
 }
 
 bool DesignSynth::Synth() {

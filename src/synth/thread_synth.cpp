@@ -34,6 +34,11 @@ ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 }
 
 ThreadSynth::~ThreadSynth() {
+  for (auto &per_obj : obj_methods_) {
+    for (auto &m : per_obj.second.methods_) {
+      delete m.second;
+    }
+  }
 }
 
 bool ThreadSynth::HasResource(vm::Object *obj) {
