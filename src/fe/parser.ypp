@@ -190,6 +190,7 @@ WIDTH_SPEC : TYPE_NAME {
 } | '#' SYM {
   $$ = WidthSpec::Name($2, false, false);
 } | '*' WIDTH_SPEC {
+  $$ = $2;
   $$.is_ptr = true;
 }
 
