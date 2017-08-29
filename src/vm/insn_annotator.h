@@ -13,6 +13,7 @@ namespace vm {
 class InsnAnnotator {
 public:
   InsnAnnotator(VM *vm, Object *obj, Method *method);
+  // Called from compiler.
   static void AnnotateMethod(VM *vm, Object *obj, Method *method);
 
   void DoAnnotate();

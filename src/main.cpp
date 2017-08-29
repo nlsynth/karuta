@@ -67,7 +67,6 @@ private:
   bool dbg_scanner;
   bool dbg_parser;
   int timeout;
-  bool dbg_types;
   bool print_exit_status;
   bool vanilla;
   bool dbg_bytecode;
@@ -75,7 +74,7 @@ private:
 
 void Main::PrintUsage() {
   cout << "nli-" << Env::GetVersion() << "\n";
-  cout << " nli [-d[spcg]] scanner,parser,compiler,graph,type\n"
+  cout << " nli [-d[spb]] scanner,parser,byte code compiler\n"
        << "   -l\n"
        << "   -l=[modules]\n"
        << "   --module_prefix [mod]\n"
@@ -105,9 +104,6 @@ void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
       break;
     case 'p':
       dbg_parser = true;
-      break;
-    case 't':
-      dbg_types = true;
       break;
     default:
       break;
@@ -255,7 +251,6 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
 int Main::main(int argc, char **argv) {
   dbg_scanner = false;
   dbg_parser = false;
-  dbg_types = false;
   dbg_bytecode = false;
 
   ArgParser args;
