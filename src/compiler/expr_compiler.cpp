@@ -117,9 +117,7 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
       dst_reg->type_.value_type_ = vm::Value::NUM;
       dst_reg->initial_num_ = expr->num_;
       dst_reg->type_.is_const_ = true;
-      // TODO: Handle the width sepcified with the number.
-      // e.g. 32'd0
-      dst_reg->type_.width_ = iroha::Op::ValueWidth(expr->num_);
+      dst_reg->type_.width_ = expr->num_.type_;
       dst_reg->SetIsDeclaredType(true);
       insn->src_regs_.push_back(dst_reg);
     }

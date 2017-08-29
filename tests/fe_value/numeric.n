@@ -12,7 +12,8 @@ var q int = 0xffff;
 p = q;
 assert(p == 0x7f);
 assert(widthof(p) == 7);
-assert(widthof(11) == 4); // constant literal
+assert(widthof(11) == 32); // constant literal
+assert(widthof(11#16) == 16); // constant literal
 
 var z #8 = 255;
 z = z[6:0] :: z[7:7];
