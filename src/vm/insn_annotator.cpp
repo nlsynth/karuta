@@ -142,8 +142,7 @@ void InsnAnnotator::TryType(Insn *insn) {
       return;
     }
   }
-  if (InsnType::IsNumCalculation(insn->op_) ||
-      insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT) {
+  if (InsnType::IsNumCalculation(insn->op_)) {
     if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
 	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
       if (!insn->dst_regs_[0]->GetIsDeclaredType()) {
@@ -151,6 +150,15 @@ void InsnAnnotator::TryType(Insn *insn) {
 	PropagateRegWidth(insn->src_regs_[0], insn->src_regs_[1],
 			  insn->dst_regs_[0]);
       }
+      return;
+    }
+  }
+  if (insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT) {
+    if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
+	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
+      insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+      insn->dst_regs_[0]->type_.width_ =
+	insn->src_regs_[0]->type_.width_;
       return;
     }
   }
