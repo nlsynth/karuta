@@ -199,6 +199,8 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
     iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
 			  &frame->reg_values_[dst].num_);
+    frame->reg_values_[dst].num_.type_ = frame->method_->method_regs_[dst]->type_.width_;
+
     break;
   case OP_AND:
     iroha::Op::CalcBinOp(iroha::BINOP_AND,
@@ -228,12 +230,16 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			 frame->reg_values_[lhs].num_,
 			 frame->reg_values_[rhs].num_,
 			 &frame->reg_values_[dst].num_);
+    iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			  &frame->reg_values_[dst].num_);
     break;
   case OP_RSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
 			 frame->reg_values_[lhs].num_,
 			 frame->reg_values_[rhs].num_,
 			 &frame->reg_values_[dst].num_);
+    iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			  &frame->reg_values_[dst].num_);
     break;
   default:
     CHECK(false) << "unknown binop:" << vm::OpCodeName(insn->op_);
@@ -414,6 +420,7 @@ void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {
     iroha::Op::Sub(frame->reg_values_[target].num_, n1, &res);
   }
   iroha::Op::FixupWidth(frame->method_->method_regs_[target]->type_.width_, &res);
+  res.type_ = frame->method_->method_regs_[target]->type_.width_;
   frame->reg_values_[target].num_ = res;
 }
 
