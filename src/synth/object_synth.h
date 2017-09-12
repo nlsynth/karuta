@@ -43,6 +43,7 @@ private:
   bool is_root_;
   vector<ThreadSynth *> threads_;
   std::set<ThreadSynth *> scanned_threads_;
+  std::set<string> task_entry_names_;
 };
 
 }  // namespace synth

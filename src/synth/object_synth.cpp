@@ -33,10 +33,14 @@ bool ObjectSynth::HasResource(vm::Object *obj) {
 }
 
 void ObjectSynth::AddTaskEntryName(const string &task_entry) {
+  if (task_entry_names_.find(task_entry) != task_entry_names_.end()) {
+    return;
+  }
   ThreadSynth *th =
     new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), nullptr);
   th->SetIsTask(true);
   threads_.push_back(th);
+  task_entry_names_.insert(task_entry);
 }
 
 bool ObjectSynth::Scan(bool *ok) {
