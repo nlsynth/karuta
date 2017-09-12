@@ -3,7 +3,7 @@
 print("default-isynth.n loaded")
 
 // Alias for convenience
-var M object = Kernel
+var Kernel.M object = Kernel
 
 // Kludge to run a regression test.
 def Kernel.enable_wire_insn() {
