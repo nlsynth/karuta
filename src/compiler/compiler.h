@@ -37,6 +37,7 @@ public:
   vm::Register *EmitMemberLoad(vm::Register *obj_reg, sym_t m);
   void AddPrePostIncDecExpr(fe::Expr *expr, bool is_post);
   vm::Object *GetVMObject(vm::Register *obj_reg);
+  void SetDelayInsnEmit(bool delay);
 
 private:
   // stub can be NULL.
@@ -63,11 +64,9 @@ private:
   void EmitNop();
   void ResolveLabels();
   VarScope *CurrentScope();
-  void EmitInsnNow(vm::Insn *insn);
   void CompilePreIncDec();
   void CompilePostIncDec();
   void DoCompilePrePostIncDec(bool is_post, vector<fe::Expr*> *exprs);
-  void CompileIncDecExpr(fe::Expr *expr);
   void FlushPendingInsns();
   void SetupArgumentRegisters();
   void SetupReturnRegisters();
@@ -87,6 +86,7 @@ private:
   vector<vm::Insn*> pending_insns_;
   vector<VarScope*> bindings_;
   vm::Insn *last_queued_insn_;
+  bool delay_insn_emit_;
   map<sym_t, vm::Insn *> label_insn_map_;
   vector<fe::Expr*> pre_inc_dec_exprs_;
   vector<fe::Expr*> post_inc_dec_exprs_;

@@ -45,7 +45,8 @@ void Compiler::SetByteCodeDebug(bool enable) {
 }
 
 Compiler::Compiler(vm::VM *vm, vm::Object *obj, const fe::Method *parse_tree)
-  : vm_(vm), obj_(obj), tree_(parse_tree), last_queued_insn_(nullptr) {
+  : vm_(vm), obj_(obj), tree_(parse_tree), last_queued_insn_(nullptr),
+    delay_insn_emit_(true) {
   exc_.reset(new ExprCompiler(this));
 }
 
@@ -138,32 +139,13 @@ void Compiler::CompilePostIncDec() {
 
 void Compiler::DoCompilePrePostIncDec(bool is_post, vector<fe::Expr*> *exprs) {
   for (size_t i = 0; i < exprs->size(); ++i) {
-    CompileIncDecExpr(exprs->at(i));
+    exc_->CompileIncDecExpr(exprs->at(i));
   }
   if (is_post) {
     post_inc_dec_exprs_.clear();
   } else {
     pre_inc_dec_exprs_.clear();
   }
-}
-
-void Compiler::CompileIncDecExpr(fe::Expr *expr) {
-  vm::Insn *insn = new vm::Insn;
-  if (expr->type_ == fe::UNIOP_PRE_INC ||
-      expr->type_ == fe::UNIOP_POST_INC) {
-    insn->op_ = vm::OP_PRE_INC;
-  } else {
-    insn->op_ = vm::OP_PRE_DEC;
-  }
-  vm::Register *reg = exc_->CompileSymExpr(expr->args_);
-  if (!reg) {
-    Status::os(Status::USER_ERROR) << "Invalid inc/dec";
-    MessageFlush::Get(Status::USER_ERROR);
-    return;
-  }
-  insn->dst_regs_.push_back(reg);
-  insn->src_regs_.push_back(reg);
-  EmitInsnNow(insn);
 }
 
 void Compiler::FlushPendingInsns() {
@@ -240,13 +222,13 @@ VarScope *Compiler::CurrentScope() {
 }
 
 void Compiler::EmitInsn(vm::Insn *insn) {
-  pending_insns_.push_back(insn);
-  last_queued_insn_ = insn;
-}
-
-void Compiler::EmitInsnNow(vm::Insn *insn) {
-  method_->insns_.push_back(insn);
-  last_queued_insn_ = insn;
+  if (delay_insn_emit_) {
+    pending_insns_.push_back(insn);
+    last_queued_insn_ = insn;
+  } else {
+    method_->insns_.push_back(insn);
+    last_queued_insn_ = insn;
+  }
 }
 
 void Compiler::CompileStmt(fe::Stmt *stmt) {
@@ -568,6 +550,10 @@ vm::Object *Compiler::GetVMObject(vm::Register *obj_reg) {
     return vm_->kernel_object_;
   }
   return reg_obj_map_[obj_reg];
+}
+
+void Compiler::SetDelayInsnEmit(bool delay) {
+  delay_insn_emit_ = delay;
 }
 
 bool Compiler::IsTopLevel() const {

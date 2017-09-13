@@ -693,4 +693,26 @@ void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
   }
 }
 
+void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
+  // TODO: Fix to allow non symbol.
+  vm::Insn *insn = new vm::Insn;
+  if (expr->type_ == fe::UNIOP_PRE_INC ||
+      expr->type_ == fe::UNIOP_POST_INC) {
+    insn->op_ = vm::OP_PRE_INC;
+  } else {
+    insn->op_ = vm::OP_PRE_DEC;
+  }
+  vm::Register *reg = CompileSymExpr(expr->args_);
+  if (!reg) {
+    Status::os(Status::USER_ERROR) << "Invalid inc/dec";
+    MessageFlush::Get(Status::USER_ERROR);
+    return;
+  }
+  insn->dst_regs_.push_back(reg);
+  insn->src_regs_.push_back(reg);
+  compiler_->SetDelayInsnEmit(false);
+  compiler_->EmitInsn(insn);
+  compiler_->SetDelayInsnEmit(true);
+}
+
 }  // namespace compiler
