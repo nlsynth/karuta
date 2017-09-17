@@ -31,6 +31,8 @@ private:
   vm::Register *CompileArrayRef(fe::Expr *expr);
   vm::Register *CompileAssignToUniopRef(vm::Insn *insn, fe::Expr *lhs,
 					vm::Register *rhs_reg);
+  vm::Register *CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
+				   vm::Register *rhs_reg);
   vm::Register *CompileComma(fe::Expr *expr);
   vm::Register *CompileElmRef(fe::Expr *expr);
   vm::Register *CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
@@ -41,6 +43,7 @@ private:
   vm::Register *CompileRef(fe::Expr *expr);
   vm::Register *CompileRefLhsExpr(fe::Expr *lhs_expr, vm::Insn *insn);
   vm::Register *CompileTriTerm(fe::Expr *expr);
+  void CompileIncDecNonLocal(fe::Expr *expr);
 
   vm::Value::ValueType GetVariableType(sym_t name);
   vm::OpCode GetOpCodeFromExpr(fe::Expr *expr);

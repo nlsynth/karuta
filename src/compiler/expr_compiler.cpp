@@ -502,8 +502,6 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
     return CompileMultiValueFuncall(nullptr, expr->rhs_, lhs_regs);
   }
 
-  vm::Insn *insn = new vm::Insn;
-
   // RHS.
   vm::Register *rhs_reg = CompileExpr(expr->rhs_);
   if (!rhs_reg) {
@@ -515,14 +513,20 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
     rhs_reg = UpdateModifyOp(expr->type_, expr->lhs_, rhs_reg);
   }
 
-  if (expr->lhs_->type_ == fe::UNIOP_REF) {
-    return CompileAssignToUniopRef(insn, expr->lhs_, rhs_reg);
-  } else if (expr->lhs_->type_ == fe::BINOP_ELM_REF) {
-    return CompileAssignToElmRef(insn, expr->lhs_, rhs_reg);
-  } else if (expr->lhs_->type_ == fe::BINOP_ARRAY_REF) {
-    return CompileAssignToArray(insn, expr->lhs_, rhs_reg);
-  } else if (expr->lhs_->type_ == fe::EXPR_SYM) {
-    return CompileAssignToSym(insn, expr->lhs_, rhs_reg);
+  vm::Insn *insn = new vm::Insn;
+  return CompileAssignToLhs(insn, expr->lhs_, rhs_reg);
+}
+
+vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
+					       vm::Register *rhs_reg) {
+  if (lhs->type_ == fe::UNIOP_REF) {
+    return CompileAssignToUniopRef(insn, lhs, rhs_reg);
+  } else if (lhs->type_ == fe::BINOP_ELM_REF) {
+    return CompileAssignToElmRef(insn, lhs, rhs_reg);
+  } else if (lhs->type_ == fe::BINOP_ARRAY_REF) {
+    return CompileAssignToArray(insn, lhs, rhs_reg);
+  } else if (lhs->type_ == fe::EXPR_SYM) {
+    return CompileAssignToSym(insn, lhs, rhs_reg);
   } else {
     CHECK(false);
   }
@@ -694,7 +698,14 @@ void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
 }
 
 void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
-  // TODO: Fix to allow non symbol.
+  vm::Register *reg = nullptr;
+  if (expr->args_->type_ == fe::EXPR_SYM) {
+    reg = compiler_->LookupLocalVar(expr->args_->sym_);
+  }
+  if (reg == nullptr) {
+    CompileIncDecNonLocal(expr);
+    return;
+  }
   vm::Insn *insn = new vm::Insn;
   if (expr->type_ == fe::UNIOP_PRE_INC ||
       expr->type_ == fe::UNIOP_POST_INC) {
@@ -702,16 +713,52 @@ void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
   } else {
     insn->op_ = vm::OP_PRE_DEC;
   }
-  vm::Register *reg = CompileSymExpr(expr->args_);
-  if (!reg) {
-    Status::os(Status::USER_ERROR) << "Invalid inc/dec";
-    MessageFlush::Get(Status::USER_ERROR);
-    return;
-  }
   insn->dst_regs_.push_back(reg);
   insn->src_regs_.push_back(reg);
   compiler_->SetDelayInsnEmit(false);
   compiler_->EmitInsn(insn);
+  compiler_->SetDelayInsnEmit(true);
+}
+
+void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
+  compiler_->SetDelayInsnEmit(false);
+  vm::Register *rhs = CompileExpr(expr->args_);
+
+  vm::Insn *insn = new vm::Insn;
+  insn->op_ = vm::OP_NUM;
+  vm::Register *one = compiler_->AllocRegister();
+  one->type_.value_type_ = vm::Value::NUM;
+  one->initial_num_.SetValue(1);
+  one->initial_num_.type_ = rhs->type_.width_;
+  one->type_.is_const_ = true;
+  one->type_.width_ = rhs->type_.width_;
+  one->SetIsDeclaredType(true);
+  insn->src_regs_.push_back(one);
+  insn->dst_regs_.push_back(one);
+  compiler_->EmitInsn(insn);
+
+  vm::Register *dst = compiler_->AllocRegister();
+  dst->type_.value_type_ = vm::Value::NUM;
+  dst->type_.is_const_ = true;
+  dst->type_.width_ = rhs->type_.width_;
+  dst->SetIsDeclaredType(false);
+
+  insn = new vm::Insn;
+  if (expr->type_ == fe::UNIOP_PRE_INC ||
+      expr->type_ == fe::UNIOP_POST_INC) {
+    insn->op_ = vm::OP_ADD;
+  } else {
+    insn->op_ = vm::OP_SUB;
+  }
+  insn->insn_expr_ = expr;
+  insn->dst_regs_.push_back(dst);
+  insn->src_regs_.push_back(rhs);
+  insn->src_regs_.push_back(one);
+  compiler_->EmitInsn(insn);
+
+  insn = new vm::Insn;
+  CompileAssignToLhs(insn, expr->args_, dst);
+
   compiler_->SetDelayInsnEmit(true);
 }
 
