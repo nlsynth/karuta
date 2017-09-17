@@ -101,6 +101,7 @@ private:
   bool is_space(char c);
   bool is_symhead(char c);
   bool is_symbody(char c);
+  uint64_t Parse0b();
 
 private:
   static const int MAX_TOKEN = 256;

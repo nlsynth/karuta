@@ -77,7 +77,9 @@ prefix '__' is reserved for implementation
 
 ### Numerics
 
-    123
+    123    // Decimal
+    0x123  // Hexadecimal
+    0b1010 // Binary
 
 ### Operators
 

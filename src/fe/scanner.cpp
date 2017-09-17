@@ -59,15 +59,32 @@ int Scanner::GetToken(int *sub) {
 NumericLiteral Scanner::GetNum() {
   NumericLiteral nl;
   nl.width = -1;
-  if (token_[0] == '0' &&
-      token_[1] == 'x') {
-    uint64_t num;
-    sscanf(token_, "%llx", (long long unsigned int *)&num);
-    nl.value = num;
-    return nl;
+  if (token_[0] == '0') {
+    if (token_[1] == 'x') {
+      uint64_t num;
+      sscanf(token_, "%llx", (long long unsigned int *)&num);
+      nl.value = num;
+      return nl;
+    }
+    if (token_[1] == 'b') {
+      nl.value = Parse0b();
+      nl.width = token_len_ - 2;
+      return nl;
+    }
   }
   nl.value = atoll(token_);
   return nl;
+}
+
+uint64_t Scanner::Parse0b() {
+  uint64_t u = 0;
+  for (int i = 2; i < token_len_; ++i) {
+    u <<= 1;
+    if (token_[i] == '1') {
+      u += 1;
+    }
+  }
+  return u;
 }
 
 sym_t Scanner::GetSym() {
@@ -153,13 +170,17 @@ void Scanner::PushChar(char c) {
 int Scanner::read_num() {
   ClearToken();
   bool hex_dec_mode = false;
-  if (CurChar() == '0' &&
-      NextChar() == 'x') {
-    PushChar(CurChar());
-    GoAhead();
-    PushChar(CurChar());
-    GoAhead();
-    hex_dec_mode = true;
+  if (CurChar() == '0') {
+    char c = NextChar();
+    if (c == 'x' || c == 'b') {
+      PushChar(CurChar());
+      GoAhead();
+      PushChar(CurChar());
+      GoAhead();
+      if (c == 'x') {
+	hex_dec_mode = true;
+      }
+    }
   }
   while (true) {
     char c = CurChar();
