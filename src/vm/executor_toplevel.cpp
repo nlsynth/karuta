@@ -77,6 +77,13 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
   case OP_SET_TYPE_OBJECT:
     ExecSetTypeObject(method, insn);
     break;
+  case OP_ADD:
+  case OP_SUB:
+  case OP_MUL:
+    if (MayExecuteCustomOp(method, frame, insn)) {
+      break;
+    }
+    return Executor::ExecInsn(method, frame, insn);
   default:
     return Executor::ExecInsn(method, frame, insn);
   }
@@ -100,10 +107,6 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   }
   if (value->type_ == Value::NUM) {
     iroha::Op::MakeConst(0, &value->num_);
-    sym_t object_name = decl->GetObjectName();
-    if (object_name != sym_null) {
-      value->object_ = NumericObject::Get(thr_->GetVM(), object_name);
-    }
   }
   if (value->type_ == Value::INT_ARRAY) {
     value->object_ = CreateMemoryObject(decl->GetWidth(),
@@ -297,6 +300,22 @@ void ExecutorToplevel::ExecSetTypeObject(Method *method, Insn *insn) {
   Register *reg = method->method_regs_[dst_id];
   reg->type_object_ = NumericObject::Get(thr_->GetVM(),
 					 reg->type_.object_name_);
+}
+
+bool ExecutorToplevel::MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn) {
+  int lhs = insn->src_regs_[0]->id_;
+  int rhs = insn->src_regs_[1]->id_;
+  if (frame->reg_values_[lhs].type_ != Value::NUM ||
+      frame->reg_values_[rhs].type_ != Value::NUM) {
+    return false;
+  }
+  if (method->method_regs_[rhs]->type_object_ != nullptr &&
+      method->method_regs_[lhs]->type_object_ ==
+      method->method_regs_[rhs]->type_object_) {
+    CHECK(false) << "Custom op is not allowed from top level";
+    return false;
+  }
+  return false;
 }
 
 }  // namespace vm

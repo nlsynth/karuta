@@ -201,8 +201,16 @@ As for variable declaration, please see types section.
     func Numerics.Int32.Build(arg #32) (#32) {
       return arg
     }
+
     func Numerics.Int32.Add(lhs, rhs #32) (#32) {
       return lhs + rhs
+    }
+
+    // Type class can't be accessed from top level environment.
+    func f() {
+      var x #Int32
+      x = Numerics.Int32.Build(1)
+      print(x + x)
     }
 
 ## RTL generation

@@ -55,7 +55,9 @@ void Value::Dump(ostream &os) const {
     annotation_->Dump(os);
     break;
   case OBJECT:
-    if (StringWrapper::IsString(object_)) {
+    if (object_ == nullptr) {
+      os << "null object";
+    } else if (StringWrapper::IsString(object_)) {
       os << StringWrapper::String(object_);
     } else {
       os << "object";
