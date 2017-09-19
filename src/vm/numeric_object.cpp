@@ -1,5 +1,8 @@
 #include "vm/numeric_object.h"
 
+#include "fe/method.h"
+#include "fe/var_decl.h"
+#include "vm/method.h"
 #include "vm/object.h"
 #include "vm/value.h"
 #include "vm/vm.h"
@@ -25,8 +28,14 @@ bool NumericObject::IsNumericObject(VM *vm, Object *obj) {
 }
 
 int NumericObject::Width(Object *obj) {
-  // TODO: Get width from methods.
-  return 32;
+  sym_t build = sym_lookup("Build");
+  Value *v = obj->LookupValue(build, false);
+  CHECK(v != nullptr && v->type_ == Value::METHOD);
+  // Acauires from the parse tree, since the method might not be compiled yet.
+  const fe::Method *m = v->method_->parse_tree_;
+  CHECK(m && m->returns_->decls.size() == 1);
+  fe::VarDecl *vd = m->returns_->decls[0];
+  return vd->GetWidth().GetWidth();
 }
 
 sym_t NumericObject::GetMethodName(Object *obj, enum OpCode op) {
