@@ -15,6 +15,5 @@ def main() {
   assert(i == 10);
 }
 
-enable_wire_insn();
 compile();
 writeHdl("a.v");

@@ -5,10 +5,6 @@ print("default-isynth.n loaded")
 // Alias for convenience
 var Kernel.M object = Kernel
 
-// Kludge to run a regression test.
-def Kernel.enable_wire_insn() {
-}
-
 def Kernel.compile() {
   __compile("")
   __compile("clean_unused_resource,clean_empty_state,clean_unreachable_state,array_to_mem")
