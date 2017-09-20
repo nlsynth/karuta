@@ -81,11 +81,19 @@ void Method::Dump(DumpStream &ds) {
     ds.pop_indent();
   }
 
+  int num_args = GetNumArgRegisters();
+  int num_rets = GetNumReturnRegisters();
   for (size_t i = 0; i < method_regs_.size(); ++i) {
     Register *reg = method_regs_[i];
     ds.push_indent();
     ds.indent();
-    ds.os << "reg_" << reg->id_ << ":";
+    ds.os << "r" << reg->id_;
+    if (i < num_args) {
+      ds.os << "a";
+    } else if (i < num_args + num_rets) {
+      ds.os << "r";
+    }
+    ds.os << ":";
     reg->Dump(ds);
     ds.os << "\n";
     ds.pop_indent();
