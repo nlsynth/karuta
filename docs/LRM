@@ -140,13 +140,14 @@ As for variable declaration, please see types section.
 
 #### AXI
 
-    @AxiMasterPort()
+    // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
+    @AxiMaster()
     var M.x int[32]
     def f() {
       x.load(mem_addr, count, array_addr)
     }
 
-    @AxiSlavePort()
+    @AxiSlave()
     var M.x int[32]
 
 ### Channel

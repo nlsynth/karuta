@@ -1,5 +1,6 @@
 #include "synth/object_method.h"
 
+#include "base/annotation.h"
 #include "iroha/iroha.h"
 #include "synth/insn_walker.h"
 #include "synth/method_context.h"
@@ -8,6 +9,7 @@
 #include "synth/resource_set.h"
 #include "synth/resource_synth.h"
 #include "synth/shared_resource_set.h"
+#include "vm/array_wrapper.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/insn.h"
 #include "vm/method.h"
@@ -67,6 +69,8 @@ void ObjectMethod::Scan() {
 }
 
 IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
+  CHECK(a->IsAxiMaster());
   IResource *res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
   rsynth_->MayAddAxiMasterPort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(res);
