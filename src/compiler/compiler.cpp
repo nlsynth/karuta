@@ -4,6 +4,7 @@
 #include "base/pool.h"
 #include "base/status.h"
 #include "compiler/expr_compiler.h"
+#include "compiler/reg_checker.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/stmt.h"
@@ -87,6 +88,9 @@ vm::Method *Compiler::Compile(vm::Method *method) {
       method_->Dump();
     }
   }
+
+  RegChecker checker(method_);
+  checker.Check();
 
   return method_;
 }

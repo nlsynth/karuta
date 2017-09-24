@@ -40,6 +40,8 @@
         'compiler/common.h',
         'compiler/expr_compiler.cpp',
         'compiler/expr_compiler.h',
+        'compiler/reg_checker.cpp',
+        'compiler/reg_checker.h',
         'fe/builder.cpp',
         'fe/builder.h',
         'fe/common.cpp',
