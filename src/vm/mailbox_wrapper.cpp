@@ -99,7 +99,7 @@ void MailboxWrapper::Put(Thread *thr, Object *obj,
 			 const vector<Value> &args) {
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   if (data->has_value_) {
-    data->get_waiters_.insert(thr);
+    data->put_waiters_.insert(thr);
     thr->Suspend();
   } else {
     data->has_value_ = true;
