@@ -526,10 +526,9 @@ bool Executor::ExecFuncall(MethodFrame *frame,
 			   Insn *insn) {
   Object *obj;
   Method *callee_method = LookupMethod(frame, insn, &obj);
-  if (!callee_method) {
+  if (callee_method == nullptr) {
     return true;
   }
-  CHECK(callee_method);
   vector<Value> args;
   for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
     args.push_back(frame->reg_values_[insn->src_regs_[i]->id_]);

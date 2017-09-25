@@ -21,6 +21,7 @@ public:
   void ExecSpawn(MethodFrame *frame, Insn *insn);
   void ExecFuncdecl(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecMemberAccess(Method *method, MethodFrame *frame, const Insn *insn);
+  bool ExecFuncall(MethodFrame *frame, Insn *insn);
   void ExecFuncallDone(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn);
   bool ExecGenericRead(MethodFrame *frame, Insn *insn);

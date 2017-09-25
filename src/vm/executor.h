@@ -38,6 +38,7 @@ public:
 
 protected:
   void ExecMemberAccess(MethodFrame *frame, const Insn *insn);
+  bool ExecFuncall(MethodFrame *frame, Insn *insn);
   void ExecFuncallDone(const Method *method, MethodFrame *frame, Insn *insn);
   Method *LookupMethod(MethodFrame *frame, Insn *insn, Object **obj);
   void ExecLoadObj(MethodFrame *frame, Insn *insn);
@@ -59,7 +60,6 @@ private:
   void ExecLogicInv(MethodFrame *frame, Insn *insn);
   void ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
 			     Insn *insn);
-  bool ExecFuncall(MethodFrame *frame, Insn *insn);
   void ExecIf(MethodFrame *frame, Insn *insn);
   void ExecGoto(MethodFrame *frame, Insn *insn);
   void ExecBitRange(MethodFrame *frame, Insn *insn);

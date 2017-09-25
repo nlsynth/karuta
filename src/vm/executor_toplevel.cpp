@@ -71,6 +71,12 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
   case OP_ARRAY_WRITE:
     ExecutorToplevel::ExecArrayWrite(method, frame, insn);
     break;
+  case OP_FUNCALL:
+    need_suspend = ExecutorToplevel::ExecFuncall(frame, insn);
+    if (!thr_->IsRunnable()) {
+      return true;
+    }
+    break;
   case OP_FUNCALL_DONE:
     ExecutorToplevel::ExecFuncallDone(method, frame, insn);
     break;
@@ -244,6 +250,21 @@ bool ExecutorToplevel::ExecGenericRead(MethodFrame *frame, Insn *insn) {
     return ExecChannelRead(frame, insn);
   }
   return false;
+}
+
+bool ExecutorToplevel::ExecFuncall(MethodFrame *frame, Insn *insn) {
+  Object *obj;
+  Method *callee_method = LookupMethod(frame, insn, &obj);
+  if (callee_method == nullptr) {
+    return true;
+  }
+  if (callee_method->parse_tree_ != nullptr) {
+    // non native
+    if (insn->src_regs_.size() != callee_method->GetNumArgRegisters()) {
+      CHECK(false) << "number of arguments doesn't match";
+    }
+  }
+  return Executor::ExecFuncall(frame, insn);
 }
 
 void ExecutorToplevel::ExecFuncallDone(const Method *method,
