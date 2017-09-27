@@ -8,6 +8,7 @@
 #include "vm/array_wrapper.h"
 #include "vm/insn.h"
 #include "vm/int_array.h"
+#include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 
 namespace synth {
@@ -171,6 +172,7 @@ IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner, bool is_put) 
     DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
 				  n);
   IResource *res = new IResource(tab_, rc);
+  res->GetParams()->SetWidth(vm::MailboxWrapper::GetWidth(obj));
   tab_->resources_.push_back(res);
   (*m)[obj] = res;
   return res;
