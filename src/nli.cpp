@@ -202,3 +202,7 @@ void Env::SetArgv0(const string &c) {
 const string &Env::GetArgv0() {
   return argv0_;
 }
+
+bool Env::IsSandboxMode() {
+  return sandbox_mode_;
+}

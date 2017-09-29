@@ -96,11 +96,21 @@ void NativeMethods::SetIROutput(Thread *thr, Object *obj,
 
 void NativeMethods::SetIrohaPath(Thread *thr, Object *obj,
 				 const vector<Value> &args) {
+  if (Env::IsSandboxMode()) {
+    Status::os(Status::USER_ERROR)
+      << "SetIrohaPath() is not allowed on sandbox mode";
+    return;
+  }
   SetMemberString(thr, "$iroha_path", obj, args);
 }
 
 void NativeMethods::RunIroha(Thread *thr, Object *obj,
 			     const vector<Value> &args) {
+  if (Env::IsSandboxMode()) {
+    Status::os(Status::USER_ERROR)
+      << "RunIroha() is not allowed on sandbox mode";
+    return;
+  }
   if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
       !StringWrapper::IsString(args[0].object_)) {
     Status::os(Status::USER_ERROR) << "Missing argument for runIroha()";

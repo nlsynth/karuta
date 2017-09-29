@@ -37,6 +37,7 @@ public:
   static const string &GetModulePrefix();
   static void SetArgv0(const string &c);
   static const string &GetArgv0();
+  static bool IsSandboxMode();
 
 private:
   static const char *nli_dir_;
