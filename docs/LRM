@@ -28,6 +28,8 @@ TODO: Consider non synthesizable methods.
     def f() {
       print("hello?")
     }
+    // The Interpreter to start all threads.
+    run()
 
 ### Data flow
 
@@ -152,7 +154,7 @@ As for variable declaration, please see types section.
 
 ### Channel
 
-    channel M.m1 = int
+    channel M.c1 int
 
 ## Misc features (or to be classified)
 
@@ -185,10 +187,11 @@ As for variable declaration, please see types section.
 * setIrohaPath(p string)
 * setIROuput(p string)
 * runIroha(opts string)
+    * e.g. runIroha("-v -S -o x.v")
 
 ### Mailbox
 
-    mailbox M.m1 = int
+    mailbox M.m1 int
     def M.f() {
       m1.put(1)
       m1.get()

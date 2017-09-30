@@ -329,12 +329,17 @@ THREAD_DECL_STMT : K_THREAD {ScannerInterface::InSemiColonStatement();} VAR K_AS
   Emitter::EmitThreadDeclStmt($3, $5);
 }
 
-CHANNEL_DECL_STMT : K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN WIDTH_SPEC {
+CHANNEL_DECL_STMT : K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
   Emitter::EmitChannelDeclStmt($3, $5.is_primitive, $5.name, $5.width);
 }
 
-MAILBOX_DECL_STMT : K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN WIDTH_SPEC {
+MAILBOX_DECL_STMT : K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
   Emitter::EmitMailboxDeclStmt($3, $5.is_primitive, $5.name, $5.width);
+}
+
+ASSIGN_OR_EMPTY : {
+} | K_ASSIGN {
+  // Maybe remove this syntax later.
 }
 
 IF_COND_PART : K_IF '(' EXPR ')' {
