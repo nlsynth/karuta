@@ -680,10 +680,13 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     CHECK(value->type_ == vm::Value::ENUM_ITEM);
     IRegister *reg = DesignTool::AllocConstNum(tab_, 0, value->enum_val_.val);
     local_reg_map_[insn->dst_regs_[0]] = reg;
-  } else if (value->type_ == vm::Value::OBJECT) {
+  } else if (value->type_ == vm::Value::OBJECT ||
+	     value->type_ == vm::Value::INT_ARRAY ||
+	     value->type_ == vm::Value::OBJECT_ARRAY) {
     // processed in MaybeLoadMemberObject()
     CHECK(!is_store);
   } else {
+    CHECK(value->type_ == vm::Value::NUM);
     SharedResource *sres =
       shared_resource_set_->GetBySlotName(obj, insn->label_);
     if (sres->accessors_.size() > 1) {
