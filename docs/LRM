@@ -143,6 +143,7 @@ As for variable declaration, please see types section.
 #### AXI
 
     // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
+    // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
     @AxiMaster()
     var M.x int[32]
     def f() {
