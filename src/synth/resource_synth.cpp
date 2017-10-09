@@ -45,6 +45,9 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
   slave_port->GetParams()->SetWidth(vm::ArrayWrapper::GetDataWidth(array_obj));
   slave_port->GetParams()->SetAddrWidth(a->GetAddrWidth());
   SetArrayName(owner_obj, array_obj, slave_port);
+  if (!a->IsAxiExclusive()) {
+    slave_port->GetParams()->SetSramPortIndex("0");
+  }
 }
 
 void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
