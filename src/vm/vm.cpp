@@ -21,7 +21,6 @@ VM::VM() {
   InstallBoolType();
   Method::InstallNativeRootObjectMethods(this, root_object_);
   InstallObjects();
-  memory_.reset(IntArray::Create(iroha::NumericWidth(false, 32), 0));
 }
 
 VM::~VM() {
@@ -107,10 +106,16 @@ void VM::InstallObjects() {
   object_value.object_ = env;
   kernel_object_->InstallValue(sym_lookup("Env"), object_value);
   Method::InstallEnvNativeMethods(this, env);
+
+  default_mem_ =
+    ArrayWrapper::NewIntArrayWrapper(this, 0, iroha::NumericWidth(false, 32),
+				     nullptr);
+  object_value.object_ = default_mem_;
+  kernel_object_->InstallValue(sym_lookup("Mem"), object_value);
 }
 
 IntArray *VM::GetDefaultMemory() {
-  return memory_.get();
+  return ArrayWrapper::GetIntArray(default_mem_);
 }
 
 int VM::GetAddressSpaceWidth(Object *obj) {

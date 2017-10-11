@@ -1,4 +1,4 @@
-#include "array_wrapper.h"
+#include "vm/array_wrapper.h"
 
 #include <sstream>
 
@@ -16,7 +16,7 @@ static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
 public:
-  ArrayWrapperData(VM *vm, int size, bool is_int,
+  ArrayWrapperData(VM *vm, uint64_t size, bool is_int,
 		   const iroha::NumericWidth &width,
 		   Annotation *an) {
     if (is_int) {
@@ -94,7 +94,7 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
   return array_obj;
 }
 
-Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, int size,
+Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, uint64_t size,
 					 const iroha::NumericWidth &width,
 					 Annotation *an) {
   Object *array_obj = vm->root_object_->Clone(vm);

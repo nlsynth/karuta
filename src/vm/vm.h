@@ -31,10 +31,10 @@ public:
   Object *kernel_object_;
   Object *numerics_object_;
   Object *bool_type_;
+  Object *default_mem_;
 
 private:
   set<Thread*> threads_;
-  std::unique_ptr<IntArray> memory_;
 
   std::unique_ptr<Pool<Method> > methods_;
   set<Object*> objects_;
