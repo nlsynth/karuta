@@ -110,6 +110,7 @@ void VM::InstallObjects() {
   default_mem_ =
     ArrayWrapper::NewIntArrayWrapper(this, 0, iroha::NumericWidth(false, 32),
 				     nullptr);
+  ArrayWrapper::InstallSramIfMethods(this, default_mem_);
   object_value.object_ = default_mem_;
   kernel_object_->InstallValue(sym_lookup("Mem"), object_value);
 }

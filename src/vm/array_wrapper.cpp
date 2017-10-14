@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "numeric/numeric_op.h"  // from iroha
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
 #include "vm/method.h"
@@ -132,19 +133,41 @@ int ArrayWrapper::GetDataWidth(Object *obj) {
   return a->GetDataWidth().GetWidth();
 }
 
+void ArrayWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
+  CHECK(args.size() > 0) << "read requires an address";
+  uint64_t addr = args[0].num_.GetValue();
+  ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
+  IntArray *arr = data->int_array_;
+  Value value;
+  value.type_ = Value::NUM;
+  iroha::Op::MakeConst(arr->Read(addr).GetValue(), &value.num_);
+  thr->SetReturnValueFromNativeMethod(value);
+}
+
+void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
+  CHECK(args.size() > 1) << "write requires an address and data";
+  uint64_t addr = args[0].num_.GetValue();
+  uint64_t data = args[1].num_.GetValue();
+  ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
+  IntArray *arr = ad->int_array_;
+  iroha::Numeric num;
+  iroha::Op::MakeConst(data, &num);
+  arr->Write(addr, num);
+}
+
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 0) << "load requires an address";
-  MemAccess(thr, obj, args, true);
+  MemBurstAccess(thr, obj, args, true);
 }
 
 void ArrayWrapper::Store(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 0) << "store requires an address";
-  MemAccess(thr, obj, args, false);
+  MemBurstAccess(thr, obj, args, false);
 }
 
-void ArrayWrapper::MemAccess(Thread *thr, Object *obj,
-			     const vector<Value> &args,
-			     bool is_load) {
+void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
+				  const vector<Value> &args,
+				  bool is_load) {
   IntArray *mem = thr->GetVM()->GetDefaultMemory();
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = data->int_array_;
@@ -182,6 +205,17 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   m->SetSynthName(synth::kLoad);
   m = Method::InstallNativeMethod(vm, obj, "store", &ArrayWrapper::Store, rets);
   m->SetSynthName(synth::kStore);
+}
+
+void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {
+  vector<RegisterType> rets;
+  rets.push_back(Method::IntType(32));
+  Method *m =
+    Method::InstallNativeMethod(vm, obj, "read", &ArrayWrapper::Read, rets);
+  m->SetSynthName(synth::kSramRead);
+  rets.clear();
+  m = Method::InstallNativeMethod(vm, obj, "write", &ArrayWrapper::Write, rets);
+  m->SetSynthName(synth::kSramWrite);
 }
 
 }  // namespace vm
