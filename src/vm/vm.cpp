@@ -112,7 +112,7 @@ void VM::InstallObjects() {
 				     nullptr);
   ArrayWrapper::InstallSramIfMethods(this, default_mem_);
   object_value.object_ = default_mem_;
-  kernel_object_->InstallValue(sym_lookup("Mem"), object_value);
+  kernel_object_->InstallValue(sym_lookup("Memory"), object_value);
 }
 
 IntArray *VM::GetDefaultMemory() {
