@@ -45,6 +45,10 @@ void ObjectMethod::Synth() {
     iinsn = SynthMailboxAccess(obj, false, false);
   } else if (name == kMailboxNotify) {
     iinsn = SynthMailboxAccess(obj, false, true);
+  } else if (name == kSramRead) {
+    iinsn = SynthMemoryAccess(obj, false);
+  } else if (name == kSramWrite) {
+    iinsn = SynthMemoryAccess(obj, true);
   } else {
     CHECK(false) << name;
   }
@@ -129,6 +133,13 @@ string ObjectMethod::GetSynthName(vm::Object *obj) {
   CHECK(value != nullptr && value->type_ == vm::Value::METHOD);
   vm::Method *method = value->method_;
   return method->GetSynthName();
+}
+
+IInsn *ObjectMethod::SynthMemoryAccess(vm::Object *obj, bool is_write) {
+  ResourceSet *rset = synth_->GetResourceSet();
+  IResource *res = rset->GetExternalArrayResource();
+  IInsn *iinsn = new IInsn(res);
+  return iinsn;
 }
 
 }  // namespace synth

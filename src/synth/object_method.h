@@ -20,6 +20,7 @@ private:
   IInsn *SynthMailboxWidth(vm::Object *mailbox_obj);
   IInsn *SynthMailboxAccess(vm::Object *mailbox_obj,
 			    bool is_blocking, bool is_put);
+  IInsn *SynthMemoryAccess(vm::Object *mem, bool is_write);
 
   MethodSynth *synth_;
   InsnWalker *walker_;
