@@ -270,10 +270,6 @@ vm::Register *ExprCompiler::CompileRef(fe::Expr *expr) {
     if (type == vm::Value::OBJECT) {
       insn->op_ = vm::OP_CHANNEL_READ;
       insn->obj_reg_ = compiler_->EmitLoadObj(expr->args_->sym_);
-    } else if (type == vm::Value::NUM) {
-      insn->op_ = vm::OP_MEMORY_READ;
-      vm::Register *val = CompileExpr(expr->args_);
-      insn->src_regs_.push_back(val);
     } else {
       CHECK(false);
     }
@@ -320,9 +316,6 @@ vm::Register *ExprCompiler::CompileRefLhsExpr(fe::Expr *lhs_expr,
       insn->op_ = vm::OP_CHANNEL_WRITE;
       insn->obj_reg_ = compiler_->EmitLoadObj(lhs_expr->args_->sym_);
       return compiler_->AllocRegister();
-    } else if (type == vm::Value::NUM) {
-      insn->op_ = vm::OP_MEMORY_WRITE;
-      return CompileExpr(lhs_expr->args_);
     } else {
       CHECK(false);
     }

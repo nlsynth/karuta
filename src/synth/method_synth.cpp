@@ -325,16 +325,10 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
     SynthMemberAccess(insn, true);
     break;
   case vm::OP_ARRAY_READ:
-    SynthArrayAccess(insn, false, false);
+    SynthArrayAccess(insn, false);
     break;
   case vm::OP_ARRAY_WRITE:
-    SynthArrayAccess(insn, true, false);
-    break;
-  case vm::OP_MEMORY_READ:
-    SynthArrayAccess(insn, false, true);
-    break;
-  case vm::OP_MEMORY_WRITE:
-    SynthArrayAccess(insn, true, true);
+    SynthArrayAccess(insn, true);
     break;
   case vm::OP_BIT_RANGE:
     SynthBitRange(insn);
@@ -775,20 +769,15 @@ void MethodSynth::SynthChannelAccess(vm::Insn *insn, bool is_write) {
   thr_synth_->GetObjectSynth()->GetChannelSynth()->AddChannel(obj, res);
 }
 
-void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write,
-				   bool is_memory) {
+void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {
   vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
-  CHECK(!(is_memory && array_obj));
+  CHECK(array_obj);
   IResource *res;
-  if (is_memory) {
-    res = res_set_->GetExternalArrayResource();
-  } else {
-    if (UseSharedArray(array_obj)) {
-      SynthSharedArrayAccess(insn, is_write);
-      return;
-    }
-    res = res_set_->GetInternalArrayResource(array_obj);
+  if (UseSharedArray(array_obj)) {
+    SynthSharedArrayAccess(insn, is_write);
+    return;
   }
+  res = res_set_->GetInternalArrayResource(array_obj);
   IInsn *iinsn = new IInsn(res);
   // index
   iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));

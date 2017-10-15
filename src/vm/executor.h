@@ -46,9 +46,6 @@ protected:
   void ExecArrayWrite(MethodFrame *frame, Insn *insn);
   bool ExecChannelRead(MethodFrame *frame, Insn *insn);
   void ExecChannelWrite(const Method *method, MethodFrame *frame, Insn *insn);
-  void ExecMemoryRead(MethodFrame *frame, Insn *insn);
-  void ExecMemoryWrite(const Method *method, MethodFrame *frame, Insn *insn);
-
 
   Thread *thr_;
 private:

@@ -15,10 +15,9 @@ struct WidthSpec {
   sym_t name;
   // name is primitive type name (either int, bool, object or string).
   bool is_primitive;
-  bool is_ptr;
 
-  static WidthSpec Int(bool is_signed, int width, bool is_ptr);
-  static WidthSpec Name(sym_t name, bool is_primitive, bool is_ptr);
+  static WidthSpec Int(bool is_signed, int width);
+  static WidthSpec Name(sym_t name, bool is_primitive);
 
   // Code to convert to/from pointer form of NumericWidth.
   static const iroha::NumericWidth *MakeIntPtr(bool is_signed, int int_part);
@@ -52,8 +51,7 @@ class Builder {
   static Expr *RefExpr(Expr *addr);
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);
 
-  static VarDecl *BuildVarDecl(Expr *var_expr, bool is_primitive, bool is_ptr,
-			       sym_t type,
+  static VarDecl *BuildVarDecl(Expr *var_expr, bool is_primitive, sym_t type,
 			       const iroha::NumericWidth *w);
   static void SetVarDeclAnnotation(VarDecl *decl, Annotation *an);
   static Stmt *DoWhileStmt();

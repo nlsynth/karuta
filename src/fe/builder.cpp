@@ -14,21 +14,19 @@ namespace fe {
 static vector<iroha::NumericWidth *> Width_list;
 static Pool<iroha::NumericWidth> pool;
 
-WidthSpec WidthSpec::Int(bool is_signed, int width, bool is_ptr) {
+WidthSpec WidthSpec::Int(bool is_signed, int width) {
   WidthSpec s;
   s.width = WidthSpec::MakeIntPtr(is_signed, width);
   s.name = sym_null;
   s.is_primitive = false;
-  s.is_ptr = is_ptr;
   return s;
 }
 
-WidthSpec WidthSpec::Name(sym_t name, bool is_primitive, bool is_ptr) {
+WidthSpec WidthSpec::Name(sym_t name, bool is_primitive) {
   WidthSpec s;
   s.width = WidthSpec::MakeIntPtr(false, 32);
   s.name = name;
   s.is_primitive = is_primitive;
-  s.is_ptr = is_ptr;
   return s;
 }
 
@@ -110,14 +108,11 @@ Expr *Builder::FuncallExpr(Expr *func, Expr *args) {
   return expr;
 }
 
-VarDecl *Builder::BuildVarDecl(Expr *var_expr, bool is_primitive, bool is_ptr,
+VarDecl *Builder::BuildVarDecl(Expr *var_expr, bool is_primitive,
 			       sym_t type, const iroha::NumericWidth *w) {
   VarDecl *var = new VarDecl;
   NodePool::AddVarDecl(var);
   var->SetNameExpr(var_expr);
-  if (is_ptr) {
-    var->SetPtr(true);
-  }
   sym_t obj_name = sym_null;
   sym_t type_name = sym_null;
   if (is_primitive) {

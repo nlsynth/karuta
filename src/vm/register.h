@@ -23,7 +23,6 @@ public:
   iroha::NumericWidth width_;
   sym_t object_name_;
   bool is_const_;
-  int pointee_width_;
 
 private:
   RegisterType();

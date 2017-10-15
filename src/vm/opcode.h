@@ -51,8 +51,6 @@ enum OpCode {
   OP_CHANNEL_WRITE,
   OP_MEMBER_READ,
   OP_MEMBER_WRITE,
-  OP_MEMORY_READ,
-  OP_MEMORY_WRITE,
 
   // OPs for top level.
   OP_IMPORT,

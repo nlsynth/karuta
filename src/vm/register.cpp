@@ -11,7 +11,7 @@ RegisterType::RegisterType(Value::ValueType type, const Object *enum_type,
 			   bool is_const)
   : value_type_(type), enum_type_(enum_type),
     object_name_(object_name),
-    is_const_(is_const), pointee_width_(-1) {
+    is_const_(is_const) {
   width_ = width;
 }
 
@@ -29,9 +29,6 @@ void RegisterType::Dump(DumpStream &ds) {
     ds.os << ":" << EnumTypeWrapper::GetName(enum_type_);
   }
   ds.os << " #" << width_.Format();
-  if (pointee_width_ > -1) {
-    ds.os << " *" << pointee_width_;
-  }
   if (object_name_ != nullptr) {
     ds.os << "[" << sym_cstr(object_name_) << "]";
   }

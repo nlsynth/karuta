@@ -52,7 +52,7 @@ private:
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
   void SynthMemberRegAccess(vm::Insn *insn, vm::Value *value, bool is_store);
   void SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value, bool is_store);
-  void SynthArrayAccess(vm::Insn *insn, bool is_write, bool is_memory);
+  void SynthArrayAccess(vm::Insn *insn, bool is_write);
   bool UseSharedArray(vm::Object *array_obj);
   void SynthSharedArrayAccess(vm::Insn *insn, bool is_write);
   void SynthBitRange(vm::Insn *insn);

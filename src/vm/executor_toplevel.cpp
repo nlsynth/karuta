@@ -105,12 +105,6 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   sym_t name = decl->GetNameExpr()->sym_;
   Value *value = obj->LookupValue(name, true);
   InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
-  if (decl->IsPtr()) {
-    int aw = thr_->GetVM()->GetAddressSpaceWidth(obj);
-    int dw = value->num_.type_.GetWidth();
-    value->num_.type_ = iroha::NumericWidth(false, aw);
-    value->pointee_width_ = dw;
-  }
   if (value->type_ == Value::NUM) {
     iroha::Op::MakeConst(0, &value->num_);
   }
@@ -244,12 +238,8 @@ void ExecutorToplevel::ExecMemberAccess(Method *method, MethodFrame *frame,
 }
 
 bool ExecutorToplevel::ExecGenericRead(MethodFrame *frame, Insn *insn) {
-  if (insn->src_regs_.size()) {
-    ExecMemoryRead(frame, insn);
-  } else {
-    return ExecChannelRead(frame, insn);
-  }
-  return false;
+  CHECK(insn->src_regs_.size() == 0);
+  return ExecChannelRead(frame, insn);
 }
 
 bool ExecutorToplevel::ExecFuncall(MethodFrame *frame, Insn *insn) {
@@ -305,15 +295,9 @@ void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
 void ExecutorToplevel::ExecGenericWrite(const Method *method,
 					MethodFrame *frame,
 					Insn *insn) {
-  if (insn->src_regs_.size() == 2) {
-    // address, value.
-    ExecMemoryWrite(method, frame, insn);
-  } else if (insn->src_regs_.size() == 1) {
-    // (obj: channel) value
-    ExecChannelWrite(method, frame, insn);
-  } else {
-    CHECK(false);
-  }
+  CHECK(insn->src_regs_.size() == 1);
+  // (obj: channel) value
+  ExecChannelWrite(method, frame, insn);
 }
 
 void ExecutorToplevel::ExecSetTypeObject(Method *method, Insn *insn) {

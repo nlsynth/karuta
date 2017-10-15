@@ -100,9 +100,6 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
       return true;
     }
     break;
-  case OP_MEMORY_READ:
-    ExecMemoryRead(frame, insn);
-    break;
   case OP_FUNCALL:
     need_suspend = ExecFuncall(frame, insn);
     if (!thr_->IsRunnable()) {
@@ -127,9 +124,6 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     break;
   case OP_CHANNEL_WRITE:
     ExecChannelWrite(method, frame, insn);
-    break;
-  case OP_MEMORY_WRITE:
-    ExecMemoryWrite(method, frame, insn);
     break;
   case OP_PRE_INC:
   case OP_PRE_DEC:
@@ -256,18 +250,6 @@ void Executor::ExecChannelWrite(const Method *method, MethodFrame *frame,
   Channel::WriteValue(src_value, dst_value.object_);
 }
 
-void Executor::ExecMemoryWrite(const Method *method, MethodFrame *frame,
-			       Insn *insn) {
-  // addr
-  Value &dst_value = frame->reg_values_[insn->src_regs_[0]->id_];
-  // data
-  Value &src_value = frame->reg_values_[insn->src_regs_[1]->id_];
-  CHECK(dst_value.type_ == Value::NUM);
-  int addr = dst_value.num_.GetValue();
-  int data_width = insn->src_regs_[0]->type_.pointee_width_;
-  MemoryWrite(addr, data_width, src_value.num_);
-}
-
 void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
   int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue();
   if (insn->obj_reg_) {
@@ -366,16 +348,6 @@ void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
   int dst_id = insn->dst_regs_[0]->id_;
   iroha::Op::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
   dst_value.num_ = res;
-}
-
-void Executor::ExecMemoryRead(MethodFrame *frame, Insn *insn) {
-  Value &addr_value = frame->reg_values_[insn->src_regs_[0]->id_];
-  CHECK(addr_value.type_ == Value::NUM);
-  Value &dst_value = frame->reg_values_[insn->dst_regs_[0]->id_];
-  int addr = addr_value.num_.GetValue();
-  int data_width = insn->src_regs_[0]->type_.pointee_width_;
-  MemoryRead(addr, data_width, &dst_value.num_);
-  dst_value.type_ = Value::NUM;
 }
 
 void Executor::ExecLoadObj(MethodFrame *frame, Insn *insn) {
