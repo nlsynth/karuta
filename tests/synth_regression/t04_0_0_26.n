@@ -2,20 +2,18 @@
 
 // see if member reference in inline function works.
 
-var Kernel.m1 int = 128;
+var Kernel.m1 int = 128
 
 def Kernel.f1() {
-  var p *int = m1;
-  *p = 0xffffffff;
+  Memory.write(m1, 0xffffffff)
 }
 
 def Kernel.main() {
-  f1();
-  var p *int = m1;
-  assert(*p == 0xffffffff);
+  f1()
+  assert(Memory.read(m1) == 0xffffffff)
 }
 
-main();
+main()
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")

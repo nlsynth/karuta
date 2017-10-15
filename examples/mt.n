@@ -98,11 +98,11 @@ def MT.generateNumbers() {
 
 def MT.main() {
   initializeGenerator();
-  var p *int = 0;
+  var addr int = 0
   var i int;
   for (i = 0; i < 624; ++i) {
-    *p = extractNumbers();
-    p++;
+    Memory.write(addr, extractNumbers())
+    addr++
   }
 }
 //MT.main();

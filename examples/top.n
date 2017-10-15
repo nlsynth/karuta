@@ -5,22 +5,20 @@ print("Hello");
 
 
 def Kernel.main() {
-  var a *int = 0;
-  *a = *a + 10;
+  Memory.write(0, Memory.read(0) + 10)
 }
 
 
 /* Test it on interpreter */
-var p *int = 0;
-*p = 10;
-Kernel.main();
-if (*p == 20) {
-  print("maybe ok");
+Memory.write(0, 10)
+Kernel.main()
+if (Memory.read(0) == 20) {
+  print("maybe ok")
 }
 
 /* Synthesize and output */
-setDump("/tmp/top");
-Kernel.compile();
-Kernel.writeHdl("/tmp/top.html");
-Kernel.writeHdl("/tmp/top.cpp");
-Kernel.writeHdl("top.v");
+setDump("/tmp/top")
+Kernel.compile()
+Kernel.writeHdl("/tmp/top.html")
+Kernel.writeHdl("/tmp/top.cpp")
+Kernel.writeHdl("top.v")

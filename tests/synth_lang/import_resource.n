@@ -10,10 +10,9 @@ def Kernel.ex()
 
 def Kernel.main()
 {
- var p *int;
- *p = 0;
+ Memory.write(0, 0)
  ex();
- *p = f(*p);
+ Memory.write(0, f(Memory.read(0)))
  ex();
 }
 

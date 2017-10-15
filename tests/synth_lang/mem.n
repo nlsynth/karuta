@@ -1,10 +1,9 @@
 // VERILOG_OUTPUT: a.v
 
 def Kernel.main() {
-    var x *int = 0;
-    *x = 100;
-    assert(*x == 100);
+    Memory.write(0, 100)
+    assert(Memory.read(0) == 100)
 }
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")
