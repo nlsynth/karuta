@@ -39,17 +39,15 @@ Kernel.writeHdl("sum.v")
            's' : '''def Kernel.main() {
   var i int
   var t int = 0
-  var p *int = 0
   for (i = 0; i < 10; i++) {
     t += i
   }
-  *p = t
+  Memory.write(0, t)
 }
 
-var q *int = 0
-print(*q)
+print(Memory.read(0))
 Kernel.main()
-print(*q)
+print(Memory.read(0))
 
 Kernel.compile()
 Kernel.writeHdl("sum.v")

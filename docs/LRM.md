@@ -28,7 +28,7 @@ TODO: Consider non synthesizable methods.
     def f() {
       print("hello?")
     }
-    // The Interpreter to start all threads.
+    // The interpreter to start all threads.
     run()
 
 ### Data flow
@@ -66,10 +66,6 @@ TODO: Consider non synthesizable methods.
 
     var M.x int[32]
     var M.y #16[4] = {1,2,3,4}
-
-### Pointers
-
-    var x *int
 
 ## Expressions
 
@@ -182,6 +178,16 @@ As for variable declaration, please see types section.
 
 * .$compiled_module
 * .$dump_file_name
+
+#### Memory operations
+
+Memory object represents an address space and can be accessed by read/write method.
+
+    Memory.read(addr)
+
+    Memory.write(addr, data)
+
+This assumes 32bit address/data for now.
 
 #### Iroha related methods
 
