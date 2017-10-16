@@ -28,4 +28,6 @@ clean:
 install:
 	install -D lib/nli $(prefix)/bin/nli
 	install -D nli-bin $(prefix)/bin/nli-bin
-	install -D lib/default-isynth.n  $(prefix)/share/nli/default-isynth.n
+	install -D lib/default-isynth.n $(prefix)/share/nli/default-isynth.n
+	install -D lib/nli_exit.v $(prefix)/share/nli/nli_exit.v
+	install -D lib/nli_wait.v $(prefix)/share/nli/nli_wait.v
