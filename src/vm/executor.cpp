@@ -536,6 +536,9 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
     compiler::Compiler::CompileMethod(thr_->GetVM(), *obj,
 				      value->method_->parse_tree_,
 				      value->method_);
+  if (value->method_->IsCompileFailure()) {
+    return nullptr;
+  }
   return value->method_;
 }
 

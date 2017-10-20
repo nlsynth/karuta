@@ -1,5 +1,6 @@
 #include "compiler/reg_checker.h"
 
+#include "base/status.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/opcode.h"
@@ -64,8 +65,8 @@ void RegChecker::Check() {
   // There is at least one path to reach the last insn.
   if (visited.find(method_->insns_[method_->insns_.size() - 1])
       != visited.end()) {
-    // TODO: Fail softly and show the function name.
-    CHECK(false) << "0 return values...\n";
+    // TODO: Show the function name.
+    Status::os(Status::USER_ERROR) << "0 return values...";
   }
 }
 

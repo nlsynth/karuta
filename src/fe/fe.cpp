@@ -123,11 +123,17 @@ void FE::Run(bool vanilla, const vector<string>& files) {
   NodePool::Init();
 
   vm::VM vm;
+  bool ok = true;
   if (!vanilla) {
-    RunFile("default-isynth.n", &vm);
+    ok = RunFile("default-isynth.n", &vm);
   }
-  for (size_t i = 0; i < files.size(); ++i) {
-    RunFile(files[i], &vm);
+  if (ok) {
+    for (size_t i = 0; i < files.size(); ++i) {
+      ok = RunFile(files[i], &vm);
+      if (!ok) {
+	break;
+      }
+    }
   }
   vm.GC();
 
@@ -154,13 +160,14 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
   return method;
 }
 
-void FE::RunFile(const string &file, vm::VM *vm) {
+bool FE::RunFile(const string &file, vm::VM *vm) {
   vm::Method *method = CompileFile(file, dbg_parser_, vm);
-  if (!method) {
-    return;
+  if (!method || method->IsCompileFailure()) {
+    return false;
   }
   vm->AddThreadFromMethod(nullptr, vm->kernel_object_, method);
   vm->Run();
+  return true;
 }
 
 Method *FE::ReadFile(const string &file) {

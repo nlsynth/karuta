@@ -17,6 +17,7 @@ class VarScope;
 class Compiler {
 public:
   Compiler(vm::VM *vm, vm::Object *obj, const fe::Method *parse_tree);
+  ~Compiler();
 
   static vm::Method *CompileMethod(vm::VM *vm, vm::Object *obj,
 				   const fe::Method *parse_tree,

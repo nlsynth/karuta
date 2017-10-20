@@ -23,6 +23,8 @@ public:
   void SetSynthName(const string &s);
   bool IsTopLevel() const;
   Annotation *GetAnnotation() const;
+  void SetCompileFailure();
+  bool IsCompileFailure() const;
 
   typedef void (*method_func)(Thread *thr, Object *obj,
 			      const vector<Value> &args);
@@ -58,6 +60,7 @@ public:
 private:
   bool is_toplevel_;
   string synth_name_;
+  bool compile_failed_;
 };
 
 }  // namespace vm

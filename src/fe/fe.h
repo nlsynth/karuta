@@ -19,7 +19,7 @@ class FE {
   static int LookupKeyword(sym_t sym);
 
  private:
-  void RunFile(const string &file, vm::VM *vm);
+  bool RunFile(const string &file, vm::VM *vm);
 
   static Method *ReadFile(const string &file);
   static void InitScannerInfo(ScannerInfo *s_info);

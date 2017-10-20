@@ -9,6 +9,7 @@ const char kPrint[] = "print";
 const char kMain[] = "main";
 const char kLoad[] = "load";
 const char kStore[] = "store";
+const char kSlaveWait[] = "wait";
 const char kSramRead[] = "sram_read";
 const char kSramWrite[] = "sram_write";
 const char kMailboxGet[] = "mailbox_get";

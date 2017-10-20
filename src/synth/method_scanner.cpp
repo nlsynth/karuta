@@ -35,6 +35,9 @@ bool MethodScanner::Scan() {
   compiler::Compiler::CompileMethod(vm_, obj_,
 				    method->parse_tree_,
 				    method);
+  if (method->IsCompileFailure()) {
+    return false;
+  }
   for (size_t i = 0; i < method->insns_.size(); ++i) {
     ScanInsn(method->insns_[i]);
   }

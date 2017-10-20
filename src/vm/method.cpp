@@ -10,7 +10,7 @@ namespace vm {
 
 Method::Method(bool is_toplevel) :
   method_fn_(nullptr), alt_impl_(nullptr),
-  parse_tree_(nullptr), is_toplevel_(is_toplevel) {
+  parse_tree_(nullptr), is_toplevel_(is_toplevel), compile_failed_(false) {
 }
 
 Method::~Method() {
@@ -98,6 +98,14 @@ void Method::Dump(DumpStream &ds) {
     ds.os << "\n";
     ds.pop_indent();
   }
+}
+
+void Method::SetCompileFailure() {
+  compile_failed_ = true;
+}
+
+bool Method::IsCompileFailure() const {
+  return compile_failed_;
 }
 
 }  // namespace vm

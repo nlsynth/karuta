@@ -51,6 +51,12 @@ Compiler::Compiler(vm::VM *vm, vm::Object *obj, const fe::Method *parse_tree)
   exc_.reset(new ExprCompiler(this));
 }
 
+Compiler::~Compiler() {
+  for (auto *s : bindings_) {
+    delete s;
+  }
+}
+
 vm::Method *Compiler::Compile(vm::Method *method) {
   method_ = method;
   if (!method_) {
@@ -59,6 +65,9 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   }
   if (method_->insns_.size() > 0) {
     // already compiled.
+    return method_;
+  }
+  if (method_->IsCompileFailure()) {
     return method_;
   }
 
@@ -73,6 +82,10 @@ vm::Method *Compiler::Compile(vm::Method *method) {
     CompilePreIncDec();
     FlushPendingInsns();
     CompilePostIncDec();
+    if (Status::CheckAllErrors(false)) {
+      method_->SetCompileFailure();
+      return method_;
+    }
   }
   PopScope();
   EmitNop();
@@ -91,6 +104,11 @@ vm::Method *Compiler::Compile(vm::Method *method) {
 
   RegChecker checker(method_);
   checker.Check();
+
+  if (Status::CheckAllErrors(false)) {
+    method_->SetCompileFailure();
+    return method_;
+  }
 
   return method_;
 }

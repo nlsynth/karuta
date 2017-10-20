@@ -32,7 +32,6 @@ public:
   static bool Check(Type t, bool clear);
   // Checks if there are USER_ERROR, ICE
   static bool CheckAllErrors(bool clear);
-  static void Clear();
   static ostringstream &os(Type t);
 
 private:

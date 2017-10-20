@@ -177,6 +177,9 @@ void ThreadSynth::CollectUnclaimedMembers() {
       compiler::Compiler::CompileMethod(obj_synth_->GetVM(),
 					obj, method->parse_tree_,
 					method);
+      if (method->IsCompileFailure()) {
+	continue;
+      }
       if (method->GetAnnotation()->IsExtInput()) {
 	MayGenerateExtIOMethod(method, false);
       }
