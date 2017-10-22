@@ -17,6 +17,7 @@ public:
 private:
   string GetSynthName(vm::Object *obj);
   IInsn *SynthAxiAccess(vm::Object *array_obj, bool is_store);
+  IInsn *SynthAxiWait(vm::Object *array_obj);
   IInsn *SynthMailboxWidth(vm::Object *mailbox_obj);
   IInsn *SynthMailboxAccess(vm::Object *mailbox_obj,
 			    bool is_blocking, bool is_put);

@@ -36,6 +36,8 @@ void ObjectMethod::Synth() {
     iinsn = SynthAxiAccess(obj, false);
   } else if (name == kStore) {
     iinsn = SynthAxiAccess(obj, true);
+  } else if (name == kSlaveWait) {
+    iinsn = SynthAxiWait(obj);
   } else if (name == kMailboxWidth) {
     iinsn = SynthMailboxWidth(obj);
   } else if (name == kMailboxGet) {
@@ -91,6 +93,19 @@ IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   } else {
     iinsn->SetOperand("read");
   }
+  return iinsn;
+}
+
+IInsn *ObjectMethod::SynthAxiWait(vm::Object *array_obj) {
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
+  if (!a->IsAxiSlave()) {
+    Status::os(Status::USER_ERROR)
+      << "AXI wait method is allowed on for a slave.";
+    return nullptr;
+  }
+  IResource *res = synth_->GetResourceSet()->GetAxiSlavePort(array_obj);
+  rsynth_->MayAddAxiSlavePort(synth_->GetObject(), array_obj);
+  IInsn *iinsn = new IInsn(res);
   return iinsn;
 }
 
