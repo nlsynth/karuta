@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "base/annotation.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
@@ -32,6 +33,7 @@ public:
     }
     an_ = an;
   }
+
   ArrayWrapperData(ArrayWrapperData *src) {
     objs_ = src->objs_;
     if (src->int_array_) {
@@ -41,10 +43,11 @@ public:
     }
   }
 
-
   vector<Object *> objs_;
   IntArray *int_array_;
   Annotation *an_;
+  set<Thread *> waiters_;
+  set<Thread *> notified_threads_;
 
   virtual const char *ObjectTypeKey() {
     if (int_array_) {
@@ -158,11 +161,36 @@ void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
 void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 0) << "load requires an address";
   MemBurstAccess(thr, obj, args, true);
+  MayNotifyWaiters(obj);
 }
 
 void ArrayWrapper::Store(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 0) << "store requires an address";
   MemBurstAccess(thr, obj, args, false);
+  MayNotifyWaiters(obj);
+}
+
+void ArrayWrapper::MayNotifyWaiters(Object *obj) {
+  Annotation *an = GetAnnotation(obj);
+  if (an == nullptr || !an->IsAxiSlave()) {
+    return;
+  }
+  ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
+  for (Thread *t : ad->waiters_) {
+    t->Resume();
+    ad->notified_threads_.insert(t);
+  }
+  ad->waiters_.clear();
+}
+
+void ArrayWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
+  ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
+  if (ad->notified_threads_.find(thr) != ad->notified_threads_.end()) {
+    ad->notified_threads_.erase(thr);
+    return;
+  }
+  ad->waiters_.insert(thr);
+  thr->Suspend();
 }
 
 void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
@@ -205,6 +233,8 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   m->SetSynthName(synth::kLoad);
   m = Method::InstallNativeMethod(vm, obj, "store", &ArrayWrapper::Store, rets);
   m->SetSynthName(synth::kStore);
+  m = Method::InstallNativeMethod(vm, obj, "wait", &ArrayWrapper::Wait, rets);
+  m->SetSynthName(synth::kSlaveWait);
 }
 
 void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {

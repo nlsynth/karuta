@@ -28,11 +28,13 @@ public:
 private:
   static void Load(Thread *thr, Object *obj, const vector<Value> &args);
   static void Store(Thread *thr, Object *obj, const vector<Value> &args);
+  static void Wait(Thread *thr, Object *obj, const vector<Value> &args);
   static void Read(Thread *thr, Object *obj, const vector<Value> &args);
   static void Write(Thread *thr, Object *obj, const vector<Value> &args);
   static void MemBurstAccess(Thread *thr, Object *obj,
 			     const vector<Value> &args, bool is_load);
   static void InstallMethods(VM *vm ,Object *obj);
+  static void MayNotifyWaiters(Object *obj);
 };
 
 }  // namespace vm
