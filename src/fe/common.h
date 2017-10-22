@@ -6,8 +6,8 @@
 #include "base/pool.h"
 
 class Annotation;
+class AnnotationKeyValueSet;
 class DumpStream;
-class AnnotationValueSet;
 
 namespace iroha {
 class NumericWidth;

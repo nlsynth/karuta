@@ -2,21 +2,22 @@
 
 #include "base/annotation.h"
 
-void AnnotationBuilder::AddStrParam(AnnotationValue *p, const char *str) {
-  p->values_.push_back(string(str));
+void AnnotationBuilder::AddStrParam(AnnotationKeyValue *p, const char *str) {
+  p->str_value_ = string(str);
+  p->has_str_ = true;
 }
 
-AnnotationValue *AnnotationBuilder::BuildStrParam(sym_t key, const char *str) {
-  AnnotationValue *p = new AnnotationValue();
+AnnotationKeyValue *AnnotationBuilder::BuildStrParam(sym_t key, const char *str) {
+  AnnotationKeyValue *p = new AnnotationKeyValue();
   p->key_ = sym_str(key);
   AddStrParam(p, str);
   return p;
 }
 
-AnnotationValueSet *AnnotationBuilder::BuildParamSet(AnnotationValueSet *params,
-						     AnnotationValue *p) {
+AnnotationKeyValueSet *AnnotationBuilder::BuildParamSet(AnnotationKeyValueSet *params,
+							AnnotationKeyValue *p) {
   if (params == nullptr) {
-    params = new AnnotationValueSet();
+    params = new AnnotationKeyValueSet();
   }
   if (p != nullptr) {
     params->params_.push_back(p);
@@ -24,12 +25,13 @@ AnnotationValueSet *AnnotationBuilder::BuildParamSet(AnnotationValueSet *params,
   return params;
 }
 
-Annotation *AnnotationBuilder::Build(sym_t name, AnnotationValueSet *values) {
+Annotation *AnnotationBuilder::Build(sym_t name,
+				     AnnotationKeyValueSet *values) {
   if (name == sym_null) {
     return nullptr;
   }
   if (values == nullptr) {
-    values = new AnnotationValueSet;
+    values = new AnnotationKeyValueSet;
   }
   Annotation *a = new Annotation(values);
   a->AddParam(annotation::kAnnotationKey, sym_str(name));

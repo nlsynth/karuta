@@ -31,8 +31,8 @@ extern void yyerror(const char *msg);
   int sub_op;
   struct WidthSpec width_spec;
   class Annotation *annotation;
-  class AnnotationValue *annotation_value;
-  class AnnotationValueSet *annotation_value_set;
+  class AnnotationKeyValue *annotation_value;
+  class AnnotationKeyValueSet *annotation_value_set;
 }
 
 %type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD

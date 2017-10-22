@@ -75,7 +75,7 @@ void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
   decl.method_->returns_ = returns;
 }
 
-Annotation *Emitter::SetAnnotation(sym_t key, AnnotationValueSet *values) {
+Annotation *Emitter::SetAnnotation(sym_t key, AnnotationKeyValueSet *values) {
   annotation_ = AnnotationBuilder::Build(key, values);
   return annotation_;
 }

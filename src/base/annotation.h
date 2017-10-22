@@ -8,18 +8,19 @@ namespace annotation {
 const char kAnnotationKey[] = "ANNOTATION-KEY";
 }  // namespace annotation
 
-class AnnotationValue {
+class AnnotationKeyValue {
 public:
-  string GetNthValue(int nth);
+  AnnotationKeyValue() : has_str_(false) {}
 
   string key_;
-  vector <string> values_;
+  bool has_str_;
+  string str_value_;
 };
 
-class AnnotationValueSet {
+class AnnotationKeyValueSet {
 public:
-  ~AnnotationValueSet();
-  vector<AnnotationValue *> params_;
+  ~AnnotationKeyValueSet();
+  vector<AnnotationKeyValue *> params_;
 };
 
 class ResourceParams_pin {
@@ -32,7 +33,7 @@ public:
 class Annotation {
 public:
   // Takes ownership of params.
-  explicit Annotation(AnnotationValueSet *params);
+  explicit Annotation(AnnotationKeyValueSet *params);
   Annotation(const Annotation &that);
   ~Annotation();
 
@@ -79,9 +80,9 @@ public:
 
 private:
   string LookupStrParam(const string &key, const string &dflt);
-  AnnotationValue *LookupParam(const string &key);
+  AnnotationKeyValue *LookupParam(const string &key);
 
-  std::unique_ptr<AnnotationValueSet> params_;
+  std::unique_ptr<AnnotationKeyValueSet> params_;
   vector<ResourceParams_pin> pins_;
 
   static std::unique_ptr<Annotation> empty_annotation_;

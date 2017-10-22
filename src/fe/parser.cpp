@@ -220,8 +220,8 @@ union YYSTYPE
   int sub_op;
   struct WidthSpec width_spec;
   class Annotation *annotation;
-  class AnnotationValue *annotation_value;
-  class AnnotationValueSet *annotation_value_set;
+  class AnnotationKeyValue *annotation_value;
+  class AnnotationKeyValueSet *annotation_value_set;
 
 #line 227 "src/fe/parser.cpp" /* yacc.c:355  */
 };

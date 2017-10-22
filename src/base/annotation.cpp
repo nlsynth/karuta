@@ -19,20 +19,13 @@ static const char kReset[] = "reset";
 static Pool<Annotation> resource_params_pool;
 std::unique_ptr<Annotation> Annotation::empty_annotation_;
 
-string AnnotationValue::GetNthValue(int nth) {
-  if (nth < (int)values_.size()) {
-    return values_[nth];
-  }
-  return "";
-}
-
-AnnotationValueSet::~AnnotationValueSet() {
+AnnotationKeyValueSet::~AnnotationKeyValueSet() {
   STLDeleteValues(&params_);
 }
 
-Annotation::Annotation(AnnotationValueSet *params) {
+Annotation::Annotation(AnnotationKeyValueSet *params) {
   if (params == nullptr) {
-    params = new AnnotationValueSet();
+    params = new AnnotationKeyValueSet();
   } else {
     // the pool manages all non empty params instances.
     resource_params_pool.Add(this);
@@ -43,9 +36,9 @@ Annotation::Annotation(AnnotationValueSet *params) {
 Annotation::Annotation(const Annotation &that) {
   resource_params_pool.Add(this);
   pins_ = that.pins_;
-  params_.reset(new AnnotationValueSet);
-  for (AnnotationValue *param : that.params_->params_) {
-    AnnotationValue *value = new AnnotationValue;
+  params_.reset(new AnnotationKeyValueSet);
+  for (AnnotationKeyValue *param : that.params_->params_) {
+    AnnotationKeyValue *value = new AnnotationKeyValue;
     *value = *param;
     params_->params_.push_back(value);
   }
@@ -56,20 +49,12 @@ Annotation::~Annotation() {
 
 void Annotation::Dump(ostream &os) const {
   bool is_first_param = true;
-  for (AnnotationValue *param : params_->params_) {
+  for (AnnotationKeyValue *param : params_->params_) {
     if (!is_first_param) {
       os << ",";
     }
     os << "[" << param->key_ << "]=";
-    bool is_first_value = true;
-    for (string &value : param->values_) {
-      if (!is_first_value) {
-	os << ",";
-      }
-      os << value;
-      is_first_value = false;
-    }
-    is_first_param = false;
+    os << param->str_value_;
   }
   if (params_->params_.size()) {
     os << " ";
@@ -190,15 +175,15 @@ bool Annotation::IsExtOutput() {
 }
 
 string Annotation::LookupStrParam(const string &key, const string &dflt) {
-  AnnotationValue *p = LookupParam(key);
+  AnnotationKeyValue *p = LookupParam(key);
   if (!p) {
     return dflt;
   }
-  return p->GetNthValue(0);
+  return p->str_value_;
 }
 
-AnnotationValue *Annotation::LookupParam(const string &key) {
-  for (AnnotationValue *param : params_->params_) {
+AnnotationKeyValue *Annotation::LookupParam(const string &key) {
+  for (AnnotationKeyValue *param : params_->params_) {
     if (key == param->key_) {
       return param;
     }
@@ -215,13 +200,13 @@ string Annotation::GetCopyFileName() {
   if (file != "copy") {
     return "";
   }
-  AnnotationValue *p = LookupParam(kVerilog);
+  AnnotationKeyValue *p = LookupParam(kVerilog);
   if (!p) {
     std::cout << "source file to be copied is not specified.\n";
     abort();
     return "";
   }
-  return p->GetNthValue(0);
+  return p->str_value_;
 }
 
 string Annotation::GetModuleName() {
@@ -258,9 +243,10 @@ bool Annotation::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
 }
 
 void Annotation::AddParam(const string &key, const string &value) {
-  AnnotationValue *param = LookupParam(key);
+  AnnotationKeyValue *param = LookupParam(key);
   if (param) {
-    param->values_.push_back(value);
+    param->str_value_ = value;
+    param->has_str_ = true;
   } else {
     param = AnnotationBuilder::BuildStrParam(sym_lookup(key.c_str()), value.c_str());
     params_->params_.push_back(param);
