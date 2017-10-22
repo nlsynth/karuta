@@ -54,7 +54,11 @@ void Annotation::Dump(ostream &os) const {
       os << ",";
     }
     os << "[" << param->key_ << "]=";
-    os << param->str_value_;
+    if (param->has_str_) {
+      os << param->str_value_;
+    } else {
+      os << param->int_value_;
+    }
   }
   if (params_->params_.size()) {
     os << " ";

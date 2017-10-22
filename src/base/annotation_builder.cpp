@@ -7,10 +7,22 @@ void AnnotationBuilder::AddStrParam(AnnotationKeyValue *p, const char *str) {
   p->has_str_ = true;
 }
 
+void AnnotationBuilder::AddIntParam(AnnotationKeyValue *p, uint64_t num) {
+  p->int_value_ = num;
+  p->has_str_ = false;
+}
+
 AnnotationKeyValue *AnnotationBuilder::BuildStrParam(sym_t key, const char *str) {
   AnnotationKeyValue *p = new AnnotationKeyValue();
   p->key_ = sym_str(key);
   AddStrParam(p, str);
+  return p;
+}
+
+AnnotationKeyValue *AnnotationBuilder::BuildIntParam(sym_t key, uint64_t num) {
+  AnnotationKeyValue *p = new AnnotationKeyValue();
+  p->key_ = sym_str(key);
+  AddIntParam(p, num);
   return p;
 }
 

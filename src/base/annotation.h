@@ -10,11 +10,12 @@ const char kAnnotationKey[] = "ANNOTATION-KEY";
 
 class AnnotationKeyValue {
 public:
-  AnnotationKeyValue() : has_str_(false) {}
+  AnnotationKeyValue() : has_str_(true) {}
 
   string key_;
   bool has_str_;
   string str_value_;
+  uint64_t int_value_;
 };
 
 class AnnotationKeyValueSet {

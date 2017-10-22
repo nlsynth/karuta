@@ -107,6 +107,8 @@ IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
 
 ANNOTATION_VALUE : SYM K_ASSIGN STR {
   $$ = AnnotationBuilder::BuildStrParam($1, $3);
+} |  SYM K_ASSIGN NUM {
+  $$ = AnnotationBuilder::BuildIntParam($1, $3.value);
 } | IMPORT_PARAM_HEAD ')' {
   $$ = $1;
 }
