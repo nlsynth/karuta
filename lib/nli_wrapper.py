@@ -115,7 +115,7 @@ class NliWrapper(object):
         logfh.write('End: ' + str(datetime.now()) + '\n')
         logfh.close()
 
-        self.Write('<a href="/?r=' + runid +
+        self.Write('<a href="./?r=' + runid +
                   '">Link to this run</a><br><br>')
 
         self.Write('OUTPUT:<br>\n')
