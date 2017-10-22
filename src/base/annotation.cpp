@@ -105,7 +105,13 @@ string Annotation::GetAckPinName() {
 }
 
 bool Annotation::ResetPolarity() {
-  return (LookupStrParam("resetPolarity", "1") == "1");
+  string s = LookupStrParam("resetPolarity", "");
+  if (s == "") {
+    uint64_t p = LookupIntParam("resetPolarity", 1);
+    return p > 0;
+  } else {
+    return s == "1";
+  }
 }
 
 bool Annotation::IsAxiMaster() {
@@ -121,6 +127,10 @@ bool Annotation::IsAxiExclusive() {
 }
 
 int Annotation::GetAddrWidth() {
+  uint64_t w = LookupIntParam("addrWidth", 0);
+  if (w == 64 || w == 32) {
+    return w;
+  }
   string s = LookupStrParam("addrWidth", "32");
   if (s == "64") {
     return 64;
@@ -184,6 +194,14 @@ string Annotation::LookupStrParam(const string &key, const string &dflt) {
     return dflt;
   }
   return p->str_value_;
+}
+
+uint64_t Annotation::LookupIntParam(const string &key, uint64_t dflt) {
+  AnnotationKeyValue *p = LookupParam(key);
+  if (!p || p->has_str_) {
+    return dflt;
+  }
+  return p->int_value_;
 }
 
 AnnotationKeyValue *Annotation::LookupParam(const string &key) {
