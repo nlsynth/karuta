@@ -66,6 +66,9 @@ bool MethodSynth::Synth() {
   state_index[0] = context_->states_.size();
   for (size_t i = 0; i < method_->insns_.size(); ++i) {
     SynthInsn(method_->insns_[i]);
+    if (Status::CheckAllErrors(false)) {
+      return false;
+    }
     StateWrapper *lw = context_->LastState();
     if (last == lw) {
       AllocState();

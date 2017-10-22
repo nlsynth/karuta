@@ -156,7 +156,7 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
     bool ok = synth::Synth::Synthesize(thr->GetVM(), obj,
 				       synth::Synth::IrPath(obj));
     if (!ok) {
-      Status::os(Status::USER_ERROR) << "failed synthesize the design.";
+      Status::os(Status::USER_ERROR) << "Failed to synthesize the design.";
       thr->UserError();
     }
   } else {

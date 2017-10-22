@@ -1,6 +1,7 @@
 #include "synth/object_method.h"
 
 #include "base/annotation.h"
+#include "base/status.h"
 #include "iroha/iroha.h"
 #include "synth/insn_walker.h"
 #include "synth/method_context.h"
@@ -52,6 +53,9 @@ void ObjectMethod::Synth() {
   } else {
     CHECK(false) << name;
   }
+  if (iinsn == nullptr) {
+    return;
+  }
   StateWrapper *sw = synth_->AllocState();
   sw->state_->insns_.push_back(iinsn);
   for (vm::Register *arg : insn_->src_regs_) {
@@ -74,7 +78,11 @@ void ObjectMethod::Scan() {
 
 IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
-  CHECK(a->IsAxiMaster());
+  if (!a->IsAxiMaster()) {
+    Status::os(Status::USER_ERROR)
+      << "AXI access methods are allowed on for a master.";
+    return nullptr;
+  }
   IResource *res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
   rsynth_->MayAddAxiMasterPort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(res);
