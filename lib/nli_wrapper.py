@@ -42,17 +42,32 @@ class NliWrapper(object):
         version = os.getenv('NLI_VERSION')
 
         self.Write('''
-<html><head><title>Neon Light Playground</title></head><body>
-<img src="nl.jpg" style="float:left">
+<html><head>
+<title>Neon Light Playground</title>
+<style>
+  body {
+  background: #ddfaba
+  }
+  .codearea {
+  background: #cefaba;
+  border-radius: 5px;
+  font-weight: bold;
+  width: 100%%;
+  }
+</style>
+</head>
+<body>
 <div>
-  <h1>Neon Light Playground</h1>\n
+  <h1 style="color: #888844">Neon Light Playground</h1>\n
   %s
-</div>''' % version)
-        self.Write('''(<a href="https://github.com/nlsynth/nli">source code on github</a>)<br/><br/>\n''')
+</div>
+<img src="nl.jpg" style="float:right">
+''' % version)
+        self.Write('''(<a href="https://github.com/nlsynth/nli">Source code on github</a>)<br/><br/>\n''')
 
         self.Write(
 '''<form id="src" method="POST" action="">
-<textarea name="s" cols=100 rows=20>
+<textarea name="s" rows=20 class=codearea>
 %s
 </textarea><br/>
 <input type="submit" value="Run">
