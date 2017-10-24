@@ -55,17 +55,17 @@ Kernel.writeHdl("sum.v")
 '''},
     'h4': {'i' : 4,
            'n' : '04 - Channel',
-           's' : '''channel Kernel.in = #64;
-channel Kernel.out = #64;
+           's' : '''channel Kernel.in #64
+channel Kernel.out = #64
 
 def Kernel.main() {
   var arg #64 = *in
   var i int
   var t #64 = 0
   for (i = 0; i < arg; i++) {
-    t += i;
+    t += i
   }
-  *out = t;
+  *out = t
 }
 
 Kernel.compile()
@@ -74,91 +74,90 @@ Kernel.writeHdl("sum.v")
 '''},
     'h5': {'i' : 5,
            'n' : '05 - Test',
-           's' : '''channel Kernel.in = int;
-channel Kernel.out = int;
+           's' : '''channel Kernel.in int
+channel Kernel.out int
 
 def Kernel.f(arg int) (int) {
   var i int
-  var t int = 0;
+  var t int = 0
   for (i = 0; i < arg; i++) {
-    t += i;
+    t += i
   }
-  return t;
+  return t
 }
 
 def Kernel.main() {
-  *out = f(*in);
+  *out = f(*in)
 }
 
-Kernel.compile();
-Kernel.writeHdl("sum.v");
+Kernel.compile()
+Kernel.writeHdl("sum.v")
 
-var T object = Kernel.clone();
+var T object = Kernel.clone()
 def T.main() {
-  assert(f(10) == 45);
+  assert(f(10) == 45)
 }
 
-T.main();
-T.compile();
-T.writeHdl("sum_test.v");
+T.main()
+T.compile()
+T.writeHdl("sum_test.v")
 
 '''},
     'h6': {'i' : 6,
            'n' : '06 - Thread',
-           's' : '''channel Kernel.req = int;
-channel Kernel.resp = int;
+           's' : '''channel Kernel.req int
+channel Kernel.resp int
 
+@ThreadEntry()
 def Kernel.f() {
-  *resp = *req + 1;
+  *resp = *req + 1
 }
 
+@ThreadEntry()
 def Kernel.g() {
-  *req = 10;
-  print(*resp);
+  *req = 10
+  print(*resp)
 }
 
-thread Kernel.t1 = f();
-thread Kernel.t2 = g();
-
-Kernel.compile();
-Kernel.writeHdl("thr.v");
+Kernel.compile()
+Kernel.writeHdl("thr.v")
 '''},
     'h7': {'i' : 7,
            'n' : '07 - Member',
-           's' : '''var O object = Kernel.clone();
-var M object = Kernel.clone();
-var O.M object = M;
+           's' : '''var O object = Kernel.clone()
+var M object = Kernel.clone()
+var O.M object = M
 def M.f(a int) (int) {
-  return a + 1;
+  return a + 1
 }
 
 def O.main() {
-  print(M.f(10));
+  print(M.f(10))
 }
 
-O.compile();
-O.writeHdl("call.v");
+O.compile()
+O.writeHdl("call.v")
 '''},
     'h8': {'i' : 8,
            'n' : '08 - External port',
-           's' : '''var L object = Kernel.clone();
+           's' : '''var L object = Kernel.clone()
 
 @embed(output = "led")
 def L.f(b bool) {
-  // print(b);
+  // print(b)
 }
 
 def L.main() {
   var b bool = false;
   while (true) {
-    wait(10000000);
-    f(b);
-    b = ~b;
+    wait(10000000)
+    f(b)
+    b = ~b
   }
 }
 
 L.compile();
-L.writeHdl("led.v");
+L.writeHdl("led.v")
 '''},
     'h9': {'i' : 9,
            'n' : '09 - Embedded module',
@@ -170,19 +169,19 @@ L.writeHdl("led.v");
     file= "copy",
     module= "wait_cycles")
 def M.my_wait(cycles int) {
-  print(cycles);
+  print(cycles)
 }
 
 def M.main() {
-  my_wait(10);
+  my_wait(10)
 }
 
-M.compile();
-M.writeHdl("wait.v");
+M.compile()
+M.writeHdl("wait.v")
 '''},
     'h10': {'i' : 10,
            'n' : '10 - Misc',
-           's' : '''object M = Kernel.clone();
+           's' : '''var M object = Kernel.clone()
 
 def M.main() {
   var i int
@@ -190,30 +189,30 @@ def M.main() {
   }
 }
 
-M.setSynthParam("resetPolarity", "0");
-M.setDump("zz");
-M.compile();
-M.writeHdl("dummy.v");
-M.writeHdl("dummy.cpp");
+M.setSynthParam("resetPolarity", "0")
+M.setDump("zz")
+M.compile()
+M.writeHdl("dummy.v")
+M.writeHdl("dummy.cpp")
 '''},
     'default': {'i' : 999,
                 'n' : 'Synth example',
          's' : '''def main() {
   var i int
-  var s int = 0;
+  var s int = 0
   for (i = 0; i < 10; ++i) {
-    s += i;
+    s += i
   }
   // TODO: Do real I/O.
-  print(s);
+  print(s)
 }
 
 // Synthesize and output.
-compile();
-writeHdl("a.v");
-writeHdl("a.html");
+compile()
+writeHdl("a.v")
+writeHdl("a.html")
 
 // Run on interpreter mode.
-main();
+main()
 '''}
 }

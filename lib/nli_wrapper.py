@@ -159,7 +159,7 @@ class NliWrapper(object):
             if line.find(marker) == 0:
                 line = line[len(marker):-1]
                 line = html.escape(line)
-                line = ('<a href="/o/' + runid + '/' + line + '">' +
+                line = ('<a href="./o/' + runid + '/' + line + '">' +
                         line + '</a><br>')
             else:
                 line = html.escape(line)
