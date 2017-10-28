@@ -88,9 +88,9 @@ void ObjectMethod::Scan() {
 
 IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
-  if (!a->IsAxiMaster()) {
+  if (a == nullptr || !a->IsAxiMaster()) {
     Status::os(Status::USER_ERROR)
-      << "AXI access methods are allowed on for a master.";
+      << "AXI access methods are allowed on for a master (add @AxiMaster() annotation).";
     return nullptr;
   }
   IResource *res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
@@ -106,9 +106,9 @@ IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
 
 IInsn *ObjectMethod::SynthAxiWait(vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
-  if (!a->IsAxiSlave()) {
+  if (a == nullptr || !a->IsAxiSlave()) {
     Status::os(Status::USER_ERROR)
-      << "AXI wait method is allowed on for a slave.";
+      << "AXI wait method is allowed on for a slave (add @AxiSlave() annotation).";
     return nullptr;
   }
   IResource *res = synth_->GetResourceSet()->GetAxiSlavePort(array_obj);
