@@ -59,13 +59,13 @@ Kernel.writeHdl("sum.v")
 channel Kernel.out = #64
 
 def Kernel.main() {
-  var arg #64 = *in
+  var arg #64 = in.read()
   var i int
   var t #64 = 0
   for (i = 0; i < arg; i++) {
     t += i
   }
-  *out = t
+  out.write(t)
 }
 
 Kernel.compile()
@@ -87,7 +87,7 @@ def Kernel.f(arg int) (int) {
 }
 
 def Kernel.main() {
-  *out = f(*in)
+  out.write(f(in.read()))
 }
 
 Kernel.compile()
@@ -110,13 +110,13 @@ channel Kernel.resp int
 
 @ThreadEntry()
 def Kernel.f() {
-  *resp = *req + 1
+  resp.write(req.read() + 1)
 }
 
 @ThreadEntry()
 def Kernel.g() {
-  *req = 10
-  print(*resp)
+  req.write(10)
+  print(resp.read())
 }
 
 Kernel.compile()

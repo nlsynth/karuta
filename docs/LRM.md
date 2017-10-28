@@ -31,6 +31,13 @@ TODO: Consider non synthesizable methods.
     // The interpreter to start all threads.
     run()
 
+or
+
+    def f() {
+    }
+    thread Kernel.thr1 = f()
+    run()
+
 ### Data flow
 
     @DataFlowEntry()

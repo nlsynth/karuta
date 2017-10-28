@@ -1,4 +1,4 @@
-var HS object = Kernel.clone();
+var HS object = Kernel.clone()
 
 // Output channel:
 //
@@ -18,13 +18,13 @@ var HS object = Kernel.clone();
 //
 // NL read channel asserts ack high for 1 clock.
 
-channel HS.in = int;
-channel HS.out = int;
+channel HS.in int
+channel HS.out int
 
 def HS.main() {
-  print(*in);
-  *out = 5;
+  print(in.read());
+  out.write(5)
 }
 
 HS.compile();
-HS.writeHdl("handshake.v");
+HS.writeHdl("handshake.v")
