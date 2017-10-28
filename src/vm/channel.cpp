@@ -1,6 +1,7 @@
 #include "vm/channel.h"
 
 #include "numeric/numeric_op.h"  // from iroha
+#include "synth/object_method_names.h"
 #include "vm/object.h"
 #include "vm/thread.h"
 #include "vm/method.h"
@@ -35,9 +36,12 @@ public:
 Object *Channel::NewChannel(VM *vm, int width, sym_t name) {
   Object *pipe = vm->root_object_->Clone(vm);
   vector<RegisterType> rets;
-  Method::InstallNativeMethod(vm, pipe, "write", &Channel::WriteMethod, rets);
+  Method *m = Method::InstallNativeMethod(vm, pipe, "write",
+					  &Channel::WriteMethod, rets);
+  m->SetSynthName(synth::kChannelWrite);
   rets.push_back(Method::IntType(width));
-  Method::InstallNativeMethod(vm, pipe, "read", &Channel::ReadMethod, rets);
+  m = Method::InstallNativeMethod(vm, pipe, "read", &Channel::ReadMethod, rets);
+  m->SetSynthName(synth::kChannelRead);
 
   pipe->object_specific_.reset(new ChannelData(width, name));
 

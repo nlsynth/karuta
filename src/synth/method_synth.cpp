@@ -550,6 +550,10 @@ ITable *MethodSynth::GetITable() {
   return tab_;
 }
 
+ThreadSynth *MethodSynth::GetThreadSynth() {
+  return thr_synth_;
+}
+
 IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
 					fe::VarDecl *arg_decl) {
   int w = 0;

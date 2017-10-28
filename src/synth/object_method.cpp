@@ -3,14 +3,18 @@
 #include "base/annotation.h"
 #include "base/status.h"
 #include "iroha/iroha.h"
+#include "synth/channel_synth.h"
 #include "synth/insn_walker.h"
 #include "synth/method_context.h"
 #include "synth/method_synth.h"
 #include "synth/object_method_names.h"
+#include "synth/object_synth.h"
 #include "synth/resource_set.h"
 #include "synth/resource_synth.h"
 #include "synth/shared_resource_set.h"
+#include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
+#include "vm/channel.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/insn.h"
 #include "vm/method.h"
@@ -52,6 +56,10 @@ void ObjectMethod::Synth() {
     iinsn = SynthMemoryAccess(obj, false);
   } else if (name == kSramWrite) {
     iinsn = SynthMemoryAccess(obj, true);
+  } else if (name == kChannelRead) {
+    iinsn = SynthChannelAccess(obj, false);
+  } else if (name == kChannelWrite) {
+    iinsn = SynthChannelAccess(obj, true);
   } else {
     CHECK(false) << name;
   }
@@ -162,6 +170,16 @@ IInsn *ObjectMethod::SynthMemoryAccess(vm::Object *obj, bool is_write) {
   ResourceSet *rset = synth_->GetResourceSet();
   IResource *res = rset->GetExternalArrayResource();
   IInsn *iinsn = new IInsn(res);
+  return iinsn;
+}
+
+IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
+  CHECK(vm::Channel::IsChannel(ch_obj));
+  int width = vm::Channel::ChannelWidth(ch_obj);
+  ResourceSet *rset = synth_->GetResourceSet();
+  IResource *res = rset->GetChannelResource(ch_obj, is_write, width);
+  IInsn *iinsn = new IInsn(res);
+  synth_->GetThreadSynth()->GetObjectSynth()->GetChannelSynth()->AddChannel(ch_obj, res);
   return iinsn;
 }
 

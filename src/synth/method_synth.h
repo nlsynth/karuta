@@ -29,6 +29,7 @@ public:
   StateWrapper *AllocState();
   IRegister *FindLocalVarRegister(vm::Register *vreg);
   ITable *GetITable();
+  ThreadSynth *GetThreadSynth();
 
 private:
   void SynthNativeImplMethod(vm::Method *method);
