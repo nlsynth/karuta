@@ -2,16 +2,21 @@
 // TODO: test this.
 var M object = Kernel.clone();
 
-var M.a int[16];
+@AxiMaster()
+var M.a int[16]
+
+@AxiSlave()
+var M.b int[16]
 
 def M.main() {
-  a.load(0);
-  a[1] = 10;
-  a.store(0);
-  a[1] = 0;
-  print(a[1]);
-  a.load(0);
-  print(a[1]);
+  // array addr, length(-1), memory addr
+  a.load(0, 15, 0)
+  a[1] = 10
+  a.store(0, 15, 0)
+  a[1] = 0
+  print(a[1])
+  a.load(0, 15, 0)
+  print(a[1])
 }
 
 M.main();
