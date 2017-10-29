@@ -2,14 +2,14 @@
 
 // Synth failure for an inifinite loop.
 
-channel Kernel.c = int;
+channel Kernel.c int
 
 func main() {
   while (true) {
-    print(*c);
+    print(c.read())
   }
 }
 
 compile();
 // Unused. Just to see if this doesn't fail.
-writeHdl("a.v");
+writeHdl("a.v")

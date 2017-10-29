@@ -1,10 +1,10 @@
 // VERILOG_OUTPUT: a.v
 def Kernel.x() {
- *c = 10;
- assert(*d == 10);
+ c.write(10);
+ assert(d.read() == 10);
 }
 def Kernel.y() {
- *d = *c;
+ d.write(c.read());
 }
 
 channel Kernel.c = int;
