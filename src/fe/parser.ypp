@@ -471,8 +471,6 @@ EXPR : SYM {
   $$ = Builder::LogicInvertExpr($2);
 } | '~' EXPR {
   $$ = Builder::BitInvertExpr($2);
-} | '*' EXPR {
-  $$ = Builder::RefExpr($2);
 } | EXPR K_ADD_SUB EXPR {
   $$ = Builder::BinopExpr($1, $3, $2);
 } | EXPR '*' EXPR {

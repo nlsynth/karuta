@@ -48,7 +48,6 @@ class Builder {
   static void SetArrayLength(VarDecl *decl, int length);
   static Expr *ArrayRefExpr(Expr *array, Expr *index);
   static Expr *BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb);
-  static Expr *RefExpr(Expr *addr);
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);
 
   static VarDecl *BuildVarDecl(Expr *var_expr, bool is_primitive, sym_t type,

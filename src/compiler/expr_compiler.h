@@ -29,8 +29,6 @@ private:
 				   vm::Register *rhs_reg);
   vm::Register *CompileMemberSym(fe::Expr *expr);
   vm::Register *CompileArrayRef(fe::Expr *expr);
-  vm::Register *CompileAssignToUniopRef(vm::Insn *insn, fe::Expr *lhs,
-					vm::Register *rhs_reg);
   vm::Register *CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
 				   vm::Register *rhs_reg);
   vm::Register *CompileComma(fe::Expr *expr);
@@ -40,8 +38,6 @@ private:
 					 fe::Expr *funcall,
 					 vector<vm::Register *> &lhs_regs);
   vm::Register *CompileSimpleExpr(fe::Expr *expr);
-  vm::Register *CompileRef(fe::Expr *expr);
-  vm::Register *CompileRefLhsExpr(fe::Expr *lhs_expr, vm::Insn *insn);
   vm::Register *CompileTriTerm(fe::Expr *expr);
   void CompileIncDecNonLocal(fe::Expr *expr);
 

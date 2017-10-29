@@ -47,8 +47,6 @@ enum OpCode {
   // Read/Write.
   OP_ARRAY_READ,
   OP_ARRAY_WRITE,
-  OP_CHANNEL_READ,
-  OP_CHANNEL_WRITE,
   OP_MEMBER_READ,
   OP_MEMBER_WRITE,
 
@@ -60,9 +58,6 @@ enum OpCode {
   OP_CHANNEL_DECL,
   OP_MAILBOX_DECL,
   OP_THREAD_DECL,
-  // Can be channel or memory.
-  OP_GENERIC_READ,
-  OP_GENERIC_WRITE,
 
   OP_SET_TYPE_OBJECT,
 };

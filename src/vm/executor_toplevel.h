@@ -24,8 +24,6 @@ public:
   bool ExecFuncall(MethodFrame *frame, Insn *insn);
   void ExecFuncallDone(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn);
-  bool ExecGenericRead(MethodFrame *frame, Insn *insn);
-  void ExecGenericWrite(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecSetTypeObject(Method *method, Insn *insn);
   bool MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn);
 

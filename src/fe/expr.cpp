@@ -52,7 +52,6 @@ void Expr::Dump(DumpStream &ds) {
   case UNIOP_PRE_DEC:
   case UNIOP_PLUS:
   case UNIOP_MINUS:
-  case UNIOP_REF:
     ds.indent();
     ds.os << NodeName(type_) << "\n";
     if (args_) {

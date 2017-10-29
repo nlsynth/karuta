@@ -262,12 +262,6 @@ Expr *Builder::BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb) {
   return expr;
 }
 
-Expr *Builder::RefExpr(Expr *addr) {
-  Expr *expr = NewExpr(UNIOP_REF);
-  expr->args_ = addr;
-  return expr;
-}
-
 Stmt *Builder::DoWhileStmt() {
   // Similar to Emitter::EmitForStmt(), but this doesn't emit.
   Stmt *stmt = NewStmt(STMT_IF);

@@ -94,12 +94,6 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   case OP_RSHIFT:
     ExecBinop(method, frame, insn);
     break;
-  case OP_CHANNEL_READ:
-    need_suspend = ExecChannelRead(frame, insn);
-    if (need_suspend) {
-      return true;
-    }
-    break;
   case OP_FUNCALL:
     need_suspend = ExecFuncall(frame, insn);
     if (!thr_->IsRunnable()) {
@@ -121,9 +115,6 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     // do not increment pc.
     return false;
   case OP_NOP:
-    break;
-  case OP_CHANNEL_WRITE:
-    ExecChannelWrite(method, frame, insn);
     break;
   case OP_PRE_INC:
   case OP_PRE_DEC:
@@ -238,16 +229,6 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
   default:
     CHECK(false) << "unknown binop:" << vm::OpCodeName(insn->op_);
   }
-}
-
-void Executor::ExecChannelWrite(const Method *method, MethodFrame *frame,
-				Insn *insn) {
-  CHECK(insn->obj_reg_);
-  Value &dst_value = frame->reg_values_[insn->obj_reg_->id_];
-  Value &src_value = frame->reg_values_[insn->src_regs_[insn->src_regs_.size() - 1]->id_];
-  CHECK(dst_value.type_ == Value::OBJECT);
-  CHECK(Channel::IsChannel(dst_value.object_));
-  Channel::WriteValue(src_value, dst_value.object_);
 }
 
 void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
@@ -369,16 +350,6 @@ void Executor::ExecLoadObj(MethodFrame *frame, Insn *insn) {
     dst_value.object_ = frame->obj_;
     dst_value.type_ = Value::OBJECT;
   }
-}
-
-bool Executor::ExecChannelRead(MethodFrame *frame, Insn *insn) {
-  Value &addr_value = frame->reg_values_[insn->obj_reg_->id_];
-  CHECK(addr_value.type_ == Value::OBJECT);
-  Value &dst_value = frame->reg_values_[insn->dst_regs_[0]->id_];
-  if (!Channel::ReadValue(thr_, addr_value.object_, &dst_value)) {
-    return true;
-  }
-  return false;
 }
 
 void Executor::ExecIncDec(MethodFrame *frame, Insn *insn) {

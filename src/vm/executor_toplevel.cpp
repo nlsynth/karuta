@@ -55,15 +55,6 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
   case OP_SPAWN:
     ExecSpawn(frame, insn);
     break;
-  case OP_GENERIC_READ:
-    need_suspend = ExecGenericRead(frame, insn);
-    if (need_suspend) {
-      return true;
-    }
-    break;
-  case OP_GENERIC_WRITE:
-    ExecGenericWrite(method, frame, insn);
-    break;
   case OP_MEMBER_READ:
   case OP_MEMBER_WRITE:
     ExecutorToplevel::ExecMemberAccess(method, frame, insn);
@@ -237,11 +228,6 @@ void ExecutorToplevel::ExecMemberAccess(Method *method, MethodFrame *frame,
   }
 }
 
-bool ExecutorToplevel::ExecGenericRead(MethodFrame *frame, Insn *insn) {
-  CHECK(insn->src_regs_.size() == 0);
-  return ExecChannelRead(frame, insn);
-}
-
 bool ExecutorToplevel::ExecFuncall(MethodFrame *frame, Insn *insn) {
   Object *obj;
   Method *callee_method = LookupMethod(frame, insn, &obj);
@@ -290,14 +276,6 @@ void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
     }
   }
   Executor::ExecArrayWrite(frame, insn);
-}
-
-void ExecutorToplevel::ExecGenericWrite(const Method *method,
-					MethodFrame *frame,
-					Insn *insn) {
-  CHECK(insn->src_regs_.size() == 1);
-  // (obj: channel) value
-  ExecChannelWrite(method, frame, insn);
 }
 
 void ExecutorToplevel::ExecSetTypeObject(Method *method, Insn *insn) {

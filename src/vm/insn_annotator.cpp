@@ -207,10 +207,6 @@ void InsnAnnotator::TryType(Insn *insn) {
     insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, 32);
     return;
   }
-  if (insn->op_ == OP_GENERIC_READ || insn->op_ == OP_CHANNEL_READ) {
-    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-    return;
-  }
   if (insn->op_ == OP_ARRAY_READ) {
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
     return;

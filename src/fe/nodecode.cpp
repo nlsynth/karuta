@@ -54,7 +54,6 @@ const char *NodeName(enum NodeCode node) {
     {UNIOP_PRE_INC, "pre_inc"},
     {UNIOP_POST_DEC, "post_dec"},
     {UNIOP_PRE_DEC, "pre_dec"},
-    {UNIOP_REF, "ref"},
     {UNIOP_BIT_INV, "bit_inv"},
     {UNIOP_LOGIC_INV, "logic_inv"},
     {STMT_EXPR, "expr"},

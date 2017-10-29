@@ -340,12 +340,6 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   case vm::OP_LOGIC_INV:
     SynthBitInv(insn);
     break;
-  case vm::OP_CHANNEL_WRITE:
-    SynthChannelAccess(insn, true);
-    break;
-  case vm::OP_CHANNEL_READ:
-    SynthChannelAccess(insn, false);
-    break;
   default:
     CHECK(false) << "unknown insn:" << vm::OpCodeName(insn->op_);
   }
@@ -758,22 +752,6 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
   }
   StateWrapper *sw = AllocState();
   sw->state_->insns_.push_back(iinsn);
-}
-
-void MethodSynth::SynthChannelAccess(vm::Insn *insn, bool is_write) {
-  vm::Object *obj = member_reg_to_obj_map_[insn->obj_reg_];
-  CHECK(vm::Channel::IsChannel(obj));
-  int width = vm::Channel::ChannelWidth(obj);
-  IResource *res = res_set_->GetChannelResource(obj, is_write, width);
-  IInsn *iinsn = new IInsn(res);
-  if (is_write) {
-    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
-  } else {
-    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
-  }
-  StateWrapper *w = AllocState();
-  w->state_->insns_.push_back(iinsn);
-  thr_synth_->GetObjectSynth()->GetChannelSynth()->AddChannel(obj, res);
 }
 
 void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {

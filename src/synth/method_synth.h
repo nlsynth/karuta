@@ -57,7 +57,6 @@ private:
   bool UseSharedArray(vm::Object *array_obj);
   void SynthSharedArrayAccess(vm::Insn *insn, bool is_write);
   void SynthBitRange(vm::Insn *insn);
-  void SynthChannelAccess(vm::Insn *insn, bool is_write);
   void SynthConcat(vm::Insn *insn);
   void SynthPreIncDec(vm::Insn *insn);
   void SynthNative(vm::Insn *insn);

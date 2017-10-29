@@ -70,9 +70,6 @@ vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
   if (expr->type_ == fe::EXPR_TRI_TERM) {
     return CompileTriTerm(expr);
   }
-  if (expr->type_ == fe::UNIOP_REF) {
-    return CompileRef(expr);
-  }
   return CompileSimpleExpr(expr);
 }
 
@@ -248,79 +245,6 @@ vm::OpCode ExprCompiler::GetOpCodeFromExpr(fe::Expr *expr) {
     CHECK(false) << "Unknown expr:" << fe::NodeName(expr->type_);
   }
   return vm::OP_INVALID;
-}
-
-vm::Register *ExprCompiler::CompileRef(fe::Expr *expr) {
-  vm::Register *reg = compiler_->AllocRegister();
-  vm::Insn *insn = new vm::Insn;
-  insn->insn_expr_ = expr;
-  insn->dst_regs_.push_back(reg);
-  if (compiler_->IsTopLevel()) {
-    insn->op_ = vm::OP_GENERIC_READ;
-    CHECK(expr->args_->type_ == fe::EXPR_SYM);
-    vm::Register *src = compiler_->LookupLocalVar(expr->args_->sym_);
-    if (src) {
-      insn->src_regs_.push_back(src);
-    } else {
-      insn->obj_reg_ = compiler_->EmitLoadObj(expr->args_->sym_);
-    }
-    insn->label_ = expr->args_->sym_;
-  } else {
-    vm::Value::ValueType type = GetVariableType(expr->args_->sym_);
-    if (type == vm::Value::OBJECT) {
-      insn->op_ = vm::OP_CHANNEL_READ;
-      insn->obj_reg_ = compiler_->EmitLoadObj(expr->args_->sym_);
-    } else {
-      CHECK(false);
-    }
-  }
-  compiler_->EmitInsn(insn);
-  return reg;
-}
-
-vm::Register *ExprCompiler::CompileAssignToUniopRef(vm::Insn *insn,
-						    fe::Expr *lhs,
-						    vm::Register *rhs_reg) {
-  // LHS can be either an address or a channel.
-  vm::Register *lhs_reg = CompileRefLhsExpr(lhs, insn);
-  if (lhs_reg) {
-    insn->src_regs_.push_back(lhs_reg);
-  }
-  insn->src_regs_.push_back(rhs_reg);
-  insn->dst_regs_.push_back(insn->src_regs_[0]);
-  compiler_->EmitInsn(insn);
-  return rhs_reg;
-}
-
-vm::Register *ExprCompiler::CompileRefLhsExpr(fe::Expr *lhs_expr,
-					      vm::Insn *insn) {
-  insn->insn_expr_ = lhs_expr;
-  // Does't support: *(x.y) = ...; for now.
-  CHECK(lhs_expr->args_->type_ == fe::EXPR_SYM)
-    << fe::NodeName(lhs_expr->type_);
-  sym_t name = lhs_expr->args_->sym_;
-  if (compiler_->IsTopLevel()) {
-    insn->op_ = vm::OP_GENERIC_WRITE;
-    vm::Register *src = compiler_->LookupLocalVar(lhs_expr->args_->sym_);
-    if (src) {
-      insn->src_regs_.push_back(src);
-    } else {
-      insn->obj_reg_ = compiler_->EmitLoadObj(lhs_expr->args_->sym_);
-    }
-    insn->label_ = name;
-    return nullptr;
-  } else {
-    // Determines if it is a channel or memory.
-    vm::Value::ValueType type = GetVariableType(name);
-    if (type == vm::Value::OBJECT) {
-      insn->op_ = vm::OP_CHANNEL_WRITE;
-      insn->obj_reg_ = compiler_->EmitLoadObj(lhs_expr->args_->sym_);
-      return compiler_->AllocRegister();
-    } else {
-      CHECK(false);
-    }
-  }
-  return nullptr;
 }
 
 vm::Register *ExprCompiler::CompileTriTerm(fe::Expr *expr) {
@@ -512,9 +436,7 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
 
 vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
 					       vm::Register *rhs_reg) {
-  if (lhs->type_ == fe::UNIOP_REF) {
-    return CompileAssignToUniopRef(insn, lhs, rhs_reg);
-  } else if (lhs->type_ == fe::BINOP_ELM_REF) {
+  if (lhs->type_ == fe::BINOP_ELM_REF) {
     return CompileAssignToElmRef(insn, lhs, rhs_reg);
   } else if (lhs->type_ == fe::BINOP_ARRAY_REF) {
     return CompileAssignToArray(insn, lhs, rhs_reg);

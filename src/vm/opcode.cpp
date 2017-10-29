@@ -48,8 +48,6 @@ const char *OpCodeName(enum OpCode node) {
     // Read/Write.
     {vm::OP_ARRAY_READ, "array_read"},
     {vm::OP_ARRAY_WRITE, "array_write"},
-    {vm::OP_CHANNEL_READ, "channel_read"},
-    {vm::OP_CHANNEL_WRITE, "channel_write"},
     {vm::OP_MEMBER_READ, "member_read"},
     {vm::OP_MEMBER_WRITE, "member_write"},
     // Toplevel.
@@ -59,8 +57,6 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_VARDECL, "vardecl"},
     {vm::OP_CHANNEL_DECL, "channel_decl"},
     {vm::OP_THREAD_DECL, "thread_decl"},
-    {vm::OP_GENERIC_READ, "generic_read"},
-    {vm::OP_GENERIC_WRITE, "generic_write"},
     {vm::OP_SET_TYPE_OBJECT, "set_type_object"},
   };
   auto it = codes.find(node);
