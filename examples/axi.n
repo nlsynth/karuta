@@ -9,7 +9,7 @@ var M.a int[16]
 var M.b int[16]
 
 def M.main() {
-  // array addr, length(-1), memory addr
+  // memory addr, length(-1), array addr
   a.load(0, 15, 0)
   a[1] = 10
   a.store(0, 15, 0)
@@ -22,3 +22,4 @@ def M.main() {
 M.main();
 M.compile();
 M.writeHdl("/tmp/axi.v");
+M.writeHdl("/tmp/axi.iroha");
