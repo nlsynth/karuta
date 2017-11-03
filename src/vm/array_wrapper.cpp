@@ -216,7 +216,7 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
   // Do the copy.
   for (int i = 0; i < count; ++i) {
     if (is_load) {
-      arr->Write(array_addr, mem->ReadWide(mem_addr, mem_addr_step));
+      arr->Write(array_addr, mem->ReadWide(mem_addr, mem_addr_step * 8));
     } else {
       mem->WriteWide(mem_addr, arr->Read(array_addr));
     }
