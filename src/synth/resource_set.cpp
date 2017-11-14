@@ -362,29 +362,43 @@ void ResourceSet::PopulateResourceDataType(int op, IValueType &vt,
   }
 }
 
-IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_write,
+IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_owner,
+					   bool is_write,
 					   int data_width) {
-  auto it = channel_resources_.find(obj);
-  if (it != channel_resources_.end()) {
+  map<vm::Object *, IResource *> *m;
+  const char *n;
+  if (is_owner) {
+    m = &fifo_resources_;
+    n = resource::kFifo;
+  } else {
+    if (is_write) {
+      n = resource::kFifoWriter;
+      m = &fifo_writers_;
+    } else {
+      n = resource::kFifoReader;
+      m = &fifo_readers_;
+    }
+  }
+  auto it = m->find(obj);
+  if (it != m->end()) {
     return it->second;
   }
-  string k;
-  if (is_write) {
-    k = resource::kChannelWrite;
-  } else {
-    k = resource::kChannelRead;
-  }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), k);
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   tab_->resources_.push_back(res);
-  channel_resources_[obj] = res;
-  IValueType vt;
-  vt.SetWidth(data_width);
-  if (is_write) {
-    res->input_types_.push_back(vt);
+  (*m)[obj] = res;
+  if (is_owner) {
+    res->GetParams()->SetWidth(data_width);
+    res->GetParams()->SetAddrWidth(1);
   } else {
-    res->output_types_.push_back(vt);
+    IValueType vt;
+    vt.SetWidth(data_width);
+    if (is_write) {
+      res->input_types_.push_back(vt);
+    } else {
+      res->output_types_.push_back(vt);
+    }
   }
   return res;
 }

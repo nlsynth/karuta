@@ -6,6 +6,7 @@ channel Kernel.c int
 
 func main() {
   while (true) {
+    c.write(10)
     print(c.read())
   }
 }

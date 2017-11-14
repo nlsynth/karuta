@@ -6,7 +6,6 @@
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
-#include "synth/channel_synth.h"
 #include "synth/design_synth.h"
 #include "synth/method_context.h"
 #include "synth/object_method.h"

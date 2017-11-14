@@ -5,7 +5,6 @@
 #include "base/stl_util.h"
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
-#include "synth/channel_synth.h"
 #include "synth/shared_resource_set.h"
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
@@ -14,7 +13,6 @@ namespace synth {
 
 DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj)
   : vm_(vm), root_obj_(obj) {
-  channel_synth_.reset(new ChannelSynth);
   i_design_.reset(new IDesign);
   shared_resources_.reset(new SharedResourceSet);
   obj_tree_.reset(new ObjectTree(obj));
@@ -37,8 +35,6 @@ bool DesignSynth::Synth() {
   if (!SynthObjects()) {
     return false;
   }
-
-  channel_synth_->Resolve(i_design_.get());
 
   DesignTool::Validate(i_design_.get());
 
@@ -70,10 +66,6 @@ bool DesignSynth::SynthObjects() {
 
 vm::VM *DesignSynth::GetVM() {
   return vm_;
-}
-
-ChannelSynth *DesignSynth::GetChannelSynth() {
-  return channel_synth_.get();
 }
 
 IDesign *DesignSynth::GetIDesign() {

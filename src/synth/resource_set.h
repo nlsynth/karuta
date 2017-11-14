@@ -32,7 +32,8 @@ public:
   IResource *GetImportedResource(vm::Method *method);
   IResource *GetExternalArrayResource();
   IResource *GetInternalArrayResource(vm::Object *obj);
-  IResource *GetChannelResource(vm::Object *ch, bool is_write,
+  IResource *GetChannelResource(vm::Object *ch, bool is_owner,
+				bool is_write,
 				int data_width);
   IResource *GetSubModuleTaskResource();
   IResource *GetDataFlowInResource();
@@ -75,7 +76,9 @@ private:
 
   vector<IResource *> imported_resources_;
   map<vm::Object *, IResource *> array_resources_;
-  map<vm::Object *, IResource *> channel_resources_;
+  map<vm::Object *, IResource *> fifo_resources_;
+  map<vm::Object *, IResource *> fifo_writers_;
+  map<vm::Object *, IResource *> fifo_readers_;
   map<sym_t, IResource *> member_shared_reg_;
   map<sym_t, IResource *> member_shared_reg_writer_;
   map<sym_t, IResource *> member_shared_reg_reader_;

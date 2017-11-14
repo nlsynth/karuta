@@ -17,7 +17,6 @@ public:
   bool Synth();
 
   vm::VM *GetVM();
-  ChannelSynth *GetChannelSynth();
   IDesign *GetIDesign();
   ObjectSynth *GetObjectSynth(vm::Object *obj);
   SharedResourceSet *GetSharedResourceSet();
@@ -32,7 +31,6 @@ private:
 
   vm::VM *vm_;
   vm::Object *root_obj_;
-  std::unique_ptr<ChannelSynth> channel_synth_;
   std::unique_ptr<IDesign> i_design_;
   std::unique_ptr<SharedResourceSet> shared_resources_;
   std::unique_ptr<ObjectTree> obj_tree_;

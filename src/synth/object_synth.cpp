@@ -88,10 +88,6 @@ vm::Object *ObjectSynth::GetObject() const {
   return obj_;
 }
 
-ChannelSynth *ObjectSynth::GetChannelSynth() const {
-  return design_synth_->GetChannelSynth();
-}
-
 void ObjectSynth::CollectThreads(IModule *mod) {
   vector<vm::ThreadWrapper::ThreadEntry> thread_entries;
   vm::ThreadWrapper::GetThreadMethods(obj_, &thread_entries);

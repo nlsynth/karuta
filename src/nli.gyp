@@ -69,8 +69,6 @@
         'main.cpp',
         'nli.cpp',
         'nli.h',
-        'synth/channel_synth.cpp',
-        'synth/channel_synth.h',
         'synth/common.h',
         'synth/design_synth.cpp',
         'synth/design_synth.h',

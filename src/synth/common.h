@@ -34,7 +34,6 @@ class Value;
 }  // namespace vm
 
 namespace synth {
-class ChannelSynth;
 class DesignSynth;
 class InsnWalker;
 class MethodContext;

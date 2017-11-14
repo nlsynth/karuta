@@ -3,7 +3,6 @@
 #include "base/annotation.h"
 #include "base/status.h"
 #include "iroha/iroha.h"
-#include "synth/channel_synth.h"
 #include "synth/insn_walker.h"
 #include "synth/method_context.h"
 #include "synth/method_synth.h"
@@ -81,7 +80,8 @@ void ObjectMethod::Scan() {
   SharedResourceSet *sres = walker_->GetSharedResourceSet();
   if (name == kLoad || name == kStore ||
       name == kMailboxPut || name == kMailboxGet ||
-      name == kMailboxNotify || name == kMailboxWait) {
+      name == kMailboxNotify || name == kMailboxWait ||
+      name == kChannelWrite || name == kChannelRead) {
     sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name);
   }
 }
@@ -177,9 +177,15 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   CHECK(vm::Channel::IsChannel(ch_obj));
   int width = vm::Channel::ChannelWidth(ch_obj);
   ResourceSet *rset = synth_->GetResourceSet();
-  IResource *res = rset->GetChannelResource(ch_obj, is_write, width);
+  SharedResource *sres =
+    synth_->GetSharedResourceSet()->GetByObj(ch_obj);
+  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
+    sres->AddOwnerResource(rset->GetChannelResource(ch_obj,
+						    true, false, width));
+  }
+  IResource *res = rset->GetChannelResource(ch_obj, false, is_write, width);
+  sres->AddAccessorResource(res);
   IInsn *iinsn = new IInsn(res);
-  synth_->GetThreadSynth()->GetObjectSynth()->GetChannelSynth()->AddChannel(ch_obj, res);
   return iinsn;
 }
 

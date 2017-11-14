@@ -25,7 +25,6 @@ public:
 
   vm::VM *GetVM() const;
   vm::Object *GetObject() const;
-  ChannelSynth *GetChannelSynth() const;
   IModule *GetIModule();
   ThreadSynth *GetThreadByName(const string &name);
   DesignSynth *GetDesignSynth();
