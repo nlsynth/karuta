@@ -4,7 +4,6 @@
 #include "fe/expr.h"
 #include "vm/array_wrapper.h"
 #include "vm/enum_type_wrapper.h"
-#include "vm/channel.h"
 #include "vm/gc.h"
 #include "vm/int_array.h"
 #include "vm/method.h"

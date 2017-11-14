@@ -13,7 +13,7 @@
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
-#include "vm/channel.h"
+#include "vm/channel_wrapper.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/insn.h"
 #include "vm/method.h"
@@ -174,8 +174,8 @@ IInsn *ObjectMethod::SynthMemoryAccess(vm::Object *obj, bool is_write) {
 }
 
 IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
-  CHECK(vm::Channel::IsChannel(ch_obj));
-  int width = vm::Channel::ChannelWidth(ch_obj);
+  CHECK(vm::ChannelWrapper::IsChannel(ch_obj));
+  int width = vm::ChannelWrapper::ChannelWidth(ch_obj);
   ResourceSet *rset = synth_->GetResourceSet();
   SharedResource *sres =
     synth_->GetSharedResourceSet()->GetByObj(ch_obj);

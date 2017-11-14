@@ -17,7 +17,7 @@
 #include "synth/thread_synth.h"
 #include "synth/tool.h"
 #include "vm/array_wrapper.h"
-#include "vm/channel.h"
+#include "vm/channel_wrapper.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"

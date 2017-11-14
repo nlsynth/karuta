@@ -12,7 +12,7 @@
 #include "numeric/numeric_op.h"  // from iroha
 #include "vm/array_wrapper.h"
 #include "vm/method.h"
-#include "vm/channel.h"
+#include "vm/channel_wrapper.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/mailbox_wrapper.h"
@@ -130,7 +130,7 @@ void ExecutorToplevel::ExecChannelDecl(const Method *method,
 				       MethodFrame *frame, Insn *insn) {
   int width = insn->insn_stmt_->width_.GetWidth();
   Object *channel_obj =
-    Channel::NewChannel(thr_->GetVM(), width, insn->label_);
+    ChannelWrapper::NewChannel(thr_->GetVM(), width, insn->label_);
 
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);

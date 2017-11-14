@@ -9,7 +9,6 @@
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/synth.h"
 #include "synth/object_method_names.h"
-#include "vm/channel.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/string_wrapper.h"

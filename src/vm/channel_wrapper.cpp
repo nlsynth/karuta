@@ -1,4 +1,4 @@
-#include "vm/channel.h"
+#include "vm/channel_wrapper.h"
 
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/object_method_names.h"
@@ -33,14 +33,15 @@ public:
   Thread *blocking_thread_;
 };
 
-Object *Channel::NewChannel(VM *vm, int width, sym_t name) {
+Object *ChannelWrapper::NewChannel(VM *vm, int width, sym_t name) {
   Object *pipe = vm->root_object_->Clone(vm);
   vector<RegisterType> rets;
   Method *m = Method::InstallNativeMethod(vm, pipe, "write",
-					  &Channel::WriteMethod, rets);
+					  &ChannelWrapper::WriteMethod, rets);
   m->SetSynthName(synth::kChannelWrite);
   rets.push_back(Method::IntType(width));
-  m = Method::InstallNativeMethod(vm, pipe, "read", &Channel::ReadMethod, rets);
+  m = Method::InstallNativeMethod(vm, pipe, "read",
+				  &ChannelWrapper::ReadMethod, rets);
   m->SetSynthName(synth::kChannelRead);
 
   pipe->object_specific_.reset(new ChannelData(width, name));
@@ -48,24 +49,24 @@ Object *Channel::NewChannel(VM *vm, int width, sym_t name) {
   return pipe;
 }
 
-bool Channel::IsChannel(Object *obj) {
+bool ChannelWrapper::IsChannel(Object *obj) {
   return (obj->ObjectTypeKey() == kChannelObjectKey);
 }
 
-const string &Channel::ChannelName(Object *obj) {
+const string &ChannelWrapper::ChannelName(Object *obj) {
   CHECK(IsChannel(obj));
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   return pipe_data->name_;
 }
 
-int Channel::ChannelWidth(Object *obj) {
+int ChannelWrapper::ChannelWidth(Object *obj) {
   CHECK(IsChannel(obj));
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   return pipe_data->width_;
 }
 
-void Channel::ReadMethod(Thread *thr, Object *obj,
-			  const vector<Value> &args) {
+void ChannelWrapper::ReadMethod(Thread *thr, Object *obj,
+				const vector<Value> &args) {
   Value value;
   if (!ReadValue(thr, obj, &value)) {
     return;
@@ -74,7 +75,7 @@ void Channel::ReadMethod(Thread *thr, Object *obj,
   NativeMethods::SetReturnValue(thr, value);
 }
 
-bool Channel::ReadValue(Thread *thr, Object *obj, Value *value) {
+bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   if (pipe_data->values_.size() == 0) {
     BlockOnThis(thr, obj);
@@ -90,12 +91,13 @@ bool Channel::ReadValue(Thread *thr, Object *obj, Value *value) {
   return true;
 }
 
-void Channel::WriteMethod(Thread *thr, Object *obj, const vector<Value> &args) {
+void ChannelWrapper::WriteMethod(Thread *thr, Object *obj,
+				 const vector<Value> &args) {
   CHECK(args.size() == 1 && args[0].type_ == Value::NUM);
   WriteValue(args[0], obj);
 }
 
-void Channel::WriteValue(const Value &value, Object *obj) {
+void ChannelWrapper::WriteValue(const Value &value, Object *obj) {
   int64_t v = value.num_.GetValue();
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   pipe_data->values_.push_back(v);
@@ -105,7 +107,7 @@ void Channel::WriteValue(const Value &value, Object *obj) {
   }
 }
 
-void Channel::BlockOnThis(Thread *thr, Object *obj) {
+void ChannelWrapper::BlockOnThis(Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   CHECK(pipe_data->blocking_thread_ == nullptr);
   pipe_data->blocking_thread_ = thr;

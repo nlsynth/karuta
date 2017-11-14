@@ -10,7 +10,6 @@
 #include "fe/var_decl.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "vm/array_wrapper.h"
-#include "vm/channel.h"
 #include "vm/insn.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"

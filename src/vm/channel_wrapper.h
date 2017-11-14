@@ -1,12 +1,12 @@
 // -*- C++ -*-
-#ifndef _vm_channel_h_
-#define _vm_channel_h_
+#ifndef _vm_channel_wrapper_h_
+#define _vm_channel_wrapper_h_
 
 #include "vm/common.h"
 
 namespace vm {
 
-class Channel {
+class ChannelWrapper {
 public:
   static Object *NewChannel(VM *vm, int width, sym_t name);
 
@@ -26,4 +26,4 @@ private:
 
 }  // namespace vm
 
-#endif  // _vm_channel_h_
+#endif  // _vm_channel_wrapper_h_
