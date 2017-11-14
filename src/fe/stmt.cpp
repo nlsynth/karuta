@@ -10,7 +10,12 @@
 
 namespace fe {
 
-Stmt::Stmt(enum NodeCode type) : type_(type), annotation_(nullptr) {
+Stmt::Stmt(enum NodeCode type)
+  : type_(type), expr_(nullptr), sym_(sym_null), annotation_(nullptr),
+    method_def_(nullptr) {
+  label_t_ = sym_null;
+  label_f_ = sym_null;
+  label_join_ = sym_null;
 }
 
 void Stmt::Dump() {
@@ -120,12 +125,72 @@ void Stmt::Dump(DumpStream &ds) {
   }
 }
 
+enum NodeCode Stmt::GetType() const {
+  return type_;
+}
+
 void Stmt::SetAnnotation(Annotation *an) {
   annotation_ = an;
 }
 
 Annotation *Stmt::GetAnnotation() {
   return annotation_;
+}
+
+Expr *Stmt::GetExpr() const {
+  return expr_;
+}
+
+void Stmt::SetExpr(Expr *expr) {
+  expr_ = expr;
+}
+
+sym_t Stmt::GetSym() const {
+  return sym_;
+}
+
+void Stmt::SetSym(sym_t sym) {
+  sym_ = sym;
+}
+
+Method *Stmt::GetMethodDef() const {
+  return method_def_;
+}
+
+void Stmt::SetMethodDef(Method *method_def) {
+  method_def_ = method_def;
+}
+
+iroha::NumericWidth &Stmt::GetWidth() {
+  return width_;
+}
+
+void Stmt::SetWidth(iroha::NumericWidth &width) {
+  width_ = width;
+}
+
+sym_t Stmt::GetLabel(bool is_join, bool is_t) {
+  if (is_join) {
+    return label_join_;
+  } else {
+    if (is_t) {
+      return label_t_;
+    } else {
+      return label_f_;
+    }
+  }
+}
+
+void Stmt::SetLabel(bool is_join, bool is_t, sym_t label) {
+  if (is_join) {
+    label_join_ = label;
+  } else {
+    if (is_t) {
+      label_t_ = label;
+    } else {
+      label_f_ = label;
+    }
+  }
 }
 
 }  // namespace fe

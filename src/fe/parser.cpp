@@ -2326,7 +2326,7 @@ yyreduce:
 #line 344 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.stmt) = Emitter::EmitIfStmt((yyvsp[-1].expr));
-  Emitter::EmitLabel((yyval.stmt)->label_t_);
+  Emitter::EmitLabel((yyval.stmt)->GetLabel(false, true));
 }
 #line 2332 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2335,8 +2335,8 @@ yyreduce:
 #line 349 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.stmt) = (yyvsp[-2].stmt);
-  Emitter::EmitGoto((yyvsp[-2].stmt)->label_join_);
-  Emitter::EmitLabel((yyvsp[-2].stmt)->label_f_);
+  Emitter::EmitGoto((yyvsp[-2].stmt)->GetLabel(true, false));
+  Emitter::EmitLabel((yyvsp[-2].stmt)->GetLabel(false, false));
 }
 #line 2342 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2345,8 +2345,8 @@ yyreduce:
 #line 355 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.block) = nullptr;
-  Emitter::EmitLabel((yyvsp[-1].stmt)->label_f_);
-  Emitter::EmitLabel((yyvsp[-1].stmt)->label_join_);
+  Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(false, false));
+  Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(true, false));
 }
 #line 2352 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2355,7 +2355,7 @@ yyreduce:
 #line 359 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.block) = nullptr;
-  Emitter::EmitLabel((yyvsp[-1].stmt)->label_join_);
+  Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(true, false));
 }
 #line 2361 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2364,7 +2364,7 @@ yyreduce:
 #line 362 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.block) = nullptr;
-  Emitter::EmitLabel((yyvsp[-1].stmt)->label_join_);
+  Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(true, false));
 }
 #line 2370 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2382,7 +2382,7 @@ yyreduce:
 #line 372 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.stmt) = Emitter::EmitForStmt((yyvsp[0].expr));
-  Emitter::EmitLabel((yyval.stmt)->label_t_);
+  Emitter::EmitLabel((yyval.stmt)->GetLabel(false, true));
 }
 #line 2388 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2399,8 +2399,8 @@ yyreduce:
   // goto join:
   //  f:
   Emitter::EmitExprStmt((yyvsp[-2].expr));
-  Emitter::EmitGoto((yyvsp[-4].stmt)->label_join_);
-  Emitter::EmitLabel((yyvsp[-4].stmt)->label_f_);
+  Emitter::EmitGoto((yyvsp[-4].stmt)->GetLabel(true, false));
+  Emitter::EmitLabel((yyvsp[-4].stmt)->GetLabel(false, false));
   Emitter::EndBlock();
 }
 #line 2407 "src/fe/parser.cpp" /* yacc.c:1646  */
@@ -2414,7 +2414,7 @@ yyreduce:
   // find a insn after the label.
   Emitter::EmitNop();
   (yyval.stmt) = Emitter::EmitWhileStmt((yyvsp[-1].expr));
-  Emitter::EmitLabel((yyval.stmt)->label_t_);
+  Emitter::EmitLabel((yyval.stmt)->GetLabel(false, true));
 }
 #line 2420 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2422,8 +2422,8 @@ yyreduce:
   case 99:
 #line 401 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  Emitter::EmitGoto((yyvsp[-1].stmt)->label_join_);
-  Emitter::EmitLabel((yyvsp[-1].stmt)->label_f_);
+  Emitter::EmitGoto((yyvsp[-1].stmt)->GetLabel(true, false));
+  Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(false, false));
   Emitter::EndBlock();
 }
 #line 2430 "src/fe/parser.cpp" /* yacc.c:1646  */
@@ -2435,7 +2435,7 @@ yyreduce:
   Emitter::BeginBlock();
   Emitter::EmitNop();
   (yyval.stmt) = Builder::DoWhileStmt();
-  Emitter::EmitLabel((yyval.stmt)->label_join_);
+  Emitter::EmitLabel((yyval.stmt)->GetLabel(true, false));
 }
 #line 2441 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
@@ -2452,9 +2452,9 @@ yyreduce:
 #line 418 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   Emitter::EmitDoWhileStmt((yyvsp[-4].stmt), (yyvsp[-1].expr));
-  Emitter::EmitLabel((yyvsp[-4].stmt)->label_t_);
-  Emitter::EmitGoto((yyvsp[-4].stmt)->label_join_);
-  Emitter::EmitLabel((yyvsp[-4].stmt)->label_f_);
+  Emitter::EmitLabel((yyvsp[-4].stmt)->GetLabel(false, true));
+  Emitter::EmitGoto((yyvsp[-4].stmt)->GetLabel(true, false));
+  Emitter::EmitLabel((yyvsp[-4].stmt)->GetLabel(false, false));
   Emitter::EndBlock();
 }
 #line 2461 "src/fe/parser.cpp" /* yacc.c:1646  */

@@ -343,25 +343,25 @@ ASSIGN_OR_EMPTY : {
 
 IF_COND_PART : K_IF '(' EXPR ')' {
   $$ = Emitter::EmitIfStmt($3);
-  Emitter::EmitLabel($$->label_t_);
+  Emitter::EmitLabel($$->GetLabel(false, true));
 }
 
 IF_WITH_ELSE : IF_COND_PART BLOCK K_ELSE {
   $$ = $1;
-  Emitter::EmitGoto($1->label_join_);
-  Emitter::EmitLabel($1->label_f_);
+  Emitter::EmitGoto($1->GetLabel(true, false));
+  Emitter::EmitLabel($1->GetLabel(false, false));
 }
 
 IF_STMT : IF_COND_PART BLOCK {
   $$ = nullptr;
-  Emitter::EmitLabel($1->label_f_);
-  Emitter::EmitLabel($1->label_join_);
+  Emitter::EmitLabel($1->GetLabel(false, false));
+  Emitter::EmitLabel($1->GetLabel(true, false));
 } | IF_WITH_ELSE BLOCK {
   $$ = nullptr;
-  Emitter::EmitLabel($1->label_join_);
+  Emitter::EmitLabel($1->GetLabel(true, false));
 } | IF_WITH_ELSE IF_STMT {
   $$ = nullptr;
-  Emitter::EmitLabel($1->label_join_);
+  Emitter::EmitLabel($1->GetLabel(true, false));
 }
 
 FOR_HEAD : K_FOR '(' EXPR ';' {
@@ -371,7 +371,7 @@ FOR_HEAD : K_FOR '(' EXPR ';' {
 
 FOR_COND_PART : FOR_HEAD EXPR {
   $$ = Emitter::EmitForStmt($2);
-  Emitter::EmitLabel($$->label_t_);
+  Emitter::EmitLabel($$->GetLabel(false, true));
 }
 
 FOR_STMT : FOR_COND_PART ';' EXPR ')' BLOCK {
@@ -384,8 +384,8 @@ FOR_STMT : FOR_COND_PART ';' EXPR ')' BLOCK {
   // goto join:
   //  f:
   Emitter::EmitExprStmt($3);
-  Emitter::EmitGoto($1->label_join_);
-  Emitter::EmitLabel($1->label_f_);
+  Emitter::EmitGoto($1->GetLabel(true, false));
+  Emitter::EmitLabel($1->GetLabel(false, false));
   Emitter::EndBlock();
 }
 
@@ -395,12 +395,12 @@ WHILE_COND_PART : K_WHILE '(' EXPR ')' {
   // find a insn after the label.
   Emitter::EmitNop();
   $$ = Emitter::EmitWhileStmt($3);
-  Emitter::EmitLabel($$->label_t_);
+  Emitter::EmitLabel($$->GetLabel(false, true));
 }
 
 WHILE_STMT : WHILE_COND_PART BLOCK {
-  Emitter::EmitGoto($1->label_join_);
-  Emitter::EmitLabel($1->label_f_);
+  Emitter::EmitGoto($1->GetLabel(true, false));
+  Emitter::EmitLabel($1->GetLabel(false, false));
   Emitter::EndBlock();
 }
 
@@ -408,7 +408,7 @@ DO_WHILE_HEAD : K_DO {
   Emitter::BeginBlock();
   Emitter::EmitNop();
   $$ = Builder::DoWhileStmt();
-  Emitter::EmitLabel($$->label_join_);
+  Emitter::EmitLabel($$->GetLabel(true, false));
 }
 
 DO_WHILE_BODY : DO_WHILE_HEAD BLOCK {
@@ -417,9 +417,9 @@ DO_WHILE_BODY : DO_WHILE_HEAD BLOCK {
 
 DO_WHILE_STMT : DO_WHILE_BODY K_WHILE '(' EXPR ')' {
   Emitter::EmitDoWhileStmt($1, $4);
-  Emitter::EmitLabel($1->label_t_);
-  Emitter::EmitGoto($1->label_join_);
-  Emitter::EmitLabel($1->label_f_);
+  Emitter::EmitLabel($1->GetLabel(false, true));
+  Emitter::EmitGoto($1->GetLabel(true, false));
+  Emitter::EmitLabel($1->GetLabel(false, false));
   Emitter::EndBlock();
 }
 

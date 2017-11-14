@@ -107,14 +107,14 @@ void Emitter::EmitNop() {
 void Emitter::EmitExprStmt(Expr *expr) {
   CHECK(expr);
   Stmt *stmt = NewStmt(STMT_EXPR);
-  stmt->expr_ = expr;
+  stmt->SetExpr(expr);
   EmitStmt(stmt);
 }
 
 Stmt *Emitter::BuildFuncDeclStmt(MethodDecl *decl) {
   Stmt *stmt = NewStmt(STMT_FUNCDECL);
-  stmt->expr_ = decl->name_expr_;
-  stmt->method_def_ = decl->method_;
+  stmt->SetExpr(decl->name_expr_);
+  stmt->SetMethodDef(decl->method_);
   return stmt;
 }
 
@@ -126,7 +126,7 @@ void Emitter::EmitImportStmt(const char *str) {
 
 void Emitter::EmitSpawnStmt(Expr *expr){
   Stmt *stmt = NewStmt(STMT_SPAWN);
-  stmt->expr_ = expr;
+  stmt->SetExpr(expr);
   EmitStmt(stmt);
 }
 
@@ -147,17 +147,17 @@ void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
 
 void Emitter::EmitEnumTypeDeclStmt(Expr *name, EnumDecl *decl) {
   Stmt *stmt = NewStmt(STMT_ENUM_DECL);
-  stmt->expr_ = name;
+  stmt->SetExpr(name);
   stmt->enum_ = decl;
   EmitStmt(stmt);
 }
   
 Stmt *Emitter::EmitIfStmt(Expr *cond) {
   Stmt *stmt = NewStmt(STMT_IF);
-  stmt->expr_ = cond;
-  stmt->label_t_ = sym_alloc_tmp_sym("_t");
-  stmt->label_f_ = sym_alloc_tmp_sym("_f");
-  stmt->label_join_ = sym_alloc_tmp_sym("_join");
+  stmt->SetExpr(cond);
+  stmt->SetLabel(false, true, sym_alloc_tmp_sym("_t"));
+  stmt->SetLabel(false, false, sym_alloc_tmp_sym("_f"));
+  stmt->SetLabel(true, false, sym_alloc_tmp_sym("_join"));
   EmitStmt(stmt);
   return stmt;
 }
@@ -165,11 +165,11 @@ Stmt *Emitter::EmitIfStmt(Expr *cond) {
 Stmt *Emitter::EmitForStmt(Expr *cond) {
   // ditto for If.
   Stmt *stmt = NewStmt(STMT_IF);
-  stmt->expr_ = cond;
-  stmt->label_t_ = sym_alloc_tmp_sym("_t");
-  stmt->label_f_ = sym_alloc_tmp_sym("_f");
-  stmt->label_join_ = sym_alloc_tmp_sym("_join");
-  EmitLabel(stmt->label_join_);
+  stmt->SetExpr(cond);
+  stmt->SetLabel(false, true, sym_alloc_tmp_sym("_t"));
+  stmt->SetLabel(false, false, sym_alloc_tmp_sym("_f"));
+  stmt->SetLabel(true, false, sym_alloc_tmp_sym("_join"));
+  EmitLabel(stmt->GetLabel(true, false));
   EmitStmt(stmt);
   return stmt;
 }
@@ -180,25 +180,25 @@ Stmt *Emitter::EmitWhileStmt(Expr *cond) {
 }
 
 void Emitter::EmitDoWhileStmt(Stmt *stmt, Expr *cond) {
-  stmt->expr_ = cond;
+  stmt->SetExpr(cond);
   EmitStmt(stmt);
 }
 
 void Emitter::EmitLabel(sym_t label) {
   Stmt *stmt = NewStmt(STMT_LABEL);
-  stmt->sym_ = label;
+  stmt->SetSym(label);
   EmitStmt(stmt);
 }
 
 void Emitter::EmitGoto(sym_t label) {
   Stmt *stmt = NewStmt(STMT_GOTO);
-  stmt->sym_ = label;
+  stmt->SetSym(label);
   EmitStmt(stmt);
 }
 
 void Emitter::EmitReturnStmt(Expr *expr) {
   Stmt *stmt = NewStmt(STMT_RETURN);
-  stmt->expr_ = expr;
+  stmt->SetExpr(expr);
   EmitStmt(stmt);
 }
 
@@ -207,7 +207,7 @@ void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
   Expr *expr = Builder::NewExpr(STMT_THREAD_DECL);
   expr->lhs_ = var;
   expr->func_ = funcall;
-  stmt->expr_ = expr;
+  stmt->SetExpr(expr);
   EmitStmt(stmt);
 }
 
@@ -236,9 +236,10 @@ void Emitter::EmitTypedObjStmt(Stmt *stmt, Expr *var,
   } else {
     obj_name = name;
   }
-  stmt->sym_ = obj_name;
-  stmt->expr_ = var;
-  stmt->width_ = WidthSpec::GetWidth(type_name, width);
+  stmt->SetSym(obj_name);
+  stmt->SetExpr(var);
+  auto w = WidthSpec::GetWidth(type_name, width);
+  stmt->SetWidth(w);
   EmitStmt(stmt);
 }
 

@@ -120,7 +120,7 @@ void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
     ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, callee_method);
 
   CHECK(callee_obj == frame->reg_values_[insn->obj_reg_->id_].object_);
-  sym_t member_name = insn->insn_stmt_->expr_->lhs_->sym_;
+  sym_t member_name = insn->insn_stmt_->GetExpr()->lhs_->sym_;
   Value *value = callee_obj->LookupValue(member_name, true);
   value->type_ = Value::OBJECT;
   value->object_ = thread_obj;
@@ -128,7 +128,7 @@ void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
 
 void ExecutorToplevel::ExecChannelDecl(const Method *method,
 				       MethodFrame *frame, Insn *insn) {
-  int width = insn->insn_stmt_->width_.GetWidth();
+  int width = insn->insn_stmt_->GetWidth().GetWidth();
   Object *channel_obj =
     ChannelWrapper::NewChannel(thr_->GetVM(), width, insn->label_);
 
@@ -141,7 +141,7 @@ void ExecutorToplevel::ExecChannelDecl(const Method *method,
 
 void ExecutorToplevel::ExecMailboxDecl(const Method *method,
 				       MethodFrame *frame, Insn *insn) {
-  int width = insn->insn_stmt_->width_.GetWidth();
+  int width = insn->insn_stmt_->GetWidth().GetWidth();
   Object *mailbox_obj =
     MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn->label_);
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
@@ -184,7 +184,7 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   Value *value = obj->LookupValue(insn->label_, true);
   value->type_ = Value::METHOD;
   Method *new_method = thr_->GetVM()->NewMethod(false /* not toplevel */);
-  new_method->parse_tree_ = insn->insn_stmt_->method_def_;
+  new_method->parse_tree_ = insn->insn_stmt_->GetMethodDef();
   value->method_ = new_method;
   Annotation *an = new_method->GetAnnotation();
   if (an != nullptr) {

@@ -264,9 +264,9 @@ Expr *Builder::BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb) {
 Stmt *Builder::DoWhileStmt() {
   // Similar to Emitter::EmitForStmt(), but this doesn't emit.
   Stmt *stmt = NewStmt(STMT_IF);
-  stmt->label_t_ = sym_alloc_tmp_sym("_t");
-  stmt->label_f_ = sym_alloc_tmp_sym("_f");
-  stmt->label_join_ = sym_alloc_tmp_sym("_join");
+  stmt->SetLabel(false, true, sym_alloc_tmp_sym("_t"));
+  stmt->SetLabel(false, false, sym_alloc_tmp_sym("_f"));
+  stmt->SetLabel(true, false, sym_alloc_tmp_sym("_join"));
   return stmt;
 }
 
