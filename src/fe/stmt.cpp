@@ -1,5 +1,6 @@
 #include "fe/stmt.h"
 
+#include "base/annotation.h"
 #include "base/dump_stream.h"
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
@@ -8,6 +9,9 @@
 #include "fe/var_decl.h"
 
 namespace fe {
+
+Stmt::Stmt(enum NodeCode type) : type_(type), annotation_(nullptr) {
+}
 
 void Stmt::Dump() {
   DumpStream ds(cout);
@@ -59,6 +63,7 @@ void Stmt::Dump(DumpStream &ds) {
       ds.os << "mailbox_decl:\n";
     }
     ds.push_indent();
+    ds.indent();
     ds.os << sym_cstr(sym_) << "\n";
     expr_->Dump(ds);
     ds.indent();
@@ -106,6 +111,21 @@ void Stmt::Dump(DumpStream &ds) {
     CHECK(false) << "Unknown stmt:" << NodeName(type_);
     break;
   }
+  if (annotation_ != nullptr) {
+    ds.push_indent();
+    ds.indent();
+    annotation_->Dump(ds.os);
+    ds.os << "\n";
+    ds.pop_indent();
+  }
+}
+
+void Stmt::SetAnnotation(Annotation *an) {
+  annotation_ = an;
+}
+
+Annotation *Stmt::GetAnnotation() {
+  return annotation_;
 }
 
 }  // namespace fe

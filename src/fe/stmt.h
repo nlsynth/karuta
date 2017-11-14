@@ -10,8 +10,13 @@ namespace fe {
 
 class Stmt {
 public:
+  explicit Stmt(enum NodeCode type);
+
   void Dump();
   void Dump(DumpStream &os);
+
+  void SetAnnotation(Annotation *an);
+  Annotation *GetAnnotation();
 
   enum NodeCode type_;
   Expr *expr_;
@@ -26,6 +31,9 @@ public:
   sym_t label_t_;
   sym_t label_f_;
   sym_t label_join_;
+
+private:
+  Annotation *annotation_;
 };
 
 }  // namespace fe

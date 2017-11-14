@@ -67,9 +67,8 @@ Expr *Builder::NewExpr(NodeCode type) {
 }
 
 Stmt *Builder::NewStmt(int type) {
-  Stmt *stmt = new Stmt;
+  Stmt *stmt = new Stmt(static_cast<NodeCode>(type));
   NodePool::AddStmt(stmt);
-  stmt->type_ = static_cast<NodeCode>(type);
   return stmt;
 }
 

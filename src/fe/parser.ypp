@@ -328,8 +328,8 @@ THREAD_DECL_STMT : K_THREAD {ScannerInterface::InSemiColonStatement();} VAR K_AS
   Emitter::EmitThreadDeclStmt($3, $5);
 }
 
-CHANNEL_DECL_STMT : K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
-  Emitter::EmitChannelDeclStmt($3, $5.is_primitive, $5.name, $5.width);
+CHANNEL_DECL_STMT : ANNOTATION_OR_EMPTY K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
+  Emitter::EmitChannelDeclStmt($4, $6.is_primitive, $6.name, $6.width);
 }
 
 MAILBOX_DECL_STMT : K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
