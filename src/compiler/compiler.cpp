@@ -343,16 +343,16 @@ void Compiler::CompileIfStmt(fe::Stmt *stmt) {
 }
 
 void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
-  fe::Expr *var_expr = stmt->decl_->GetNameExpr();
+  fe::Expr *var_expr = stmt->GetVarDecl()->GetNameExpr();
   vm::Register *rhs_val = nullptr;
-  if (stmt->decl_->GetInitialVal() != nullptr) {
-    rhs_val = exc_->CompileExpr(stmt->decl_->GetInitialVal());
+  if (stmt->GetVarDecl()->GetInitialVal() != nullptr) {
+    rhs_val = exc_->CompileExpr(stmt->GetVarDecl()->GetInitialVal());
   }
 
   if (var_expr->type_ == fe::EXPR_ELM_SYM_REF) {
     CHECK(IsTopLevel());
     if (rhs_val != nullptr) {
-      SetWidthByDecl(stmt->decl_, rhs_val);
+      SetWidthByDecl(stmt->GetVarDecl(), rhs_val);
     }
     CompileMemberDeclStmt(stmt, var_expr, vm::OP_VARDECL, rhs_val);
     return;
@@ -365,8 +365,8 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   reg->orig_name_ = name;
   VarScope *scope = CurrentScope();
   scope->local_regs_[name] = reg;
-  SetWidthByDecl(stmt->decl_, reg);
-  if (stmt->decl_->GetObjectName() != sym_null) {
+  SetWidthByDecl(stmt->GetVarDecl(), reg);
+  if (stmt->GetVarDecl()->GetObjectName() != sym_null) {
     if (IsTopLevel()) {
       // Set type object later.
       vm::Insn *insn = new vm::Insn;

@@ -120,7 +120,7 @@ Stmt *Emitter::BuildFuncDeclStmt(MethodDecl *decl) {
 
 void Emitter::EmitImportStmt(const char *str) {
   Stmt *stmt = NewStmt(STMT_IMPORT);
-  stmt->str_ = string(str);
+  stmt->SetString(string(str));
   EmitStmt(stmt);
 }
 
@@ -140,7 +140,7 @@ void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
       }
     }
     Stmt *stmt = NewStmt(STMT_VARDECL);
-    stmt->decl_ = vd;
+    stmt->SetVarDecl(vd);
     EmitStmt(stmt);
   }
 }
@@ -148,7 +148,7 @@ void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
 void Emitter::EmitEnumTypeDeclStmt(Expr *name, EnumDecl *decl) {
   Stmt *stmt = NewStmt(STMT_ENUM_DECL);
   stmt->SetExpr(name);
-  stmt->enum_ = decl;
+  stmt->SetEnumDecl(decl);
   EmitStmt(stmt);
 }
   

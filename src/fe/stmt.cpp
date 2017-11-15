@@ -11,8 +11,8 @@
 namespace fe {
 
 Stmt::Stmt(enum NodeCode type)
-  : type_(type), expr_(nullptr), sym_(sym_null), annotation_(nullptr),
-    method_def_(nullptr) {
+  : type_(type), expr_(nullptr), sym_(sym_null), decl_(nullptr),
+    enum_(nullptr), annotation_(nullptr), method_def_(nullptr) {
   label_t_ = sym_null;
   label_f_ = sym_null;
   label_join_ = sym_null;
@@ -159,6 +159,30 @@ Method *Stmt::GetMethodDef() const {
 
 void Stmt::SetMethodDef(Method *method_def) {
   method_def_ = method_def;
+}
+
+string &Stmt::GetString() {
+  return str_;
+}
+
+void Stmt::SetString(const string &str) {
+  str_ = str;
+}
+
+VarDecl *Stmt::GetVarDecl() {
+  return decl_;
+}
+
+void Stmt::SetVarDecl(VarDecl *decl) {
+  decl_ = decl;
+}
+
+EnumDecl *Stmt::GetEnumDecl() {
+  return enum_;
+}
+
+void Stmt::SetEnumDecl(EnumDecl *decl) {
+  enum_ = decl;
 }
 
 iroha::NumericWidth &Stmt::GetWidth() {

@@ -90,7 +90,7 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
 
 void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
 				   Insn *insn) {
-  fe::VarDecl *decl = insn->insn_stmt_->decl_;
+  fe::VarDecl *decl = insn->insn_stmt_->GetVarDecl();
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);
   sym_t name = decl->GetNameExpr()->sym_;
@@ -152,7 +152,7 @@ void ExecutorToplevel::ExecMailboxDecl(const Method *method,
 }
 
 void ExecutorToplevel::ExecImport(Insn *insn) {
-  const string &fn = insn->insn_stmt_->str_;
+  const string &fn = insn->insn_stmt_->GetString();
   VM *vm = thr_->GetVM();
   Method *method = fe::FE::CompileFile(fn, false, vm);
   if (!method) {
