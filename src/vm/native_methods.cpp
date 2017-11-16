@@ -75,7 +75,7 @@ void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
     Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
     return;
   }
-  int w = args[0].num_.GetValue();
+  int w = args[0].num_.GetValue0();
   if (w == 32 || w == 64) {
     obj->address_width_ = w;
   } else {

@@ -138,19 +138,19 @@ int ArrayWrapper::GetDataWidth(Object *obj) {
 
 void ArrayWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 0) << "read requires an address";
-  uint64_t addr = args[0].num_.GetValue();
+  uint64_t addr = args[0].num_.GetValue0();
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = data->int_array_;
   Value value;
   value.type_ = Value::NUM;
-  iroha::Op::MakeConst(arr->Read(addr).GetValue(), &value.num_);
+  iroha::Op::MakeConst(arr->Read(addr).GetValue0(), &value.num_);
   thr->SetReturnValueFromNativeMethod(value);
 }
 
 void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 1) << "write requires an address and data";
-  uint64_t addr = args[0].num_.GetValue();
-  uint64_t data = args[1].num_.GetValue();
+  uint64_t addr = args[0].num_.GetValue0();
+  uint64_t data = args[1].num_.GetValue0();
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = ad->int_array_;
   iroha::Numeric num;
@@ -202,16 +202,16 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
   uint64_t length = arr->GetLength();
   // Mem addr
   int mem_addr_step = arr->GetDataWidth().GetWidth() / 8;
-  uint64_t mem_addr = args[0].num_.GetValue();
+  uint64_t mem_addr = args[0].num_.GetValue0();
   // Count
   int count = length;
   if (args.size() >= 2) {
-    count = args[1].num_.GetValue() + 1;
+    count = args[1].num_.GetValue0() + 1;
   }
   // Start
   uint64_t array_addr = 0;
   if (args.size() >= 3) {
-    array_addr = args[2].num_.GetValue();
+    array_addr = args[2].num_.GetValue0();
   }
   // Do the copy.
   for (int i = 0; i < count; ++i) {

@@ -354,7 +354,7 @@ void MethodSynth::SynthNum(vm::Insn *insn) {
   IRegister *ireg =
     DesignTool::AllocConstNum(tab_,
 			      src_reg->type_.width_.GetWidth(),
-			      src_reg->initial_num_.GetValue());
+			      src_reg->initial_num_.GetValue0());
   local_reg_map_[dst_reg] = ireg;
 }
 
@@ -501,8 +501,8 @@ void MethodSynth::SynthConcat(vm::Insn *insn) {
 void MethodSynth::SynthBitRange(vm::Insn *insn) {
   IRegister *src = FindLocalVarRegister(insn->src_regs_[0]);
   IRegister *res = FindLocalVarRegister(insn->dst_regs_[0]);
-  int msb = insn->src_regs_[1]->initial_num_.GetValue();
-  int lsb = insn->src_regs_[2]->initial_num_.GetValue();
+  int msb = insn->src_regs_[1]->initial_num_.GetValue0();
+  int lsb = insn->src_regs_[2]->initial_num_.GetValue0();
 
   StateWrapper *sw = AllocState();
   IValueType vt_none;
@@ -636,7 +636,7 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
 
 void MethodSynth::SynthShiftExpr(vm::Insn *insn) {
   CHECK(insn->src_regs_[1]->type_.is_const_);
-  int shift_count = insn->src_regs_[1]->initial_num_.GetValue();
+  int shift_count = insn->src_regs_[1]->initial_num_.GetValue0();
   IValueType vt;
   IResource *shifter = res_set_->GetOpResource(insn->op_, vt);
   IInsn *iinsn = new IInsn(shifter);
@@ -698,9 +698,7 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
     string name = sym_cstr(insn->label_);
     name = "m_" + name;
     reg = thr_synth_->AllocRegister(name);
-    iroha::Numeric iv;
-    iv.SetValue(value->num_.GetValue());
-    reg->SetInitialValue(iv);
+    reg->SetInitialValue(value->num_);
     int w = 0;
     if (value->type_ == vm::Value::NUM) {
       w = value->num_.type_.GetWidth();

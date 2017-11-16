@@ -1,5 +1,6 @@
 #include "vm/channel_wrapper.h"
 
+#include "base/annotation.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/object_method_names.h"
 #include "vm/object.h"
@@ -18,8 +19,9 @@ static const char *kChannelObjectKey = "channel";
 
 class ChannelData : public ObjectSpecificData {
 public:
-  ChannelData(int width, sym_t name) : width_(width), name_(sym_cstr(name)),
-				       blocking_thread_(nullptr) {};
+  ChannelData(int width, sym_t name, Annotation *an)
+    : width_(width), name_(sym_cstr(name)),
+      blocking_thread_(nullptr), an_(an) {};
   virtual ~ChannelData() {};
 
   virtual const char *ObjectTypeKey() {
@@ -28,12 +30,14 @@ public:
 
   int width_;
   string name_;
-  list<uint64_t> values_;
+  list<iroha::NumericValue> values_;
 
   Thread *blocking_thread_;
+  Annotation *an_;
 };
 
-Object *ChannelWrapper::NewChannel(VM *vm, int width, sym_t name) {
+Object *ChannelWrapper::NewChannel(VM *vm, int width, sym_t name,
+				   Annotation *an) {
   Object *pipe = vm->root_object_->Clone(vm);
   vector<RegisterType> rets;
   Method *m = Method::InstallNativeMethod(vm, pipe, "write",
@@ -44,7 +48,7 @@ Object *ChannelWrapper::NewChannel(VM *vm, int width, sym_t name) {
 				  &ChannelWrapper::ReadMethod, rets);
   m->SetSynthName(synth::kChannelRead);
 
-  pipe->object_specific_.reset(new ChannelData(width, name));
+  pipe->object_specific_.reset(new ChannelData(width, name, an));
 
   return pipe;
 }
@@ -63,6 +67,15 @@ int ChannelWrapper::ChannelWidth(Object *obj) {
   CHECK(IsChannel(obj));
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   return pipe_data->width_;
+}
+
+int ChannelWrapper::ChannelDepth(Object *obj) {
+  CHECK(IsChannel(obj));
+  ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
+  if (pipe_data->an_ != nullptr) {
+    return pipe_data->an_->GetDepth();
+  }
+  return 1;
 }
 
 void ChannelWrapper::ReadMethod(Thread *thr, Object *obj,
@@ -84,10 +97,10 @@ bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
   }
 
   value->type_ = Value::NUM;
-  int64_t v = *(pipe_data->values_.begin());
-  pipe_data->values_.pop_front();
-  iroha::Op::MakeConst(v, &value->num_);
+  iroha::NumericValue v = *(pipe_data->values_.begin());
+  *(value->num_.GetMutableArray()) = v;
   value->num_.type_ = iroha::NumericWidth(false, pipe_data->width_);
+  pipe_data->values_.pop_front();
   return true;
 }
 
@@ -98,7 +111,7 @@ void ChannelWrapper::WriteMethod(Thread *thr, Object *obj,
 }
 
 void ChannelWrapper::WriteValue(const Value &value, Object *obj) {
-  int64_t v = value.num_.GetValue();
+  const iroha::NumericValue &v = value.num_.GetArray();
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   pipe_data->values_.push_back(v);
   if (pipe_data->blocking_thread_) {

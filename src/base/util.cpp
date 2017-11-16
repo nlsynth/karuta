@@ -121,3 +121,11 @@ bool Util::RewriteFile(const char *fn, const char *tag,
   return true;
 }
 
+int Util::Log2(int x) {
+  x--;
+  int n;
+  for (n = 0; x > 0; ++n) {
+    x /= 2;
+  }
+  return n;
+}

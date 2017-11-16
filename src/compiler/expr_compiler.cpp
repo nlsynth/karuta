@@ -643,7 +643,7 @@ void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
   insn->op_ = vm::OP_NUM;
   vm::Register *one = compiler_->AllocRegister();
   one->type_.value_type_ = vm::Value::NUM;
-  one->initial_num_.SetValue(1);
+  one->initial_num_.SetValue0(1);
   one->initial_num_.type_ = rhs->type_.width_;
   one->type_.is_const_ = true;
   one->type_.width_ = rhs->type_.width_;

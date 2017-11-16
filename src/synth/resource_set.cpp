@@ -1,11 +1,13 @@
 #include "synth/resource_set.h"
 
 #include "base/annotation.h"
+#include "base/util.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
 #include "vm/array_wrapper.h"
+#include "vm/channel_wrapper.h"
 #include "vm/insn.h"
 #include "vm/int_array.h"
 #include "vm/mailbox_wrapper.h"
@@ -279,7 +281,7 @@ IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {
     IArrayImage *image = new IArrayImage(design);
     design->array_images_.push_back(image);
     for (int i = 0; i < memory->GetLength(); ++i) {
-      image->values_.push_back(memory->Read(i).GetValue());
+      image->values_.push_back(memory->Read(i).GetValue0());
     }
     res->GetArray()->SetArrayImage(image);
   }
@@ -390,7 +392,12 @@ IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_owner,
   (*m)[obj] = res;
   if (is_owner) {
     res->GetParams()->SetWidth(data_width);
-    res->GetParams()->SetAddrWidth(1);
+    int depth = vm::ChannelWrapper::ChannelDepth(obj);
+    int dl = ::Util::Log2(depth);
+    if (dl == 0) {
+      dl = 1;
+    }
+    res->GetParams()->SetAddrWidth(dl);
   } else {
     IValueType vt;
     vt.SetWidth(data_width);

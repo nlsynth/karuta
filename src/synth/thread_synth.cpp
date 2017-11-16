@@ -303,7 +303,7 @@ void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
     IRegister *reg = thr->AllocRegister("df_arg");
     reg->value_type_.SetWidth(1);
     iroha::Numeric iv;
-    iv.SetValue(0);
+    iv.SetValue0(0);
     reg->SetInitialValue(iv);
     iinsn->inputs_.push_back(reg);
     thr->GetITable()->registers_.push_back(reg);

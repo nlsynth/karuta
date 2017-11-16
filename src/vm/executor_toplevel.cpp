@@ -129,8 +129,9 @@ void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
 void ExecutorToplevel::ExecChannelDecl(const Method *method,
 				       MethodFrame *frame, Insn *insn) {
   int width = insn->insn_stmt_->GetWidth().GetWidth();
+  Annotation *an = insn->insn_stmt_->GetAnnotation();
   Object *channel_obj =
-    ChannelWrapper::NewChannel(thr_->GetVM(), width, insn->label_);
+    ChannelWrapper::NewChannel(thr_->GetVM(), width, insn->label_, an);
 
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);

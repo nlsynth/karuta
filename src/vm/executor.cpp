@@ -231,7 +231,7 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 }
 
 void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
-  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue();
+  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
   if (insn->obj_reg_) {
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
     CHECK(array_obj);
@@ -252,13 +252,13 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
     Value &index = frame->reg_values_[insn->src_regs_[0]->id_];
     
     frame->reg_values_[insn->dst_regs_[0]->id_].num_ =
-      array.local_int_array_->Read(index.num_.GetValue());
+      array.local_int_array_->Read(index.num_.GetValue0());
     frame->reg_values_[insn->dst_regs_[0]->id_].type_ = Value::NUM;
   }
 }
 
 void Executor::ExecArrayWrite(MethodFrame *frame, Insn *insn) {
-  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue();
+  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
   if (insn->obj_reg_) {
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
     CHECK(array_obj);
@@ -567,8 +567,8 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
 }
 
 void Executor::ExecBitRange(MethodFrame *frame, Insn *insn) {
-  int h = frame->reg_values_[insn->src_regs_[1]->id_].num_.GetValue();
-  int l = frame->reg_values_[insn->src_regs_[2]->id_].num_.GetValue();
+  int h = frame->reg_values_[insn->src_regs_[1]->id_].num_.GetValue0();
+  int l = frame->reg_values_[insn->src_regs_[2]->id_].num_.GetValue0();
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
   Value &res = frame->reg_values_[insn->dst_regs_[0]->id_];
   iroha::Op::SelectBits(value.num_, h, l, &res.num_);

@@ -8,11 +8,12 @@ namespace vm {
 
 class ChannelWrapper {
 public:
-  static Object *NewChannel(VM *vm, int width, sym_t name);
+  static Object *NewChannel(VM *vm, int width, sym_t name, Annotation *an);
 
   static bool IsChannel(Object *obj);
   static const string &ChannelName(Object *obj);
   static int ChannelWidth(Object *obj);
+  static int ChannelDepth(Object *obj);
 
   static void ReadMethod(Thread *thr, Object *obj, const vector<Value> &args);
   static void WriteMethod(Thread *thr, Object *obj, const vector<Value> &args);

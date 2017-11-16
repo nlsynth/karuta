@@ -75,7 +75,7 @@ void MailboxWrapper::Width(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
   Value value;
   value.type_ = Value::NUM;
-  value.num_.SetValue(GetWidth(obj));
+  value.num_.SetValue0(GetWidth(obj));
   thr->SetReturnValueFromNativeMethod(value);
 }
 

@@ -14,6 +14,8 @@ public:
   static bool CopyFile(const char *fn, ostream &os);
   static bool RewriteFile(const char *fn, const char *tag,
 			  const char *content);
+  // 0,1,2,3,4 -> 0,0,1,2,2
+  static int Log2(int x);
 };
 
 #endif  // _base_util_h_

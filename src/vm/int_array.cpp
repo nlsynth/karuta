@@ -19,7 +19,7 @@ struct ArrayPage {
 ArrayPage::ArrayPage(const iroha::NumericWidth &width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
-    data[i].SetValue(0);
+    data[i].SetValue0(0);
     data[i].type_ = width;
   }
 }
