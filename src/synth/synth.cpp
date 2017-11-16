@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "base/util.h"
 #include "iroha/iroha.h"
 #include "synth/design_synth.h"
 #include "vm/object.h"

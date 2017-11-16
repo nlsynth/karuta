@@ -66,12 +66,17 @@ public:
   bool IsExtFlowStub();
   string GetName();
 
+  // resetPolarity 1 or not.
   bool ResetPolarity();
 
+  // For AXI port.
   bool IsAxiMaster();
   bool IsAxiSlave();
+  // 64 or 32.
   int GetAddrWidth();
   bool IsAxiExclusive();
+  // For fifo.
+  int GetDepth();
 
   void AddPinDecl(sym_t name, bool is_out, int width);
   int GetNrPinDecls();

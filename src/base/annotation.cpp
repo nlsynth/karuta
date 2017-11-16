@@ -141,6 +141,10 @@ int Annotation::GetAddrWidth() {
   return 0;
 }
 
+int Annotation::GetDepth() {
+  return LookupIntParam("depth", 1);
+}
+
 bool Annotation::IsThreadEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
   return (s == "ThreadEntry") || (s == "thread_entry");

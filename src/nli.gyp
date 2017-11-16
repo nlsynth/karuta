@@ -33,6 +33,8 @@
         'base/stl_util.h',
         'base/sym.cpp',
         'base/sym.h',
+        'base/util.cpp',
+        'base/util.h',
         'base/logging.cpp',
         'base/logging.h',
         'compiler/compiler.cpp',
