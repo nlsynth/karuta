@@ -20,8 +20,7 @@ static const char *kChannelObjectKey = "channel";
 class ChannelData : public ObjectSpecificData {
 public:
   ChannelData(int width, sym_t name, Annotation *an)
-    : width_(width), name_(sym_cstr(name)),
-      blocking_thread_(nullptr), an_(an) {};
+    : width_(width), name_(sym_cstr(name)), an_(an) {};
   virtual ~ChannelData() {};
 
   virtual const char *ObjectTypeKey() {
@@ -32,7 +31,7 @@ public:
   string name_;
   list<iroha::NumericValue> values_;
 
-  Thread *blocking_thread_;
+  set<Thread *> read_waiters_;
   Annotation *an_;
 };
 
@@ -114,16 +113,15 @@ void ChannelWrapper::WriteValue(const Value &value, Object *obj) {
   const iroha::NumericValue &v = value.num_.GetArray();
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   pipe_data->values_.push_back(v);
-  if (pipe_data->blocking_thread_) {
-    pipe_data->blocking_thread_->Resume();
-    pipe_data->blocking_thread_ = nullptr;
+  for (Thread *t : pipe_data->read_waiters_) {
+    t->Resume();
   }
+  pipe_data->read_waiters_.clear();
 }
 
 void ChannelWrapper::BlockOnThis(Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
-  CHECK(pipe_data->blocking_thread_ == nullptr);
-  pipe_data->blocking_thread_ = thr;
+  pipe_data->read_waiters_.insert(thr);
 }
 
 }  // namespace vm
