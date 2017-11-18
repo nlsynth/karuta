@@ -5,6 +5,13 @@
 
 namespace fe {
 
+Expr::Expr(NodeCode type) : type_(type) {
+}
+
+enum NodeCode Expr::GetType() const {
+  return type_;
+}
+
 void Expr::Dump() {
   DumpStream ds(cout);
   Dump(ds);

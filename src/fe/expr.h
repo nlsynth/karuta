@@ -10,10 +10,13 @@ namespace fe {
 
 class Expr {
 public:
+  explicit Expr(NodeCode type);
+
+  enum NodeCode GetType() const;
+
   void Dump();
   void Dump(DumpStream &os);
 
-  NodeCode type_;
   iroha::Numeric num_;
   sym_t sym_;
   string str_;
@@ -22,6 +25,9 @@ public:
   Expr *args_;
   Expr *lhs_;
   Expr *rhs_;
+
+private:
+  NodeCode type_;
 };
 
 // mainly for multiple var decls (e.g. var x, y int).

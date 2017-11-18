@@ -22,7 +22,7 @@ void ExprCompiler::FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas) {
   if (!expr) {
     return;
   }
-  if (expr->type_ == fe::BINOP_COMMA) {
+  if (expr->GetType() == fe::BINOP_COMMA) {
     FlattenCommas(expr->lhs_, commas);
     commas->push_back(expr->rhs_);
   } else {
@@ -31,43 +31,44 @@ void ExprCompiler::FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas) {
 }
 
 vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
-  if (expr->type_ == fe::EXPR_SYM) {
+  auto type = expr->GetType();
+  if (type == fe::EXPR_SYM) {
     return CompileSymExpr(expr);
   }
-  if (expr->type_ == fe::EXPR_FUNCALL) {
+  if (type == fe::EXPR_FUNCALL) {
     return CompileFuncallExpr(nullptr, expr);
   }
-  if (expr->type_ == fe::UNIOP_POST_INC ||
-      expr->type_ == fe::UNIOP_POST_DEC) {
+  if (type == fe::UNIOP_POST_INC ||
+      type == fe::UNIOP_POST_DEC) {
     compiler_->AddPrePostIncDecExpr(expr, true);
     return CompileExpr(expr->args_);
   }
-  if (expr->type_ == fe::UNIOP_PRE_INC ||
-      expr->type_ == fe::UNIOP_PRE_DEC) {
+  if (type == fe::UNIOP_PRE_INC ||
+      type == fe::UNIOP_PRE_DEC) {
     compiler_->AddPrePostIncDecExpr(expr, false);
     return CompileExpr(expr->args_);
   }
-  if (expr->type_ == fe::BINOP_ASSIGN ||
-      expr->type_ == fe::BINOP_ADD_ASSIGN ||
-      expr->type_ == fe::BINOP_SUB_ASSIGN ||
-      expr->type_ == fe::BINOP_MUL_ASSIGN ||
-      expr->type_ == fe::BINOP_LSHIFT_ASSIGN ||
-      expr->type_ == fe::BINOP_RSHIFT_ASSIGN ||
-      expr->type_ == fe::BINOP_AND_ASSIGN ||
-      expr->type_ == fe::BINOP_XOR_ASSIGN ||
-      expr->type_ == fe::BINOP_OR_ASSIGN) {
+  if (type == fe::BINOP_ASSIGN ||
+      type == fe::BINOP_ADD_ASSIGN ||
+      type == fe::BINOP_SUB_ASSIGN ||
+      type == fe::BINOP_MUL_ASSIGN ||
+      type == fe::BINOP_LSHIFT_ASSIGN ||
+      type == fe::BINOP_RSHIFT_ASSIGN ||
+      type == fe::BINOP_AND_ASSIGN ||
+      type == fe::BINOP_XOR_ASSIGN ||
+      type == fe::BINOP_OR_ASSIGN) {
     return CompileAssign(expr);
   }
-  if (expr->type_ == fe::BINOP_ARRAY_REF) {
+  if (type == fe::BINOP_ARRAY_REF) {
     return CompileArrayRef(expr);
   }
-  if (expr->type_ == fe::BINOP_COMMA) {
+  if (type == fe::BINOP_COMMA) {
     return CompileComma(expr);
   }
-  if (expr->type_ == fe::BINOP_ELM_REF) {
+  if (type == fe::BINOP_ELM_REF) {
     return CompileElmRef(expr);
   }
-  if (expr->type_ == fe::EXPR_TRI_TERM) {
+  if (type == fe::EXPR_TRI_TERM) {
     return CompileTriTerm(expr);
   }
   return CompileSimpleExpr(expr);
@@ -145,7 +146,7 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
     }
     break;
   default:
-    CHECK(false) << "Unknown expr:" << fe::NodeName(expr->type_);
+    CHECK(false) << "Unknown expr:" << fe::NodeName(expr->GetType());
     break;
   }
   vm::Register *rewritten = MayRewriteOperator(insn);
@@ -216,7 +217,7 @@ vm::Register *ExprCompiler::CompileMemberSym(fe::Expr *expr) {
 }
 
 vm::OpCode ExprCompiler::GetOpCodeFromExpr(fe::Expr *expr) {
-  switch (expr->type_) {
+  switch (expr->GetType()) {
   case fe::BINOP_ADD: return vm::OP_ADD;
   case fe::BINOP_SUB: return vm::OP_SUB;
   case fe::BINOP_MUL: return vm::OP_MUL;
@@ -242,7 +243,7 @@ vm::OpCode ExprCompiler::GetOpCodeFromExpr(fe::Expr *expr) {
   case fe::UNIOP_MINUS: return vm::OP_MINUS;
   case fe::EXPR_BIT_RANGE: return vm::OP_BIT_RANGE;
   default:
-    CHECK(false) << "Unknown expr:" << fe::NodeName(expr->type_);
+    CHECK(false) << "Unknown expr:" << fe::NodeName(expr->GetType());
   }
   return vm::OP_INVALID;
 }
@@ -288,12 +289,12 @@ vm::Register *ExprCompiler::CompileComma(fe::Expr *expr) {
 vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
   vm::Register *obj_reg = CompileExpr(expr->lhs_);
   fe::Expr *rhs = expr->rhs_;
-  if (rhs->type_ == fe::EXPR_SYM) {
+  if (rhs->GetType() == fe::EXPR_SYM) {
     vm::Register *res_reg;
     res_reg = compiler_->EmitMemberLoad(obj_reg, expr->rhs_->sym_);
     res_reg->orig_name_ = expr->rhs_->sym_;
     return res_reg;
-  } else if (rhs->type_ == fe::EXPR_FUNCALL) {
+  } else if (rhs->GetType() == fe::EXPR_FUNCALL) {
     return CompileFuncallExpr(obj_reg, rhs);
   }
   CHECK(false);
@@ -408,8 +409,8 @@ vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
 vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
   // Special pattern.
   // (x, y) = f(...)
-  if (expr->rhs_->type_ == fe::EXPR_FUNCALL &&
-      expr->lhs_->type_ == fe::BINOP_COMMA) {
+  if (expr->rhs_->GetType() == fe::EXPR_FUNCALL &&
+      expr->lhs_->GetType() == fe::BINOP_COMMA) {
     vector<vm::Register *> lhs_regs;
     vector<fe::Expr*> values;
     FlattenCommas(expr->lhs_, &values);
@@ -424,10 +425,10 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
   if (!rhs_reg) {
     return nullptr;
   }
-  if (expr->type_ != fe::BINOP_ASSIGN) {
+  if (expr->GetType() != fe::BINOP_ASSIGN) {
     // now rhs corresponds lhs op= rhs.
     // update to lhs op rhs.
-    rhs_reg = UpdateModifyOp(expr->type_, expr->lhs_, rhs_reg);
+    rhs_reg = UpdateModifyOp(expr->GetType(), expr->lhs_, rhs_reg);
   }
 
   vm::Insn *insn = new vm::Insn;
@@ -436,11 +437,11 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
 
 vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
 					       vm::Register *rhs_reg) {
-  if (lhs->type_ == fe::BINOP_ELM_REF) {
+  if (lhs->GetType() == fe::BINOP_ELM_REF) {
     return CompileAssignToElmRef(insn, lhs, rhs_reg);
-  } else if (lhs->type_ == fe::BINOP_ARRAY_REF) {
+  } else if (lhs->GetType() == fe::BINOP_ARRAY_REF) {
     return CompileAssignToArray(insn, lhs, rhs_reg);
-  } else if (lhs->type_ == fe::EXPR_SYM) {
+  } else if (lhs->GetType() == fe::EXPR_SYM) {
     return CompileAssignToSym(insn, lhs, rhs_reg);
   } else {
     CHECK(false);
@@ -460,7 +461,7 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   fe::Expr *array_expr = lhs->lhs_;
   insn->insn_expr_ = array_expr;
 
-  if (array_expr->type_ == fe::EXPR_SYM) {
+  if (array_expr->GetType() == fe::EXPR_SYM) {
     vm::Value *value =
       compiler_->GetObj()->LookupValue(array_expr->sym_, false);
     if (!value) {
@@ -473,7 +474,7 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   if (local_array) {
     insn->src_regs_.push_back(local_array);
   } else {
-    if (array_expr->type_ == fe::EXPR_SYM) {
+    if (array_expr->GetType() == fe::EXPR_SYM) {
       insn->obj_reg_ =
 	compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),
 				  array_expr->sym_);
@@ -490,7 +491,7 @@ vm::Register *ExprCompiler::CompileAssignToElmRef(vm::Insn *insn,
 						  fe::Expr *lhs,
 						  vm::Register *rhs_reg) {
   vm::Register *lhs_obj = CompileExpr(lhs->lhs_);
-  CHECK(lhs->rhs_->type_ == fe::EXPR_SYM);
+  CHECK(lhs->rhs_->GetType() == fe::EXPR_SYM);
   insn->op_ = vm::OP_MEMBER_WRITE;
   insn->label_ = lhs->rhs_->sym_;
   insn->obj_reg_ = lhs_obj;
@@ -614,7 +615,7 @@ void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
 
 void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
   vm::Register *reg = nullptr;
-  if (expr->args_->type_ == fe::EXPR_SYM) {
+  if (expr->args_->GetType() == fe::EXPR_SYM) {
     reg = compiler_->LookupLocalVar(expr->args_->sym_);
   }
   if (reg == nullptr) {
@@ -622,8 +623,8 @@ void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
     return;
   }
   vm::Insn *insn = new vm::Insn;
-  if (expr->type_ == fe::UNIOP_PRE_INC ||
-      expr->type_ == fe::UNIOP_POST_INC) {
+  if (expr->GetType() == fe::UNIOP_PRE_INC ||
+      expr->GetType() == fe::UNIOP_POST_INC) {
     insn->op_ = vm::OP_PRE_INC;
   } else {
     insn->op_ = vm::OP_PRE_DEC;
@@ -659,8 +660,8 @@ void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
   dst->SetIsDeclaredType(false);
 
   insn = new vm::Insn;
-  if (expr->type_ == fe::UNIOP_PRE_INC ||
-      expr->type_ == fe::UNIOP_POST_INC) {
+  if (expr->GetType() == fe::UNIOP_PRE_INC ||
+      expr->GetType() == fe::UNIOP_POST_INC) {
     insn->op_ = vm::OP_ADD;
   } else {
     insn->op_ = vm::OP_SUB;

@@ -349,7 +349,7 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     rhs_val = exc_->CompileExpr(stmt->GetVarDecl()->GetInitialVal());
   }
 
-  if (var_expr->type_ == fe::EXPR_ELM_SYM_REF) {
+  if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF) {
     CHECK(IsTopLevel());
     if (rhs_val != nullptr) {
       SetWidthByDecl(stmt->GetVarDecl(), rhs_val);
@@ -359,7 +359,7 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   }
 
   // local variable.
-  CHECK(var_expr->type_ == fe::EXPR_SYM);
+  CHECK(var_expr->GetType() == fe::EXPR_SYM);
   sym_t name = var_expr->sym_;
   vm::Register *reg = AllocRegister();
   reg->orig_name_ = name;
@@ -386,19 +386,19 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
 void Compiler::CompileThreadDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr()->lhs_;
-  CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
+  CHECK(var_expr->GetType() == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_THREAD_DECL, nullptr);
 }
 
 void Compiler::CompileChannelDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr();
-  CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
+  CHECK(var_expr->GetType() == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_CHANNEL_DECL, nullptr);
 }
                   
 void Compiler::CompileMailboxDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr();
-  CHECK(var_expr->type_ == fe::EXPR_ELM_SYM_REF);
+  CHECK(var_expr->GetType() == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_MAILBOX_DECL, nullptr);
 }
 
@@ -475,14 +475,14 @@ void Compiler::CompileFuncDecl(fe::Stmt *stmt) {
 }
 
 vm::Register *Compiler::CompilePathHead(fe::Expr *path_elem) {
-  if (path_elem->type_ == fe::EXPR_SYM) {
+  if (path_elem->GetType() == fe::EXPR_SYM) {
     return EmitLoadObj(nullptr);
   }
   return TraverseMemberPath(path_elem->args_);
 }
 
 vm::Register *Compiler::TraverseMemberPath(fe::Expr *path_elem) {
-  if (path_elem->type_ == fe::EXPR_SYM) {
+  if (path_elem->GetType() == fe::EXPR_SYM) {
     vm::Register *obj_reg = LookupLocalVar(path_elem->sym_);
     if (obj_reg == nullptr) {
       obj_reg = EmitLoadObj(path_elem->sym_);

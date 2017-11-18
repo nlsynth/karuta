@@ -258,7 +258,7 @@ string Emitter::FormatMethodName(Expr *name) {
   }
   string n;
   Expr *e = name;
-  while (e->type_ == EXPR_ELM_SYM_REF) {
+  while (e->GetType() == EXPR_ELM_SYM_REF) {
     if (n.empty()) {
       n = sym_str(e->sym_);
     } else {

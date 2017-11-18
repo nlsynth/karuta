@@ -60,8 +60,7 @@ const iroha::NumericWidth WidthSpec::GetWidth(sym_t name,
 }
 
 Expr *Builder::NewExpr(NodeCode type) {
-  Expr *expr = new Expr;
-  expr->type_ = type;
+  Expr *expr = new Expr(type);
   NodePool::AddExpr(expr);
   return expr;
 }
