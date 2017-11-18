@@ -41,7 +41,7 @@ void VM::Run() {
 
   for (Thread *thr : threads_) {
     if (!thr->IsDone()) {
-      Status::os(Status::USER_ERROR) << "Remaining thread";
+      Status::os(Status::USER_ERROR) << "Remaining runnable thread(s)";
       MessageFlush::Get(Status::USER_ERROR);
     }
   }

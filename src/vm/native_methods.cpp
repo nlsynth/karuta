@@ -73,6 +73,7 @@ void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
 				    const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
     Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
+    thr->UserError();
     return;
   }
   int w = args[0].num_.GetValue0();
@@ -80,6 +81,7 @@ void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
     obj->address_width_ = w;
   } else {
     Status::os(Status::USER_ERROR) << w << " is invalid address width.";
+    thr->UserError();
   }
 }
 
@@ -98,6 +100,7 @@ void NativeMethods::SetIrohaPath(Thread *thr, Object *obj,
   if (Env::IsSandboxMode()) {
     Status::os(Status::USER_ERROR)
       << "SetIrohaPath() is not allowed on sandbox mode";
+    thr->UserError();
     return;
   }
   SetMemberString(thr, "$iroha_path", obj, args);
@@ -108,17 +111,20 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
   if (Env::IsSandboxMode()) {
     Status::os(Status::USER_ERROR)
       << "RunIroha() is not allowed on sandbox mode";
+    thr->UserError();
     return;
   }
   if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
       !StringWrapper::IsString(args[0].object_)) {
     Status::os(Status::USER_ERROR) << "Missing argument for runIroha()";
+    thr->UserError();
     return;
   }
   int res =
     synth::Synth::RunIroha(obj, StringWrapper::String(args[0].object_));
   if (res != 0) {
     Status::os(Status::USER_ERROR) << "runIroha() failed: " << res;
+    thr->UserError();
   }
 }
 
@@ -173,6 +179,7 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
       !StringWrapper::IsString(args[0].object_) ||
       !StringWrapper::IsString(args[1].object_)) {
     Status::os(Status::USER_ERROR) << "Invalid argument type of setSynthParam()";
+    thr->UserError();
     return;
   }
   sym_t synth_params = sym_lookup("$synth_params");
@@ -191,6 +198,7 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
     Status::os(Status::USER_ERROR) << "Invalid argument to widthof()";
     MessageFlush::Get(Status::USER_ERROR);
+    thr->UserError();
     return;
   }
   Value value;
