@@ -832,7 +832,7 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
 
   fe::VarDeclSet *args = nullptr;
   if (method->parse_tree_ != nullptr) {
-    args = method->parse_tree_->args_;
+    args = method->parse_tree_->GetArgs();
   }
   int num_args = 0;
   if (args) {
@@ -844,7 +844,7 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
   }
   fe::VarDeclSet *rets = nullptr;
   if (method->parse_tree_ != nullptr) {
-    rets = method->parse_tree_->returns_;
+    rets = method->parse_tree_->GetReturns();
   }
   if (rets) {
     for (size_t i = 0; i < rets->decls.size(); ++i) {

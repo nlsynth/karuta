@@ -77,8 +77,9 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   SetupArgumentRegisters();
   SetupReturnRegisters();
 
-  for (size_t i = 0; i < tree_->stmts_.size(); ++i) {
-    CompileStmt(tree_->stmts_[i]);
+  auto &stmts = tree_->GetStmts();
+  for (size_t i = 0; i < stmts.size(); ++i) {
+    CompileStmt(stmts[i]);
     CompilePreIncDec();
     FlushPendingInsns();
     CompilePostIncDec();
@@ -179,17 +180,17 @@ void Compiler::FlushPendingInsns() {
 }
 
 void Compiler::SetupArgumentRegisters() {
-  if (!tree_->args_) {
+  if (!tree_->GetArgs()) {
     return;
   }
-  SetupDeclSetRegisters(*tree_->args_, nullptr);
+  SetupDeclSetRegisters(*(tree_->GetArgs()), nullptr);
 }
 
 void Compiler::SetupReturnRegisters() {
-  if (!tree_->returns_) {
+  if (!tree_->GetReturns()) {
     return;
   }
-  SetupDeclSetRegisters(*tree_->returns_, &method_->return_types_);
+  SetupDeclSetRegisters(*(tree_->GetReturns()), &method_->return_types_);
 }
 
 void Compiler::SetupDeclSetRegisters(fe::VarDeclSet &vds,
@@ -216,8 +217,8 @@ void Compiler::SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg) {
 }
 
 vm::Register *Compiler::GetNthReturnRegister(int nth) {
-  if (tree_->args_) {
-    nth += tree_->args_->decls.size();
+  if (tree_->GetArgs()) {
+    nth += tree_->GetArgs()->decls.size();
   }
   return method_->method_regs_[nth];
 }

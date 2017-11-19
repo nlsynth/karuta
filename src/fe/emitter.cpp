@@ -47,8 +47,8 @@ void Emitter::SetCurrentFunctionParams() {
     return;
   }
   MethodDecl &decl = CurrentMethod();
-  decl.method_->annotation_ = func_annotation_;
-  fe::VarDeclSet *args = decl.method_->args_;
+  decl.method_->SetAnnotation(func_annotation_);
+  fe::VarDeclSet *args = decl.method_->GetArgs();
   if (args) {
     for (size_t i = 0; i < args->decls.size(); ++i) {
       fe::VarDecl *arg = args->decls[i];
@@ -58,21 +58,21 @@ void Emitter::SetCurrentFunctionParams() {
       } else {
 	CHECK(arg->GetType() == sym_bool);
       }
-      decl.method_->annotation_->AddPinDecl(arg->GetNameExpr()->GetSym(),
-					    false,
-					    width);
+      decl.method_->GetAnnotation()->AddPinDecl(arg->GetNameExpr()->GetSym(),
+						false,
+						width);
     }
   }
 }
 
 void Emitter::SetCurrentFunctionArgs(VarDeclSet *args) {
   MethodDecl &decl = CurrentMethod();
-  decl.method_->args_ = args;
+  decl.method_->SetArgs(args);
 }
 
 void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
   MethodDecl &decl = CurrentMethod();
-  decl.method_->returns_ = returns;
+  decl.method_->SetReturns(returns);
 }
 
 Annotation *Emitter::SetAnnotation(sym_t key, AnnotationKeyValueSet *values) {
@@ -245,7 +245,8 @@ void Emitter::EmitTypedObjStmt(Stmt *stmt, Expr *var,
 
 void Emitter::EmitStmt(Stmt *stmt) {
   MethodDecl &decl = CurrentMethod();
-  decl.method_->stmts_.push_back(stmt);
+  auto &stmts = decl.method_->GetMutableStmts();
+  stmts.push_back(stmt);
 }
 
 Stmt *Emitter::NewStmt(int type) {

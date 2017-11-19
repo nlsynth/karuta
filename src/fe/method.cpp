@@ -34,4 +34,36 @@ void Method::Dump(DumpStream &ds) const {
   }
 }
 
+const vector<Stmt*> &Method::GetStmts() const {
+  return stmts_;
+}
+
+vector<Stmt*> &Method::GetMutableStmts() {
+  return stmts_;
+}
+
+VarDeclSet *Method::GetArgs() const {
+  return args_;
+}
+
+void Method::SetArgs(VarDeclSet *args) {
+  args_ = args;
+}
+
+VarDeclSet *Method::GetReturns() const {
+  return returns_;
+}
+
+void Method::SetReturns(VarDeclSet *returns) {
+  returns_ = returns;
+}
+
+void Method::SetAnnotation(Annotation *an) {
+  annotation_ = an;
+}
+
+Annotation *Method::GetAnnotation() const {
+  return annotation_;
+}
+
 }  // namespace fe

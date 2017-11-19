@@ -20,8 +20,8 @@ Method::~Method() {
 
 int Method::GetNumArgRegisters() const {
   if (parse_tree_ != nullptr &&
-      parse_tree_->args_) {
-    return parse_tree_->args_->decls.size();
+      parse_tree_->GetArgs() != nullptr) {
+    return parse_tree_->GetArgs()->decls.size();
   }
   return 0;
 }
@@ -29,15 +29,15 @@ int Method::GetNumArgRegisters() const {
 int Method::GetNumReturnRegisters() const {
   // return_types_ is 0 before compilation, so use the parse tree instead.
   if (parse_tree_ != nullptr &&
-      parse_tree_->returns_ != nullptr) {
-    return parse_tree_->returns_->decls.size();
+      parse_tree_->GetReturns() != nullptr) {
+    return parse_tree_->GetReturns()->decls.size();
   }
   // Use the value for a non native method.
   return return_types_.size();
 }
 
 const iroha::NumericWidth &Method::GetNthArgWidth(int i) {
-  return parse_tree_->args_->decls[i]->GetWidth();
+  return parse_tree_->GetArgs()->decls[i]->GetWidth();
 }
 
 const char *Method::AlternativeImplementation() {
@@ -58,8 +58,8 @@ bool Method::IsTopLevel() const {
 
 Annotation *Method::GetAnnotation() const {
   if (parse_tree_ != nullptr &&
-      parse_tree_->annotation_ != nullptr) {
-    return parse_tree_->annotation_;
+      parse_tree_->GetAnnotation() != nullptr) {
+    return parse_tree_->GetAnnotation();
   }
   return Annotation::EmptyAnnotation();
 }

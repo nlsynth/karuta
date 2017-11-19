@@ -243,7 +243,7 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
     DesignTool::CreateEmbedResource(tab_, name, fn);
   iroha::ResourceParams *iparams = res->GetParams();
 
-  fe::VarDeclSet *a = method->parse_tree_->args_;
+  fe::VarDeclSet *a = method->parse_tree_->GetArgs();
   if (a) {
     for (fe::VarDecl *vd : a->decls) {
       IValueType vt;

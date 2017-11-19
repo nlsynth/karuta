@@ -153,8 +153,8 @@ void Thread::PassReturnValues() {
     return;
   }
   MethodFrame *frame = CurrentMethodFrame();
-  fe::VarDeclSet *args = frame->method_->parse_tree_->args_;
-  fe::VarDeclSet *returns = frame->method_->parse_tree_->returns_;
+  fe::VarDeclSet *args = frame->method_->parse_tree_->GetArgs();
+  fe::VarDeclSet *returns = frame->method_->parse_tree_->GetReturns();
   int base = 0;
   if (args) {
     base = args->decls.size();
