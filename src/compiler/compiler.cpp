@@ -198,7 +198,7 @@ void Compiler::SetupDeclSetRegisters(fe::VarDeclSet &vds,
     fe::VarDecl *decl = vds.decls[i];
     vm::Register *reg = AllocRegister();
     if (decl->GetNameExpr()) {
-      reg->orig_name_ = decl->GetNameExpr()->sym_;
+      reg->orig_name_ = decl->GetNameExpr()->GetSym();
     }
     VarScope *scope = CurrentScope();
     if (reg->orig_name_) {
@@ -360,7 +360,7 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
   // local variable.
   CHECK(var_expr->GetType() == fe::EXPR_SYM);
-  sym_t name = var_expr->sym_;
+  sym_t name = var_expr->GetSym();
   vm::Register *reg = AllocRegister();
   reg->orig_name_ = name;
   VarScope *scope = CurrentScope();
@@ -412,17 +412,17 @@ void Compiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
   insn->insn_stmt_ = stmt;
   insn->obj_reg_ = obj_reg;
   if (op == vm::OP_THREAD_DECL) {
-    insn->label_ = stmt->GetExpr()->GetFunc()->GetFunc()->sym_;
+    insn->label_ = stmt->GetExpr()->GetFunc()->GetFunc()->GetSym();
   }
   if (op == vm::OP_CHANNEL_DECL ||
       op == vm::OP_MAILBOX_DECL) {
-    insn->label_ = stmt->GetExpr()->sym_;
+    insn->label_ = stmt->GetExpr()->GetSym();
   }
   EmitInsn(insn);
   if (op == vm::OP_VARDECL && initial_val) {
     insn = new vm::Insn;
     insn->op_ = vm::OP_MEMBER_WRITE;
-    insn->label_ = var_expr->sym_;
+    insn->label_ = var_expr->GetSym();
     insn->obj_reg_ = obj_reg;
     insn->src_regs_.push_back(initial_val);
     insn->src_regs_.push_back(obj_reg);
@@ -468,7 +468,7 @@ vm::Register *Compiler::LookupLocalVar(sym_t name) {
 void Compiler::CompileFuncDecl(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_FUNCDECL;
-  insn->label_ = stmt->GetExpr()->sym_;
+  insn->label_ = stmt->GetExpr()->GetSym();
   insn->insn_stmt_ = stmt;
   insn->obj_reg_ = CompilePathHead(stmt->GetExpr());
   EmitInsn(insn);
@@ -483,14 +483,14 @@ vm::Register *Compiler::CompilePathHead(fe::Expr *path_elem) {
 
 vm::Register *Compiler::TraverseMemberPath(fe::Expr *path_elem) {
   if (path_elem->GetType() == fe::EXPR_SYM) {
-    vm::Register *obj_reg = LookupLocalVar(path_elem->sym_);
+    vm::Register *obj_reg = LookupLocalVar(path_elem->GetSym());
     if (obj_reg == nullptr) {
-      obj_reg = EmitLoadObj(path_elem->sym_);
+      obj_reg = EmitLoadObj(path_elem->GetSym());
     }
     return obj_reg;
   }
   vm::Register *obj_reg = TraverseMemberPath(path_elem->GetArgs());
-  return EmitMemberLoad(obj_reg, path_elem->sym_);
+  return EmitMemberLoad(obj_reg, path_elem->GetSym());
 }
 
 vm::Register *Compiler::AllocRegister() {

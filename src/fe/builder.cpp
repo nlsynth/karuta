@@ -73,22 +73,24 @@ Stmt *Builder::NewStmt(int type) {
 
 Expr *Builder::StrExpr(const string &str) {
   Expr *expr = NewExpr(EXPR_STR);
-  expr->str_ = str;
+  expr->SetString(str);
   return expr;
 }
 
 Expr *Builder::SymExpr(sym_t sym) {
   Expr *expr = NewExpr(EXPR_SYM);
-  expr->sym_ = sym;
+  expr->SetSym(sym);
   return expr;
 }
 
 Expr *Builder::NumExpr(NumericLiteral num) {
   Expr *expr = NewExpr(EXPR_NUM);
-  iroha::Op::MakeConst(num.value, &expr->num_);
+  iroha::Numeric n;
+  iroha::Op::MakeConst(num.value, &n);
   if (num.width > -1) {
-    expr->num_.type_.SetWidth(num.width);
+    n.type_.SetWidth(num.width);
   }
+  expr->SetNum(n);
   return expr;
 }
 
@@ -163,7 +165,7 @@ Expr *Builder::TriTerm(Expr *cond, Expr *lhs, Expr *rhs) {
 Expr *Builder::ElmSymRefExpr(Expr *arg, sym_t sym) {
   Expr *expr = NewExpr(EXPR_ELM_SYM_REF);
   expr->SetArgs(arg);
-  expr->sym_ = sym;
+  expr->SetSym(sym);
   return expr;
 }
 

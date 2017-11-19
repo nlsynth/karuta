@@ -52,14 +52,14 @@ void Insn::Dump(DumpStream &ds) const {
     ds.os << " " << sym_cstr(label_) << ":";
   }
   if (op_ == OP_ARRAY_WRITE) {
-    ds.os << sym_cstr(insn_expr_->sym_) << "[]";
+    ds.os << sym_cstr(insn_expr_->GetSym()) << "[]";
   }
   if (op_ == OP_ARRAY_READ) {
-    ds.os << sym_cstr(insn_expr_->sym_) << "[]";
+    ds.os << sym_cstr(insn_expr_->GetSym()) << "[]";
   }
   if (op_ == OP_FUNCALL || op_ == OP_FUNCALL_DONE) {
     if (insn_expr_ != nullptr) {
-      ds.os << " " << sym_cstr(insn_expr_->GetFunc()->sym_) << "()";
+      ds.os << " " << sym_cstr(insn_expr_->GetFunc()->GetSym()) << "()";
     }
   }
 }
@@ -83,7 +83,7 @@ bool InsnType::IsNumCalculation(int op) {
 }
 
 const string &InsnOpUtils::Str(Insn *insn) {
-  return insn->insn_expr_->str_;
+  return insn->insn_expr_->GetString();
 }
 
 }  // namespace vm

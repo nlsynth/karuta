@@ -23,7 +23,7 @@ public:
   void SetSym(sym_t sym);
   Method *GetMethodDef() const;
   void SetMethodDef(Method *method_def);
-  string &GetString();
+  const string &GetString();
   void SetString(const string &str);
   VarDecl *GetVarDecl();
   void SetVarDecl(VarDecl *decl);

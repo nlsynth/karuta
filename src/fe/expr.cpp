@@ -6,13 +6,38 @@
 namespace fe {
 
 Expr::Expr(NodeCode type)
-  : type_(type), func_(nullptr), args_(nullptr), lhs_(nullptr), rhs_(nullptr) {
+  : type_(type), sym_(sym_null),
+    func_(nullptr), args_(nullptr), lhs_(nullptr), rhs_(nullptr) {
 }
 
 enum NodeCode Expr::GetType() const {
   return type_;
 }
 
+const iroha::Numeric &Expr::GetNum() const {
+  return num_;
+}
+
+void Expr::SetNum(const iroha::Numeric &num) {
+  num_ = num;
+}
+
+sym_t Expr::GetSym() const {
+  return sym_;
+}
+
+void Expr::SetSym(sym_t sym) {
+  sym_ = sym;
+}
+
+const string &Expr::GetString() {
+  return str_;
+}
+
+void Expr::SetString(const string &str) {
+  str_ = str;
+}
+  
 Expr *Expr::GetFunc() const {
   return func_;
 }

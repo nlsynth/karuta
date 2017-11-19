@@ -17,6 +17,13 @@ public:
 
   enum NodeCode GetType() const;
 
+  const iroha::Numeric &GetNum() const;
+  void SetNum(const iroha::Numeric &num);
+  sym_t GetSym() const;
+  void SetSym(sym_t sym);
+  const string &GetString();
+  void SetString(const string &str);
+
   Expr *GetFunc() const;
   void SetFunc(Expr *func);
   Expr *GetArgs() const;
@@ -26,12 +33,12 @@ public:
   Expr *GetRhs() const;
   void SetRhs(Expr *rhs);
 
+private:
+  NodeCode type_;
+
   iroha::Numeric num_;
   sym_t sym_;
   string str_;
-
-private:
-  NodeCode type_;
 
   Expr *func_;
   Expr *args_;

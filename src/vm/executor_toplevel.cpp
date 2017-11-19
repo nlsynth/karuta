@@ -93,7 +93,7 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   fe::VarDecl *decl = insn->insn_stmt_->GetVarDecl();
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);
-  sym_t name = decl->GetNameExpr()->sym_;
+  sym_t name = decl->GetNameExpr()->GetSym();
   Value *value = obj->LookupValue(name, true);
   InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
@@ -120,7 +120,7 @@ void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
     ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, callee_method);
 
   CHECK(callee_obj == frame->reg_values_[insn->obj_reg_->id_].object_);
-  sym_t member_name = insn->insn_stmt_->GetExpr()->GetLhs()->sym_;
+  sym_t member_name = insn->insn_stmt_->GetExpr()->GetLhs()->GetSym();
   Value *value = callee_obj->LookupValue(member_name, true);
   value->type_ = Value::OBJECT;
   value->object_ = thread_obj;

@@ -161,7 +161,7 @@ void Stmt::SetMethodDef(Method *method_def) {
   method_def_ = method_def;
 }
 
-string &Stmt::GetString() {
+const string &Stmt::GetString() {
   return str_;
 }
 

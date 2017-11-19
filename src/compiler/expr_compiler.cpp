@@ -113,9 +113,9 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
     {
       // using same register for src/dst.
       dst_reg->type_.value_type_ = vm::Value::NUM;
-      dst_reg->initial_num_ = expr->num_;
+      dst_reg->initial_num_ = expr->GetNum();
       dst_reg->type_.is_const_ = true;
-      dst_reg->type_.width_ = expr->num_.type_;
+      dst_reg->type_.width_ = expr->GetNum().type_;
       dst_reg->SetIsDeclaredType(true);
       insn->src_regs_.push_back(dst_reg);
     }
@@ -181,7 +181,7 @@ vm::Register *ExprCompiler::CompileArrayRef(fe::Expr *expr) {
   insn->insn_expr_ = expr->GetLhs();
   insn->dst_regs_.push_back(compiler_->AllocRegister());
 
-  vm::Register *array_reg = compiler_->LookupLocalVar(expr->GetLhs()->sym_);
+  vm::Register *array_reg = compiler_->LookupLocalVar(expr->GetLhs()->GetSym());
   if (array_reg) {
     // Local array
     insn->src_regs_.push_back(array_reg);
@@ -194,7 +194,7 @@ vm::Register *ExprCompiler::CompileArrayRef(fe::Expr *expr) {
 }
 
 vm::Register *ExprCompiler::CompileSymExpr(fe::Expr *expr) {
-  sym_t name = expr->sym_;
+  sym_t name = expr->GetSym();
   vm::Register *reg = compiler_->LookupLocalVar(name);
   if (reg) {
     return reg;
@@ -205,10 +205,10 @@ vm::Register *ExprCompiler::CompileSymExpr(fe::Expr *expr) {
 
 vm::Register *ExprCompiler::CompileMemberSym(fe::Expr *expr) {
   vm::Register *obj_reg = compiler_->EmitLoadObj(nullptr);
-  vm::Register *reg = compiler_->EmitMemberLoad(obj_reg, expr->sym_);
-  reg->orig_name_ = expr->sym_;
+  vm::Register *reg = compiler_->EmitMemberLoad(obj_reg, expr->GetSym());
+  reg->orig_name_ = expr->GetSym();
 
-  vm::Value *value = compiler_->GetObj()->LookupValue(expr->sym_, false);
+  vm::Value *value = compiler_->GetObj()->LookupValue(expr->GetSym(), false);
   if (value) {
     vm::InsnAnnotator::AnnotateByValue(value, reg);
   }
@@ -291,8 +291,9 @@ vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
   fe::Expr *rhs = expr->GetRhs();
   if (rhs->GetType() == fe::EXPR_SYM) {
     vm::Register *res_reg;
-    res_reg = compiler_->EmitMemberLoad(obj_reg, expr->GetRhs()->sym_);
-    res_reg->orig_name_ = expr->GetRhs()->sym_;
+    sym_t elm_name = expr->GetRhs()->GetSym();
+    res_reg = compiler_->EmitMemberLoad(obj_reg, elm_name);
+    res_reg->orig_name_ = elm_name;
     return res_reg;
   } else if (rhs->GetType() == fe::EXPR_FUNCALL) {
     return CompileFuncallExpr(obj_reg, rhs);
@@ -319,7 +320,7 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   } else {
     call_insn->obj_reg_ = obj_reg;
   }
-  call_insn->label_ = funcall->GetFunc()->sym_;
+  call_insn->label_ = funcall->GetFunc()->GetSym();
 
   vector<fe::Expr*> args;
   FlattenCommas(funcall->GetArgs(), &args);
@@ -463,9 +464,9 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 
   if (array_expr->GetType() == fe::EXPR_SYM) {
     vm::Value *value =
-      compiler_->GetObj()->LookupValue(array_expr->sym_, false);
+      compiler_->GetObj()->LookupValue(array_expr->GetSym(), false);
     if (!value) {
-      local_array = compiler_->LookupLocalVar(array_expr->sym_);
+      local_array = compiler_->LookupLocalVar(array_expr->GetSym());
       CHECK(local_array || compiler_->IsTopLevel()) << "undeclared local array";
     }
   }
@@ -477,7 +478,7 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
     if (array_expr->GetType() == fe::EXPR_SYM) {
       insn->obj_reg_ =
 	compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),
-				  array_expr->sym_);
+				  array_expr->GetSym());
     } else {
       insn->obj_reg_ = CompileElmRef(array_expr);
     }
@@ -493,7 +494,7 @@ vm::Register *ExprCompiler::CompileAssignToElmRef(vm::Insn *insn,
   vm::Register *lhs_obj = CompileExpr(lhs->GetLhs());
   CHECK(lhs->GetRhs()->GetType() == fe::EXPR_SYM);
   insn->op_ = vm::OP_MEMBER_WRITE;
-  insn->label_ = lhs->GetRhs()->sym_;
+  insn->label_ = lhs->GetRhs()->GetSym();
   insn->obj_reg_ = lhs_obj;
   insn->src_regs_.push_back(rhs_reg);
   insn->src_regs_.push_back(lhs_obj);
@@ -510,9 +511,9 @@ vm::Register *ExprCompiler::CompileAssignToSym(vm::Insn *insn, fe::Expr *lhs,
   // member var
   //  SRC: RHS_REG, OBJ_REG
   //  DST: RHS_REG
-  vm::Register *lhs_reg = compiler_->LookupLocalVar(lhs->sym_);
+  vm::Register *lhs_reg = compiler_->LookupLocalVar(lhs->GetSym());
   vm::Register *obj_reg = nullptr;
-  insn->label_ = lhs->sym_;
+  insn->label_ = lhs->GetSym();
   if (lhs_reg) {
     insn->op_ = vm::OP_ASSIGN;
     insn->src_regs_.push_back(lhs_reg);
@@ -616,7 +617,7 @@ void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
 void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
   vm::Register *reg = nullptr;
   if (expr->GetArgs()->GetType() == fe::EXPR_SYM) {
-    reg = compiler_->LookupLocalVar(expr->GetArgs()->sym_);
+    reg = compiler_->LookupLocalVar(expr->GetArgs()->GetSym());
   }
   if (reg == nullptr) {
     CompileIncDecNonLocal(expr);

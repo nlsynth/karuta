@@ -558,7 +558,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   } else {
     CHECK(false);
   }
-  string reg_name = sym_str(arg_decl->GetNameExpr()->sym_);
+  string reg_name = sym_str(arg_decl->GetNameExpr()->GetSym());
   IRegister *reg = thr_synth_->AllocRegister(reg_name);
   reg->value_type_.SetWidth(w);
   // Add as a local variable if this isn't an imported method.

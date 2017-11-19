@@ -58,7 +58,7 @@ void Emitter::SetCurrentFunctionParams() {
       } else {
 	CHECK(arg->GetType() == sym_bool);
       }
-      decl.method_->annotation_->AddPinDecl(arg->GetNameExpr()->sym_,
+      decl.method_->annotation_->AddPinDecl(arg->GetNameExpr()->GetSym(),
 					    false,
 					    width);
     }
@@ -260,16 +260,16 @@ string Emitter::FormatMethodName(Expr *name) {
   Expr *e = name;
   while (e->GetType() == EXPR_ELM_SYM_REF) {
     if (n.empty()) {
-      n = sym_str(e->sym_);
+      n = sym_str(e->GetSym());
     } else {
-      n = sym_str(e->sym_) + "." + n;
+      n = sym_str(e->GetSym()) + "." + n;
     }
     e = e->GetArgs();
   }
   if (n.empty()) {
-    n = sym_cstr(e->sym_);
+    n = sym_cstr(e->GetSym());
   } else {
-    n = sym_str(e->sym_) + "." + n;
+    n = sym_str(e->GetSym()) + "." + n;
   }
   return n;
 }
