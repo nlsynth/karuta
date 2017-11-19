@@ -120,7 +120,7 @@ void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
     ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, callee_method);
 
   CHECK(callee_obj == frame->reg_values_[insn->obj_reg_->id_].object_);
-  sym_t member_name = insn->insn_stmt_->GetExpr()->lhs_->sym_;
+  sym_t member_name = insn->insn_stmt_->GetExpr()->GetLhs()->sym_;
   Value *value = callee_obj->LookupValue(member_name, true);
   value->type_ = Value::OBJECT;
   value->object_ = thread_obj;

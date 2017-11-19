@@ -94,15 +94,15 @@ Expr *Builder::NumExpr(NumericLiteral num) {
 
 Expr *Builder::BinopExpr(Expr *lhs, Expr *rhs, int op) {
   Expr *expr = NewExpr(static_cast<NodeCode>(op));
-  expr->lhs_ = lhs;
-  expr->rhs_ = rhs;
+  expr->SetLhs(lhs);
+  expr->SetRhs(rhs);
   return expr;
 }
 
 Expr *Builder::FuncallExpr(Expr *func, Expr *args) {
   Expr *expr = NewExpr(EXPR_FUNCALL);
-  expr->func_ = func;
-  expr->args_ = args;
+  expr->SetFunc(func);
+  expr->SetArgs(args);
   return expr;
 }
 
@@ -137,7 +137,7 @@ Expr *Builder::IncDecExpr(Expr *val, int op, bool is_post) {
     }
   }
   Expr* expr = NewExpr(static_cast<NodeCode>(op));
-  expr->args_ = val;
+  expr->SetArgs(val);
   return expr;
 }
 
@@ -148,34 +148,34 @@ Expr *Builder::SignedExpr(int sign, Expr *arg) {
     sign = UNIOP_MINUS;
   }
   Expr *expr = NewExpr(static_cast<NodeCode>(sign));
-  expr->args_ = arg;
+  expr->SetArgs(arg);
   return expr;
 }
 
 Expr *Builder::TriTerm(Expr *cond, Expr *lhs, Expr *rhs) {
   Expr *expr = NewExpr(EXPR_TRI_TERM);
-  expr->args_ = cond;
-  expr->lhs_ = lhs;
-  expr->rhs_ = rhs;
+  expr->SetArgs(cond);
+  expr->SetLhs(lhs);
+  expr->SetRhs(rhs);
   return expr;
 }
 
 Expr *Builder::ElmSymRefExpr(Expr *arg, sym_t sym) {
   Expr *expr = NewExpr(EXPR_ELM_SYM_REF);
-  expr->args_ = arg;
+  expr->SetArgs(arg);
   expr->sym_ = sym;
   return expr;
 }
 
 Expr *Builder::LogicInvertExpr(Expr *arg) {
   Expr *expr = NewExpr(UNIOP_LOGIC_INV);
-  expr->args_ = arg;
+  expr->SetArgs(arg);
   return expr;
 }
 
 Expr *Builder::BitInvertExpr(Expr *arg) {
   Expr *expr = NewExpr(UNIOP_BIT_INV);
-  expr->args_ = arg;
+  expr->SetArgs(arg);
   return expr;
 }
 
@@ -247,16 +247,16 @@ void Builder::SetArrayInitializer(VarDecl *decl,
 
 Expr *Builder::ArrayRefExpr(Expr *array, Expr *index) {
   Expr *expr = NewExpr(BINOP_ARRAY_REF);
-  expr->lhs_ = array;
-  expr->rhs_ = index;
+  expr->SetLhs(array);
+  expr->SetRhs(index);
   return expr;
 }
 
 Expr *Builder::BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb) {
   Expr *expr = NewExpr(EXPR_BIT_RANGE);
-  expr->args_ = val;
-  expr->lhs_ = msb;
-  expr->rhs_ = lsb;
+  expr->SetArgs(val);
+  expr->SetLhs(msb);
+  expr->SetRhs(lsb);
   return expr;
 }
 

@@ -205,8 +205,8 @@ void Emitter::EmitReturnStmt(Expr *expr) {
 void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
   Stmt *stmt = NewStmt(STMT_THREAD_DECL);
   Expr *expr = Builder::NewExpr(STMT_THREAD_DECL);
-  expr->lhs_ = var;
-  expr->func_ = funcall;
+  expr->SetLhs(var);
+  expr->SetFunc(funcall);
   stmt->SetExpr(expr);
   EmitStmt(stmt);
 }
@@ -264,7 +264,7 @@ string Emitter::FormatMethodName(Expr *name) {
     } else {
       n = sym_str(e->sym_) + "." + n;
     }
-    e = e->args_;
+    e = e->GetArgs();
   }
   if (n.empty()) {
     n = sym_cstr(e->sym_);

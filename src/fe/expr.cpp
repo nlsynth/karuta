@@ -5,11 +5,44 @@
 
 namespace fe {
 
-Expr::Expr(NodeCode type) : type_(type) {
+Expr::Expr(NodeCode type)
+  : type_(type), func_(nullptr), args_(nullptr), lhs_(nullptr), rhs_(nullptr) {
 }
 
 enum NodeCode Expr::GetType() const {
   return type_;
+}
+
+Expr *Expr::GetFunc() const {
+  return func_;
+}
+
+void Expr::SetFunc(Expr *func) {
+  func_ = func;
+}
+
+Expr *Expr::GetArgs() const {
+  return args_;
+}
+
+void Expr::SetArgs(Expr *args) {
+  args_ = args;
+}
+
+Expr *Expr::GetLhs() const {
+  return lhs_;
+}
+
+void Expr::SetLhs(Expr *lhs) {
+  lhs_ = lhs;
+}
+
+Expr *Expr::GetRhs() const {
+  return rhs_;
+}
+
+void Expr::SetRhs(Expr *rhs) {
+  rhs_ = rhs;
 }
 
 void Expr::Dump() {

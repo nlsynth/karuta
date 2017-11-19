@@ -23,8 +23,8 @@ void ExprCompiler::FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas) {
     return;
   }
   if (expr->GetType() == fe::BINOP_COMMA) {
-    FlattenCommas(expr->lhs_, commas);
-    commas->push_back(expr->rhs_);
+    FlattenCommas(expr->GetLhs(), commas);
+    commas->push_back(expr->GetRhs());
   } else {
     commas->push_back(expr);
   }
@@ -41,12 +41,12 @@ vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
   if (type == fe::UNIOP_POST_INC ||
       type == fe::UNIOP_POST_DEC) {
     compiler_->AddPrePostIncDecExpr(expr, true);
-    return CompileExpr(expr->args_);
+    return CompileExpr(expr->GetArgs());
   }
   if (type == fe::UNIOP_PRE_INC ||
       type == fe::UNIOP_PRE_DEC) {
     compiler_->AddPrePostIncDecExpr(expr, false);
-    return CompileExpr(expr->args_);
+    return CompileExpr(expr->GetArgs());
   }
   if (type == fe::BINOP_ASSIGN ||
       type == fe::BINOP_ADD_ASSIGN ||
@@ -99,8 +99,8 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
   case vm::OP_LSHIFT:
   case vm::OP_RSHIFT:
     {
-      vm::Register *lhs = CompileExpr(expr->lhs_);
-      vm::Register *rhs = CompileExpr(expr->rhs_);
+      vm::Register *lhs = CompileExpr(expr->GetLhs());
+      vm::Register *rhs = CompileExpr(expr->GetRhs());
       if (!lhs || !rhs) {
 	return nullptr;
       }
@@ -131,15 +131,15 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
   case vm::OP_PLUS:
   case vm::OP_MINUS:
     {
-      vm::Register *val = CompileExpr(expr->args_);
+      vm::Register *val = CompileExpr(expr->GetArgs());
       insn->src_regs_.push_back(val);
     }
     break;
   case vm::OP_BIT_RANGE:
     {
-      vm::Register *val = CompileExpr(expr->args_);
-      vm::Register *msb = CompileExpr(expr->lhs_);
-      vm::Register *lsb = CompileExpr(expr->rhs_);
+      vm::Register *val = CompileExpr(expr->GetArgs());
+      vm::Register *msb = CompileExpr(expr->GetLhs());
+      vm::Register *lsb = CompileExpr(expr->GetRhs());
       insn->src_regs_.push_back(val);
       insn->src_regs_.push_back(msb);
       insn->src_regs_.push_back(lsb);
@@ -174,19 +174,19 @@ vm::Value::ValueType ExprCompiler::GetVariableType(sym_t name) {
 }
 
 vm::Register *ExprCompiler::CompileArrayRef(fe::Expr *expr) {
-  vm::Register *index = CompileExpr(expr->rhs_);
+  vm::Register *index = CompileExpr(expr->GetRhs());
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_ARRAY_READ;
   insn->src_regs_.push_back(index);
-  insn->insn_expr_ = expr->lhs_;
+  insn->insn_expr_ = expr->GetLhs();
   insn->dst_regs_.push_back(compiler_->AllocRegister());
 
-  vm::Register *array_reg = compiler_->LookupLocalVar(expr->lhs_->sym_);
+  vm::Register *array_reg = compiler_->LookupLocalVar(expr->GetLhs()->sym_);
   if (array_reg) {
     // Local array
     insn->src_regs_.push_back(array_reg);
   } else {
-    insn->obj_reg_ = CompileExpr(expr->lhs_);
+    insn->obj_reg_ = CompileExpr(expr->GetLhs());
   }
 
   compiler_->EmitInsn(insn);
@@ -249,7 +249,7 @@ vm::OpCode ExprCompiler::GetOpCodeFromExpr(fe::Expr *expr) {
 }
 
 vm::Register *ExprCompiler::CompileTriTerm(fe::Expr *expr) {
-  vm::Register *cond = CompileExpr(expr->args_);
+  vm::Register *cond = CompileExpr(expr->GetArgs());
   vm::Register *res = compiler_->AllocRegister();
   sym_t f_label = sym_alloc_tmp_sym("_f");
   vm::Insn *if_insn = new vm::Insn;
@@ -258,7 +258,7 @@ vm::Register *ExprCompiler::CompileTriTerm(fe::Expr *expr) {
   if_insn->label_ = f_label;
   compiler_->EmitInsn(if_insn);
   // LHS.
-  vm::Register *lhs = CompileExpr(expr->lhs_);
+  vm::Register *lhs = CompileExpr(expr->GetLhs());
   compiler_->SimpleAssign(lhs, res);
   // Go to join.
   sym_t join_label = sym_alloc_tmp_sym("_join");
@@ -268,7 +268,7 @@ vm::Register *ExprCompiler::CompileTriTerm(fe::Expr *expr) {
   compiler_->EmitInsn(jump_insn);
   // RHS.
   compiler_->AddLabel(f_label);
-  vm::Register *rhs = CompileExpr(expr->rhs_);
+  vm::Register *rhs = CompileExpr(expr->GetRhs());
   compiler_->SimpleAssign(rhs, res);
   // Join.
   compiler_->AddLabel(join_label);
@@ -287,12 +287,12 @@ vm::Register *ExprCompiler::CompileComma(fe::Expr *expr) {
 }
 
 vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
-  vm::Register *obj_reg = CompileExpr(expr->lhs_);
-  fe::Expr *rhs = expr->rhs_;
+  vm::Register *obj_reg = CompileExpr(expr->GetLhs());
+  fe::Expr *rhs = expr->GetRhs();
   if (rhs->GetType() == fe::EXPR_SYM) {
     vm::Register *res_reg;
-    res_reg = compiler_->EmitMemberLoad(obj_reg, expr->rhs_->sym_);
-    res_reg->orig_name_ = expr->rhs_->sym_;
+    res_reg = compiler_->EmitMemberLoad(obj_reg, expr->GetRhs()->sym_);
+    res_reg->orig_name_ = expr->GetRhs()->sym_;
     return res_reg;
   } else if (rhs->GetType() == fe::EXPR_FUNCALL) {
     return CompileFuncallExpr(obj_reg, rhs);
@@ -315,14 +315,14 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   call_insn->op_ = vm::OP_FUNCALL;
   call_insn->insn_expr_ = funcall;
   if (obj_reg == nullptr) {
-    call_insn->obj_reg_ = compiler_->CompilePathHead(funcall->func_);
+    call_insn->obj_reg_ = compiler_->CompilePathHead(funcall->GetFunc());
   } else {
     call_insn->obj_reg_ = obj_reg;
   }
-  call_insn->label_ = funcall->func_->sym_;
+  call_insn->label_ = funcall->GetFunc()->sym_;
 
   vector<fe::Expr*> args;
-  FlattenCommas(funcall->args_, &args);
+  FlattenCommas(funcall->GetArgs(), &args);
   for (size_t i = 0; i < args.size(); ++i) {
     vm::Register *reg = CompileExpr(args[i]);
     if (!reg) {
@@ -409,30 +409,30 @@ vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
 vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
   // Special pattern.
   // (x, y) = f(...)
-  if (expr->rhs_->GetType() == fe::EXPR_FUNCALL &&
-      expr->lhs_->GetType() == fe::BINOP_COMMA) {
+  if (expr->GetRhs()->GetType() == fe::EXPR_FUNCALL &&
+      expr->GetLhs()->GetType() == fe::BINOP_COMMA) {
     vector<vm::Register *> lhs_regs;
     vector<fe::Expr*> values;
-    FlattenCommas(expr->lhs_, &values);
+    FlattenCommas(expr->GetLhs(), &values);
     for (auto *v : values) {
       lhs_regs.push_back(CompileSymExpr(v));
     }
-    return CompileMultiValueFuncall(nullptr, expr->rhs_, lhs_regs);
+    return CompileMultiValueFuncall(nullptr, expr->GetRhs(), lhs_regs);
   }
 
   // RHS.
-  vm::Register *rhs_reg = CompileExpr(expr->rhs_);
+  vm::Register *rhs_reg = CompileExpr(expr->GetRhs());
   if (!rhs_reg) {
     return nullptr;
   }
   if (expr->GetType() != fe::BINOP_ASSIGN) {
     // now rhs corresponds lhs op= rhs.
     // update to lhs op rhs.
-    rhs_reg = UpdateModifyOp(expr->GetType(), expr->lhs_, rhs_reg);
+    rhs_reg = UpdateModifyOp(expr->GetType(), expr->GetLhs(), rhs_reg);
   }
 
   vm::Insn *insn = new vm::Insn;
-  return CompileAssignToLhs(insn, expr->lhs_, rhs_reg);
+  return CompileAssignToLhs(insn, expr->GetLhs(), rhs_reg);
 }
 
 vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
@@ -457,8 +457,8 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   vm::Register *local_array = nullptr;
   insn->op_ = vm::OP_ARRAY_WRITE;
   // index
-  vm::Register *index_reg = CompileExpr(lhs->rhs_);
-  fe::Expr *array_expr = lhs->lhs_;
+  vm::Register *index_reg = CompileExpr(lhs->GetRhs());
+  fe::Expr *array_expr = lhs->GetLhs();
   insn->insn_expr_ = array_expr;
 
   if (array_expr->GetType() == fe::EXPR_SYM) {
@@ -490,10 +490,10 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 vm::Register *ExprCompiler::CompileAssignToElmRef(vm::Insn *insn,
 						  fe::Expr *lhs,
 						  vm::Register *rhs_reg) {
-  vm::Register *lhs_obj = CompileExpr(lhs->lhs_);
-  CHECK(lhs->rhs_->GetType() == fe::EXPR_SYM);
+  vm::Register *lhs_obj = CompileExpr(lhs->GetLhs());
+  CHECK(lhs->GetRhs()->GetType() == fe::EXPR_SYM);
   insn->op_ = vm::OP_MEMBER_WRITE;
-  insn->label_ = lhs->rhs_->sym_;
+  insn->label_ = lhs->GetRhs()->sym_;
   insn->obj_reg_ = lhs_obj;
   insn->src_regs_.push_back(rhs_reg);
   insn->src_regs_.push_back(lhs_obj);
@@ -615,8 +615,8 @@ void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
 
 void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
   vm::Register *reg = nullptr;
-  if (expr->args_->GetType() == fe::EXPR_SYM) {
-    reg = compiler_->LookupLocalVar(expr->args_->sym_);
+  if (expr->GetArgs()->GetType() == fe::EXPR_SYM) {
+    reg = compiler_->LookupLocalVar(expr->GetArgs()->sym_);
   }
   if (reg == nullptr) {
     CompileIncDecNonLocal(expr);
@@ -638,7 +638,7 @@ void ExprCompiler::CompileIncDecExpr(fe::Expr *expr) {
 
 void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
   compiler_->SetDelayInsnEmit(false);
-  vm::Register *rhs = CompileExpr(expr->args_);
+  vm::Register *rhs = CompileExpr(expr->GetArgs());
 
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_NUM;
@@ -673,7 +673,7 @@ void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
   compiler_->EmitInsn(insn);
 
   insn = new vm::Insn;
-  CompileAssignToLhs(insn, expr->args_, dst);
+  CompileAssignToLhs(insn, expr->GetArgs(), dst);
 
   compiler_->SetDelayInsnEmit(true);
 }

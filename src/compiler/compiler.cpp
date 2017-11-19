@@ -385,7 +385,7 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 }
 
 void Compiler::CompileThreadDecl(fe::Stmt *stmt) {
-  fe::Expr *var_expr = stmt->GetExpr()->lhs_;
+  fe::Expr *var_expr = stmt->GetExpr()->GetLhs();
   CHECK(var_expr->GetType() == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_THREAD_DECL, nullptr);
 }
@@ -412,7 +412,7 @@ void Compiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
   insn->insn_stmt_ = stmt;
   insn->obj_reg_ = obj_reg;
   if (op == vm::OP_THREAD_DECL) {
-    insn->label_ = stmt->GetExpr()->func_->func_->sym_;
+    insn->label_ = stmt->GetExpr()->GetFunc()->GetFunc()->sym_;
   }
   if (op == vm::OP_CHANNEL_DECL ||
       op == vm::OP_MAILBOX_DECL) {
@@ -478,7 +478,7 @@ vm::Register *Compiler::CompilePathHead(fe::Expr *path_elem) {
   if (path_elem->GetType() == fe::EXPR_SYM) {
     return EmitLoadObj(nullptr);
   }
-  return TraverseMemberPath(path_elem->args_);
+  return TraverseMemberPath(path_elem->GetArgs());
 }
 
 vm::Register *Compiler::TraverseMemberPath(fe::Expr *path_elem) {
@@ -489,7 +489,7 @@ vm::Register *Compiler::TraverseMemberPath(fe::Expr *path_elem) {
     }
     return obj_reg;
   }
-  vm::Register *obj_reg = TraverseMemberPath(path_elem->args_);
+  vm::Register *obj_reg = TraverseMemberPath(path_elem->GetArgs());
   return EmitMemberLoad(obj_reg, path_elem->sym_);
 }
 

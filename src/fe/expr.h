@@ -12,22 +12,31 @@ class Expr {
 public:
   explicit Expr(NodeCode type);
 
-  enum NodeCode GetType() const;
-
   void Dump();
   void Dump(DumpStream &os);
+
+  enum NodeCode GetType() const;
+
+  Expr *GetFunc() const;
+  void SetFunc(Expr *func);
+  Expr *GetArgs() const;
+  void SetArgs(Expr *args);
+  Expr *GetLhs() const;
+  void SetLhs(Expr *lhs);
+  Expr *GetRhs() const;
+  void SetRhs(Expr *rhs);
 
   iroha::Numeric num_;
   sym_t sym_;
   string str_;
 
+private:
+  NodeCode type_;
+
   Expr *func_;
   Expr *args_;
   Expr *lhs_;
   Expr *rhs_;
-
-private:
-  NodeCode type_;
 };
 
 // mainly for multiple var decls (e.g. var x, y int).
