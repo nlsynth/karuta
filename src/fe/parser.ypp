@@ -341,8 +341,8 @@ ASSIGN_OR_EMPTY : {
   // Maybe remove this syntax later.
 }
 
-IF_COND_PART : K_IF '(' EXPR ')' {
-  $$ = Emitter::EmitIfStmt($3);
+IF_COND_PART : K_IF EXPR {
+  $$ = Emitter::EmitIfStmt($2);
   Emitter::EmitLabel($$->GetLabel(false, true));
 }
 
@@ -389,12 +389,12 @@ FOR_STMT : FOR_COND_PART ';' EXPR ')' BLOCK {
   Emitter::EndBlock();
 }
 
-WHILE_COND_PART : K_WHILE '(' EXPR ')' {
+WHILE_COND_PART : K_WHILE EXPR {
   Emitter::BeginBlock();
   // Emit a dummy insn before label_join so that compiler can
   // find a insn after the label.
   Emitter::EmitNop();
-  $$ = Emitter::EmitWhileStmt($3);
+  $$ = Emitter::EmitWhileStmt($2);
   Emitter::EmitLabel($$->GetLabel(false, true));
 }
 
