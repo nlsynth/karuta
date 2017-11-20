@@ -53,6 +53,7 @@ private:
 				vm::Method *method,
 				vector<vm::Register *> &lhs_regs);
   vm::Method *GetCalleeMethod(vm::Insn *call_insn);
+  vm::Register *LoadNumericTypeRegister(sym_t obj_name);
 
   Compiler *compiler_;
 };

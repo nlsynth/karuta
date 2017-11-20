@@ -318,7 +318,17 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   if (obj_reg == nullptr) {
     call_insn->obj_reg_ = compiler_->CompilePathHead(funcall->GetFunc());
   } else {
-    call_insn->obj_reg_ = obj_reg;
+    if (obj_reg->type_.object_name_ != sym_null &&
+	obj_reg->type_.value_type_ == vm::Value::NUM) {
+      // custom struct accessor.
+      vm::Register *numeric_obj =
+	LoadNumericTypeRegister(obj_reg->type_.object_name_);
+      CHECK(numeric_obj);
+      call_insn->obj_reg_ = numeric_obj;
+      call_insn->src_regs_.push_back(obj_reg);
+    } else {
+      call_insn->obj_reg_ = obj_reg;
+    }
   }
   call_insn->label_ = funcall->GetFunc()->GetSym();
 
@@ -336,8 +346,9 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   vm::Method *method = GetCalleeMethod(call_insn);
   if (method != nullptr) {
     int num_args = method->GetNumArgRegisters();
-    CHECK(args.size() >= num_args) << "Insufficient number of arguments " <<
-      args.size() << " < " << num_args;
+    CHECK(call_insn->src_regs_.size() >= num_args)
+      << "Insufficient number of arguments "
+      << args.size() << " < " << num_args;
   }
   return EmitFuncallDone(call_insn, method, lhs_regs);
 }
@@ -574,10 +585,8 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
       orig_insn->src_regs_[1]->type_.object_name_) {
     return nullptr;
   }
-  vm::Register *numerics_reg = compiler_->EmitLoadObj(sym_lookup("Numerics"));
   vm::Register *type_obj_reg =
-    compiler_->EmitMemberLoad(numerics_reg,
-			      orig_insn->src_regs_[0]->type_.object_name_);
+    LoadNumericTypeRegister(orig_insn->src_regs_[0]->type_.object_name_);
   vm::Object *type_obj = compiler_->GetVMObject(type_obj_reg);
   if (type_obj == nullptr) {
     // TODO: Warn if the user is trying to use type object in top env.
@@ -603,6 +612,11 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
   done_insn->dst_regs_.push_back(orig_insn->dst_regs_[0]);
   compiler_->EmitInsn(done_insn);
   return orig_insn->dst_regs_[0];
+}
+
+vm::Register *ExprCompiler::LoadNumericTypeRegister(sym_t obj_name) {
+  vm::Register *numerics_reg = compiler_->EmitLoadObj(sym_lookup("Numerics"));
+  return compiler_->EmitMemberLoad(numerics_reg, obj_name);
 }
 
 void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
