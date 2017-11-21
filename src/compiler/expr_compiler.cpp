@@ -390,7 +390,7 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
     if (method->return_types_.size() > i) {
       reg->type_ = method->return_types_[i];
     } else {
-      fe::VarDecl *vd = method->parse_tree_->GetReturns()->decls[i];
+      fe::VarDecl *vd = method->GetParseTree()->GetReturns()->decls[i];
       reg->type_.object_name_ = vd->GetObjectName();
       reg->type_.width_ = vd->GetWidth();
     }

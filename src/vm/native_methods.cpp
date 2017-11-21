@@ -278,8 +278,8 @@ Method *Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
 					       const vector<RegisterType> &ret_types,
 					       const char *alt) {
   Method *method = vm->NewMethod(false /* not toplevel */);
-  method->method_fn_ = func;
-  method->alt_impl_ = alt;
+  method->SetMethodFunc(func);
+  method->SetAlternativeImplementation(alt);
   method->return_types_ = ret_types;
   Value value;
   value.type_ = Value::METHOD;

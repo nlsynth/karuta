@@ -475,9 +475,10 @@ bool Executor::ExecFuncall(MethodFrame *frame,
   for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
     args.push_back(frame->reg_values_[insn->src_regs_[i]->id_]);
   }
-  if (callee_method->method_fn_) {
+  auto fn = callee_method->GetMethodFunc();
+  if (fn != nullptr) {
     // native
-    callee_method->method_fn_(thr_, obj, args);
+    fn(thr_, obj, args);
     if (!thr_->IsRunnable()) {
       return true;
     }
@@ -504,7 +505,7 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
   CHECK(value->type_ == Value::METHOD);
   value->method_ =
     compiler::Compiler::CompileMethod(thr_->GetVM(), *obj,
-				      value->method_->parse_tree_,
+				      value->method_->GetParseTree(),
 				      value->method_);
   if (value->method_->IsCompileFailure()) {
     return nullptr;

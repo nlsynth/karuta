@@ -185,7 +185,7 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   Value *value = obj->LookupValue(insn->label_, true);
   value->type_ = Value::METHOD;
   Method *new_method = thr_->GetVM()->NewMethod(false /* not toplevel */);
-  new_method->parse_tree_ = insn->insn_stmt_->GetMethodDef();
+  new_method->SetParseTree(insn->insn_stmt_->GetMethodDef());
   value->method_ = new_method;
   Annotation *an = new_method->GetAnnotation();
   if (an != nullptr) {
@@ -194,9 +194,11 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
       name = "$thr_" + sym_str(insn->label_);
     }
     if (an->IsThreadEntry()) {
+      // TODO: Avoid to call compile here.
       AddThreadEntry(frame, insn, name);
     }
     if (an->IsDataFlowEntry()) {
+      // TODO: ditto.
       AddThreadEntry(frame, insn, name);
     }
   }
@@ -235,7 +237,7 @@ bool ExecutorToplevel::ExecFuncall(MethodFrame *frame, Insn *insn) {
   if (callee_method == nullptr) {
     return true;
   }
-  if (callee_method->parse_tree_ != nullptr) {
+  if (callee_method->GetParseTree() != nullptr) {
     // non native
     if (insn->src_regs_.size() != callee_method->GetNumArgRegisters()) {
       CHECK(false) << "number of arguments doesn't match";

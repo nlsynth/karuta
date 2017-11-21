@@ -32,7 +32,7 @@ int NumericObject::Width(Object *obj) {
   Value *v = obj->LookupValue(build, false);
   CHECK(v != nullptr && v->type_ == Value::METHOD);
   // Acauires from the parse tree, since the method might not be compiled yet.
-  const fe::Method *m = v->method_->parse_tree_;
+  const fe::Method *m = v->method_->GetParseTree();
   CHECK(m && m->GetReturns()->decls.size() == 1);
   fe::VarDecl *vd = m->GetReturns()->decls[0];
   return vd->GetWidth().GetWidth();

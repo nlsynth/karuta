@@ -29,11 +29,12 @@ bool MethodScanner::Scan() {
   }
   vm::Method *method = value->method_;
 
-  if (method->parse_tree_ == nullptr) {
+  auto *parse_tree = method->GetParseTree();
+  if (parse_tree == nullptr) {
     return true;
   }
   compiler::Compiler::CompileMethod(vm_, obj_,
-				    method->parse_tree_,
+				    parse_tree,
 				    method);
   if (method->IsCompileFailure()) {
     return false;

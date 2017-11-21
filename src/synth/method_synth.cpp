@@ -49,7 +49,7 @@ bool MethodSynth::Synth() {
   if (method_ == nullptr) {
     return false;
   }
-  if (method_->parse_tree_ == nullptr && method_->GetSynthName() != kMain) {
+  if (method_->GetParseTree() == nullptr && method_->GetSynthName() != kMain) {
     SynthNativeImplMethod(method_);
     return true;
   }
@@ -830,9 +830,10 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
   context_->method_insn_ = new IInsn(pseudo);
   context_->method_insn_->SetOperand("method_entry");
 
+  auto *parse_tree = method->GetParseTree();
   fe::VarDeclSet *args = nullptr;
-  if (method->parse_tree_ != nullptr) {
-    args = method->parse_tree_->GetArgs();
+  if (parse_tree != nullptr) {
+    args = parse_tree->GetArgs();
   }
   int num_args = 0;
   if (args) {
@@ -843,8 +844,8 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
     }
   }
   fe::VarDeclSet *rets = nullptr;
-  if (method->parse_tree_ != nullptr) {
-    rets = method->parse_tree_->GetReturns();
+  if (parse_tree != nullptr) {
+    rets = parse_tree->GetReturns();
   }
   if (rets) {
     for (size_t i = 0; i < rets->decls.size(); ++i) {

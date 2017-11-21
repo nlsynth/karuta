@@ -33,7 +33,7 @@ public:
 vm::Method *Compiler::CompileMethod(vm::VM *vm, vm::Object *obj,
 				    const fe::Method *parse_tree,
 				    vm::Method *method) {
-  if (method && !method->parse_tree_) {
+  if (method && method->GetParseTree() == nullptr) {
     // native method.
     return method;
   }
@@ -72,7 +72,7 @@ vm::Method *Compiler::Compile(vm::Method *method) {
   }
 
   PushScope();
-  method_->parse_tree_ = tree_;
+  method_->SetParseTree(tree_);
 
   SetupArgumentRegisters();
   SetupReturnRegisters();

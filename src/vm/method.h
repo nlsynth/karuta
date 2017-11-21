@@ -12,28 +12,28 @@ class Method {
 public:
   Method(bool is_toplevel);
   ~Method();
+
   void Dump();
   void Dump(DumpStream &os);
 
+  typedef void (*method_func)(Thread *thr, Object *obj,
+			      const vector<Value> &args);
+
+  method_func GetMethodFunc() const;
+  void SetMethodFunc(method_func func);
+  const fe::Method *GetParseTree() const;
+  void SetParseTree(const fe::Method *method);
   int GetNumArgRegisters() const;
   int GetNumReturnRegisters() const;
   const iroha::NumericWidth &GetNthArgWidth(int i);
   const char *AlternativeImplementation();
+  void SetAlternativeImplementation(const char *alt);
   const string &GetSynthName() const;
   void SetSynthName(const string &s);
   bool IsTopLevel() const;
   Annotation *GetAnnotation() const;
   void SetCompileFailure();
   bool IsCompileFailure() const;
-
-  typedef void (*method_func)(Thread *thr, Object *obj,
-			      const vector<Value> &args);
-
-  // native
-  method_func method_fn_;
-  const char *alt_impl_;
-  // non native
-  const fe::Method *parse_tree_;
 
   vector<Insn*> insns_;
   // Args. Returns. Locals.
@@ -59,6 +59,11 @@ public:
 
 private:
   bool is_toplevel_;
+  // native
+  method_func method_fn_;
+  // non native
+  const fe::Method *parse_tree_;
+  const char *alt_impl_;
   string synth_name_;
   bool compile_failed_;
 };

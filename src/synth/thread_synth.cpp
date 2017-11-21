@@ -175,7 +175,7 @@ void ThreadSynth::CollectUnclaimedMembers() {
     vm::Method *method = it.second;
     if (method->GetAnnotation()->IsExtIO()) {
       compiler::Compiler::CompileMethod(obj_synth_->GetVM(),
-					obj, method->parse_tree_,
+					obj, method->GetParseTree(),
 					method);
       if (method->IsCompileFailure()) {
 	continue;

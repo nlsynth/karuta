@@ -9,13 +9,29 @@
 namespace vm {
 
 Method::Method(bool is_toplevel) :
-  method_fn_(nullptr), alt_impl_(nullptr),
-  parse_tree_(nullptr), is_toplevel_(is_toplevel), compile_failed_(false) {
+  is_toplevel_(is_toplevel), method_fn_(nullptr), parse_tree_(nullptr),
+  alt_impl_(nullptr), compile_failed_(false) {
 }
 
 Method::~Method() {
   STLDeleteValues(&insns_);
   STLDeleteValues(&method_regs_);
+}
+
+Method::method_func Method::GetMethodFunc() const {
+  return method_fn_;
+}
+
+void Method::SetMethodFunc(method_func func) {
+  method_fn_ = func;
+}
+
+const fe::Method *Method::GetParseTree() const {
+  return parse_tree_;
+}
+
+void Method::SetParseTree(const fe::Method *method) {
+  parse_tree_ = method;
 }
 
 int Method::GetNumArgRegisters() const {
@@ -42,6 +58,10 @@ const iroha::NumericWidth &Method::GetNthArgWidth(int i) {
 
 const char *Method::AlternativeImplementation() {
   return alt_impl_;
+}
+
+void Method::SetAlternativeImplementation(const char *alt) {
+  alt_impl_ = alt;
 }
 
 const string &Method::GetSynthName() const {
