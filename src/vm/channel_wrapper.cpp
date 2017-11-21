@@ -106,7 +106,7 @@ bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
 
 void ChannelWrapper::WriteMethod(Thread *thr, Object *obj,
 				 const vector<Value> &args) {
-  if (args.size() != 1 || args[0].type_ == Value::NUM) {
+  if (args.size() != 1 || args[0].type_ != Value::NUM) {
     Status::os(Status::USER_ERROR) << "Channel.write takes one value argument";
     thr->UserError();
     return;
