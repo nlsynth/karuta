@@ -10,8 +10,7 @@
 
 namespace vm {
 
-Value::Value() : type_(NONE), pointee_width_(-1),
-		 is_const_(false), method_(nullptr),
+Value::Value() : type_(NONE), is_const_(false), method_(nullptr),
 		 object_(nullptr), local_int_array_(nullptr),
 		 type_object_name_(sym_null) {
 }
@@ -37,9 +36,6 @@ void Value::Dump(ostream &os) const {
 	os << "*";
       }
       os << "]";
-    }
-    if (pointee_width_ > -1) {
-      os << " *" << pointee_width_ << " ";
     }
     os << num_.Format();
     break;
@@ -111,11 +107,9 @@ bool Value::IsObjectType() const {
 
 void Value::CopyDataFrom(const Value &src) {
   iroha::NumericWidth w = num_.type_;
-  int pw = pointee_width_;
   *this = src;
   // Writes back saved parameters.
   num_.type_ = w;
-  pointee_width_ = pw;
 }
 
 }  // namespace vm

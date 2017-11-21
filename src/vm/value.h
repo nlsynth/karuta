@@ -39,7 +39,6 @@ public:
   static const char *TypeName(enum ValueType type);
 
   enum ValueType type_;
-  int pointee_width_;
   bool is_const_;
 
   iroha::Numeric num_;
