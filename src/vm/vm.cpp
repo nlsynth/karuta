@@ -1,6 +1,7 @@
 #include "vm/vm.h"
 
 #include "base/status.h"
+#include "compiler/compiler.h"
 #include "fe/expr.h"
 #include "vm/array_wrapper.h"
 #include "vm/enum_type_wrapper.h"
@@ -49,6 +50,7 @@ void VM::Run() {
 }
 
 void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method) {
+  compiler::Compiler::CompileMethod(this, object, method);
   Thread *thread = new Thread(this, parent, object, method);
   threads_.insert(thread);
 }

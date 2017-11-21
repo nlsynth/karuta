@@ -3,7 +3,6 @@
 #include "base/annotation.h"
 #include "base/dump_stream.h"
 #include "base/status.h"
-#include "compiler/compiler.h"
 #include "fe/fe.h"
 #include "fe/expr.h"
 #include "fe/method.h"
@@ -194,11 +193,9 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
       name = "$thr_" + sym_str(insn->label_);
     }
     if (an->IsThreadEntry()) {
-      // TODO: Avoid to call compile here.
       AddThreadEntry(frame, insn, name);
     }
     if (an->IsDataFlowEntry()) {
-      // TODO: ditto.
       AddThreadEntry(frame, insn, name);
     }
   }

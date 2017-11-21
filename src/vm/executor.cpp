@@ -467,7 +467,7 @@ void Executor::ExecIf(MethodFrame *frame, Insn *insn) {
 bool Executor::ExecFuncall(MethodFrame *frame,
 			   Insn *insn) {
   Object *obj;
-  Method *callee_method = LookupMethod(frame, insn, &obj);
+  Method *callee_method = LookupCompiledMethod(frame, insn, &obj);
   if (callee_method == nullptr) {
     return true;
   }
@@ -489,6 +489,19 @@ bool Executor::ExecFuncall(MethodFrame *frame,
   return false;
 }
 
+Method *Executor::LookupCompiledMethod(MethodFrame *frame, Insn *insn,
+				       Object **obj) {
+  Method *method = LookupMethod(frame, insn, obj);
+  if (method == nullptr) {
+    return nullptr;
+  }
+  compiler::Compiler::CompileMethod(thr_->GetVM(), *obj, method);
+  if (method->IsCompileFailure()) {
+    return nullptr;
+  }
+  return method;
+}
+
 Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
 			       Object **obj) {
   Value &obj_value = frame->reg_values_[insn->obj_reg_->id_];
@@ -503,11 +516,6 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
     return nullptr;
   }
   CHECK(value->type_ == Value::METHOD);
-  compiler::Compiler::CompileMethod(thr_->GetVM(), *obj,
-				    value->method_);
-  if (value->method_->IsCompileFailure()) {
-    return nullptr;
-  }
   return value->method_;
 }
 

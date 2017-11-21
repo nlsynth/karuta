@@ -41,6 +41,7 @@ protected:
   bool ExecFuncall(MethodFrame *frame, Insn *insn);
   void ExecFuncallDone(const Method *method, MethodFrame *frame, Insn *insn);
   Method *LookupMethod(MethodFrame *frame, Insn *insn, Object **obj);
+  Method *LookupCompiledMethod(MethodFrame *frame, Insn *insn, Object **obj);
   void ExecLoadObj(MethodFrame *frame, Insn *insn);
 
   void ExecArrayWrite(MethodFrame *frame, Insn *insn);
