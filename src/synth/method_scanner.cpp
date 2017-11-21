@@ -33,9 +33,7 @@ bool MethodScanner::Scan() {
   if (parse_tree == nullptr) {
     return true;
   }
-  compiler::Compiler::CompileMethod(vm_, obj_,
-				    parse_tree,
-				    method);
+  compiler::Compiler::CompileMethod(vm_, obj_, method);
   if (method->IsCompileFailure()) {
     return false;
   }

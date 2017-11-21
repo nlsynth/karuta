@@ -503,10 +503,8 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
     return nullptr;
   }
   CHECK(value->type_ == Value::METHOD);
-  value->method_ =
-    compiler::Compiler::CompileMethod(thr_->GetVM(), *obj,
-				      value->method_->GetParseTree(),
-				      value->method_);
+  compiler::Compiler::CompileMethod(thr_->GetVM(), *obj,
+				    value->method_);
   if (value->method_->IsCompileFailure()) {
     return nullptr;
   }

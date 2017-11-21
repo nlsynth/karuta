@@ -16,12 +16,15 @@ class VarScope;
 
 class Compiler {
 public:
-  Compiler(vm::VM *vm, vm::Object *obj, const fe::Method *parse_tree);
+  Compiler(vm::VM *vm, vm::Object *obj, vm::Method *method);
   ~Compiler();
 
-  static vm::Method *CompileMethod(vm::VM *vm, vm::Object *obj,
-				   const fe::Method *parse_tree,
-				   vm::Method *method);
+  void Compile();
+
+  static void CompileMethod(vm::VM *vm, vm::Object *obj,
+			    vm::Method *method);
+  static vm::Method *CompileParseTree(vm::VM *vm, vm::Object *obj,
+				      const fe::Method *parse_tree);
 
   static void SetByteCodeDebug(bool enable);
 
@@ -41,9 +44,6 @@ public:
   void SetDelayInsnEmit(bool delay);
 
 private:
-  // stub can be NULL.
-  vm::Method *Compile(vm::Method *stub);
-
   void CompileStmt(fe::Stmt *stmt);
   void CompileFuncDecl(fe::Stmt *stmt);
   void CompileImportStmt(fe::Stmt *stmt);
@@ -82,8 +82,8 @@ private:
 
   vm::VM *vm_;
   vm::Object *obj_;
-  const fe::Method *tree_;
   vm::Method *method_;
+  const fe::Method *tree_;
   vector<vm::Insn*> pending_insns_;
   vector<VarScope*> bindings_;
   vm::Insn *last_queued_insn_;

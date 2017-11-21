@@ -30,24 +30,31 @@ public:
   map<sym_t, vm::Register*> local_regs_;
 };
 
-vm::Method *Compiler::CompileMethod(vm::VM *vm, vm::Object *obj,
-				    const fe::Method *parse_tree,
-				    vm::Method *method) {
-  if (method && method->GetParseTree() == nullptr) {
+void Compiler::CompileMethod(vm::VM *vm, vm::Object *obj,
+			     vm::Method *method) {
+  if (method->GetParseTree() == nullptr) {
     // native method.
-    return method;
+    return;
   }
-  std::unique_ptr<Compiler> compiler(new Compiler(vm, obj, parse_tree));
-  return compiler->Compile(method);
+  std::unique_ptr<Compiler> compiler(new Compiler(vm, obj, method));
+  compiler->Compile();
+}
+
+vm::Method *Compiler::CompileParseTree(vm::VM *vm, vm::Object *obj,
+				       const fe::Method *parse_tree) {
+  vm::Method *method = vm->NewMethod(true /* toplevel */);
+  method->SetParseTree(parse_tree);
+  CompileMethod(vm, obj, method);
+  return method;
 }
 
 void Compiler::SetByteCodeDebug(bool enable) {
   dbg_bytecode_ = enable;
 }
 
-Compiler::Compiler(vm::VM *vm, vm::Object *obj, const fe::Method *parse_tree)
-  : vm_(vm), obj_(obj), tree_(parse_tree), last_queued_insn_(nullptr),
-    delay_insn_emit_(true) {
+Compiler::Compiler(vm::VM *vm, vm::Object *obj, vm::Method *method)
+  : vm_(vm), obj_(obj), method_(method), tree_(method->GetParseTree()),
+    last_queued_insn_(nullptr), delay_insn_emit_(true) {
   exc_.reset(new ExprCompiler(this));
 }
 
@@ -57,18 +64,13 @@ Compiler::~Compiler() {
   }
 }
 
-vm::Method *Compiler::Compile(vm::Method *method) {
-  method_ = method;
-  if (!method_) {
-    // top level.
-    method_ = vm_->NewMethod(true /* toplevel */);
-  }
+void Compiler::Compile() {
   if (method_->insns_.size() > 0) {
     // already compiled.
-    return method_;
+    return;
   }
   if (method_->IsCompileFailure()) {
-    return method_;
+    return;
   }
 
   PushScope();
@@ -85,7 +87,7 @@ vm::Method *Compiler::Compile(vm::Method *method) {
     CompilePostIncDec();
     if (Status::CheckAllErrors(false)) {
       method_->SetCompileFailure();
-      return method_;
+      return;
     }
   }
   PopScope();
@@ -108,10 +110,7 @@ vm::Method *Compiler::Compile(vm::Method *method) {
 
   if (Status::CheckAllErrors(false)) {
     method_->SetCompileFailure();
-    return method_;
   }
-
-  return method_;
 }
 
 vm::Object *Compiler::GetObj() const {

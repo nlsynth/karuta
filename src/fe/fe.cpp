@@ -143,7 +143,7 @@ void FE::Run(bool vanilla, const vector<string>& files) {
 vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 			    vm::VM *vm) {
   Method *parse_tree = ReadFile(file);
-  if (!parse_tree) {
+  if (parse_tree == nullptr) {
     Status::os(Status::USER_ERROR) << "Failed to load: " << file;
     return nullptr;
   }
@@ -152,17 +152,13 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
     parse_tree->Dump(ds);
   }
 
-  // Compile the top level.
-  vm::Method *method =
-    compiler::Compiler::CompileMethod(vm, vm->kernel_object_,
-				      parse_tree, nullptr);
-
-  return method;
+  return
+    compiler::Compiler::CompileParseTree(vm, vm->kernel_object_, parse_tree);
 }
 
 bool FE::RunFile(const string &file, vm::VM *vm) {
   vm::Method *method = CompileFile(file, dbg_parser_, vm);
-  if (!method || method->IsCompileFailure()) {
+  if (method == nullptr || method->IsCompileFailure()) {
     return false;
   }
   vm->AddThreadFromMethod(nullptr, vm->kernel_object_, method);
