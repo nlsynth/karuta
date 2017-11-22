@@ -47,7 +47,6 @@ private:
   void CompileStmt(fe::Stmt *stmt);
   void CompileFuncDecl(fe::Stmt *stmt);
   void CompileImportStmt(fe::Stmt *stmt);
-  void CompileSpawnStmt(fe::Stmt *stmt);
   void CompileIfStmt(fe::Stmt *stmt);
   void CompileLabel(fe::Stmt *stmt);
   void CompileGoto(fe::Stmt *stmt);

@@ -18,7 +18,6 @@ public:
   void ExecMailboxDecl(const Method *method, MethodFrame *frame, Insn *insn);
   
   void ExecImport(Insn *insn);
-  void ExecSpawn(MethodFrame *frame, Insn *insn);
   void ExecFuncdecl(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecMemberAccess(Method *method, MethodFrame *frame, const Insn *insn);
   bool ExecFuncall(MethodFrame *frame, Insn *insn);

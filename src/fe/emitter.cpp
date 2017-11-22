@@ -124,12 +124,6 @@ void Emitter::EmitImportStmt(const char *str) {
   EmitStmt(stmt);
 }
 
-void Emitter::EmitSpawnStmt(Expr *expr){
-  Stmt *stmt = NewStmt(STMT_SPAWN);
-  stmt->SetExpr(expr);
-  EmitStmt(stmt);
-}
-
 void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
   for (size_t i = 0; i < vds->decls.size(); ++i) {
     VarDecl *vd = vds->decls[i];

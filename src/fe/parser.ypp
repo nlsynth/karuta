@@ -65,7 +65,7 @@ extern void yyerror(const char *msg);
 %token K_INT K_BOOL K_STRING K_OBJECT K_THREAD K_CHANNEL K_MAILBOX K_VAR
 %token K_ADD_SUB K_LG_COMPARE K_EQ_COMPARE
 %token K_INC_DEC K_CONST
-%token K_IF K_ELSE K_RETURN K_GOTO K_FOR K_SPAWN
+%token K_IF K_ELSE K_RETURN K_GOTO K_FOR
 %token K_WHILE K_DO K_CONTINUE
 %token K_SWITCH K_CASE K_DEFAULT K_BREAK
 
@@ -312,8 +312,6 @@ STMT : EOS {
 } | LABEL
   | K_IMPORT {ScannerInterface::InSemiColonStatement();} STR EOS {
   Emitter::EmitImportStmt($3);
-} | K_SPAWN {ScannerInterface::InSemiColonStatement();} FUNCALL EOS {
-  Emitter::EmitSpawnStmt($3);
 } | THREAD_DECL_STMT EOS {
 } | CHANNEL_DECL_STMT EOS {
 } | MAILBOX_DECL_STMT EOS {

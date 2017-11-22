@@ -52,7 +52,6 @@ enum OpCode {
 
   // OPs for top level.
   OP_IMPORT,
-  OP_SPAWN,
   OP_FUNCDECL,
   OP_VARDECL,
   OP_CHANNEL_DECL,

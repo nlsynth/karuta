@@ -27,7 +27,6 @@ public:
   static void EmitNop();
   static void EmitExprStmt(Expr *expr);
   static void EmitImportStmt(const char *str);
-  static void EmitSpawnStmt(Expr *expr);
   static void EmitVarDeclStmtSet(VarDeclSet *vds);
   static void EmitEnumTypeDeclStmt(Expr *name, EnumDecl *decl);
   static Stmt *EmitIfStmt(Expr *cond);

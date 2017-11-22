@@ -65,7 +65,6 @@ const char *NodeName(enum NodeCode node) {
     {STMT_LABEL, "label"},
     {STMT_GOTO, "goto"},
     {STMT_IMPORT, "import"},
-    {STMT_SPAWN, "spawn"},
     {STMT_RETURN_TYPE, "return_type"},
     {STMT_PUSH_BINDING, "push_binding"},
     {STMT_POP_BINDING, "pop_binding"},

@@ -258,9 +258,6 @@ void Compiler::CompileStmt(fe::Stmt *stmt) {
   case fe::STMT_IMPORT:
     CompileImportStmt(stmt);
     break;
-  case fe::STMT_SPAWN:
-    CompileSpawnStmt(stmt);
-    break;
   case fe::STMT_VARDECL:
     CompileVarDeclStmt(stmt);
     break;
@@ -435,13 +432,6 @@ void Compiler::CompileImportStmt(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_IMPORT;
   insn->insn_stmt_ = stmt;
-  EmitInsn(insn);
-}
-
-void Compiler::CompileSpawnStmt(fe::Stmt *stmt) {
-  vm::Insn *insn = new vm::Insn;
-  insn->op_ = vm::OP_SPAWN;
-  insn->insn_expr_ = stmt->GetExpr();
   EmitInsn(insn);
 }
 

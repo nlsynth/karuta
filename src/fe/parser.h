@@ -69,22 +69,21 @@ extern int yydebug;
     K_RETURN = 279,
     K_GOTO = 280,
     K_FOR = 281,
-    K_SPAWN = 282,
-    K_WHILE = 283,
-    K_DO = 284,
-    K_CONTINUE = 285,
-    K_SWITCH = 286,
-    K_CASE = 287,
-    K_DEFAULT = 288,
-    K_BREAK = 289,
-    NUM = 290,
-    SYM = 291,
-    STR = 292,
-    K_LOGIC_OR = 293,
-    K_LOGIC_AND = 294,
-    K_BIT_CONCAT = 295,
-    SIGN = 296,
-    ADDRESS = 297
+    K_WHILE = 282,
+    K_DO = 283,
+    K_CONTINUE = 284,
+    K_SWITCH = 285,
+    K_CASE = 286,
+    K_DEFAULT = 287,
+    K_BREAK = 288,
+    NUM = 289,
+    SYM = 290,
+    STR = 291,
+    K_LOGIC_OR = 292,
+    K_LOGIC_AND = 293,
+    K_BIT_CONCAT = 294,
+    SIGN = 295,
+    ADDRESS = 296
   };
 #endif
 /* Tokens.  */
@@ -112,22 +111,21 @@ extern int yydebug;
 #define K_RETURN 279
 #define K_GOTO 280
 #define K_FOR 281
-#define K_SPAWN 282
-#define K_WHILE 283
-#define K_DO 284
-#define K_CONTINUE 285
-#define K_SWITCH 286
-#define K_CASE 287
-#define K_DEFAULT 288
-#define K_BREAK 289
-#define NUM 290
-#define SYM 291
-#define STR 292
-#define K_LOGIC_OR 293
-#define K_LOGIC_AND 294
-#define K_BIT_CONCAT 295
-#define SIGN 296
-#define ADDRESS 297
+#define K_WHILE 282
+#define K_DO 283
+#define K_CONTINUE 284
+#define K_SWITCH 285
+#define K_CASE 286
+#define K_DEFAULT 287
+#define K_BREAK 288
+#define NUM 289
+#define SYM 290
+#define STR 291
+#define K_LOGIC_OR 292
+#define K_LOGIC_AND 293
+#define K_BIT_CONCAT 294
+#define SIGN 295
+#define ADDRESS 296
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -153,7 +151,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 157 "src/fe/parser.h" /* yacc.c:1909  */
+#line 155 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

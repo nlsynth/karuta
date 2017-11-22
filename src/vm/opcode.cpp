@@ -52,7 +52,6 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_MEMBER_WRITE, "member_write"},
     // Toplevel.
     {vm::OP_IMPORT, "import"},
-    {vm::OP_SPAWN, "spawn"},
     {vm::OP_FUNCDECL, "funcdecl"},
     {vm::OP_VARDECL, "vardecl"},
     {vm::OP_CHANNEL_DECL, "channel_decl"},

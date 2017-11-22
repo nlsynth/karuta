@@ -51,9 +51,6 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
     ExecImport(insn);
     need_suspend = true;
     break;
-  case OP_SPAWN:
-    ExecSpawn(frame, insn);
-    break;
   case OP_MEMBER_READ:
   case OP_MEMBER_WRITE:
     ExecutorToplevel::ExecMemberAccess(method, frame, insn);
@@ -162,14 +159,6 @@ void ExecutorToplevel::ExecImport(Insn *insn) {
   }
   vm->AddThreadFromMethod(thr_, vm->kernel_object_, method);
   thr_->Suspend();
-}
-
-void ExecutorToplevel::ExecSpawn(MethodFrame *frame, Insn *insn) {
-  VM *vm = thr_->GetVM();
-  Object *obj;
-  Method *method = LookupMethod(frame, insn, &obj);
-  CHECK(method) << "no method";
-  vm->AddThreadFromMethod(nullptr, obj, method);
 }
 
 void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
