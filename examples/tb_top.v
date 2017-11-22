@@ -25,16 +25,16 @@ module tb_top;
    end
 
 `ifndef NO_DEBUG
-   always @(posedge clk) begin
-      $display("time %t, %d %d", $time, rst, dut.top_main_inst.cur_st);
-   end
+//   always @(posedge clk) begin
+//      $display("time %t, %d %d", $time, rst, dut.top_main_inst.cur_st);
+//   end
 `endif
 
    top dut(.clk(clk), .rst(rst)
 `ifndef NO_MEMORY
 	   ,
-	   .addr_o(addr), .write_en_o(write_en),
-	   .data_o(wdata), .data_i(rdata)
+	   .sram_addr(addr), .sram_wdata_en(write_en),
+	   .sram_wdata(wdata), .sram_rdata(rdata)
 `endif
 	   );
 

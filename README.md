@@ -33,7 +33,7 @@ NOTE: Please make sure you checked out iroha submodule and have iroha/ directory
 
 -- Use
 
-Run tb.n (this example outputs a.v)
+Run top.n (this example outputs a.v)
 
     > $ cd examples
     > $ ../nli top.n

@@ -1,11 +1,12 @@
 /* Sample code
   this modules adds +10 to data in address 0 */
 
-print("Hello");
+print("Hello")
 
 
 def Kernel.main() {
   Memory.write(0, Memory.read(0) + 10)
+  print(Memory.read(0))
 }
 
 
