@@ -21,15 +21,6 @@
 
 namespace vm {
 
-MethodFrame::~MethodFrame() {
-  for (size_t i = 0; i < reg_values_.size(); ++i) {
-    Value &val = reg_values_[i];
-    if (val.local_int_array_) {
-      delete val.local_int_array_;
-    }
-  }
-}
-
 Executor::Executor(Thread *thread) : thr_(thread) {
 }
 
@@ -232,53 +223,35 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 
 void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
   int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
-  if (insn->obj_reg_) {
-    Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
-    CHECK(array_obj);
-    Value &lhs = frame->reg_values_[insn->dst_regs_[0]->id_];
-    if (ArrayWrapper::IsIntArray(array_obj)) {
-      IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-      lhs.num_ = array->Read(index);
-      lhs.num_.type_ = array->GetDataWidth();
-    } else {
-      CHECK(ArrayWrapper::IsObjectArray(array_obj));
-      lhs.object_ = ArrayWrapper::Get(array_obj, index);
-      lhs.type_ = Value::OBJECT;
-    }
+  CHECK(insn->obj_reg_ != nullptr);
+  Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
+  CHECK(array_obj);
+  Value &lhs = frame->reg_values_[insn->dst_regs_[0]->id_];
+  if (ArrayWrapper::IsIntArray(array_obj)) {
+    IntArray *array = ArrayWrapper::GetIntArray(array_obj);
+    lhs.num_ = array->Read(index);
+    lhs.num_.type_ = array->GetDataWidth();
   } else {
-    // local array.
-    CHECK(insn->src_regs_.size() == 2);
-    Value &array = frame->reg_values_[insn->src_regs_[1]->id_];
-    Value &index = frame->reg_values_[insn->src_regs_[0]->id_];
-    
-    frame->reg_values_[insn->dst_regs_[0]->id_].num_ =
-      array.local_int_array_->Read(index.num_.GetValue0());
-    frame->reg_values_[insn->dst_regs_[0]->id_].type_ = Value::NUM;
+    CHECK(ArrayWrapper::IsObjectArray(array_obj));
+    lhs.object_ = ArrayWrapper::Get(array_obj, index);
+    lhs.type_ = Value::OBJECT;
   }
 }
 
 void Executor::ExecArrayWrite(MethodFrame *frame, Insn *insn) {
   int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
-  if (insn->obj_reg_) {
-    Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
-    CHECK(array_obj);
-    if (ArrayWrapper::IsIntArray(array_obj)) {
-      IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-      array->Write(index,
-		   frame->reg_values_[insn->src_regs_[1]->id_].num_);
-    } else {
-      CHECK(ArrayWrapper::IsObjectArray(array_obj));
-      CHECK(frame->reg_values_[insn->src_regs_[1]->id_].type_ == Value::OBJECT);
-      ArrayWrapper::Set(array_obj, index,
-			frame->reg_values_[insn->src_regs_[1]->id_].object_);
-    }
+  CHECK(insn->obj_reg_ != nullptr);
+  Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
+  CHECK(array_obj);
+  if (ArrayWrapper::IsIntArray(array_obj)) {
+    IntArray *array = ArrayWrapper::GetIntArray(array_obj);
+    array->Write(index,
+		 frame->reg_values_[insn->src_regs_[1]->id_].num_);
   } else {
-    // local array.
-    CHECK(insn->src_regs_.size() == 3);
-    Value &array = frame->reg_values_[insn->src_regs_[2]->id_];
-    
-    array.local_int_array_->Write(index,
-				  frame->reg_values_[insn->src_regs_[1]->id_].num_);
+    CHECK(ArrayWrapper::IsObjectArray(array_obj));
+    CHECK(frame->reg_values_[insn->src_regs_[1]->id_].type_ == Value::OBJECT);
+    ArrayWrapper::Set(array_obj, index,
+		      frame->reg_values_[insn->src_regs_[1]->id_].object_);
   }
 }
 

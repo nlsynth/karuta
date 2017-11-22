@@ -11,8 +11,7 @@
 namespace vm {
 
 Value::Value() : type_(NONE), is_const_(false), method_(nullptr),
-		 object_(nullptr), local_int_array_(nullptr),
-		 type_object_name_(sym_null) {
+		 object_(nullptr), type_object_name_(sym_null) {
 }
 
 void Value::Dump() const {
@@ -60,9 +59,6 @@ void Value::Dump(ostream &os) const {
     }
     break;
   case INT_ARRAY:
-    if (local_int_array_) {
-      os << "array[" << local_int_array_->GetLength() << "]";
-    }
     // fall through.
   case OBJECT_ARRAY:
     os << "object_array[" << ArrayWrapper::ToString(object_) << "]";

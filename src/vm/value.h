@@ -51,7 +51,6 @@ public:
   // (IsObjectType()==true).
   // can be numeric type object for NUM.
   Object *object_;
-  IntArray *local_int_array_;
   sym_t type_object_name_;
 };
 

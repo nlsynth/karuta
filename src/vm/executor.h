@@ -9,8 +9,6 @@ namespace vm {
 
 class MethodFrame {
 public:
-  ~MethodFrame();
-
   Method *method_;
   size_t pc_;
   Object *obj_;
