@@ -267,13 +267,15 @@ void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
       reg->type_.enum_type_ = vm->bool_type_;
     }
   }
-  // Width will be overwritten by the compiler if this is a ptr.
   reg->type_.width_ = decl->GetWidth();
   reg->type_.object_name_ = decl->GetObjectName();
   if (reg->type_.object_name_ != sym_null) {
     reg->type_object_ = NumericObject::Get(vm, reg->type_.object_name_);
-    int w = NumericObject::Width(reg->type_object_);
-    reg->type_.width_ = iroha::NumericWidth(false, w);
+    // type_object_ can be null for top level decl.
+    if (reg->type_object_ != nullptr) {
+      int w = NumericObject::Width(reg->type_object_);
+      reg->type_.width_ = iroha::NumericWidth(false, w);
+    }
   }
   CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->GetType());
 }

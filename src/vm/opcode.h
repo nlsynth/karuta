@@ -57,7 +57,8 @@ enum OpCode {
   OP_CHANNEL_DECL,
   OP_MAILBOX_DECL,
   OP_THREAD_DECL,
-
+  // Sets type object (and width) by the executor.
+  // e.g. var x #type_obj (local var at top level)
   OP_SET_TYPE_OBJECT,
 };
 
