@@ -12,7 +12,7 @@ StateWrapper::StateWrapper()
 }
 
 MethodContext::MethodContext(MethodSynth *synth)
-  : method_insn_(nullptr), synth_(synth) {
+  : method_signature_insn_(nullptr), synth_(synth) {
 }
 
 MethodContext::~MethodContext() {

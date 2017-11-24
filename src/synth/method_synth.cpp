@@ -58,8 +58,9 @@ bool MethodSynth::Synth() {
     return true;
   }
 
-  EmitEntryInsn(method_);
-  StateWrapper *last = nullptr;
+  EmitSignatureInsn(method_);
+  // Initial insn. (ext) task entry may be allocated to here.
+  StateWrapper *last = AllocState();
   // mapping from vm::insn index to state index.
   map<int, int> state_index;
   state_index[0] = context_->states_.size();
@@ -70,6 +71,7 @@ bool MethodSynth::Synth() {
     }
     StateWrapper *lw = context_->LastState();
     if (last == lw) {
+      // Dummy state, since this insn didn't emit a state.
       AllocState();
     }
     state_index[i + 1] = context_->states_.size();
@@ -117,7 +119,7 @@ void MethodSynth::EmitDataFlowEntry(IState *st) {
   IInsn *df_insn = new IInsn(df);
   st->insns_.push_back(df_insn);
   int width = 0;
-  for (IRegister *arg : context_->method_insn_->inputs_) {
+  for (IRegister *arg : context_->method_signature_insn_->inputs_) {
     df_insn->outputs_.push_back(arg);
     width += arg->value_type_.GetWidth();
   }
@@ -132,7 +134,7 @@ void MethodSynth::EmitTaskEntry(IState *st) {
   IResource *res = res_set_->GetSubModuleTaskResource();
   IInsn *iinsn = new IInsn(res);
   // Args
-  for (IRegister *reg : context_->method_insn_->inputs_) {
+  for (IRegister *reg : context_->method_signature_insn_->inputs_) {
     iinsn->outputs_.push_back(reg);
     res->output_types_.push_back(reg->value_type_);
   }
@@ -175,7 +177,7 @@ void MethodSynth::EmitExtTaskEntry(IState *st) {
   ext_task->GetParams()->SetExtTaskName(name);
   IInsn *task_insn = new IInsn(ext_task);
   // Args
-  for (IRegister *arg : context_->method_insn_->inputs_) {
+  for (IRegister *arg : context_->method_signature_insn_->inputs_) {
     task_insn->outputs_.push_back(arg);
     ext_task->output_types_.push_back(arg->value_type_);
   }
@@ -221,17 +223,17 @@ void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
 }
 
 void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
-  EmitEntryInsn(method);
+  EmitSignatureInsn(method);
   StateWrapper *sw = AllocState();
   IResource *res = res_set_->GetImportedResource(method);
   IInsn *iinsn = new IInsn(res);
-  iinsn->inputs_ = context_->method_insn_->inputs_;
-  iinsn->outputs_ = context_->method_insn_->outputs_;
+  iinsn->inputs_ = context_->method_signature_insn_->inputs_;
+  iinsn->outputs_ = context_->method_signature_insn_->outputs_;
   sw->state_->insns_.push_back(iinsn);
 }
 
 void MethodSynth::SynthExtIOMethod() {
-  EmitEntryInsn(method_);
+  EmitSignatureInsn(method_);
   Annotation *an = method_->GetAnnotation();
   if (an->IsExtOutput()) {
     DoSynthExtIO(true);
@@ -245,11 +247,11 @@ void MethodSynth::DoSynthExtIO(bool is_output) {
   IResource *res = rsynth_->MayAddExtIO(method_, is_output);
   IInsn *iinsn = new IInsn(res);
   if (is_output) {
-    CHECK(context_->method_insn_->inputs_.size() == 1);
-    iinsn->inputs_.push_back(context_->method_insn_->inputs_[0]);
+    CHECK(context_->method_signature_insn_->inputs_.size() == 1);
+    iinsn->inputs_.push_back(context_->method_signature_insn_->inputs_[0]);
   } else {
-    CHECK(context_->method_insn_->outputs_.size() == 1);
-    iinsn->outputs_.push_back(context_->method_insn_->outputs_[0]);
+    CHECK(context_->method_signature_insn_->outputs_.size() == 1);
+    iinsn->outputs_.push_back(context_->method_signature_insn_->outputs_[0]);
   }
   StateWrapper *sw = AllocState();
   sw->state_->insns_.push_back(iinsn);
@@ -824,11 +826,11 @@ void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
   w->state_->insns_.push_back(insn);
 }
 
-void MethodSynth::EmitEntryInsn(vm::Method *method) {
+void MethodSynth::EmitSignatureInsn(vm::Method *method) {
   // This insn doesn't belong to a state.
   IResource *pseudo = res_set_->PseudoCallResource();
-  context_->method_insn_ = new IInsn(pseudo);
-  context_->method_insn_->SetOperand("method_entry");
+  context_->method_signature_insn_ = new IInsn(pseudo);
+  context_->method_signature_insn_->SetOperand("method_entry");
 
   auto *parse_tree = method->GetParseTree();
   fe::VarDeclSet *args = nullptr;
@@ -836,27 +838,27 @@ void MethodSynth::EmitEntryInsn(vm::Method *method) {
     args = parse_tree->GetArgs();
   }
   int num_args = 0;
-  if (args) {
+  if (args != nullptr) {
     num_args = args->decls.size();
     for (size_t i = 0; i < args->decls.size(); ++i) {
       IRegister *ireg = FindArgRegister(method, i, args->decls[i]);
-      context_->method_insn_->inputs_.push_back(ireg);
+      context_->method_signature_insn_->inputs_.push_back(ireg);
     }
   }
   fe::VarDeclSet *rets = nullptr;
   if (parse_tree != nullptr) {
     rets = parse_tree->GetReturns();
   }
-  if (rets) {
+  if (rets != nullptr) {
     for (size_t i = 0; i < rets->decls.size(); ++i) {
       vm::Register *vreg = method->method_regs_[i + num_args];
       IRegister *ireg = FindLocalVarRegister(vreg);
-      context_->method_insn_->outputs_.push_back(ireg);
+      context_->method_signature_insn_->outputs_.push_back(ireg);
     }
     // Adds a dummy return value.
     if (rets->decls.size() == 0) {
       IRegister *ireg = thr_synth_->AllocRegister("r_");
-      context_->method_insn_->outputs_.push_back(ireg);
+      context_->method_signature_insn_->outputs_.push_back(ireg);
     }
   }
 }

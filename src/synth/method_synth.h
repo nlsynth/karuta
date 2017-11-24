@@ -62,7 +62,7 @@ private:
   void SynthNative(vm::Insn *insn);
 
   void GenNeg(IRegister *src, IRegister *dst);
-  void EmitEntryInsn(vm::Method *method);
+  void EmitSignatureInsn(vm::Method *method);
   void EmitDataFlowEntry(IState *st);
   void EmitTaskEntry(IState *st);
   void EmitTaskReturn(IState *last);

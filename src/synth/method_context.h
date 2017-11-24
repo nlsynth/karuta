@@ -31,7 +31,7 @@ public:
 
   // Pseudo insn to represent the entory of this method.
   // This insn holds args/rets information.
-  IInsn *method_insn_;
+  IInsn *method_signature_insn_;
   vector<StateWrapper *> states_;
 
   StateWrapper *LastState();
