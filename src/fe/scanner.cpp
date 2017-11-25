@@ -134,11 +134,12 @@ void Scanner::SkipComment() {
   }
   char c = NextChar();
   if (c == '/') {
+    // // comment
     while (CurChar() != '\n' && CurChar() != 0) {
       GoAhead();
     }
-    GoAhead();
   } else {
+    // /* comment */
     GoAhead();
     GoAhead();
     while (CurChar() != '*' || NextChar() != '/') {
