@@ -3,16 +3,16 @@
 var X object
 X = Kernel.clone();
 
-def Kernel.func() (bool) {
+def Kernel.f() (bool) {
   return false;
 }
 
-def X.func() (bool) {
+def X.f() (bool) {
   return true;
 }
 
 def X.main() {
-  assert(func());
+  assert(f());
 }
 
 X.main();
