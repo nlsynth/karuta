@@ -14,7 +14,7 @@ def f(x int) (int) {
 }
 // NLI_NEXT_TEST
 // NLI_EXPECT_ABORT:
-int x;
+var x int;
 x = false;
 
 // NLI_NEXT_TEST

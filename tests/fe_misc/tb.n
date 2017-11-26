@@ -1,14 +1,12 @@
 /* this modules adds +10 to data in address 0 */
 
 def Kernel.main() {
-  var a *int = 0;
-  *a = *a + 10;
+  Memory.write(0, Memory.read(0) + 10)
 }
 
 /* test it */
-var p *int = 0;
-*p = 10;
+Memory.write(0, 10)
 Kernel.main();
-if (*p == 20) {
+if (Memory.read(0) == 20) {
   print("maybe ok");
 }

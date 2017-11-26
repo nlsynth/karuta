@@ -85,6 +85,8 @@ class NLITest():
                 num_fails = num_fails + 1
             if re.search("NLI DONE", line):
                 done_stat = 1
+                if re.search("error", line):
+                    num_fails = num_fails + 1
         return {"num_fails":num_fails,
                 "done_stat":done_stat}
 

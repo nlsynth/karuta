@@ -1,26 +1,26 @@
-def f1(int x, int #16 y) {
-  assert(x == 10);
-  assert(y == 20);
-  assert(widthof(x) == 32);
-  assert(widthof(y) == 16);
+def f1(x int, y #16) {
+  assert(x == 10)
+  assert(y == 20)
+  assert(widthof(x) == 32)
+  assert(widthof(y) == 16)
 }
 
-f1(10, 20);
+f1(10, 20)
 
 /* it once failed, since array referene didn't set correct width information */
-def f3(int x) {
+def f3(x int) {
 }
 
-int a[10] = {0};
-f3(a[0]);
+var Kernel.a int[10] = {0}
+f3(a[0])
 
 /**/
-int i;
+var i int
 
-def f(int p, int q) {
-  assert(p == q);
+def f(p int, q int) {
+  assert(p == q)
 }
 
-i = 1;
+i = 1
 
-f(a[i], a[i+1]);
+f(a[i], a[i+1])

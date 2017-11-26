@@ -1,4 +1,4 @@
-def Kernel.f(int x) {
+def Kernel.f(x int) {
   print("arg=", x);
   if (x > 10) {
     print("x>10");
