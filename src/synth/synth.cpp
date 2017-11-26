@@ -21,9 +21,11 @@ namespace synth {
 
 bool Synth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
   DesignSynth design_synth(vm, obj);
+  LOG(DEBUG) << "Synthesize start";
   if (!design_synth.Synth()) {
     return false;
   }
+  LOG(DEBUG) << "Synthesize done";
 
   WriterAPI *writer = Iroha::CreateWriter(design_synth.GetIDesign());
   writer->SetLanguage("");
@@ -64,7 +66,10 @@ int Synth::RunIroha(vm::Object *obj, const string &args) {
   string e = cmd + " " + iopt + " " +
     path + " " + args;
   cout << "command=" << e << "\n";
-  return system(e.c_str());
+  LOG(DEBUG) << "Executing iroha";
+  int r = system(e.c_str());
+  LOG(DEBUG) << "Done";
+  return r;
 }
 
 void Synth::WriteHdl(const string &fn, vm::Object *obj) {
