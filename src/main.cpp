@@ -295,7 +295,9 @@ int Main::main(int argc, char **argv) {
   string exit_status;
   LOG(INFO) << "NLI-" << Env::GetVersion();
   RunFiles(args.source_files);
-  Status::CheckAllErrors(true);
+  if (Status::CheckAllErrors(true)) {
+    exit_status = "error";
+  }
   if (print_exit_status) {
     // Used to confirm this program was finished normally.
     // (without SEGV and so on)
