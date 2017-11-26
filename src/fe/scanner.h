@@ -8,7 +8,6 @@ namespace fe {
 
 class FileImage {
 public:
-  ~FileImage();
   string buf;
   string file_name;
 };
@@ -89,18 +88,18 @@ private:
   void ClearToken();
   void PushChar(char c);
 
-  int read_num();
-  int read_sym();
-  int read_str();
-  int read_op(struct OperatorTableEntry *s);
+  int ReadNum();
+  int ReadSym();
+  int ReadStr();
+  int ReadOp(struct OperatorTableEntry *s);
 
   struct OperatorTableEntry *lookup_op();
 
-  bool is_dec(char c);
-  bool is_hex_dec(char c);
-  bool is_space(char c);
-  bool is_symhead(char c);
-  bool is_symbody(char c);
+  bool IsDec(char c);
+  bool IsHexDec(char c);
+  bool IsSpace(char c);
+  bool IsSymHead(char c);
+  bool IsSymBody(char c);
   uint64_t Parse0b();
 
 private:

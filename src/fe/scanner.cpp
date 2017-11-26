@@ -35,23 +35,23 @@ int Scanner::GetToken(int *sub) {
   SkipNonToken();
   //
   char c = CurChar();
-  if (is_dec(c)) {
-    return read_num();
+  if (IsDec(c)) {
+    return ReadNum();
   }
   //
   struct OperatorTableEntry *op = lookup_op();
   if (op) {
     int r;
-    r = read_op(op);
+    r = ReadOp(op);
     *sub = op->sub_op;
     return r;
   }
   //
   if (c == '\"') {
-    return read_str();
+    return ReadStr();
   }
-  if (is_symhead(c)) {
-    return read_sym();
+  if (IsSymHead(c)) {
+    return ReadSym();
   }
   return -1;
 }
@@ -118,7 +118,7 @@ char Scanner::ReadAhead(int a) {
 
 void Scanner::SkipNonToken() {
   while (true) {
-    if ((is_space(CurChar()))) {
+    if ((IsSpace(CurChar()))) {
       GoAhead();
     } else if (IsCommentStart()) {
       SkipComment();
@@ -168,7 +168,7 @@ void Scanner::PushChar(char c) {
   token_[token_len_] = 0;
 }
 
-int Scanner::read_num() {
+int Scanner::ReadNum() {
   ClearToken();
   bool hex_dec_mode = false;
   if (CurChar() == '0') {
@@ -186,11 +186,11 @@ int Scanner::read_num() {
   while (true) {
     char c = CurChar();
     if (hex_dec_mode) {
-      if (!is_hex_dec(c)) {
+      if (!IsHexDec(c)) {
 	break;
       }
     } else {
-      if (!is_dec(c)) {
+      if (!IsDec(c)) {
 	break;
       }
     }
@@ -200,16 +200,16 @@ int Scanner::read_num() {
   return s_info->num_token;
 }
 
-int Scanner::read_sym() {
+int Scanner::ReadSym() {
   ClearToken();
-  while (is_symbody(CurChar())) {
+  while (IsSymBody(CurChar())) {
     PushChar(CurChar());
     GoAhead();
   }
   return s_info->sym_token;
 }
 
-int Scanner::read_str() {
+int Scanner::ReadStr() {
   ClearToken();
   GoAhead();
   while (1) {
@@ -231,7 +231,7 @@ int Scanner::read_str() {
   return s_info->str_token;
 }
 
-int Scanner::read_op(struct OperatorTableEntry *op) {
+int Scanner::ReadOp(struct OperatorTableEntry *op) {
   int i;
   for (i = strlen(op->str); i > 0; i--) {
     GoAhead();
@@ -272,8 +272,8 @@ void Scanner::ClearToken() {
   token_[0] = 0;
 }
 
-bool Scanner::is_hex_dec(char c) {
-  if (is_dec(c)) {
+bool Scanner::IsHexDec(char c) {
+  if (IsDec(c)) {
     return true;
   }
   if ((c >= 'a' && c <= 'f') ||
@@ -283,14 +283,14 @@ bool Scanner::is_hex_dec(char c) {
   return false;
 }
 
-bool Scanner::is_dec(char c) {
+bool Scanner::IsDec(char c) {
   if (c >= '0' && c <= '9') {
     return true;
   }
   return false;
 }
 
-bool Scanner::is_space(char c) {
+bool Scanner::IsSpace(char c) {
   if (UseReturnAsSep() && c == '\n') {
     return false;
   }
@@ -300,7 +300,7 @@ bool Scanner::is_space(char c) {
   return false;
 }
 
-bool Scanner::is_symhead(char c) {
+bool Scanner::IsSymHead(char c) {
   if (isalpha((unsigned char)c)) {
     return true;
   }
@@ -310,11 +310,11 @@ bool Scanner::is_symhead(char c) {
   return false;
 }
 
-bool Scanner::is_symbody(char c) {
-  if (is_symhead(c)) {
+bool Scanner::IsSymBody(char c) {
+  if (IsSymHead(c)) {
     return true;
   }
-  if (is_dec(c)) {
+  if (IsDec(c)) {
     return true;
   }
   return false;
@@ -324,9 +324,6 @@ void Scanner::Init(const ScannerInfo *si, bool dbg) {
   op_tab = si->op_tab;
   s_info = si;
   dbg_scanner = dbg;
-}
-
-FileImage::~FileImage() {
 }
 
 FileImage *Scanner::CreateFileImage(const char *fn) {
