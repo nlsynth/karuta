@@ -1,2 +1,2 @@
-//
+// NLI_EXPECTED_ERRORS: 1
 parse error
