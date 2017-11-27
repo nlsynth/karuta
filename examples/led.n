@@ -2,7 +2,7 @@
 
 var L object = Kernel.clone();
 
-@embed(output = "led")
+@ExtIO(output = "led")
 def L.f(b bool) {
   // print(b);
 }

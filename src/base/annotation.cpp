@@ -172,7 +172,8 @@ bool Annotation::IsExtFlowStub() {
 }
 
 bool Annotation::IsExtIO() {
-  if (IsExtInput() || IsExtOutput()) {
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  if (s == "ExtIO") {
     return true;
   }
   return false;
