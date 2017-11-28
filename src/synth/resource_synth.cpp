@@ -1,6 +1,7 @@
 #include "synth/resource_synth.h"
 
 #include "base/annotation.h"
+#include "base/status.h"
 #include "fe/method.h"
 #include "iroha/iroha.h"
 #include "synth/design_synth.h"
@@ -67,9 +68,19 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
   if (is_output) {
     name = an->GetOutputPinName();
     nth_reg = 0;
+    if (method->GetNumArgRegisters() != 1) {
+      Status::os(Status::USER_ERROR)
+	<< "Ext output method must have 1 argument.";
+      return nullptr;
+    }
   } else {
     name = an->GetInputPinName();
     nth_reg = method->GetNumArgRegisters();
+    if (method->GetNumReturnRegisters() != 1) {
+      Status::os(Status::USER_ERROR)
+	<< "Ext output method must have 1 return value.";
+      return nullptr;
+    }
   }
   vm::Register *reg = method->method_regs_[nth_reg];
   int width;

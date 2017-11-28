@@ -245,6 +245,9 @@ void MethodSynth::SynthExtIOMethod() {
 
 void MethodSynth::DoSynthExtIO(bool is_output) {
   IResource *res = rsynth_->MayAddExtIO(method_, is_output);
+  if (res == nullptr) {
+    return;
+  }
   IInsn *iinsn = new IInsn(res);
   if (is_output) {
     CHECK(context_->method_signature_insn_->inputs_.size() == 1);

@@ -2,6 +2,7 @@
 
 #include <list>
 
+#include "base/status.h"
 #include "base/stl_util.h"
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
@@ -33,6 +34,9 @@ bool DesignSynth::Synth() {
   }
 
   if (!SynthObjects()) {
+    return false;
+  }
+  if (Status::CheckAllErrors(false)) {
     return false;
   }
 
