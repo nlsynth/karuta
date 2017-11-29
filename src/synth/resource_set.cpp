@@ -314,15 +314,17 @@ IResource *ResourceSet::GetOpResource(vm::OpCode op, IValueType &vt) {
       return res.resource;
     }
   }
-  ResourceEntry res;
   string rcn = GetResourceClassName(op);
   IResourceClass *rc =
     DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), rcn);
   IResource *ires = new IResource(tab_, rc);
   tab_->resources_.push_back(ires);
   PopulateResourceDataType(op, vt, ires);
+  ResourceEntry res;
   res.op = op;
   res.vt = key_vt;
+  res.resource = ires;
+  resources_.push_back(res);
   return ires;
 }
 
