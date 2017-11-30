@@ -9,7 +9,7 @@ namespace fe {
 
 class ArrayInitializer {
 public:
-  vector<int> num_;
+  vector<uint64_t> num_;
   void Dump(DumpStream &ds) const;
 };
 
