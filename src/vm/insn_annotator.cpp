@@ -202,9 +202,7 @@ void InsnAnnotator::TryType(Insn *insn) {
     return;
   }
   if (insn->op_ == OP_FUNCALL_DONE) {
-    // TODO: Look up return type(s).
-    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, 32);
+    TypeReturnValues(insn);
     return;
   }
   if (insn->op_ == OP_ARRAY_READ) {
@@ -218,6 +216,34 @@ void InsnAnnotator::TryType(Insn *insn) {
       insn->dst_regs_[0]->type_.value_type_ = value->type_;
     }
     // else, the type should be determined in the compiler.
+  }
+}
+
+void InsnAnnotator::TypeReturnValues(Insn *insn) {
+  insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+  insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, 32);
+  Value *value = obj_->LookupValue(insn->label_, false);
+  if (value != nullptr && value->type_ == Value::METHOD) {
+    Method *method = value->method_;
+    auto *parse_tree = method->GetParseTree();
+    if (parse_tree == nullptr) {
+      // native
+      CHECK(method->return_types_.size() <= insn->dst_regs_.size());
+      for (int i = 0; i < method->return_types_.size(); ++i) {
+	auto &ret = method->return_types_[i];
+	insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
+	insn->dst_regs_[i]->type_.width_ = ret.width_;
+      }
+    } else {
+      // non native
+      CHECK(parse_tree->GetReturns()->decls.size() <= insn->dst_regs_.size());
+      for (int i = 0; i < parse_tree->GetReturns()->decls.size(); ++i) {
+	auto *decl = parse_tree->GetReturns()->decls[i];
+	// TODO: type object.
+	insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
+	insn->dst_regs_[i]->type_.width_ = decl->GetWidth();
+      }
+    }
   }
 }
 

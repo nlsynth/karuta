@@ -32,6 +32,7 @@ private:
   static bool IsTyped(Insn *insn);
   static bool IsTypedReg(Register *reg);
   void TryType(Insn *insn);
+  void TypeReturnValues(Insn *insn);
   void PropagateType();
   void TryPropagate(Insn *insn, std::set<Register *> *propagated);
 
