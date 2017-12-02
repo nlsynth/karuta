@@ -211,18 +211,36 @@ void InsnAnnotator::TryType(Insn *insn) {
   }
   if (insn->op_ == OP_MEMBER_READ ||
       insn->op_ == OP_MEMBER_WRITE) {
-    Value *value = obj_->LookupValue(insn->label_, false);
+    Object *obj = obj_;
+    if (insn->obj_reg_ != nullptr) {
+      obj = objs_[insn->obj_reg_];
+      if (obj == nullptr) {
+	CHECK(method_->IsTopLevel());
+	return;
+      }
+    }
+    Value *value = obj->LookupValue(insn->label_, false);
     if (value) {
       insn->dst_regs_[0]->type_.value_type_ = value->type_;
+      if (value->type_ == Value::OBJECT) {
+	objs_[insn->dst_regs_[0]] = value->object_;
+      }
     }
     // else, the type should be determined in the compiler.
+    return;
   }
 }
 
 void InsnAnnotator::TypeReturnValues(Insn *insn) {
-  insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-  insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, 32);
-  Value *value = obj_->LookupValue(insn->label_, false);
+  Object *obj = obj_;
+  if (insn->obj_reg_ != nullptr) {
+    obj = objs_[insn->obj_reg_];
+    if (obj == nullptr) {
+      CHECK(method_->IsTopLevel());
+      return;
+    }
+  }
+  Value *value = obj->LookupValue(insn->label_, false);
   if (value != nullptr && value->type_ == Value::METHOD) {
     Method *method = value->method_;
     auto *parse_tree = method->GetParseTree();
