@@ -158,17 +158,23 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
     iroha::Op::Add(frame->reg_values_[lhs].num_,
 		   frame->reg_values_[rhs].num_,
 		   &frame->reg_values_[dst].num_);
+    iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			  &frame->reg_values_[dst].num_);
     break;
   case OP_SUB:
     iroha::Op::Sub(frame->reg_values_[lhs].num_,
 		   frame->reg_values_[rhs].num_,
 		   &frame->reg_values_[dst].num_);
+    iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			  &frame->reg_values_[dst].num_);
     break;
   case OP_MUL:
     iroha::Op::CalcBinOp(iroha::BINOP_MUL,
 			 frame->reg_values_[lhs].num_,
 			 frame->reg_values_[rhs].num_,
 			 &frame->reg_values_[dst].num_);
+    iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			  &frame->reg_values_[dst].num_);
     break;
   case OP_ASSIGN:
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
