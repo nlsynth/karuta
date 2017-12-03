@@ -83,7 +83,7 @@ def M.s1(x #32) (#32) {
 var M.W #32[64]
 var M.state #32[8]
 @AxiMaster()
-var M.buf #32[64]
+var M.buf #32[16]
 
 def M.init() {
   state[0] = 0x6a09e667
@@ -117,10 +117,14 @@ def M.iterate(a, b, c, d, e, f, g, h, idx #32) (#32, #32, #32, #32, #32, #32, #3
   return a, b, c, d, e, f, g, h
 }
 
+def M.bswap(arg #32) (#32) {
+  return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
+}
+
 def M.transform() {
   var i #32
-  for (i = 0; i < 64; i++) {
-    W[i] = buf[i]
+  for (i = 0; i < 16; i++) {
+    W[i] = bswap(buf[i])
   }
   for (i = 16; i < 64; i++) {
     W[i] = s1(W[i-2]) + W[i-7] + s0(W[i-15]) + W[i-16];
@@ -149,5 +153,14 @@ def M.sha256(addr, blocks #32) (#256) {
   return state[0] :: state[1] :: state[2] :: state[3] :: state[4] :: state[5] :: state[6] :: state[7]
 }
 
-compile()
-writeHdl("/tmp/a.v")
+M.compile()
+M.writeHdl("/tmp/a.v")
+M.writeHdl("/tmp/a.html")
+M.writeHdl("/tmp/a.iroha")
+
+print(M.sha256(0, 0))
+
+// sha256("")
+// e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+Memory.write(0, 1 << 7)  // '1' after the empty message.
+print(M.sha256(0, 1))
