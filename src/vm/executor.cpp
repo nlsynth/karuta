@@ -490,7 +490,6 @@ Method *Executor::LookupMethod(MethodFrame *frame, Insn *insn,
   if (!value) {
     Status::os(Status::USER_ERROR) << "method not found: "
 				   << sym_cstr(insn->label_);
-    Status::Check(Status::USER_ERROR, true);
     thr_->UserError();
     return nullptr;
   }
@@ -539,7 +538,12 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
     obj = frame->reg_values_[insn->src_regs_[1]->id_].object_;
   }
   Value *member = obj->LookupValue(insn->label_, false);
-  CHECK(member) << sym_cstr(insn->label_);
+  if (member == nullptr) {
+    Status::os(Status::USER_ERROR) << "member not found: "
+				   << sym_cstr(insn->label_);
+    thr_->UserError();
+    return;
+  }
   if (insn->op_ == OP_MEMBER_READ) {
     frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member);
   } else {
