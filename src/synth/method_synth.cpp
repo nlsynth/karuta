@@ -244,8 +244,14 @@ void MethodSynth::SynthExtIOMethod() {
 }
 
 void MethodSynth::DoSynthExtIO(bool is_output) {
+  if (!shared_resource_set_->AddExtIOMethodAccessor(thr_synth_, method_)) {
+    Status::os(Status::USER_ERROR)
+	<< "ExtIO can be accessed from only 1 thread.";
+    return;
+  }
   IResource *res = rsynth_->MayAddExtIO(method_, is_output);
   if (res == nullptr) {
+    // Error.
     return;
   }
   IInsn *iinsn = new IInsn(res);

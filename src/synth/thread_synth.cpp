@@ -190,6 +190,11 @@ void ThreadSynth::CollectUnclaimedMembers() {
 }
 
 void ThreadSynth::MayGenerateExtIOMethod(vm::Method *method, bool is_output) {
+  DesignSynth *ds = obj_synth_->GetDesignSynth();
+  SharedResourceSet *sres = ds->GetSharedResourceSet();
+  if (sres->HasExtIOAccessor(method)) {
+    return;
+  }
   rsynth_->MayAddExtIO(method, is_output);
 }
 

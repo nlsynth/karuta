@@ -107,6 +107,21 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
   }
 }
 
+bool SharedResourceSet::AddExtIOMethodAccessor(ThreadSynth *thr,
+					       vm::Method *method) {
+  auto it = ext_io_methods_.find(method);
+  if (it == ext_io_methods_.end()) {
+    ext_io_methods_[method] = thr;
+    return true;
+  } else {
+    if (it->second != thr) {
+      // Claimed by other thread.
+      return false;
+    }
+  }
+  return true;
+}
+
 SharedResource *SharedResourceSet::GetBySlotName(vm::Object *obj,
 						 sym_t name) {
   auto it = value_resources_.find(obj);
@@ -139,6 +154,14 @@ SharedResource *SharedResourceSet::GetByObj(vm::Object *obj) {
 
 bool SharedResourceSet::HasAccessor(vm::Object *obj) {
   return (obj_resources_.find(obj) != obj_resources_.end());
+}
+
+bool SharedResourceSet::HasExtIOAccessor(vm::Method *method) {
+  auto it = ext_io_methods_.find(method);
+  if (it == ext_io_methods_.end()) {
+    return false;
+  }
+  return true;
 }
 
 }  // namespace synth

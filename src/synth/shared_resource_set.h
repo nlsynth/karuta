@@ -46,10 +46,13 @@ public:
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
   void AddObjectAccessor(ThreadSynth *thr, vm::Object *obj, vm::Insn *insn,
 			 const string &synth_name);
+  // Though ExtIO is not shared.
+  bool AddExtIOMethodAccessor(ThreadSynth *thr, vm::Method *method);
 
   SharedResource *GetBySlotName(vm::Object *obj, sym_t name);
   SharedResource *GetByObj(vm::Object *obj);
   bool HasAccessor(vm::Object *obj);
+  bool HasExtIOAccessor(vm::Method *method);
 
 private:
   void DetermineOwnerThread(SharedResource *res);
@@ -57,6 +60,7 @@ private:
 
   map<vm::Object *, SharedResource *> obj_resources_;
   map<vm::Object *, map<sym_t, SharedResource *> > value_resources_;
+  map<vm::Method *, ThreadSynth *> ext_io_methods_;
 };
 
 }  // namespace synth
