@@ -28,6 +28,7 @@ private:
   bool ScanObjs();
   void CollectScanRootObjRec(vm::Object *obj);
   void DeterminePrimaryThread();
+  bool GetResetPolarity();
 
   vm::VM *vm_;
   vm::Object *root_obj_;

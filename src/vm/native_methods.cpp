@@ -176,9 +176,17 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
 void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
 				  const vector<Value> &args) {
   if (args.size() != 2 ||
-      !StringWrapper::IsString(args[0].object_) ||
-      !StringWrapper::IsString(args[1].object_)) {
-    Status::os(Status::USER_ERROR) << "Invalid argument type of setSynthParam()";
+      (args[0].type_ != Value::OBJECT ||
+       !StringWrapper::IsString(args[0].object_))) {
+    Status::os(Status::USER_ERROR)
+      << "setSynthParam() requires 2 arguments and 1st argument should be a string.";
+    thr->UserError();
+    return;
+  }
+  if ((args[1].type_ != Value::OBJECT ||
+       !StringWrapper::IsString(args[1].object_)) &&
+      args[1].type_ != Value::NUM) {
+    Status::os(Status::USER_ERROR) << "setSynthParam() requires a string or integer value.";
     thr->UserError();
     return;
   }
@@ -188,9 +196,13 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
     value->type_ = Value::ANNOTATION;
     value->annotation_ = AnnotationBuilder::Build(synth_params, nullptr);
   }
-  value->annotation_
-    ->AddParam(StringWrapper::String(args[0].object_),
-	       StringWrapper::String(args[1].object_));
+  string key = StringWrapper::String(args[0].object_);
+  if (args[1].type_ == Value::NUM) {
+    value->annotation_->AddIntParam(key, args[1].num_.GetValue0());
+  } else {
+    value->annotation_->AddStrParam(key,
+				    StringWrapper::String(args[1].object_));
+  }
 }
 
 void NativeMethods::WidthOf(Thread *thr, Object *obj,

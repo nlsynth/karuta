@@ -46,7 +46,7 @@ public:
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
   void AddObjectAccessor(ThreadSynth *thr, vm::Object *obj, vm::Insn *insn,
 			 const string &synth_name);
-  // Though ExtIO is not shared.
+  // ExtIO is not shareable, so this keeps track of the accessor thread.
   bool AddExtIOMethodAccessor(ThreadSynth *thr, vm::Method *method);
 
   SharedResource *GetBySlotName(vm::Object *obj, sym_t name);

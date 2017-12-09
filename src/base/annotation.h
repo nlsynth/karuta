@@ -82,7 +82,8 @@ public:
   int GetNrPinDecls();
   bool GetNthPinDecl(int nth, ResourceParams_pin *decl);
 
-  void AddParam(const string &key, const string &value);
+  void AddStrParam(const string &key, const string &value);
+  void AddIntParam(const string &key, uint64_t value);
 
 private:
   string LookupStrParam(const string &key, const string &dflt);

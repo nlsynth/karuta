@@ -269,13 +269,24 @@ bool Annotation::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
   return false;
 }
 
-void Annotation::AddParam(const string &key, const string &value) {
+void Annotation::AddStrParam(const string &key, const string &value) {
   AnnotationKeyValue *param = LookupParam(key);
   if (param) {
     param->str_value_ = value;
     param->has_str_ = true;
   } else {
     param = AnnotationBuilder::BuildStrParam(sym_lookup(key.c_str()), value.c_str());
+    params_->params_.push_back(param);
+  }
+}
+
+void Annotation::AddIntParam(const string &key, uint64_t value) {
+  AnnotationKeyValue *param = LookupParam(key);
+  if (param) {
+    param->int_value_ = value;
+    param->has_str_ = false;
+  } else {
+    param = AnnotationBuilder::BuildIntParam(sym_lookup(key.c_str()), value);
     params_->params_.push_back(param);
   }
 }

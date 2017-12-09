@@ -2,6 +2,7 @@
 
 #include <list>
 
+#include "base/annotation.h"
 #include "base/status.h"
 #include "base/stl_util.h"
 #include "iroha/i_design.h"
@@ -9,6 +10,7 @@
 #include "synth/shared_resource_set.h"
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
+#include "vm/object.h"
 
 namespace synth {
 
@@ -24,9 +26,8 @@ DesignSynth::~DesignSynth() {
 }
 
 bool DesignSynth::Synth() {
-  // Libraries of neon light assumes positive reset.
   iroha::ResourceParams *params = i_design_->GetParams();
-  params->SetResetPolarity(true);
+  params->SetResetPolarity(GetResetPolarity());
 
   const string &prefix = Env::GetModulePrefix();
   if (!prefix.empty()) {
@@ -135,6 +136,17 @@ void DesignSynth::DeterminePrimaryThread() {
   for (auto it : obj_synth_map_) {
     it.second->DeterminePrimaryThread();
   }
+}
+
+bool DesignSynth::GetResetPolarity() {
+  // Use positive reset as the default, since libraries of neon light
+  // assumes positive reset.
+  sym_t synth_params = sym_lookup("$synth_params");
+  vm::Value *value = root_obj_->LookupValue(synth_params, false);
+  if (value == nullptr || value->type_ != vm::Value::ANNOTATION) {
+    return true;
+  }
+  return value->annotation_->ResetPolarity();
 }
 
 bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {

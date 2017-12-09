@@ -46,6 +46,6 @@ Annotation *AnnotationBuilder::Build(sym_t name,
     values = new AnnotationKeyValueSet;
   }
   Annotation *a = new Annotation(values);
-  a->AddParam(annotation::kAnnotationKey, sym_str(name));
+  a->AddStrParam(annotation::kAnnotationKey, sym_str(name));
   return a;
 }
