@@ -15,11 +15,14 @@ def M.main() {
   a.store(0, 15, 0)
   a[1] = 0
   print(a[1])
+
+  wait(10)
   a.load(0, 15, 0)
   print(a[1])
 }
 
-M.main();
-M.compile();
-M.writeHdl("/tmp/axi.v");
-M.writeHdl("/tmp/axi.iroha");
+M.main()
+M.setSynthParam("resetPolarity", 0)
+M.compile()
+M.writeHdl("/tmp/axi.v")
+M.writeHdl("/tmp/axi.iroha")
