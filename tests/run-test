@@ -14,7 +14,7 @@ print "Running tests"
 os.putenv("NLI_DIR", "../lib/")
 nli_binary="../nli-bin"
 verilog_compiler="iverilog"
-test_tb_top="test_tb.v"
+default_tb="test_tb.v"
 
 tmp_prefix = "/tmp"
 
@@ -90,38 +90,45 @@ class NLITest():
         return {"num_fails":num_fails,
                 "done_stat":done_stat}
 
-    def ReadExpects(self, fn):
-        exp_info = {"exp_fails":0,
-                    "vl_exp_fails":0,
-                    "nli_ignore_errors":0,
-                    "exp_abort":0}
+    def ReadTestInfo(self, fn):
+        test_info = {"exp_fails":0,
+                     "vl_exp_fails":0,
+                     "nli_ignore_errors":0,
+                     "exp_abort":0}
+        dn = os.path.dirname(fn)
+        if dn != "":
+            dn = dn + "/"
+        test_info["dirname"] = dn
         ifh = open(fn, "r")
         for line in ifh:
             m = re.search("NLI_EXPECTED_ERRORS: (\d+)", line)
             if m:
-                exp_info["exp_fails"] = int(m.group(1))
+                test_info["exp_fails"] = int(m.group(1))
             m = re.search("VERILOG_EXPECTED_ERRORS: (\d+)", line)
             if m:
-                exp_info["vl_exp_fails"] = int(m.group(1))
+                test_info["vl_exp_fails"] = int(m.group(1))
             m = re.search("VERILOG_OUTPUT: (\S+)", line)
             if m:
-                exp_info["verilog"] = m.group(1)
+                test_info["verilog"] = m.group(1)
+            m = re.search("VERILOG_TB: (\S+)", line)
+            if m:
+                test_info["verilog_tb"] = m.group(1)
             m = re.search("NLI_IGNORE_ERRORS:", line)
             if m:
-                exp_info["nli_ignore_errors"] = 1
+                test_info["nli_ignore_errors"] = 1
             m = re.search("NLI_TIMEOUT: (\d+)", line)
             if m:
-                exp_info["nli_timeout"] = int(m.group(1))
+                test_info["nli_timeout"] = int(m.group(1))
             m = re.search("NLI_EXPECT_ABORT:", line)
             if m:
-                exp_info["exp_abort"] = 1
+                test_info["exp_abort"] = 1
             m = re.search("NLI_SPLIT_TEST: (\S+)", line)
             if m:
-                exp_info["split_info"] = m.group(1)
-        return exp_info
+                test_info["split_info"] = m.group(1)
+        return test_info
 
-    def GetVerilogCompileCommand(self, fn, test_bin_fn):
-        ifh = open(fn, "r")
+    def GetVerilogCompileCommand(self, dut_fn, tb_fn, test_bin_fn):
+        ifh = open(dut_fn, "r")
         has_mem_if = False
         has_iroha_mem_if = False
         has_iroha_sram = False
@@ -136,7 +143,7 @@ class NLITest():
             if m:
                 has_iroha_sram = True
         cmd = (verilog_compiler + " -o " + test_bin_fn + " " +
-               fn + " " + test_tb_top + " -I../lib")
+               dut_fn + " " + tb_fn + " -I../lib")
         if has_iroha_sram:
             has_iroha_mem_if = False
         if has_mem_if:
@@ -147,11 +154,15 @@ class NLITest():
             cmd += " -D NLI_RAM2"
         return cmd
 
-    def CheckVerilog(self, fn, summary, exp_info):
+    def CheckVerilog(self, fn, summary, test_info):
         test_bin_fn = tempfile.mktemp()
         test_log_fn = tempfile.mktemp()
-        cmd = self.GetVerilogCompileCommand(fn, test_bin_fn)
-        print "  testing " + fn + "(" + cmd + ")"
+        if "verilog_tb" in test_info:
+            tb_fn = test_info["dirname"] + test_info["verilog_tb"]
+        else:
+            tb_fn = default_tb
+        cmd = self.GetVerilogCompileCommand(fn, tb_fn, test_bin_fn)
+        print "  compiling " + fn + "(" + cmd + ")"
         os.system(cmd)
         if not os.path.isfile(test_bin_fn):
             summary.AddVerilogCompileFailure(self.source_fn)
@@ -162,9 +173,9 @@ class NLITest():
         os.system(test_cmd)
         res = self.CheckLog(test_log_fn)
         num_fails = res["num_fails"]
-        exp_fails = exp_info["vl_exp_fails"]
+        exp_fails = test_info["vl_exp_fails"]
         summary.AddVerilogResult(self.source_fn, num_fails,
-                                 exp_info["nli_ignore_errors"],
+                                 test_info["nli_ignore_errors"],
                                  exp_fails)
         try:
             os.unlink(test_bin_fn)
@@ -172,14 +183,14 @@ class NLITest():
         except:
             pass
 
-    def GetNliCommand(self, tf, exp_info, use_zfe):
+    def GetNliCommand(self, tf, test_info, use_zfe):
         vanilla = "--vanilla"
-        if "verilog" in exp_info:
+        if "verilog" in test_info:
             # verilog tests requires imported modules.
             vanilla = ""
         timeout = "1000"
-        if "nli_timeout" in exp_info:
-            timeout = str(exp_info["nli_timeout"])
+        if "nli_timeout" in test_info:
+            timeout = str(test_info["nli_timeout"])
         cmd = "NLI_DIR=../lib "
         cmd += nli_binary + " " + self.source_fn + " " + vanilla
         if use_zfe:
@@ -192,32 +203,32 @@ class NLITest():
         return cmd
 
     def RunTest(self, summary, use_zfe):
-        exp_info = self.ReadExpects(self.source_fn)
+        test_info = self.ReadTestInfo(self.source_fn)
         tf = tempfile.mktemp()
-        cmd = self.GetNliCommand(tf, exp_info, use_zfe)
-        if "verilog" in exp_info:
+        cmd = self.GetNliCommand(tf, test_info, use_zfe)
+        if "verilog" in test_info:
             try:
-                os.unlink(tmp_prefix + "/" + exp_info["verilog"])
+                os.unlink(tmp_prefix + "/" + test_info["verilog"])
             except:
                 pass
         print "executing test " + self.source_fn
-        if "split_info" in exp_info:
-            print " split: " + str(exp_info["split_info"])
+        if "split_info" in test_info:
+            print " split: " + str(test_info["split_info"])
         print " command line=" + cmd
         rv = os.system(cmd)
         if rv:
             summary.AddAbort(rv)
-        if rv == 0 and "verilog" in exp_info:
-            self.CheckVerilog(tmp_prefix + "/" + exp_info["verilog"],
-                              summary, exp_info)
+        if rv == 0 and "verilog" in test_info:
+            self.CheckVerilog(tmp_prefix + "/" + test_info["verilog"],
+                              summary, test_info)
         res = self.CheckLog(tf)
         num_fails = res["num_fails"]
         done_stat = res["done_stat"]
-        exp_fails = exp_info["exp_fails"]
-        exp_abort = exp_info["exp_abort"]
+        exp_fails = test_info["exp_fails"]
+        exp_abort = test_info["exp_abort"]
         summary.AddResult(self.source_fn,
                           num_fails,
-                          exp_info["nli_ignore_errors"],
+                          test_info["nli_ignore_errors"],
                           done_stat, exp_abort, exp_fails)
         os.unlink(tf)
 
