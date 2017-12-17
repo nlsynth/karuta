@@ -350,6 +350,10 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
       << "Insufficient number of arguments "
       << args.size() << " < " << num_args;
   }
+  if (!compiler_->IsTopLevel() && method == nullptr) {
+    // Missing method. The error was already reported.
+    return nullptr;
+  }
   return EmitFuncallDone(call_insn, method, lhs_regs);
 }
 
@@ -409,12 +413,19 @@ vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
     return nullptr;
   }
   vm::Object *obj = compiler_->GetVMObject(call_insn->obj_reg_);
-  CHECK(obj) << "Failed to find corresponding object to r:"
-	     << call_insn->obj_reg_->id_ << " "
-	     << sym_cstr(call_insn->label_);
+  if (obj == nullptr) {
+    Status::os(Status::USER_ERROR)
+      << "Failed to find corresponding object to r:"
+      << call_insn->obj_reg_->id_ << " "
+      << sym_cstr(call_insn->label_);
+    return nullptr;
+  }
   vm::Value *method_value = obj->LookupValue(call_insn->label_, false);
-  CHECK(method_value && method_value->type_ == vm::Value::METHOD)
-    << "method=" << sym_cstr(call_insn->label_);
+  if (method_value == nullptr || method_value->type_ != vm::Value::METHOD) {
+    Status::os(Status::USER_ERROR)
+      << "Failed to find method: " << sym_cstr(call_insn->label_);
+    return nullptr;
+  }
   return method_value->method_;
 }
 
