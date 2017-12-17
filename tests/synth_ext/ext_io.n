@@ -1,0 +1,21 @@
+// VERILOG_OUTPUT: a.v
+// VERILOG_TB: ext_io_tb.v
+
+@ExtIO(output = "led")
+def M.o(b #4) {
+}
+
+@ExtIO(input = "in")
+def M.i() (#4) {
+  return 0
+}
+
+def M.main() {
+  o(15)
+  assert(i() == 15)
+  o(5)
+  assert(i() == 5)
+}
+
+M.compile()
+M.writeHdl("a.v")
