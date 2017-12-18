@@ -174,7 +174,10 @@ IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner, bool is_put) 
     DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
 				  n);
   IResource *res = new IResource(tab_, rc);
-  res->GetParams()->SetWidth(vm::MailboxWrapper::GetWidth(obj));
+  if (vm::MailboxWrapper::IsMailbox(obj)) {
+    // Caller should set width if this isn't a mailbox.
+    res->GetParams()->SetWidth(vm::MailboxWrapper::GetWidth(obj));
+  }
   tab_->resources_.push_back(res);
   (*m)[obj] = res;
   return res;
