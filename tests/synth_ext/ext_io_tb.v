@@ -1,4 +1,3 @@
-// This script is invoked from run-test script
 `timescale 1ns/1ns
 
 module ext_io_tb;
@@ -11,6 +10,7 @@ module ext_io_tb;
       rst <= 1;
       #105;
       rst <= 0;
+      #10000
       $display("test_tb done");
       $finish;
    end
