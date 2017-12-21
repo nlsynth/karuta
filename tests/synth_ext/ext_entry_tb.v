@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
 
-module ext_io_tb;
+module ext_entry_tb;
    reg clk, rst;
 
    // req
@@ -73,4 +73,4 @@ module ext_io_tb;
 	      .f_res_valid(res_valid), .f_res_ready(res_ready),
 	      .f_res_0(res_0));
 
-endmodule // ext_io_tb
+endmodule // ext_entry_tb

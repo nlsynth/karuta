@@ -1,0 +1,14 @@
+// VERILOG_OUTPUT: a.v
+// VERILOG_TB: ext_stub_tb.v
+
+@ExtStub()
+def M.f(a1, a2 #32) (#32) {
+  return 0
+}
+
+def M.main() {
+  assert(f(2, 3) == 5)
+}
+
+compile()
+writeHdl("a.v")
