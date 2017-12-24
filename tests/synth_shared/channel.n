@@ -1,0 +1,18 @@
+// VERILOG_OUTPUT: a.v
+channel Kernel.c int
+channel Kernel.d int
+
+@ThreadEntry()
+def M.f1() {
+ c.write(10)
+ assert(d.read() == 10)
+}
+
+@ThreadEntry()
+def M.f2() {
+ d.write(c.read());
+}
+
+M.run();
+M.compile();
+M.writeHdl("a.v");
