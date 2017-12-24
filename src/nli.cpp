@@ -11,6 +11,7 @@ string Env::output_marker_;
 string Env::module_prefix_;
 bool Env::sandbox_mode_;
 string Env::argv0_;
+string Env::iroha_bin_path_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -89,4 +90,12 @@ const string &Env::GetArgv0() {
 
 bool Env::IsSandboxMode() {
   return sandbox_mode_;
+}
+
+void Env::SetIrohaBinPath(const string &iroha) {
+  iroha_bin_path_ = iroha;
+}
+
+const string &Env::GetIrohaBinPath() {
+  return iroha_bin_path_;
 }

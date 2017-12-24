@@ -51,6 +51,10 @@ string Synth::GetIrohaCommand(vm::Object *obj) {
   vm::Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
   if (!cmd || cmd->type_ != vm::Value::OBJECT ||
       !vm::StringWrapper::IsString(cmd->object_)) {
+    const string &bin = Env::GetIrohaBinPath();
+    if (!bin.empty()) {
+      return bin;
+    }
     return Env::GetArgv0();
   }
   return vm::StringWrapper::String(cmd->object_);

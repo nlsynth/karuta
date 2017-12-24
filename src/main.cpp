@@ -77,6 +77,7 @@ void Main::PrintUsage() {
   cout << " nli [-d[spb]] scanner,parser,byte code compiler\n"
        << "   -l\n"
        << "   -l=[modules]\n"
+       << "   --iroha_bin [iroha]\n"
        << "   --module_prefix [mod]\n"
        << "   --output_marker [marker]\n"
        << "   --print_exit_status\n"
@@ -242,6 +243,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("root", nullptr);
   parser->RegisterValueFlag("output_marker", nullptr);
   parser->RegisterValueFlag("module_prefix", nullptr);
+  parser->RegisterValueFlag("iroha_bin", nullptr);
   parser->RegisterBoolFlag("z", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
@@ -284,6 +286,9 @@ int Main::main(int argc, char **argv) {
   }
   if (args.GetFlagValue("module_prefix", &arg)) {
     Env::SetModulePrefix(arg);
+  }
+  if (args.GetFlagValue("iroha_bin", &arg)) {
+    Env::SetIrohaBinPath(arg);
   }
 
   if (timeout) {

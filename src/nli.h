@@ -38,6 +38,8 @@ public:
   static void SetArgv0(const string &c);
   static const string &GetArgv0();
   static bool IsSandboxMode();
+  static void SetIrohaBinPath(const string &iroha);
+  static const string &GetIrohaBinPath();
 
 private:
   static const char *nli_dir_;
@@ -46,7 +48,7 @@ private:
   static bool sandbox_mode_;
   static string module_prefix_;
   static string argv0_;
-  static bool use_dfg_;
+  static string iroha_bin_path_;
 };
 
 #endif  // _nli_h_
