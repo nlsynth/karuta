@@ -13,6 +13,7 @@ import test_files
 print "Running tests"
 os.putenv("NLI_DIR", "../lib/")
 nli_binary="../nli-bin"
+iroha_binary=""
 verilog_compiler="iverilog"
 default_tb="test_tb.v"
 
@@ -194,7 +195,9 @@ class NLITest():
         cmd = "NLI_DIR=../lib "
         cmd += nli_binary + " " + self.source_fn + " " + vanilla
         if use_zfe:
-            cmd += " -z "
+            cmd += " -z"
+        if iroha_binary != "":
+            cmd += " --iroha_bin " + iroha_binary
         cmd += " --root " + tmp_prefix
         cmd += " --timeout " + timeout + " "
         cmd += " --print_exit_status "
@@ -289,9 +292,15 @@ use_zfe = False
 
 if len(sys.argv) > 1:
     args = sys.argv[1:]
-    for arg in args:
+    while len(args) > 0:
+        arg = args[0]
+        args = args[1:]
         if arg == "-z":
             use_zfe = True
+            continue
+        if arg == "--iroha_binary":
+            iroha_binary = args[0]
+            args = args[1:]
             continue
         test_sources.append(arg)
 
