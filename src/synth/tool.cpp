@@ -83,8 +83,8 @@ IResource *Tool::FindOrCreateDataFlowCaller(ITable *caller,
       return res;
     }
   }
-  IResource *res = DesignTool::CreateSharedRegWriterResource(caller,
-							     sreg);
+  IResource *res = DesignTool::CreateFifoWriterResource(caller,
+							sreg);
   return res;
 }
 

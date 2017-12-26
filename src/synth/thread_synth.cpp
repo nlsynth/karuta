@@ -297,7 +297,6 @@ void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
   ITable *caller_tab = st->GetTable();
   IResource *w = Tool::FindOrCreateDataFlowCaller(caller_tab, sreg);
   IInsn *iinsn = new IInsn(w);
-  iinsn->SetOperand(iroha::operand::kNotify);
   st->insns_.push_back(iinsn);
   for (IRegister *reg : pseudo_call_insn->inputs_) {
     iinsn->inputs_.push_back(reg);

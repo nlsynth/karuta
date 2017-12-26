@@ -397,7 +397,12 @@ IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_owner,
   (*m)[obj] = res;
   if (is_owner) {
     res->GetParams()->SetWidth(data_width);
-    int depth = vm::ChannelWrapper::ChannelDepth(obj);
+    // Default depth for a fifo for dataflow.
+    // TODO: Get a depth value from annotation.
+    int depth = 1;
+    if (vm::ChannelWrapper::IsChannel(obj)) {
+      depth = vm::ChannelWrapper::ChannelDepth(obj);
+    }
     int dl = ::Util::Log2(depth);
     if (dl == 0) {
       dl = 1;

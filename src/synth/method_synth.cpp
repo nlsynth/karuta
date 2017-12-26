@@ -113,21 +113,22 @@ MethodContext *MethodSynth::GetContext() {
 void MethodSynth::EmitDataFlowEntry(IState *st) {
   vm::Object *obj = thr_synth_->GetThreadObject();
   CHECK(obj);
-  IResource *mb = res_set_->GetMailbox(obj, true, false);
-  IResource *df = res_set_->GetDataFlowInResource();
-  df->SetParentResource(mb);
-  IInsn *df_insn = new IInsn(df);
-  st->insns_.push_back(df_insn);
   int width = 0;
   for (IRegister *arg : context_->method_signature_insn_->inputs_) {
-    df_insn->outputs_.push_back(arg);
     width += arg->value_type_.GetWidth();
   }
   // 1 for dummy argument.
   if (width == 0) {
     width = 1;
   }
-  mb->GetParams()->SetWidth(width);
+  IResource *mb = res_set_->GetChannelResource(obj, true, false, width);
+  IResource *df = res_set_->GetDataFlowInResource();
+  df->SetParentResource(mb);
+  IInsn *df_insn = new IInsn(df);
+  st->insns_.push_back(df_insn);
+  for (IRegister *arg : context_->method_signature_insn_->inputs_) {
+    df_insn->outputs_.push_back(arg);
+  }
 }
 
 void MethodSynth::EmitTaskEntry(IState *st) {
