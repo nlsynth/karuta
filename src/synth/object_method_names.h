@@ -11,6 +11,7 @@ const char kLoad[] = "load";
 const char kStore[] = "store";
 const char kChannelRead[] = "channel_read";
 const char kChannelWrite[] = "channel_write";
+const char kChannelNoWaitWrite[] = "channel_no_wait_write";
 const char kSlaveWait[] = "wait";
 const char kSramRead[] = "sram_read";
 const char kSramWrite[] = "sram_write";

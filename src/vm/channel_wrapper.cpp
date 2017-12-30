@@ -43,6 +43,9 @@ Object *ChannelWrapper::NewChannel(VM *vm, int width, sym_t name,
   Method *m = Method::InstallNativeMethod(vm, pipe, "write",
 					  &ChannelWrapper::WriteMethod, rets);
   m->SetSynthName(synth::kChannelWrite);
+  m = Method::InstallNativeMethod(vm, pipe, "writeFast",
+				  &ChannelWrapper::WriteMethod, rets);
+  m->SetSynthName(synth::kChannelNoWaitWrite);
   rets.push_back(Method::IntType(width));
   m = Method::InstallNativeMethod(vm, pipe, "read",
 				  &ChannelWrapper::ReadMethod, rets);

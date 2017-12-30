@@ -57,7 +57,7 @@ void ObjectMethod::Synth() {
     iinsn = SynthMemoryAccess(obj, true);
   } else if (name == kChannelRead) {
     iinsn = SynthChannelAccess(obj, false);
-  } else if (name == kChannelWrite) {
+  } else if (name == kChannelWrite || name == kChannelNoWaitWrite) {
     iinsn = SynthChannelAccess(obj, true);
   } else {
     CHECK(false) << name;
@@ -81,7 +81,8 @@ void ObjectMethod::Scan() {
   if (name == kLoad || name == kStore ||
       name == kMailboxPut || name == kMailboxGet ||
       name == kMailboxNotify || name == kMailboxWait ||
-      name == kChannelWrite || name == kChannelRead) {
+      name == kChannelWrite || name == kChannelNoWaitWrite ||
+      name == kChannelRead) {
     sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name);
   }
 }
@@ -186,6 +187,10 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   IResource *res = rset->GetChannelResource(ch_obj, false, is_write, width);
   sres->AddAccessorResource(res);
   IInsn *iinsn = new IInsn(res);
+  string name = GetSynthName(ch_obj);
+  if (name == kChannelNoWaitWrite) {
+    iinsn->SetOperand(iroha::operand::kNoWait);
+  }
   return iinsn;
 }
 
