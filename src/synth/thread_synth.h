@@ -44,7 +44,7 @@ public:
 				  ITable *callee_tab);
   static void InjectDataFlowCall(ThreadSynth *thr,
 				 IState *st, IInsn *pseudo_call_insn,
-				 ITable *callee_tab);
+				 ITable *callee_tab, bool no_wait);
   static void InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
 				const string &name, bool is_flow);
 

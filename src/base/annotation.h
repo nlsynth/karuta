@@ -77,6 +77,7 @@ public:
   bool IsAxiExclusive();
   // For fifo.
   int GetDepth();
+  bool IsNoWait();
 
   void AddPinDecl(sym_t name, bool is_out, int width);
   int GetNrPinDecls();

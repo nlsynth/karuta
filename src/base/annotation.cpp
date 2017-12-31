@@ -154,6 +154,11 @@ string Annotation::GetName() {
   return LookupStrParam("name", "");
 }
 
+bool Annotation::IsNoWait() {
+  int nw = LookupIntParam("noWait", 0);
+  return nw;
+}
+
 bool Annotation::IsDataFlowEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
   return (s == "DataFlowEntry") || (s == "dataflow_entry");

@@ -47,7 +47,8 @@ class StateWrapper;
 class SharedResource;
 class SharedResourceSet;
 
-// sub obj call, data flow call or ext stub call.
+// Sub obj call, data flow call or ext stub call.
+// MethodExpander populates this.
 struct TableCall {
   TableCall() : is_sub_obj_call(false),	is_data_flow_call(false),
 		is_ext_stub_call(false), is_ext_flow_stub_call(false) {}
@@ -56,6 +57,7 @@ struct TableCall {
   ThreadSynth *caller_thread;
   vm::Object *callee_obj;
   string callee_func;
+  vm::Method *callee_method;
   // type
   bool is_sub_obj_call;
   bool is_data_flow_call;

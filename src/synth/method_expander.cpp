@@ -7,6 +7,7 @@
 #include "synth/object_synth.h"
 #include "synth/thread_synth.h"
 #include "synth/tool.h"
+#include "vm/object.h"
 
 namespace synth {
 
@@ -83,6 +84,11 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
     call.caller_thread = thread_;
     call.callee_obj = sw->callee_vm_obj_;
     call.callee_func = sw->callee_func_name_;
+    vm::Value *value =
+      call.callee_obj->LookupValue(sym_lookup(call.callee_func.c_str()),
+				   false);
+    CHECK(value && value->type_ == vm::Value::METHOD);
+    call.callee_method = value->method_;
     if (sw->is_sub_obj_call_) {
       call.is_sub_obj_call = true;
     } else if (sw->is_data_flow_call_) {

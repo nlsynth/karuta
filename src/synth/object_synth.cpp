@@ -129,16 +129,13 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
     ThreadSynth::InjectSubModuleCall(call.call_state, call.call_insn,
 				     callee_table);
   } else if (call.is_data_flow_call) {
+    bool no_wait = call.callee_method->GetAnnotation()->IsNoWait();
     ThreadSynth::InjectDataFlowCall(call.caller_thread,
 				    call.call_state, call.call_insn,
-				    callee_table);
+				    callee_table, no_wait);
   } else {
     CHECK(call.is_ext_stub_call);
-    vm::Value *value =
-      call.callee_obj->LookupValue(sym_lookup(call.callee_func.c_str()), false);
-    CHECK(value && value->type_ == vm::Value::METHOD);
-    vm::Method *method = value->method_;
-    string name = method->GetAnnotation()->GetName();
+    string name = call.callee_method->GetAnnotation()->GetName();
     if (name.empty()) {
       name = call.callee_func;
     }

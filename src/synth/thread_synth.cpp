@@ -288,7 +288,7 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 
 void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
 				     IState *st, IInsn *pseudo_call_insn,
-				     ITable *callee_tab) {
+				     ITable *callee_tab, bool no_wait) {
   vector<IResource *> df;
   DesignUtil::FindResourceByClassName(callee_tab, resource::kDataFlowIn,
 				      &df);
@@ -310,6 +310,9 @@ void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
     reg->SetInitialValue(iv);
     iinsn->inputs_.push_back(reg);
     thr->GetITable()->registers_.push_back(reg);
+  }
+  if (no_wait) {
+    iinsn->SetOperand(iroha::operand::kNoWait);
   }
 }
 
