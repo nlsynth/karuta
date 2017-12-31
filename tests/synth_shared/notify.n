@@ -1,0 +1,43 @@
+// VERILOG_OUTPUT: a.v
+mailbox M.m0 int
+mailbox M.m1 int
+mailbox M.m2 int
+mailbox M.n0 int
+var M.x int
+
+@ThreadEntry()
+def M.f0() {
+  // kick f2() and f3()
+  m0.put(10)
+  m0.put(10)
+  // make sure f2() and f3() are started.
+  m0.put(10)
+  // kick f1()
+  m1.put(10)
+}
+
+@ThreadEntry()
+def M.f1() {
+  m1.get()
+  n0.notify(11)
+}
+
+@ThreadEntry()
+def M.f2() {
+  m0.get()
+  print(n0.wait())
+  x = 22
+  m2.put(7)
+}
+
+@ThreadEntry()
+def M.f3() {
+  m0.get()
+  print(n0.wait())
+  m2.get()
+  assert(x == 22)
+}
+
+run()
+M.compile()
+M.writeHdl("a.v")
