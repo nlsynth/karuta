@@ -87,6 +87,8 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
 void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
 				   Insn *insn) {
   fe::VarDecl *decl = insn->insn_stmt_->GetVarDecl();
+  Annotation *an = decl->GetAnnotation();
+  CHECK(an == nullptr || !an->IsThreadLocal());
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);
   sym_t name = decl->GetNameExpr()->GetSym();
@@ -126,6 +128,7 @@ void ExecutorToplevel::ExecChannelDecl(const Method *method,
 				       MethodFrame *frame, Insn *insn) {
   int width = insn->insn_stmt_->GetWidth().GetWidth();
   Annotation *an = insn->insn_stmt_->GetAnnotation();
+  CHECK(an == nullptr || !an->IsThreadLocal());
   Object *channel_obj =
     ChannelWrapper::NewChannel(thr_->GetVM(), width, insn->label_, an);
 
@@ -182,25 +185,34 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
       name = "$thr_" + sym_str(insn->label_);
     }
     if (an->IsThreadEntry()) {
-      AddThreadEntry(frame, insn, name);
+      int num = an->GetNum();
+      AddThreadEntry(frame, insn, name, num);
     }
     if (an->IsDataFlowEntry()) {
-      AddThreadEntry(frame, insn, name);
+      AddThreadEntry(frame, insn, name, 1);
     }
   }
 }
 
 void ExecutorToplevel::AddThreadEntry(MethodFrame *frame, Insn *insn,
-				      const string &name) {
+				      const string &name, int num) {
   Object *callee_obj;
   Method *callee_method = LookupMethod(frame, insn, &callee_obj);
-  Object *thread_obj =
-    ThreadWrapper::NewThreadWrapper(thr_->GetVM(),
-				    insn->label_, callee_method);
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
-  Value *value = obj->LookupValue(sym_lookup(name.c_str()), true);
-  value->type_ = Value::OBJECT;
-  value->object_ = thread_obj;
+  for (int i = 0; i < num; ++i) {
+    Object *thread_obj =
+      ThreadWrapper::NewThreadWrapper(thr_->GetVM(),
+				      insn->label_, callee_method);
+    string thr_name = name;
+    if (num > 1) {
+      char buf[20];
+      sprintf(buf, "$%dof%d", i, num);
+      thr_name += string(buf);
+    }
+    Value *value = obj->LookupValue(sym_lookup(thr_name.c_str()), true);
+    value->type_ = Value::OBJECT;
+    value->object_ = thread_obj;
+  }
 }
 
 void ExecutorToplevel::ExecMemberAccess(Method *method, MethodFrame *frame,

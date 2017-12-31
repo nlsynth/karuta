@@ -154,6 +154,15 @@ string Annotation::GetName() {
   return LookupStrParam("name", "");
 }
 
+int Annotation::GetNum() {
+  return LookupIntParam("num", 1);
+}
+
+bool Annotation::IsThreadLocal() {
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "ThreadLocal");
+}
+
 bool Annotation::IsNoWait() {
   int nw = LookupIntParam("noWait", 0);
   return nw;

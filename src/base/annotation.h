@@ -65,6 +65,8 @@ public:
   bool IsExtMethodStub();
   bool IsExtFlowStub();
   string GetName();
+  int GetNum();
+  bool IsThreadLocal();
 
   // resetPolarity 1 or not.
   bool ResetPolarity();

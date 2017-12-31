@@ -26,7 +26,7 @@ public:
   void ExecSetTypeObject(Method *method, Insn *insn);
   bool MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn);
 
-  void AddThreadEntry(MethodFrame *frame, Insn *insn, const string &name);
+  void AddThreadEntry(MethodFrame *frame, Insn *insn, const string &name, int num);
 };
 
 }  // namespace vm
