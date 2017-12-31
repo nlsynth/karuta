@@ -121,7 +121,8 @@ void MethodSynth::EmitDataFlowEntry(IState *st) {
   if (width == 0) {
     width = 1;
   }
-  IResource *mb = res_set_->GetChannelResource(obj, true, false, width);
+  int depth = method_->GetAnnotation()->GetDepth();
+  IResource *mb = res_set_->GetChannelResource(obj, true, false, width, depth);
   IResource *df = res_set_->GetDataFlowInResource();
   df->SetParentResource(mb);
   IInsn *df_insn = new IInsn(df);

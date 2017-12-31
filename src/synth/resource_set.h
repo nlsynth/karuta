@@ -34,7 +34,7 @@ public:
   IResource *GetInternalArrayResource(vm::Object *obj);
   IResource *GetChannelResource(vm::Object *ch, bool is_owner,
 				bool is_write,
-				int data_width);
+				int data_width,	int depth);
   IResource *GetSubModuleTaskResource();
   IResource *GetDataFlowInResource();
   IResource *GetMemberSharedReg(sym_t name, bool is_owner,

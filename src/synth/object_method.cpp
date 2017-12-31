@@ -180,13 +180,16 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   ResourceSet *rset = synth_->GetResourceSet();
   SharedResource *sres =
     synth_->GetSharedResourceSet()->GetByObj(ch_obj);
+  int depth = vm::ChannelWrapper::ChannelDepth(ch_obj);
   if (sres->owner_thr_ == synth_->GetThreadSynth()) {
-    sres->AddOwnerResource(rset->GetChannelResource(ch_obj,
-						    true, false, width));
+    IResource *channel_res =
+      rset->GetChannelResource(ch_obj, true, false, width, depth);
+    sres->AddOwnerResource(channel_res);
   }
-  IResource *res = rset->GetChannelResource(ch_obj, false, is_write, width);
-  sres->AddAccessorResource(res);
-  IInsn *iinsn = new IInsn(res);
+  IResource *accessor_res = rset->GetChannelResource(ch_obj, false, is_write,
+						     width, depth);
+  sres->AddAccessorResource(accessor_res);
+  IInsn *iinsn = new IInsn(accessor_res);
   string name = GetSynthName(ch_obj);
   if (name == kChannelNoWaitWrite) {
     iinsn->SetOperand(iroha::operand::kNoWait);

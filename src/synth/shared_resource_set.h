@@ -12,6 +12,8 @@ using std::set;
 
 namespace synth {
 
+// This represents a shared resource and its accessors.
+// SharedResource is key-ed by an Object or member name.
 class SharedResource {
 public:
   SharedResource();
