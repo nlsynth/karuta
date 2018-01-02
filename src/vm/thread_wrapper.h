@@ -8,7 +8,7 @@ namespace vm {
 
 class ThreadWrapper {
 public:
-  static Object *NewThreadWrapper(VM *vm, sym_t name, Method *method);
+  static Object *NewThreadWrapper(VM *vm, sym_t method_name);
   static void Run(VM *vm, Object *obj);
 
   struct ThreadEntry {

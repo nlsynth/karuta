@@ -14,10 +14,11 @@
 #include "vm/channel_wrapper.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
+#include "vm/int_array.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/numeric_object.h"
 #include "vm/thread_wrapper.h"
-#include "vm/int_array.h"
+#include "vm/tls_wrapper.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
 #include "vm/thread.h"
@@ -88,7 +89,6 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
 				   Insn *insn) {
   fe::VarDecl *decl = insn->insn_stmt_->GetVarDecl();
   Annotation *an = decl->GetAnnotation();
-  CHECK(an == nullptr || !an->IsThreadLocal());
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);
   sym_t name = decl->GetNameExpr()->GetSym();
@@ -106,6 +106,9 @@ void ExecutorToplevel::ExecVardecl(const Method *method, MethodFrame *frame,
   if (value->type_ == Value::OBJECT_ARRAY) {
     value->object_ = CreateObjectArray(decl->GetArrayLength());
   }
+  if (an != nullptr && an->IsThreadLocal()) {
+    TlsWrapper::InjectTlsWrapper(thr_->GetVM(), value);
+  }
 }
 
 void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
@@ -115,7 +118,7 @@ void ExecutorToplevel::ExecThreadDecl(const Method *method, MethodFrame *frame,
   CHECK(callee_method) << "no method";
   sym_t method_name = insn->label_;
   Object *thread_obj =
-    ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, callee_method);
+    ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name);
 
   CHECK(callee_obj == frame->reg_values_[insn->obj_reg_->id_].object_);
   sym_t member_name = insn->insn_stmt_->GetExpr()->GetLhs()->GetSym();
@@ -197,12 +200,10 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
 void ExecutorToplevel::AddThreadEntry(MethodFrame *frame, Insn *insn,
 				      const string &name, int num) {
   Object *callee_obj;
-  Method *callee_method = LookupMethod(frame, insn, &callee_obj);
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   for (int i = 0; i < num; ++i) {
     Object *thread_obj =
-      ThreadWrapper::NewThreadWrapper(thr_->GetVM(),
-				      insn->label_, callee_method);
+      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), insn->label_);
     string thr_name = name;
     if (num > 1) {
       char buf[20];

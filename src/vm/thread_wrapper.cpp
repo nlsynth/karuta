@@ -16,10 +16,10 @@ public:
   }
 };
 
-Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t name, Method *method) {
+Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name) {
   Object *thr = vm->root_object_->Clone(vm);
   ThreadWrapperData *data = new ThreadWrapperData;
-  data->entry.method_name = sym_str(name);
+  data->entry.method_name = sym_str(method_name);
   data->entry.thread_obj = thr;
 
   thr->object_specific_.reset(data);

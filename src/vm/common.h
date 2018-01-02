@@ -24,6 +24,7 @@ namespace vm {
 class EnumType;
 class Executor;
 class ExecutorToplevel;
+class GC;
 class Insn;
 class IntArray;
 class Method;

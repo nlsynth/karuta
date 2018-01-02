@@ -14,6 +14,7 @@
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
 #include "vm/thread.h"
+#include "vm/tls_wrapper.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
@@ -543,6 +544,9 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
 				   << sym_cstr(insn->label_);
     thr_->UserError();
     return;
+  }
+  if (TlsWrapper::IsTlsValue(member)) {
+    member = TlsWrapper::GetValue(member->object_, thr_);
   }
   if (insn->op_ == OP_MEMBER_READ) {
     frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member);

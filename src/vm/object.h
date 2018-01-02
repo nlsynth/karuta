@@ -16,6 +16,7 @@ public:
   virtual ~ObjectSpecificData();
   virtual bool Compare(Object *obj) { return false; };
   virtual const char *ObjectTypeKey();
+  virtual void Scan(GC *gc);
 };
 
 class Object {
@@ -36,6 +37,8 @@ public:
   Object *Clone(VM *vm);
   const string &ToString();
   bool Compare(Object *obj);
+  // Object type specific GC hook.
+  void Scan(GC *gc);
 
   map<sym_t, Value> members_;
 

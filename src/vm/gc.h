@@ -16,12 +16,13 @@ public:
 
   static void Run(VM *vm, set<Thread *> *threads, set<Object *> *objs);
 
+  void ScanObject(Object *obj);
+
 private:
   void Collect();
   void AddRoot(Object *obj);
   void AddRootFromMethodFrame(MethodFrame *frame);
   void Scan();
-  void ScanObject(Object *obj);
   void Sweep();
 
   VM *vm_;

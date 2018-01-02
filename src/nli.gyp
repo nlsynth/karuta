@@ -142,6 +142,8 @@
         'vm/thread.h',
         'vm/thread_wrapper.cpp',
         'vm/thread_wrapper.h',
+        'vm/tls_wrapper.cpp',
+        'vm/tls_wrapper.h',
         'vm/value.cpp',
         'vm/value.h',
         'vm/vm.cpp',

@@ -16,6 +16,9 @@ const char *ObjectSpecificData::ObjectTypeKey() {
   return nullptr;
 }
 
+void ObjectSpecificData::Scan(GC *gc) {
+}
+
 void Object::Dump() {
   DumpStream ds(cout);
   Dump(ds);
@@ -126,6 +129,13 @@ bool Object::Compare(Object *obj) {
     return object_specific_->Compare(obj);
   }
   return (this == obj);
+}
+
+void Object::Scan(GC *gc) {
+  auto *od = object_specific_.get();
+  if (od != nullptr) {
+    od->Scan(gc);
+  }
 }
 
 }  // namespace vm

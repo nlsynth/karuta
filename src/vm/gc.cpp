@@ -59,6 +59,9 @@ void GC::Scan() {
 }
 
 void GC::ScanObject(Object *obj) {
+  if (obj == nullptr) {
+    return;
+  }
   for (auto &it : obj->members_) {
     Value &value = it.second;
     if (value.object_) {
@@ -69,6 +72,7 @@ void GC::ScanObject(Object *obj) {
       }
     }
   }
+  obj->Scan(this);
 }
 
 void GC::Sweep() {

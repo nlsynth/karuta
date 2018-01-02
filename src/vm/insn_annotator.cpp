@@ -9,6 +9,7 @@
 #include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
+#include "vm/tls_wrapper.h"
 #include "vm/value.h"
 #include "vm/vm.h"
 
@@ -221,6 +222,9 @@ void InsnAnnotator::TryType(Insn *insn) {
     }
     Value *value = obj->LookupValue(insn->label_, false);
     if (value) {
+      if (TlsWrapper::IsTlsValue(value)) {
+	value = TlsWrapper::GetValue(value->object_, nullptr);
+      }
       insn->dst_regs_[0]->type_.value_type_ = value->type_;
       if (value->type_ == Value::OBJECT) {
 	objs_[insn->dst_regs_[0]] = value->object_;
