@@ -52,6 +52,15 @@ void TlsWrapper::InjectTlsWrapper(VM *vm, Value *value) {
   value->type_ = Value::OBJECT;
 }
 
+Object *TlsWrapper::Copy(VM *vm, Object *tls_obj) {
+  Object *new_obj = vm->root_object_->Clone(vm);
+  TlsWrapperData *new_data = new TlsWrapperData();
+  new_obj->object_specific_.reset(new_data);
+  TlsWrapperData *data = (TlsWrapperData *)tls_obj->object_specific_.get();
+  new_data->baseValue = data->baseValue;
+  return new_obj;
+}
+
 Value *TlsWrapper::GetValue(Object *tls_obj, Thread *thr) {
   TlsWrapperData *data = (TlsWrapperData *)tls_obj->object_specific_.get();
   if (thr == nullptr) {

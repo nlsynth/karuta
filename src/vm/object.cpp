@@ -5,6 +5,7 @@
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/string_wrapper.h"
+#include "vm/tls_wrapper.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -101,11 +102,13 @@ Object *Object::Clone(VM *vm) {
     if (value.type_ == Value::INT_ARRAY) {
       value.object_ = ArrayWrapper::Copy(vm, value.object_);
     }
+    if (TlsWrapper::IsTlsValue(&value)) {
+      value.object_ = TlsWrapper::Copy(vm, value.object_);
+    }
     if (value.type_ == Value::ANNOTATION) {
       value.annotation_ =
 	Annotation::Copy(value.annotation_);
     }
-    // TODO: Copy TlsWrapper if necessary.
   }
   return new_obj;
 }
