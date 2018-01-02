@@ -1,7 +1,9 @@
 #include "vm/tls_wrapper.h"
 
+#include "vm/array_wrapper.h"
 #include "vm/gc.h"
 #include "vm/object.h"
+#include "vm/thread.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -19,9 +21,13 @@ public:
 
   virtual void Scan(GC *gc) {
     gc->ScanObject(baseValue.object_);
+    for (auto it : values) {
+      gc->ScanObject(it.second.object_);
+    }
   }
 
   Value baseValue;
+  map<Thread *, Value> values;
 };
 
 bool TlsWrapper::IsTls(Object *obj) {
@@ -48,8 +54,19 @@ void TlsWrapper::InjectTlsWrapper(VM *vm, Value *value) {
 
 Value *TlsWrapper::GetValue(Object *tls_obj, Thread *thr) {
   TlsWrapperData *data = (TlsWrapperData *)tls_obj->object_specific_.get();
-  // TODO: Implement the mapping from a thread to value.
-  return &data->baseValue;
+  if (thr == nullptr) {
+    return &data->baseValue;
+  }
+  auto it = data->values.find(thr);
+  if (it == data->values.end()) {
+    data->values[thr] = data->baseValue;
+    if (data->baseValue.object_ != nullptr &&
+	data->baseValue.type_ == Value::INT_ARRAY) {
+      data->values[thr].object_ =
+	ArrayWrapper::Copy(thr->GetVM(), data->baseValue.object_);
+    }
+  }
+  return &data->values[thr];
 }
 
 }  // namespace vm

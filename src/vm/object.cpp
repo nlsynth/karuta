@@ -105,6 +105,7 @@ Object *Object::Clone(VM *vm) {
       value.annotation_ =
 	Annotation::Copy(value.annotation_);
     }
+    // TODO: Copy TlsWrapper if necessary.
   }
   return new_obj;
 }
