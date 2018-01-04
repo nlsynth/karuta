@@ -78,4 +78,9 @@ Value *TlsWrapper::GetValue(Object *tls_obj, Thread *thr) {
   return &data->values[thr];
 }
 
+Object *TlsWrapper::GetBaseObject(Object *tls_obj) {
+  TlsWrapperData *data = (TlsWrapperData *)tls_obj->object_specific_.get();
+  return data->baseValue.object_;
+}
+
 }  // namespace vm

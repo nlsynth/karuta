@@ -22,6 +22,7 @@
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/register.h"
+#include "vm/tls_wrapper.h"
 #include "vm/value.h"
 
 namespace synth {
@@ -681,18 +682,24 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
   CHECK(obj);
   vm::Value *value = obj->LookupValue(insn->label_, false);
   CHECK(value) << "member not found";
+  auto vt = value->type_;
+  if (vm::TlsWrapper::IsTlsValue(value)) {
+    vm::Value *baseValue = vm::TlsWrapper::GetValue(value->object_, nullptr);
+    vt = baseValue->type_;
+  }
   if (value->is_const_) {
     // assuming only bool type for now.
     CHECK(!is_store);
     CHECK(value->type_ == vm::Value::ENUM_ITEM);
     IRegister *reg = DesignTool::AllocConstNum(tab_, 0, value->enum_val_.val);
     local_reg_map_[insn->dst_regs_[0]] = reg;
-  } else if (value->type_ == vm::Value::OBJECT ||
-	     value->type_ == vm::Value::INT_ARRAY ||
-	     value->type_ == vm::Value::OBJECT_ARRAY) {
+  } else if (vt == vm::Value::OBJECT ||
+	     vt == vm::Value::INT_ARRAY ||
+	     vt == vm::Value::OBJECT_ARRAY) {
     // processed in MaybeLoadMemberObject()
     CHECK(!is_store);
   } else {
+    CHECK(!vm::TlsWrapper::IsTlsValue(value));
     CHECK(value->type_ == vm::Value::NUM);
     SharedResource *sres =
       shared_resource_set_->GetBySlotName(obj, insn->label_);

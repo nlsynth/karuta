@@ -11,6 +11,7 @@
 #include "vm/method.h"
 #include "vm/numeric_object.h"
 #include "vm/object.h"
+#include "vm/tls_wrapper.h"
 #include "vm/value.h"
 
 namespace synth {
@@ -31,8 +32,13 @@ void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
 				     << sym_cstr(insn->label_);
       return;
     }
-    if (!value->is_const_ && value->IsObjectType()) {
-      member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
+    if (!value->is_const_) {
+      if (vm::TlsWrapper::IsTlsValue(value)) {
+	member_reg_to_obj_map_[insn->dst_regs_[0]] =
+	  vm::TlsWrapper::GetBaseObject(value->object_);
+      } else if (value->IsObjectType()) {
+	member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
+      }
     }
   }
 }

@@ -6,9 +6,11 @@
 
 #include <set>
 #include <map>
+#include <tuple>
 
 using std::map;
 using std::set;
+using std::tuple;
 
 namespace synth {
 
@@ -61,7 +63,7 @@ private:
   void ResolveSharedResourceAccessor(SharedResource *sres);
 
   map<vm::Object *, SharedResource *> obj_resources_;
-  map<vm::Object *, map<sym_t, SharedResource *> > value_resources_;
+  map<tuple<vm::Object *, sym_t>, SharedResource *> value_resources_;
   map<vm::Method *, ThreadSynth *> ext_io_methods_;
 };
 

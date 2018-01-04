@@ -16,6 +16,7 @@ public:
   static void InjectTlsWrapper(VM *vm, Value *value);
   static Value *GetValue(Object *tls_obj, Thread *thr);
   static Object *Copy(VM *vm, Object *tls_obj);
+  static Object *GetBaseObject(Object *tls_obj);
 };
 
 }  // namespace vm

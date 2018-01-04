@@ -25,10 +25,7 @@ void SharedResource::AddAccessorResource(IResource *res) {
 
 SharedResourceSet::~SharedResourceSet() {
   STLDeleteSecondElements(&obj_resources_);
-  for (auto it : value_resources_) {
-    auto &m = it.second;
-    STLDeleteSecondElements(&m);
-  }
+  STLDeleteSecondElements(&value_resources_);
 }
 
 void SharedResourceSet::DetermineOwnerThreadAll() {
@@ -36,9 +33,7 @@ void SharedResourceSet::DetermineOwnerThreadAll() {
     DetermineOwnerThread(it.second);
   }
   for (auto it : value_resources_) {
-    for (auto jt : it.second) {
-      DetermineOwnerThread(jt.second);
-    }
+    DetermineOwnerThread(it.second);
   }
 }
 
@@ -47,9 +42,7 @@ void SharedResourceSet::ResolveResourceAccessors() {
     ResolveSharedResourceAccessor(it.second);
   }
   for (auto it : value_resources_) {
-    for (auto jt : it.second) {
-      ResolveSharedResourceAccessor(jt.second);
-    }
+    ResolveSharedResourceAccessor(it.second);
   }
 }
 
@@ -124,21 +117,13 @@ bool SharedResourceSet::AddExtIOMethodAccessor(ThreadSynth *thr,
 
 SharedResource *SharedResourceSet::GetBySlotName(vm::Object *obj,
 						 sym_t name) {
-  auto it = value_resources_.find(obj);
+  auto key = std::make_tuple(obj, name);
+  auto it = value_resources_.find(key);
   if (it != value_resources_.end()) {
-    auto &m = it->second;
-    auto jt = m.find(name);
-    if (jt != m.end()) {
-      return jt->second;
-    }
-    SharedResource *res = new SharedResource();
-    m[name] = res;
-    return res;
+    return it->second;
   }
   SharedResource *res = new SharedResource();
-  map<sym_t, SharedResource *> m;
-  m[name] = res;
-  value_resources_[obj] = m;
+  value_resources_[key] = res;
   return res;
 }
 
