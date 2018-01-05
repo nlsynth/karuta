@@ -63,6 +63,7 @@ Object *TlsWrapper::Copy(VM *vm, Object *tls_obj) {
 
 Value *TlsWrapper::GetValue(Object *tls_obj, Thread *thr) {
   TlsWrapperData *data = (TlsWrapperData *)tls_obj->object_specific_.get();
+  CHECK(data);
   if (thr == nullptr) {
     return &data->baseValue;
   }

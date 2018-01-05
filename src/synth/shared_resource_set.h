@@ -46,14 +46,17 @@ public:
 
   // Declares @thr accesses this.name/obj.
   // NUM
-  void AddMemberAccessor(ThreadSynth *thr, sym_t name, vm::Insn *insn);
+  void AddMemberAccessor(ThreadSynth *thr, sym_t name, vm::Insn *insn,
+			 bool is_tls);
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
   void AddObjectAccessor(ThreadSynth *thr, vm::Object *obj, vm::Insn *insn,
 			 const string &synth_name);
   // ExtIO is not shareable, so this keeps track of the accessor thread.
   bool AddExtIOMethodAccessor(ThreadSynth *thr, vm::Method *method);
 
-  SharedResource *GetBySlotName(vm::Object *obj, sym_t name);
+  // ThreadSynth to specify thread local storage. nullptr is specified for
+  // normal variables.
+  SharedResource *GetBySlotName(vm::Object *obj, ThreadSynth *thr, sym_t name);
   SharedResource *GetByObj(vm::Object *obj);
   bool HasAccessor(vm::Object *obj);
   bool HasExtIOAccessor(vm::Method *method);
@@ -63,7 +66,8 @@ private:
   void ResolveSharedResourceAccessor(SharedResource *sres);
 
   map<vm::Object *, SharedResource *> obj_resources_;
-  map<tuple<vm::Object *, sym_t>, SharedResource *> value_resources_;
+  map<tuple<vm::Object *, ThreadSynth *, sym_t>,
+      SharedResource *> value_resources_;
   map<vm::Method *, ThreadSynth *> ext_io_methods_;
 };
 

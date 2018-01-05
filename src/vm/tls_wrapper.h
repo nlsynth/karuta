@@ -14,6 +14,7 @@ public:
   static bool IsTls(Object *obj);
   static bool IsTlsValue(Value *value);
   static void InjectTlsWrapper(VM *vm, Value *value);
+  // null thread to get the base value.
   static Value *GetValue(Object *tls_obj, Thread *thr);
   static Object *Copy(VM *vm, Object *tls_obj);
   static Object *GetBaseObject(Object *tls_obj);

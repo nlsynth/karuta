@@ -699,10 +699,15 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     // processed in MaybeLoadMemberObject()
     CHECK(!is_store);
   } else {
+    ThreadSynth *local_accessor = nullptr;
+    if (vm::TlsWrapper::IsTlsValue(value)) {
+      value = vm::TlsWrapper::GetValue(value->object_, nullptr);
+      local_accessor = thr_synth_;
+    }
     CHECK(!vm::TlsWrapper::IsTlsValue(value));
     CHECK(value->type_ == vm::Value::NUM);
     SharedResource *sres =
-      shared_resource_set_->GetBySlotName(obj, insn->label_);
+      shared_resource_set_->GetBySlotName(obj, local_accessor, insn->label_);
     if (sres->accessors_.size() > 1) {
       SynthMemberSharedRegAccess(insn, value, is_store);
     } else {
@@ -741,8 +746,9 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
 
 void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
 					     bool is_store) {
+  // This can't be a tls, so use the default thread.
   SharedResource *sres =
-    shared_resource_set_->GetBySlotName(obj_, insn->label_);
+    shared_resource_set_->GetBySlotName(obj_, nullptr, insn->label_);
   IResource *res;
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);

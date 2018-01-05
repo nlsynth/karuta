@@ -66,8 +66,13 @@ void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
 }
 
 void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, sym_t name,
-					  vm::Insn *insn) {
+					  vm::Insn *insn, bool is_tls) {
+  ThreadSynth *tls_thr = nullptr;
+  if (is_tls) {
+    tls_thr = thr;
+  }
   SharedResource *res = GetBySlotName(thr->GetObjectSynth()->GetObject(),
+				      tls_thr,
 				      name);
   res->ordered_accessors_.push_back(thr);
   res->accessors_.insert(thr);
@@ -116,8 +121,9 @@ bool SharedResourceSet::AddExtIOMethodAccessor(ThreadSynth *thr,
 }
 
 SharedResource *SharedResourceSet::GetBySlotName(vm::Object *obj,
+						 ThreadSynth *thr,
 						 sym_t name) {
-  auto key = std::make_tuple(obj, name);
+  auto key = std::make_tuple(obj, thr, name);
   auto it = value_resources_.find(key);
   if (it != value_resources_.end()) {
     return it->second;

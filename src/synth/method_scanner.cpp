@@ -10,6 +10,7 @@
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/tls_wrapper.h"
 
 namespace synth {
 
@@ -101,7 +102,10 @@ void MethodScanner::RequestSubObj(vm::Object *callee_obj) {
 }
 
 void MethodScanner::MemberAccess(vm::Insn *insn) {
-  shared_resource_set_->AddMemberAccessor(thr_synth_, insn->label_, insn);
+  vm::Value *value = obj_->LookupValue(insn->label_, false);
+  CHECK(value);
+  shared_resource_set_->AddMemberAccessor(thr_synth_, insn->label_, insn,
+					  vm::TlsWrapper::IsTlsValue(value));
 }
 
 void MethodScanner::ArrayAccess(vm::Insn *insn) {
