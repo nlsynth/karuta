@@ -83,7 +83,7 @@ void ObjectMethod::Scan() {
       name == kMailboxNotify || name == kMailboxWait ||
       name == kChannelWrite || name == kChannelNoWaitWrite ||
       name == kChannelRead) {
-    sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name);
+    sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name, false);
   }
 }
 
@@ -134,7 +134,7 @@ IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj,
 					bool is_blocking,
 					bool is_put) {
   SharedResource *sres =
-    synth_->GetSharedResourceSet()->GetByObj(mailbox_obj);
+    synth_->GetSharedResourceSet()->GetByObj(mailbox_obj, nullptr);
   IResource *res = nullptr;
   ResourceSet *rset = synth_->GetResourceSet();
   if (sres->owner_thr_ == synth_->GetThreadSynth()) {
@@ -179,7 +179,7 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   int width = vm::ChannelWrapper::ChannelWidth(ch_obj);
   ResourceSet *rset = synth_->GetResourceSet();
   SharedResource *sres =
-    synth_->GetSharedResourceSet()->GetByObj(ch_obj);
+    synth_->GetSharedResourceSet()->GetByObj(ch_obj, nullptr);
   int depth = vm::ChannelWrapper::ChannelDepth(ch_obj);
   if (sres->owner_thr_ == synth_->GetThreadSynth()) {
     IResource *channel_res =

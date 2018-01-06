@@ -86,8 +86,13 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, sym_t name,
 
 void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
 					  vm::Insn *insn,
-					  const string &synth_name) {
-  SharedResource *res = GetByObj(obj);
+					  const string &synth_name,
+					  bool is_tls) {
+  ThreadSynth *tls_thr = nullptr;
+  if (is_tls) {
+    tls_thr = thr;
+  }
+  SharedResource *res = GetByObj(obj, tls_thr);
   res->ordered_accessors_.push_back(thr);
   res->accessors_.insert(thr);
   if (insn->op_ == vm::OP_ARRAY_READ) {
@@ -133,18 +138,21 @@ SharedResource *SharedResourceSet::GetBySlotName(vm::Object *obj,
   return res;
 }
 
-SharedResource *SharedResourceSet::GetByObj(vm::Object *obj) {
-  auto it = obj_resources_.find(obj);
+SharedResource *SharedResourceSet::GetByObj(vm::Object *obj,
+					    ThreadSynth *thr) {
+  auto key = std::make_tuple(obj, thr);
+  auto it = obj_resources_.find(key);
   if (it != obj_resources_.end()) {
     return it->second;
   }
   SharedResource *res = new SharedResource();
-  obj_resources_[obj] = res;
+  obj_resources_[key] = res;
   return res;
 }
 
-bool SharedResourceSet::HasAccessor(vm::Object *obj) {
-  return (obj_resources_.find(obj) != obj_resources_.end());
+  bool SharedResourceSet::HasAccessor(vm::Object *obj, ThreadSynth *thr) {
+  auto key = std::make_tuple(obj, thr);
+  return (obj_resources_.find(key) != obj_resources_.end());
 }
 
 bool SharedResourceSet::HasExtIOAccessor(vm::Method *method) {

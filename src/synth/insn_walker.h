@@ -5,8 +5,10 @@
 #include "synth/common.h"
 
 #include <map>
+#include <set>
 
 using std::map;
+using std::set;
 
 namespace synth {
 
@@ -36,6 +38,8 @@ protected:
   vm::Object *obj_;
   SharedResourceSet *shared_resource_set_;
   map<vm::Register *, vm::Object *> member_reg_to_obj_map_;
+  // For thread local arrays.
+  set<vm::Object *> thread_local_objs_;
 
 private:
   vm::Method *GetCalleeMethod(vm::Insn *insn);

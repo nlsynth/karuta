@@ -34,9 +34,10 @@ void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
     }
     if (!value->is_const_) {
       if (vm::TlsWrapper::IsTlsValue(value)) {
-	// TODO: Mark this thread local.
-	member_reg_to_obj_map_[insn->dst_regs_[0]] =
+	vm::Object *base_obj =
 	  vm::TlsWrapper::GetBaseObject(value->object_);
+	member_reg_to_obj_map_[insn->dst_regs_[0]] = base_obj;
+	thread_local_objs_.insert(base_obj);
       } else if (value->IsObjectType()) {
 	member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
       }

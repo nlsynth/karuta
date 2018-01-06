@@ -111,7 +111,10 @@ void MethodScanner::MemberAccess(vm::Insn *insn) {
 void MethodScanner::ArrayAccess(vm::Insn *insn) {
   vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
   CHECK(array_obj);
-  shared_resource_set_->AddObjectAccessor(thr_synth_, array_obj, insn, "");
+  auto it = thread_local_objs_.find(array_obj);
+  bool is_tls = (it != thread_local_objs_.end());
+  shared_resource_set_->AddObjectAccessor(thr_synth_, array_obj, insn, "",
+					  is_tls);
 }
 
 void MethodScanner::NativeFuncall(vm::Insn *insn) {

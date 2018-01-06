@@ -800,12 +800,16 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {
 }
 
 bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
-  SharedResource *sres =
-    shared_resource_set_->GetByObj(array_obj);
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
   if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave())) {
     return true;
   }
+  ThreadSynth *tls_thr = nullptr;
+  if (thread_local_objs_.find(array_obj) != thread_local_objs_.end()) {
+    tls_thr = thr_synth_;
+  }
+  SharedResource *sres =
+    shared_resource_set_->GetByObj(array_obj, tls_thr);
   if (sres->accessors_.size() >= 2 ||
       sres->axi_ctrl_thrs_.size() > 0) {
     return true;
@@ -816,7 +820,7 @@ bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
 void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
   SharedResource *sres =
-    shared_resource_set_->GetByObj(array_obj);
+    shared_resource_set_->GetByObj(array_obj, nullptr);
   IResource *res = nullptr;
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetSharedArray(array_obj, true, false);

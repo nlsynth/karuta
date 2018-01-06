@@ -162,7 +162,7 @@ void ThreadSynth::CollectUnclaimedMembers() {
   for (auto it : member_objs) {
     vm::Object *member_obj = it.second;
     if (vm::ArrayWrapper::IsIntArray(member_obj)) {
-      if (sres->HasAccessor(member_obj)) {
+      if (sres->HasAccessor(member_obj, nullptr)) {
 	continue;
       }
       rsynth_->MayAddAxiMasterPort(obj_synth_->GetObject(), member_obj);

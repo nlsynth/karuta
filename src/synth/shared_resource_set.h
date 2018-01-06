@@ -50,22 +50,23 @@ public:
 			 bool is_tls);
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
   void AddObjectAccessor(ThreadSynth *thr, vm::Object *obj, vm::Insn *insn,
-			 const string &synth_name);
+			 const string &synth_name, bool is_tls);
   // ExtIO is not shareable, so this keeps track of the accessor thread.
   bool AddExtIOMethodAccessor(ThreadSynth *thr, vm::Method *method);
 
   // ThreadSynth to specify thread local storage. nullptr is specified for
   // normal variables.
   SharedResource *GetBySlotName(vm::Object *obj, ThreadSynth *thr, sym_t name);
-  SharedResource *GetByObj(vm::Object *obj);
-  bool HasAccessor(vm::Object *obj);
+  SharedResource *GetByObj(vm::Object *obj, ThreadSynth *thr);
+  bool HasAccessor(vm::Object *obj, ThreadSynth *thr);
   bool HasExtIOAccessor(vm::Method *method);
 
 private:
   void DetermineOwnerThread(SharedResource *res);
   void ResolveSharedResourceAccessor(SharedResource *sres);
 
-  map<vm::Object *, SharedResource *> obj_resources_;
+  map<tuple<vm::Object *, ThreadSynth *>,
+      SharedResource *> obj_resources_;
   map<tuple<vm::Object *, ThreadSynth *, sym_t>,
       SharedResource *> value_resources_;
   map<vm::Method *, ThreadSynth *> ext_io_methods_;
