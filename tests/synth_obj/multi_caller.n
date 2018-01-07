@@ -1,0 +1,21 @@
+// VERILOG_OUTPUT: a.v
+var Kernel.X object = Kernel.clone();
+
+def X.f(x int) (int) {
+  return x
+}
+
+@ThreadEntry()
+def t1() {
+  assert(X.f(1) == 1)
+}
+
+@ThreadEntry()
+def t2() {
+  assert(X.f(2) == 2)
+}
+
+run()
+
+compile()
+writeHdl("a.v")
