@@ -102,7 +102,13 @@ void MethodScanner::RequestSubObj(vm::Object *callee_obj) {
 }
 
 void MethodScanner::MemberAccess(vm::Insn *insn) {
-  vm::Value *value = obj_->LookupValue(insn->label_, false);
+  vm::Object *obj;
+  if (insn->op_ == vm::OP_MEMBER_READ) {
+    obj = member_reg_to_obj_map_[insn->src_regs_[0]];
+  } else {
+    obj = member_reg_to_obj_map_[insn->src_regs_[1]];
+  }
+  vm::Value *value = obj->LookupValue(insn->label_, false);
   CHECK(value);
   shared_resource_set_->AddMemberAccessor(thr_synth_, insn->label_, insn,
 					  vm::TlsWrapper::IsTlsValue(value));

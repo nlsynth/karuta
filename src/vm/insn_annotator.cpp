@@ -212,13 +212,15 @@ void InsnAnnotator::TryType(Insn *insn) {
   }
   if (insn->op_ == OP_MEMBER_READ ||
       insn->op_ == OP_MEMBER_WRITE) {
-    Object *obj = obj_;
-    if (insn->obj_reg_ != nullptr) {
-      obj = objs_[insn->obj_reg_];
-      if (obj == nullptr) {
-	CHECK(method_->IsTopLevel());
-	return;
-      }
+    Object *obj;
+    if (insn->op_ == OP_MEMBER_READ) {
+      obj = objs_[insn->src_regs_[0]];
+    } else {
+      obj = objs_[insn->src_regs_[1]];
+    }
+    if (obj == nullptr) {
+      CHECK(method_->IsTopLevel());
+      return;
     }
     Value *value = obj->LookupValue(insn->label_, false);
     if (value) {
@@ -227,6 +229,7 @@ void InsnAnnotator::TryType(Insn *insn) {
       }
       insn->dst_regs_[0]->type_.value_type_ = value->type_;
       if (value->type_ == Value::OBJECT) {
+	CHECK(value->object_ != nullptr);
 	objs_[insn->dst_regs_[0]] = value->object_;
       }
     }
