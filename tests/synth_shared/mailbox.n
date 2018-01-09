@@ -1,0 +1,28 @@
+// VERILOG_OUTPUT: a.v
+mailbox M.m0 int
+mailbox M.m1 int
+mailbox M.m2 int
+
+@ThreadEntry()
+def M.f0() {
+  m0.put(10)
+  assert(m1.get() == 1)
+  assert(m2.get() == 2)
+  assert(m0.get() == 12)
+}
+
+@ThreadEntry()
+def M.f1() {
+  m0.put(m0.get() + 1)
+  m1.put(1)
+}
+
+@ThreadEntry()
+def M.f2() {
+  m0.put(m0.get() + 1)
+  m2.put(2)
+}
+
+run()
+M.compile()
+M.writeHdl("a.v")
