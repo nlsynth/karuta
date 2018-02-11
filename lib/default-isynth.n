@@ -7,7 +7,7 @@ var Kernel.M object = Kernel
 
 def Kernel.compile() {
   __compile("")
-  __compile("clean_unused_resource,clean_empty_state,clean_unreachable_state,array_to_mem")
+  __compile("clean_unused_resource,clean_empty_state,clean_unreachable_state,array_to_mem,wire_insn,clean_empty_state")
 }
 
 @embed(resource = "wait_cycles",
