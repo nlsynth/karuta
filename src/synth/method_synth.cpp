@@ -167,7 +167,7 @@ void MethodSynth::EmitTaskReturn(IState *last) {
     IRegister *reg = local_reg_map_[ret];
     insn->inputs_.push_back(reg);
   }
-  insn->SetOperand(iroha::operand::kNotify);
+  insn->SetOperand(iroha::operand::kPutMailbox);
   last->insns_.push_back(insn);
 }
 
