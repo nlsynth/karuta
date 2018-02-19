@@ -279,6 +279,7 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
     return;
   }
   IInsn *ret_insn = new IInsn(ret);
+  ret_insn->depending_insns_.push_back(iinsn);
   ret_insn->SetOperand(iroha::operand::kGetMailbox);
   next_st->insns_.push_back(ret_insn);
   for (IRegister *reg : pseudo_call_insn->outputs_) {
