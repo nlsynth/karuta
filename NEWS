@@ -1,4 +1,5 @@
-0.2.3 WIP
+2018/02/22 0.2.3
+ Enable wire_insn optimizer and related fixes.
 2017/12/22 0.2.2
  Various bug fixes. Fail gracefully on various user errors.
 2017/11/23 0.2.1
