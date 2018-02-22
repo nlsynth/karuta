@@ -4,7 +4,7 @@ import iroha_files
 sys.path.append("tests/")
 import test_files
 
-VERSION = "0.2.3"
+VERSION = "0.2.4wip"
 
 EXTRA = ["README.md", "NEWS", "configure", "Makefile", "config.mk", "nli", "src/nli.gyp", "iroha/src/iroha.gyp", "src/fe/parser.ypp", "genparser.py", "nli_files.py", "docs/LRM.md"]
 

@@ -4,7 +4,7 @@
   ],
   'target_defaults': {
     'cflags': [ '-std=c++11', ],
-    'defines': ['PACKAGE="nli"', 'VERSION="0.2.3"'],
+    'defines': ['PACKAGE="nli"', 'VERSION="0.2.4"'],
     'xcode_settings': {
       'OTHER_CFLAGS': [
           '-std=c++11',
