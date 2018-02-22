@@ -29,9 +29,11 @@ private:
   CalleeInfo ExpandMethod(MethodContext *method);
   void CopyState(IState *ost, map<IState *, IState *> &st_map,
 		 map<IRegister *, IRegister *> &reg_map,
-		 IState *nst);
+		 IState *nst, map<IInsn *, IInsn *> &insn_map);
   IInsn *CopyInsn(IInsn *oinsn, map<IState *, IState *> &st_map,
 		  map<IRegister *, IRegister *> &reg_map);
+  void CopyDependingInsns(MethodContext *method,
+			  map<IInsn *, IInsn *> &insn_map);
   void BuildInsnRegCopy(IInsn *insn, map<IRegister *, IRegister *> &reg_map);
   void BuildRegCopy(IRegister *reg, map<IRegister *, IRegister *> &reg_map);
   void ExpandCalleeStates(MethodContext *method,

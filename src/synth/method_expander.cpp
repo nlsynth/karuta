@@ -41,12 +41,14 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
   }
   BuildInsnRegCopy(method->method_signature_insn_, reg_copy_map);
   // Copy states.
+  map<IInsn *, IInsn *> insn_copy_map;
   for (StateWrapper *sw : method->states_) {
     IState *st = sw->state_;
     IState *nst = st_copy_map[st];
     tab_->states_.push_back(nst);
-    CopyState(st, st_copy_map, reg_copy_map, nst);
+    CopyState(st, st_copy_map, reg_copy_map, nst, insn_copy_map);
   }
+  CopyDependingInsns(method, insn_copy_map);
   CollectTableCalls(method, st_copy_map);
   ExpandCalleeStates(method, st_copy_map, reg_copy_map);
   // Add registers.
@@ -144,9 +146,11 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
 
 void MethodExpander::CopyState(IState *ost, map<IState *, IState *> &st_map,
 			       map<IRegister *, IRegister *> &reg_map,
-			       IState *nst) {
+			       IState *nst, map<IInsn *, IInsn *> &insn_map) {
   for (IInsn *insn : ost->insns_) {
-    nst->insns_.push_back(CopyInsn(insn, st_map, reg_map));
+    IInsn *new_insn = CopyInsn(insn, st_map, reg_map);
+    insn_map[insn] = new_insn;
+    nst->insns_.push_back(new_insn);
   }
 }
 
@@ -165,6 +169,18 @@ IInsn *MethodExpander::CopyInsn(IInsn *oinsn,
     insn->target_states_.push_back(st_map[st]);
   }
   return insn;
+}
+
+void MethodExpander::CopyDependingInsns(MethodContext *method, map<IInsn *, IInsn *> &insn_map) {
+  for (StateWrapper *sw : method->states_) {
+    for (IInsn *insn : sw->state_->insns_) {
+      IInsn *new_insn = insn_map[insn];
+      CHECK(new_insn);
+      for (IInsn *dinsn : insn->depending_insns_) {
+	new_insn->depending_insns_.push_back(insn_map[dinsn]);
+      }
+    }
+  }
 }
 
 void MethodExpander::BuildInsnRegCopy(IInsn *insn,

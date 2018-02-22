@@ -168,6 +168,14 @@ void MethodSynth::EmitTaskReturn(IState *last) {
     insn->inputs_.push_back(reg);
   }
   insn->SetOperand(iroha::operand::kPutMailbox);
+  IInsn *entry_insn = nullptr;
+  for (IInsn *insn : context_->states_[0]->state_->insns_) {
+    if (resource::IsTask(*(insn->GetResource()->GetClass()))) {
+      entry_insn = insn;
+    }
+  }
+  CHECK(entry_insn);
+  insn->depending_insns_.push_back(entry_insn);
   last->insns_.push_back(insn);
 }
 
