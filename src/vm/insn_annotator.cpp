@@ -256,8 +256,13 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
       CHECK(method->return_types_.size() <= insn->dst_regs_.size());
       for (int i = 0; i < method->return_types_.size(); ++i) {
 	auto &ret = method->return_types_[i];
-	insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
-	insn->dst_regs_[i]->type_.width_ = ret.width_;
+	if (ret.value_type_ == Value::OBJECT) {
+	  insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
+	} else {
+	  CHECK(ret.value_type_ == Value::NUM);
+	  insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
+	  insn->dst_regs_[i]->type_.width_ = ret.width_;
+	}
       }
     } else {
       // non native
@@ -265,8 +270,12 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
       for (int i = 0; i < parse_tree->GetReturns()->decls.size(); ++i) {
 	auto *decl = parse_tree->GetReturns()->decls[i];
 	// TODO: type object.
-	insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
-	insn->dst_regs_[i]->type_.width_ = decl->GetWidth();
+	if (decl->GetType() == sym_object) {
+	  insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
+	} else {
+	  insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
+	  insn->dst_regs_[i]->type_.width_ = decl->GetWidth();
+	}
       }
     }
   }
