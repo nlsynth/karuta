@@ -22,7 +22,7 @@ public:
 		   const iroha::NumericWidth &width,
 		   Annotation *an) {
     if (is_int) {
-      int_array_ = IntArray::Create(width, size);
+      int_array_.reset(IntArray::Create(width, size));
     } else {
       int_array_ = nullptr;
       objs_.resize(size);
@@ -36,15 +36,15 @@ public:
 
   ArrayWrapperData(ArrayWrapperData *src) {
     objs_ = src->objs_;
-    if (src->int_array_) {
-      int_array_ = IntArray::Copy(src->int_array_);
+    if (src->int_array_.get() != nullptr) {
+      int_array_.reset(IntArray::Copy(src->int_array_.get()));
     } else {
       int_array_ = nullptr;
     }
   }
 
   vector<Object *> objs_;
-  IntArray *int_array_;
+  std::unique_ptr<IntArray> int_array_;
   Annotation *an_;
   set<Thread *> waiters_;
   set<Thread *> notified_threads_;
@@ -123,7 +123,7 @@ void ArrayWrapper::Set(Object *obj, int nth, Object *elem) {
 IntArray *ArrayWrapper::GetIntArray(Object *obj) {
   CHECK(obj->ObjectTypeKey() == kIntArrayKey);
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
-  return data->int_array_;
+  return data->int_array_.get();
 }
 
 Annotation *ArrayWrapper::GetAnnotation(Object *obj) {
@@ -140,7 +140,7 @@ void ArrayWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 0) << "read requires an address";
   uint64_t addr = args[0].num_.GetValue0();
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
-  IntArray *arr = data->int_array_;
+  IntArray *arr = data->int_array_.get();
   Value value;
   value.type_ = Value::NUM;
   iroha::Op::MakeConst(arr->Read(addr).GetValue0(), &value.num_);
@@ -152,7 +152,7 @@ void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
   uint64_t addr = args[0].num_.GetValue0();
   uint64_t data = args[1].num_.GetValue0();
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
-  IntArray *arr = ad->int_array_;
+  IntArray *arr = ad->int_array_.get();
   iroha::Numeric num;
   iroha::Op::MakeConst(data, &num);
   arr->Write(addr, num);
@@ -198,7 +198,7 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
 				  bool is_load) {
   IntArray *mem = thr->GetVM()->GetDefaultMemory();
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
-  IntArray *arr = data->int_array_;
+  IntArray *arr = data->int_array_.get();
   uint64_t length = arr->GetLength();
   // Mem addr
   int mem_addr_step = arr->GetDataWidth().GetWidth() / 8;
