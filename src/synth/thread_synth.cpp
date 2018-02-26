@@ -338,6 +338,7 @@ void ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
   IResource *wait = Tool::FindOrCreateExtStubWaitResource(caller_tab, name,
 							  is_flow);
   IInsn *wait_insn = new IInsn(wait);
+  wait_insn->depending_insns_.push_back(insn);
   next_st->insns_.push_back(wait_insn);
   need_width =
     pseudo_call_insn->outputs_.size() > wait->output_types_.size();
