@@ -1,9 +1,16 @@
-// Native methods.
+// Wrapper methods.
 // Adding __ prefix so that users can overwrite the original one.
 print("default-isynth.n loaded")
 
 // Alias for convenience
 var Kernel.M object = Kernel
+
+// Utility to create a vanilla object.
+var Kernel.Kernel_ object = Kernel.clone()
+
+def Kernel.new() (object) {
+  return Kernel_.clone()
+}
 
 def Kernel.compile() {
   __compile("")
