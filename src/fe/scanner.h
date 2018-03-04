@@ -2,7 +2,7 @@
 #ifndef _fe_scanner_h_
 #define _fe_scanner_h_
 
-#include "nli.h"
+#include "karuta.h"
 
 namespace fe {
 

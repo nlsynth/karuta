@@ -2,7 +2,7 @@
 #ifndef _vm_common_h_
 #define _vm_common_h_
 
-#include "nli.h"
+#include "karuta.h"
 
 class Annotation;
 class DumpStream;

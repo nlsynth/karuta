@@ -2,7 +2,7 @@
 #ifndef _base_annotation_h_
 #define _base_annotation_h_
 
-#include "nli.h"
+#include "karuta.h"
 
 namespace annotation {
 const char kAnnotationKey[] = "ANNOTATION-KEY";

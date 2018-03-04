@@ -1,4 +1,4 @@
-#include "nli.h"
+#include "karuta.h"
 
 #include <set>
 #include <string.h>

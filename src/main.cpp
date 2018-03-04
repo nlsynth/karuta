@@ -23,7 +23,7 @@
 #include "fe/fe.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
-#include "nli.h"
+#include "karuta.h"
 #include "base/status.h"
 
 using std::map;

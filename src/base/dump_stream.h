@@ -2,7 +2,7 @@
 #ifndef _base_dump_stream_h_
 #define _base_dump_stream_h_
 
-#include "nli.h"
+#include "karuta.h"
 
 class DumpStream {
 public:

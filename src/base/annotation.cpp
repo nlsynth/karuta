@@ -4,7 +4,7 @@
 #include <list>
 #include <stdlib.h>
 #include <string.h>
-#include "nli.h"
+#include "karuta.h"
 #include "base/annotation_builder.h"
 #include "base/pool.h"
 

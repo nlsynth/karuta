@@ -2,7 +2,7 @@
 #ifndef _fe_common_
 #define _fe_common_
 
-#include "nli.h"
+#include "karuta.h"
 #include "base/pool.h"
 
 class Annotation;

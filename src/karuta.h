@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// Common definition for all nli components.
-#ifndef _nli_h_
-#define _nli_h_
+// Common definition for all the components of Karuta.
+#ifndef _karuta_h_
+#define _karuta_h_
 
 #include <iostream>
 #include <memory>
@@ -51,4 +51,4 @@ private:
   static string iroha_bin_path_;
 };
 
-#endif  // _nli_h_
+#endif  // _karuta_h_

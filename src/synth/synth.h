@@ -2,7 +2,7 @@
 #ifndef _synth_synth_h_
 #define _synth_synth_h_
 
-#include "nli.h"
+#include "karuta.h"
 
 namespace vm {
 class Object;
