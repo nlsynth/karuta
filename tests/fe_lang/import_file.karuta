@@ -1,6 +1,6 @@
 /**/
 var Global.x int = 10;
-import "imported_file.n";
+import "imported_file.karuta";
 
 assert(Global.x == 0);
 assert(Env.is_main());
