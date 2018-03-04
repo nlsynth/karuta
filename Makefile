@@ -28,6 +28,6 @@ clean:
 install:
 	install -D lib/karuta $(prefix)/bin/karuta
 	install -D karuta-bin $(prefix)/bin/karuta-bin
-	install -D lib/default-isynth.n $(prefix)/share/nli/default-isynth.n
-	install -D lib/nli_exit.v $(prefix)/share/nli/nli_exit.v
-	install -D lib/nli_wait.v $(prefix)/share/nli/nli_wait.v
+	install -D lib/default-isynth.n $(prefix)/share/karuta/default-isynth.n
+	install -D lib/nli_exit.v $(prefix)/share/karuta/nli_exit.v
+	install -D lib/nli_wait.v $(prefix)/share/karuta/nli_wait.v
