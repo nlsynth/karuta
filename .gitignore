@@ -14,8 +14,8 @@ src/src/
 src/out/
 src/iroha/
 y.dot
-lib/nli
+lib/karuta
 libtool
-nli-bin
+karuta-bin
 # by gyp
 src/out

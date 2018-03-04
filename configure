@@ -24,7 +24,7 @@ def Generate(ifn, ofn):
         ofh.write(line)
     ofh.close()
 
-Generate("lib/nli.in", "lib/nli")
+Generate("lib/karuta.in", "lib/karuta")
 
 fh = open("config.mk", "w")
 fh.write("prefix=" + PREFIX + "\n")

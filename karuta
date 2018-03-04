@@ -1,7 +1,7 @@
 #! /bin/sh
 
-# Neon light compiler frontend wrapper to invoke the binary before
-# installation. This is different from lib/nli{.in}.
+# Karuta compiler frontend wrapper to invoke the binary before
+# installation. This is different from lib/karuta{.in}.
 
 
 NLI_BASE_DIR=`dirname $0`
@@ -17,4 +17,4 @@ if test "${VALGRIND+set}" = set; then
   WRAPPER="valgrind --leak-check=full --show-reachable=yes"
 fi
 
-$WRAPPER ${NLI_BASE_DIR}/nli-bin $@
+$WRAPPER ${NLI_BASE_DIR}/karuta-bin $@

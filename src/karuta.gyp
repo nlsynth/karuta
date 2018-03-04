@@ -1,10 +1,10 @@
-# gyp src/nli.gyp --depth=. -f make
+# gyp src/karuta.gyp --depth=. -f make
 {
   'make_global_settings': [
   ],
   'target_defaults': {
     'cflags': [ '-std=c++11', ],
-    'defines': ['PACKAGE="nli"', 'VERSION="0.2.4"'],
+    'defines': ['PACKAGE="karuta"', 'VERSION="0.2.4"'],
     'xcode_settings': {
       'OTHER_CFLAGS': [
           '-std=c++11',
@@ -13,8 +13,8 @@
   },
   'targets': [
     {
-      'target_name': 'nli',
-      'product_name': 'nli',
+      'target_name': 'karuta',
+      'product_name': 'karuta',
       'type': 'executable',
       'include_dirs': [
         './',

@@ -12,7 +12,7 @@ import test_files
 
 print "Running tests"
 os.putenv("NLI_DIR", "../lib/")
-nli_binary="../nli-bin"
+nli_binary="../karuta-bin"
 iroha_binary=""
 verilog_compiler="iverilog"
 default_tb="test_tb.v"

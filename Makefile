@@ -2,19 +2,19 @@ include config.mk
 
 prefix ?= /usr/local
 
-nli-bin	: src/out/Default/nli build
-	rm -f nli-bin
-	ln -s src/out/Default/nli ./nli-bin
+karuta-bin	: src/out/Default/karuta build
+	rm -f karuta-bin
+	ln -s src/out/Default/karuta ./karuta-bin
 
-src/out/Default/nli: src/Makefile src/fe/parser.cpp config.mk
+src/out/Default/karuta: src/Makefile src/fe/parser.cpp config.mk
 	make -C src
 
 .PHONY: build
 build:
 	make -C src
 
-src/Makefile: src/nli.gyp
-	gyp src/nli.gyp --depth=. -f make --generator-output=src
+src/Makefile: src/karuta.gyp
+	gyp src/karuta.gyp --depth=. -f make --generator-output=src
 
 src/fe/parser.cpp: src/fe/parser.ypp
 	python ./genparser.py
@@ -22,12 +22,12 @@ src/fe/parser.cpp: src/fe/parser.ypp
 .PHONY: clean
 clean:
 	rm -rf src/out/
-	rm -f nli-bin
+	rm -f karuta-bin
 
 .PHONY: install
 install:
-	install -D lib/nli $(prefix)/bin/nli
-	install -D nli-bin $(prefix)/bin/nli-bin
+	install -D lib/karuta $(prefix)/bin/karuta
+	install -D karuta-bin $(prefix)/bin/karuta-bin
 	install -D lib/default-isynth.n $(prefix)/share/nli/default-isynth.n
 	install -D lib/nli_exit.v $(prefix)/share/nli/nli_exit.v
 	install -D lib/nli_wait.v $(prefix)/share/nli/nli_wait.v

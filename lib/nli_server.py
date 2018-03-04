@@ -16,7 +16,7 @@ import nli_wrapper
 
 workdir = '/tmp'
 nli_version = 'nli-0.0.0-unknown'
-nli_interpreter = '../nli'
+nli_interpreter = '../karuta'
 log_fn = workdir + '/nli.log'
 
 if sys.version_info[0] == 2:
