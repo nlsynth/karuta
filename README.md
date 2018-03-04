@@ -34,10 +34,10 @@ NOTE: Please make sure you checked out iroha submodule and have iroha/ directory
 
 -- Use
 
-Run top.n (this example outputs a.v)
+Run top.karuta (this example outputs top.v)
 
     > $ cd examples
-    > $ ../karuta top.n
+    > $ ../karuta top.karuta
 
 Run the output with your Verilog simulator.
 
