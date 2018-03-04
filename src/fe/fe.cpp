@@ -125,7 +125,7 @@ void FE::Run(bool vanilla, const vector<string>& files) {
   vm::VM vm;
   bool ok = true;
   if (!vanilla) {
-    ok = RunFile("default-isynth.n", &vm);
+    ok = RunFile("default-isynth.karuta", &vm);
   }
   if (ok) {
     for (size_t i = 0; i < files.size(); ++i) {

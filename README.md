@@ -106,7 +106,7 @@ Now some computation is defined within object 'Kernel', so Karuta compiler can t
     * Timeout of NLI command execution.
     * Avoid infinite loop to run forever for test or NLI server.
 * --vanilla
-    * Don't read lib/default.n.
+    * Don't read lib/default-isynth.karuta.
 * --version
     * Print version number.
 
