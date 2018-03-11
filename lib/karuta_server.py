@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 
-# Playground server for Neon Light
+# Playground server for Karuta
 
 from http.server import CGIHTTPRequestHandler
 from http.server import HTTPServer
@@ -12,12 +12,12 @@ import tempfile
 import urllib
 
 
-import nli_wrapper
+import karuta_wrapper
 
 workdir = '/tmp'
-nli_version = 'nli-0.0.0-unknown'
-nli_interpreter = '../karuta'
-log_fn = workdir + '/nli.log'
+karuta_version = 'karuta-0.0.0-unknown'
+karuta_interpreter = '../karuta'
+log_fn = workdir + '/karuta.log'
 
 if sys.version_info[0] == 2:
     print("please use python3")
@@ -26,14 +26,14 @@ if sys.version_info[0] == 2:
 
 def scrape_version():
     tf = tempfile.mktemp()
-    if os.system(nli_interpreter + ' --version | head -n 1 > ' + tf):
-        return nli_version
+    if os.system(karuta_interpreter + ' --version | head -n 1 > ' + tf):
+        return karuta_version
     rf = open(tf, 'r')
-    nli_version = rf.readline()
+    karuta_version = rf.readline()
     rf.close()
-    nli_version = nli_version[:-1]
+    karuta_version = karuta_version[:-1]
     os.unlink(tf)
-    return nli_version
+    return karuta_version
 
 
 def log_message(msg):
@@ -42,7 +42,7 @@ def log_message(msg):
     log_fh.close()
 
 
-class NliServerHandler(CGIHTTPRequestHandler):
+class KarutaServerHandler(CGIHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/o/'):
             return self.ServeOutput()
@@ -52,13 +52,13 @@ class NliServerHandler(CGIHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        w = nli_wrapper.NliWrapper(False, self.wfile)
+        w = karuta_wrapper.KarutaWrapper(False, self.wfile)
         qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         w.Render(qs)
 
     def do_POST(self):
         # DIR, PATH
-        self.cgi_info = '', 'nli_wrapper.py'
+        self.cgi_info = '', 'karuta_wrapper.py'
         self.run_cgi()
 
     def ServeOutput(self):
@@ -95,9 +95,9 @@ class ThreadingServer(ThreadingMixIn, HTTPServer):
     pass
 
 if __name__ == '__main__':
-    os.environ['NLI_VERSION'] = scrape_version()
-    os.environ['NLI_BINARY'] = nli_interpreter
-    os.environ['NLI_WORK'] = workdir
-    print(os.getenv('NLI_VERSION'))
-    httpd = ThreadingServer(("0.0.0.0", 8000), NliServerHandler)
+    os.environ['KARUTA_VERSION'] = scrape_version()
+    os.environ['KARUTA_BINARY'] = karuta_interpreter
+    os.environ['KARUTA_WORK'] = workdir
+    print(os.getenv('KARUTA_VERSION'))
+    httpd = ThreadingServer(("0.0.0.0", 8000), KarutaServerHandler)
     httpd.serve_forever()

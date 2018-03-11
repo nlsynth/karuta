@@ -164,7 +164,7 @@ L.writeHdl("led.v")
            's' : '''var M object = Kernel.clone();
 
 @embed(    resource = "wait_cycles",
-    verilog = "nli_wait.v",
+    verilog = "karuta_wait.v",
     ack = "ack",
     file= "copy",
     module= "wait_cycles")

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # This file can be invoked either
-#  (1) import-ed from nli_server and serve GET method.
-#  (2) executed from POST handler in nli_server.
+#  (1) import-ed from karuta_server and serve GET method.
+#  (2) executed from POST handler in karuta_server.
 
 import cgi
 from datetime import datetime
@@ -13,14 +13,14 @@ import sys
 import tempfile
 import time
 
-import nli_examples
+import karuta_examples
 
-class NliWrapper(object):
+class KarutaWrapper(object):
     def __init__(self, isCgi, ofh):
         self.isCgi = isCgi
         self.ofh = ofh
         self.runid = 'run-' + str(time.time()) + '-' + str(os.getpid())
-        self.workdir = os.getenv('NLI_WORK')
+        self.workdir = os.getenv('KARUTA_WORK')
 
     def Render(self, qs):
         ofh = self.ofh
@@ -39,7 +39,7 @@ class NliWrapper(object):
         else:
             src = self.GetExampleSource(qs)
 
-        version = os.getenv('NLI_VERSION')
+        version = os.getenv('KARUTA_VERSION')
 
         self.Write('''
 <html><head>
@@ -58,12 +58,12 @@ class NliWrapper(object):
 </head>
 <body>
 <div>
-  <h1 style="color: #888844">Neon Light Playground</h1>\n
+  <h1 style="color: #888844">Karuta Playground</h1>\n
   %s
 </div>
 <img src="nl.jpg" style="float:right">
 ''' % version)
-        self.Write('''(<a href="https://github.com/nlsynth/nli">Source code on github</a>)<br/><br/>\n''')
+        self.Write('''(<a href="https://github.com/nlsynth/karuta">Source code on github</a>)<br/><br/>\n''')
 
         self.Write(
 '''<form id="src" method="POST" action="">
@@ -87,7 +87,7 @@ class NliWrapper(object):
             self.ShowPreviousOutput(prev_runid)
 
         if self.isCgi:
-            self.RunNLI(src)
+            self.RunKaruta(src)
         self.Write('</body></html>')
 
         self.ofh.flush()
@@ -99,8 +99,8 @@ class NliWrapper(object):
             # writes to network
             self.ofh.write(bytes(s, 'utf-8'))
 
-    def RunNLI(self, src):
-        bin = os.getenv('NLI_BINARY')
+    def RunKaruta(self, src):
+        bin = os.getenv('KARUTA_BINARY')
         runid = self.GetRunID()
         rundir = self.GetRunDir(runid)
         os.mkdir(rundir)
@@ -190,7 +190,7 @@ class NliWrapper(object):
 
     def RenderExampleOptions(self, qs):
         temp = []
-        for key, value in nli_examples.EXAMPLES.items():
+        for key, value in karuta_examples.EXAMPLES.items():
             temp.append([key, value])
         s = sorted(temp, key=lambda k: (k[1])['i'])
         for v in s:
@@ -209,14 +209,14 @@ class NliWrapper(object):
         tmpl = (qs.get('e', ['']))[0]
         if not tmpl:
             tmpl = ''
-        if tmpl in nli_examples.EXAMPLES:
-            e = nli_examples.EXAMPLES[tmpl]
+        if tmpl in karuta_examples.EXAMPLES:
+            e = karuta_examples.EXAMPLES[tmpl]
         else:
-            e = nli_examples.EXAMPLES['default']
+            e = karuta_examples.EXAMPLES['default']
         return e['s']
 
 if __name__ == '__main__':
     # For POST method.
     print('Content-type: text/html\n\n')
-    w = NliWrapper(True, sys.stdout)
+    w = KarutaWrapper(True, sys.stdout)
     w.Render({})
