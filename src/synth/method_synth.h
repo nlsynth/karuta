@@ -32,7 +32,7 @@ public:
   ThreadSynth *GetThreadSynth();
 
 private:
-  void SynthNativeImplMethod(vm::Method *method);
+  void SynthAlternativeImplMethod(vm::Method *method);
   void SynthEmbeddedMethod(vm::Method *method);
   void SynthExtIOMethod();
   void DoSynthExtIO(bool is_output);

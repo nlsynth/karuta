@@ -51,7 +51,11 @@ bool MethodSynth::Synth() {
     return false;
   }
   if (method_->GetParseTree() == nullptr && method_->GetSynthName() != kMain) {
-    SynthNativeImplMethod(method_);
+    SynthAlternativeImplMethod(method_);
+    return true;
+  }
+  if (method_->GetAnnotation()->IsImportedModule()) {
+    SynthEmbeddedMethod(method_);
     return true;
   }
   if (method_->GetAnnotation()->IsExtIO()) {
@@ -222,7 +226,7 @@ bool MethodSynth::IsExtEntry() const {
   return method_->GetAnnotation()->IsExtEntry();
 }
 
-void MethodSynth::SynthNativeImplMethod(vm::Method *method) {
+void MethodSynth::SynthAlternativeImplMethod(vm::Method *method) {
   sym_t name = sym_lookup(method->AlternativeImplementation());
   CHECK(name != sym_null);
   vm::Value *value = obj_->LookupValue(name, false);
