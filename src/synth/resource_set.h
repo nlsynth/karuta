@@ -51,6 +51,7 @@ public:
 private:
   string GetResourceClassName(vm::OpCode op);
   void PopulateResourceDataType(int op, IValueType &vt, IResource *res);
+  void PopulateIOTypes(fe::VarDeclSet *vds, bool is_output, IResource *res);
 
   ITable *tab_;
   IResource *assert_;

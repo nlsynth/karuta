@@ -63,6 +63,10 @@ bool MethodSynth::Synth() {
     return true;
   }
 
+  return SynthFromInsns();
+}
+
+bool MethodSynth::SynthFromInsns() {
   EmitSignatureInsn(method_);
   // Initial insn. (ext) task entry may be allocated to here.
   StateWrapper *last = AllocState();

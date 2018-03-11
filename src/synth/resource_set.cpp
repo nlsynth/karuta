@@ -242,23 +242,43 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
     }
   }
   string fn = dparams->GetCopyFileName();
-  IResource *res =
-    DesignTool::CreateExtTaskCallResource(tab_, dparams->GetModuleName(), fn);
+  IResource *res = nullptr;
+  if (dparams->IsExtCombinational()) {
+    res =
+      DesignTool::CreateExtCombinationalResource(tab_,
+						 dparams->GetModuleName(),
+						 fn);
+  } else {
+    res = DesignTool::CreateExtTaskCallResource(tab_,
+						dparams->GetModuleName(), fn);
+  }
   iroha::ResourceParams *iparams = res->GetParams();
 
   fe::VarDeclSet *a = method->GetParseTree()->GetArgs();
-  if (a) {
-    for (fe::VarDecl *vd : a->decls) {
-      IValueType vt;
-      if (vd->GetType() == sym_bool) {
-	vt.SetWidth(0);
-      } else {
-	vt.SetWidth(vd->GetWidth().GetWidth());
-      }
+  PopulateIOTypes(a, false, res);
+  fe::VarDeclSet *r = method->GetParseTree()->GetReturns();
+  PopulateIOTypes(r, true, res);
+  return res;
+}
+
+void ResourceSet::PopulateIOTypes(fe::VarDeclSet *vds, bool is_output,
+				  IResource *res) {
+  if (vds == nullptr) {
+    return;
+  }
+  for (fe::VarDecl *vd : vds->decls) {
+    IValueType vt;
+    if (vd->GetType() == sym_bool) {
+      vt.SetWidth(0);
+    } else {
+      vt.SetWidth(vd->GetWidth().GetWidth());
+    }
+    if (is_output) {
+      res->output_types_.push_back(vt);
+    } else {
       res->input_types_.push_back(vt);
     }
   }
-  return res;
 }
 
 IResource *ResourceSet::GetExternalArrayResource() {

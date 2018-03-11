@@ -8,6 +8,7 @@ class Annotation;
 
 namespace fe {
 class VarDecl;
+class VarDeclSet;
 }  // namespace fe
 
 namespace iroha {
