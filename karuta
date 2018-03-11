@@ -4,10 +4,10 @@
 # installation. This is different from lib/karuta{.in}.
 
 
-NLI_BASE_DIR=`dirname $0`
-NLI_DIR=${NLI_BASE_DIR}/lib
+KARUTA_BASE_DIR=`dirname $0`
+KARUTA_DIR=${KARUTA_BASE_DIR}/lib
 
-export NLI_DIR
+export KARUTA_DIR
 
 if test "${GDB+set}" = set; then
   WRAPPER="$GDB --args"
@@ -17,4 +17,4 @@ if test "${VALGRIND+set}" = set; then
   WRAPPER="valgrind --leak-check=full --show-reachable=yes"
 fi
 
-$WRAPPER ${NLI_BASE_DIR}/karuta-bin $@
+$WRAPPER ${KARUTA_BASE_DIR}/karuta-bin $@

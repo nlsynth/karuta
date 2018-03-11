@@ -11,7 +11,7 @@ import tempfile
 import test_files
 
 print "Running tests"
-os.putenv("NLI_DIR", "../lib/")
+os.putenv("KARUTA_DIR", "../lib/")
 nli_binary="../karuta-bin"
 iroha_binary=""
 verilog_compiler="iverilog"
@@ -84,7 +84,7 @@ class NLITest():
                 num_fails = num_fails + 1
             if re.search("ASSERTION UNDEFINED", line):
                 num_fails = num_fails + 1
-            if re.search("NLI DONE", line):
+            if re.search("KARUTA DONE", line):
                 done_stat = 1
                 if re.search("error", line):
                     num_fails = num_fails + 1
@@ -192,7 +192,7 @@ class NLITest():
         timeout = "1000"
         if "nli_timeout" in test_info:
             timeout = str(test_info["nli_timeout"])
-        cmd = "NLI_DIR=../lib "
+        cmd = "KARUTA_DIR=../lib "
         cmd += nli_binary + " " + self.source_fn + " " + vanilla
         if use_zfe:
             cmd += " -z"

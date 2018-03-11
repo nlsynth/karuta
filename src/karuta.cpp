@@ -5,7 +5,7 @@
 
 using std::set;
 
-const char *Env::nli_dir_;
+const char *Env::karuta_dir_;
 string Env::output_root_;
 string Env::output_marker_;
 string Env::module_prefix_;
@@ -18,24 +18,24 @@ const string &Env::GetVersion() {
   return v;
 }
 
-const char *Env::GetNliDir() {
-  if (!nli_dir_) {
-    nli_dir_ = getenv("NLI_DIR");
+const char *Env::GetKarutaDir() {
+  if (!karuta_dir_) {
+    karuta_dir_ = getenv("KARUTA_DIR");
   }
-  if (!nli_dir_) {
-#ifdef NLI_DIR
-    nli_dir_ = NLI_DIR;
+  if (!karuta_dir_) {
+#ifdef KARUTA_DIR
+    karuta_dir_ = KARUTA_DIR;
 #else
-    nli_dir_ = ".";
+    karuta_dir_ = ".";
 #endif
   }
-  return nli_dir_;
+  return karuta_dir_;
 }
 
 void Env::SearchPathList(const char *fn,
 			 vector<string> *paths) {
   if (fn[0] != '/' && fn[0] != '.') {
-    string fn1 = Env::GetNliDir() +
+    string fn1 = Env::GetKarutaDir() +
       string("/") + string(fn);
     paths->push_back(fn1);
   }

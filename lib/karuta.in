@@ -5,7 +5,7 @@
 
 prefix=@prefix@
 
-export NLI_DIR=@datadir@/karuta
+export KARUTA_DIR=@datadir@/karuta
 PATH=@prefix@/bin:$PATH
 
 if test "${GDB+set}" = set; then

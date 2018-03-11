@@ -25,7 +25,7 @@ using std::vector;
 class Env {
 public:
   static const string &GetVersion();
-  static const char *GetNliDir();
+  static const char *GetKarutaDir();
   static bool GetOutputPath(const char *fn, string *path);
   static const string &GetOutputMarker();
   static void SearchPathList(const char *fn,
@@ -42,7 +42,7 @@ public:
   static const string &GetIrohaBinPath();
 
 private:
-  static const char *nli_dir_;
+  static const char *karuta_dir_;
   static string output_root_;
   static string output_marker_;
   static bool sandbox_mode_;

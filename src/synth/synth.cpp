@@ -42,8 +42,8 @@ string Synth::IrPath(vm::Object *obj) {
       return path;
     }
   }
-  char buf[64];
-  sprintf(buf, "/tmp/nli-%d-%ld.iroha", getpid(), (long)obj);
+  char buf[128];
+  sprintf(buf, "/tmp/karuta-%d-%ld.iroha", getpid(), (long)obj);
   return string(buf);
 }
 
@@ -66,7 +66,7 @@ int Synth::RunIroha(vm::Object *obj, const string &args) {
     return -1;
   }
   string path = IrPath(obj);
-  string iopt = string("--iroha -I ") + Env::GetNliDir();
+  string iopt = string("--iroha -I ") + Env::GetKarutaDir();
   string e = cmd + " " + iopt + " " +
     path + " " + args;
   cout << "command=" << e << "\n";

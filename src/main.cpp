@@ -73,8 +73,8 @@ private:
 };
 
 void Main::PrintUsage() {
-  cout << "nli-" << Env::GetVersion() << "\n";
-  cout << " nli [-d[spb]] scanner,parser,byte code compiler\n"
+  cout << "karuta-" << Env::GetVersion() << "\n";
+  cout << " karuta [-d[spb]] scanner,parser,byte code compiler\n"
        << "   -l\n"
        << "   -l=[modules]\n"
        << "   --iroha_bin [iroha]\n"
@@ -298,7 +298,7 @@ int Main::main(int argc, char **argv) {
 
   ProcDebugArgs(args.debug_flags);
   string exit_status;
-  LOG(INFO) << "NLI-" << Env::GetVersion();
+  LOG(INFO) << "KARUTA-" << Env::GetVersion();
   RunFiles(args.source_files);
   if (Status::CheckAllErrors(true)) {
     exit_status = "error";
@@ -306,7 +306,7 @@ int Main::main(int argc, char **argv) {
   if (print_exit_status) {
     // Used to confirm this program was finished normally.
     // (without SEGV and so on)
-    cout << "NLI DONE: " << exit_status << "\n";
+    cout << "KARUTA DONE: " << exit_status << "\n";
   }
   return 0;
 }
