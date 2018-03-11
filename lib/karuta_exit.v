@@ -1,4 +1,4 @@
-module exit(clk, rst, req_valid, req_ready);
+module karuta_exit(clk, rst, req_valid, req_ready);
   input clk;
   input rst;
   input req_valid;

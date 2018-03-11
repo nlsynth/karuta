@@ -18,15 +18,15 @@ def Kernel.compile() {
 }
 
 @embed(resource = "wait_cycles",
- verilog = "nli_wait.v",
+ verilog = "karuta_wait.v",
  file= "copy",
  module= "wait_cycles")
 def Kernel.__wait(cycles int) {
 }
 
 @embed(resource = "exit",
- verilog = "nli_exit.v",
+ verilog = "karuta_exit.v",
  file = "copy",
- module = "nli_exit")
+ module = "karuta_exit")
 def Kernel.__exit() {
 }
