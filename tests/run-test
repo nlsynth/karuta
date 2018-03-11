@@ -148,11 +148,11 @@ class NLITest():
         if has_iroha_sram:
             has_iroha_mem_if = False
         if has_mem_if:
-            cmd += " -D NLI_RAM"
-            cmd += " -D NLI_RAM1"
+            cmd += " -D KARUTA_RAM"
+            cmd += " -D KARUTA_RAM1"
         if has_iroha_mem_if:
-            cmd += " -D NLI_RAM"
-            cmd += " -D NLI_RAM2"
+            cmd += " -D KARUTA_RAM"
+            cmd += " -D KARUTA_RAM2"
         return cmd
 
     def CheckVerilog(self, fn, summary, test_info):

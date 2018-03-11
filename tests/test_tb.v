@@ -2,7 +2,7 @@
 //
 
 `timescale 1ns/1ns
-`ifdef NLI_RAM
+`ifdef KARUTA_RAM
 `include "mem16k.v"
 `endif
 
@@ -25,7 +25,7 @@ module test_tb;
   end
 
   always begin
-`ifdef NLI_DEBUG
+`ifdef KARUTA_DEBUG
     #10 clk = ~clk;
     #9 clk = ~clk;
      $display("--------");
@@ -34,7 +34,7 @@ module test_tb;
 `endif
   end
 
-`ifdef NLI_RAM
+`ifdef KARUTA_RAM
   wire [31:0] addr;
   wire write_en;
   wire [31:0] wdata;
@@ -45,10 +45,10 @@ module test_tb;
 `endif
 
   mod_main m(.clk(clk), .rst(rst)
-`ifdef NLI_RAM1
+`ifdef KARUTA_RAM1
 , .addr_o(addr), .write_en_o(write_en), .data_o(wdata), .data_i(rdata)
 `endif
-`ifdef NLI_RAM2
+`ifdef KARUTA_RAM2
 , .sram_addr(addr), .sram_wdata_en(write_en), .sram_wdata(wdata), .sram_rdata(rdata)
 `endif
   );

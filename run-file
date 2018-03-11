@@ -2,7 +2,7 @@
 
 # utility to run commands required to run compiled verilog.
 # example.
-# $ run-file /tmp/a.n /tmp/a.v
+# $ run-file /tmp/a.karuta /tmp/a.v
 
 import os
 import re
@@ -10,19 +10,19 @@ import sys
 
 args = sys.argv[1:]
 
-nfile = ""
+kfile = ""
 vfile = "/tmp/a.v"
 ccfile = ""
 aout = "/tmp/a.out"
 tbfile = "tests/test_tb.v"
 voptions = ["-Ilib/"]
-nli_cmd = "./nli"
+karuta_cmd = "./karuta"
 iverilog_cmd = "iverilog"
 
 for arg in sys.argv:
-  if re.search("\.n$", arg):
-    print "nfile=" + arg
-    nfile = arg
+  if re.search("\.karuta$", arg):
+    print "kfile=" + arg
+    kfile = arg
   if re.search("\.v$", arg):
     print "vfile=" + arg
     vfile = arg
@@ -30,11 +30,11 @@ for arg in sys.argv:
     print "ccfile=" + arg
     ccfile = arg
   if arg == "-m":
-    voptions.append("-DNLI_RAM")
+    voptions.append("-DKARUTA_RAM")
   if arg == "-l":
     voptions.append("-DLONG_SIM")
   if arg == "-d":
-    voptions.append("-DNLI_DEBUG")
+    voptions.append("-DKARUTA_DEBUG")
 
 def run_command(args):
   cmd = " ".join(args)
@@ -44,12 +44,12 @@ def run_command(args):
     print "stop" + str(res)
     exit()
 
-# run nli
-if nfile:
-  cmd = [nli_cmd, nfile, "--module_prefix=mod"]
+# run karuta
+if kfile:
+  cmd = [karuta_cmd, kfile, "--module_prefix=mod"]
   run_command(cmd)
 else:
-  print "skipping nli"
+  print "skipping karuta"
 
 # run c output
 if ccfile:
