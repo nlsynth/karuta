@@ -8,7 +8,7 @@ VERSION = "0.3.0wip"
 
 EXTRA = ["README.md", "NEWS", "configure", "Makefile", "config.mk", "karuta", "src/karuta.gyp", "iroha/src/iroha.gyp", "src/fe/parser.ypp", "genparser.py", "karuta_files.py", "docs/LRM.md", "examples/top.karuta"]
 
-LIB_FILES = ["lib/karuta.in", "lib/default-isynth.karuta", "lib/karuta_wait.v", "lib/karuta_exit.v", "lib/nli_server.py", "lib/nli_wrapper.py", "lib/nli_examples.py"]
+LIB_FILES = ["lib/karuta.in", "lib/default-isynth.karuta", "lib/karuta_wait.v", "lib/karuta_exit.v", "lib/karuta_server.py", "lib/karuta_wrapper.py", "lib/karuta_examples.py"]
 
 ifiles = iroha_files.GetGypFileList("iroha/src/iroha.gyp")
 iextras = iroha_files.GetExtraFileList("iroha/")
