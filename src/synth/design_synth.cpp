@@ -139,7 +139,7 @@ void DesignSynth::DeterminePrimaryThread() {
 }
 
 bool DesignSynth::GetResetPolarity() {
-  // Use positive reset as the default, since libraries of neon light
+  // Use positive reset as the default, since libraries of Karuta
   // assumes positive reset.
   sym_t synth_params = sym_lookup("$synth_params");
   vm::Value *value = root_obj_->LookupValue(synth_params, false);

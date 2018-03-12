@@ -43,7 +43,7 @@ class KarutaWrapper(object):
 
         self.Write('''
 <html><head>
-<title>Neon Light Playground</title>
+<title>Karuta Playground</title>
 <style>
   body {
   background: #ddfaba

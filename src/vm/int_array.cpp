@@ -1,4 +1,4 @@
-// memory model for interpreted neon
+// Memory model for interpreted Karuta
 #include "vm/int_array.h"
 
 #include "numeric/numeric_op.h"  // from iroha
