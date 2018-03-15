@@ -25,6 +25,26 @@ class Value;
 namespace compiler {
 class Compiler;
 class ExprCompiler;
+
+class RegisterTuple {
+public:
+  RegisterTuple() {
+  }
+  explicit RegisterTuple(vm::Register *reg) {
+    if (reg != nullptr) {
+      regs.push_back(reg);
+    }
+  }
+  // only for transition period from one vm::Register to RegisterTuple.
+  vm::Register *GetOne() {
+    if (regs.size() == 1) {
+      return regs[0];
+    }
+    return nullptr;
+  }
+  vector<vm::Register *> regs;
+};
+
 }  // namespace compiler
 
 #endif  // _compiler_common_h_

@@ -36,7 +36,8 @@ vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
     return CompileSymExpr(expr);
   }
   if (type == fe::EXPR_FUNCALL) {
-    return CompileFuncallExpr(nullptr, expr);
+    RegisterTuple tp = CompileFuncallExpr(nullptr, expr);
+    return tp.GetOne();
   }
   if (type == fe::UNIOP_POST_INC ||
       type == fe::UNIOP_POST_DEC) {
@@ -57,13 +58,19 @@ vm::Register *ExprCompiler::CompileExpr(fe::Expr *expr) {
       type == fe::BINOP_AND_ASSIGN ||
       type == fe::BINOP_XOR_ASSIGN ||
       type == fe::BINOP_OR_ASSIGN) {
-    return CompileAssign(expr);
+    RegisterTuple tp = CompileAssign(expr);
+    return tp.GetOne();
   }
   if (type == fe::BINOP_ARRAY_REF) {
     return CompileArrayRef(expr);
   }
   if (type == fe::BINOP_COMMA) {
-    return CompileComma(expr);
+    RegisterTuple rt = CompileComma(expr);
+    if (rt.regs.size() > 0) {
+      // Uses the last value.
+      return rt.regs[rt.regs.size() - 1];
+    }
+    return nullptr;
   }
   if (type == fe::BINOP_ELM_REF) {
     return CompileElmRef(expr);
@@ -275,15 +282,15 @@ vm::Register *ExprCompiler::CompileTriTerm(fe::Expr *expr) {
   return res;
 }
 
-vm::Register *ExprCompiler::CompileComma(fe::Expr *expr) {
+RegisterTuple ExprCompiler::CompileComma(fe::Expr *expr) {
   vector<fe::Expr*> value_exprs;
   FlattenCommas(expr, &value_exprs);
   vm::Register *reg = nullptr;
+  RegisterTuple rt;
   for (size_t i = 0; i < value_exprs.size(); ++i) {
-    reg = CompileExpr(value_exprs[i]);
+    rt.regs.push_back(CompileExpr(value_exprs[i]));
   }
-  // Use the last value.
-  return reg;
+  return rt;
 }
 
 vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
@@ -296,22 +303,21 @@ vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
     res_reg->orig_name_ = elm_name;
     return res_reg;
   } else if (rhs->GetType() == fe::EXPR_FUNCALL) {
-    return CompileFuncallExpr(obj_reg, rhs);
+    RegisterTuple tp = CompileFuncallExpr(obj_reg, rhs);
+    return tp.GetOne();
   }
   CHECK(false);
   return nullptr;
 }
 
-vm::Register *ExprCompiler::CompileFuncallExpr(vm::Register *obj_reg,
+RegisterTuple ExprCompiler::CompileFuncallExpr(vm::Register *obj_reg,
 					       fe::Expr *expr) {
-  vector<vm::Register *> lhs_regs;
-  lhs_regs.push_back(compiler_->AllocRegister());
-  return CompileMultiValueFuncall(obj_reg, expr, lhs_regs);
+  return CompileMultiValueFuncall(obj_reg, expr, 1);
 }
 
-vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
+RegisterTuple ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
 						     fe::Expr *funcall,
-						     vector<vm::Register *> &lhs_regs) {
+						     int num_lhs) {
   vm::Insn *call_insn = new vm::Insn;
   call_insn->op_ = vm::OP_FUNCALL;
   call_insn->insn_expr_ = funcall;
@@ -337,7 +343,7 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   for (size_t i = 0; i < args.size(); ++i) {
     vm::Register *reg = CompileExpr(args[i]);
     if (!reg) {
-      return nullptr;
+      return RegisterTuple();
     }
     call_insn->src_regs_.push_back(reg);
   }
@@ -352,14 +358,15 @@ vm::Register *ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   }
   if (!compiler_->IsTopLevel() && method == nullptr) {
     // Missing method. The error was already reported.
-    return nullptr;
+    return RegisterTuple();
   }
-  return EmitFuncallDone(call_insn, method, lhs_regs);
+  return EmitFuncallDone(call_insn, method, num_lhs);
 }
 
-vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
+RegisterTuple ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
 					    vm::Method *method,
-					    vector<vm::Register *> &lhs_regs) {
+					    int num_lhs) {
+  RegisterTuple rt;
   vm::Insn *done_insn = new vm::Insn;
   done_insn->op_ = vm::OP_FUNCALL_DONE;
   done_insn->insn_expr_ = call_insn->insn_expr_;
@@ -370,26 +377,24 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
   // can be determined only from LHS expression.
   // Types are also unknown, so let the executor see them later.
   if (compiler_->IsTopLevel()) {
-    for (auto *reg : lhs_regs) {
+    for (int i = 0; i < num_lhs; ++i) {
+      vm::Register *reg = compiler_->AllocRegister();
       done_insn->dst_regs_.push_back(reg);
+      rt.regs.push_back(reg);
     }
     compiler_->EmitInsn(done_insn);
-    CHECK(lhs_regs.size() > 0);
-    return lhs_regs[0];
+    CHECK(num_lhs > 0);
+    return rt;
   }
 
   int num_rets = method->GetNumReturnRegisters();
-  if (!(num_rets == 0 && lhs_regs.size() == 1)) {
-    CHECK(lhs_regs.size() <= num_rets) << sym_cstr(call_insn->label_) << " " << num_rets << "return values, but " << lhs_regs.size() << " lhs";
+  if (!(num_rets == 0 && num_lhs == 1)) {
+    CHECK(num_lhs <= num_rets)
+      << sym_cstr(call_insn->label_)
+      << " " << num_rets << "return values, but " << num_lhs << " lhs";
   }
-  vector<vm::Register *> rets;
   for (int i = 0; i < num_rets; ++i) {
-    vm::Register *reg;
-    if (i < lhs_regs.size()) {
-      reg = lhs_regs[i];
-    } else {
-      reg = compiler_->AllocRegister();
-    }
+    vm::Register *reg = compiler_->AllocRegister();
     reg->type_.value_type_ = vm::Value::NUM;
     if (method->return_types_.size() > i) {
       reg->type_ = method->return_types_[i];
@@ -399,13 +404,10 @@ vm::Register *ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
       reg->type_.width_ = vd->GetWidth();
     }
     done_insn->dst_regs_.push_back(reg);
-    rets.push_back(reg);
+    rt.regs.push_back(reg);
   }
   compiler_->EmitInsn(done_insn);
-  if (rets.size() > 0) {
-    return rets[0];
-  }
-  return nullptr;
+  return rt;
 }
 
 vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
@@ -429,24 +431,30 @@ vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
   return method_value->method_;
 }
 
-vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
+RegisterTuple ExprCompiler::CompileAssign(fe::Expr *expr) {
   // Special pattern.
   // (x, y) = f(...)
   if (expr->GetRhs()->GetType() == fe::EXPR_FUNCALL &&
       expr->GetLhs()->GetType() == fe::BINOP_COMMA) {
-    vector<vm::Register *> lhs_regs;
     vector<fe::Expr*> values;
     FlattenCommas(expr->GetLhs(), &values);
+    RegisterTuple lhs;
     for (auto *v : values) {
-      lhs_regs.push_back(CompileSymExpr(v));
+      lhs.regs.push_back(CompileSymExpr(v));
     }
-    return CompileMultiValueFuncall(nullptr, expr->GetRhs(), lhs_regs);
+    RegisterTuple rhs =
+      CompileMultiValueFuncall(nullptr, expr->GetRhs(), values.size());
+    CHECK(lhs.regs.size() == rhs.regs.size());
+    for (int i = 0; i < lhs.regs.size(); ++i) {
+      compiler_->SimpleAssign(rhs.regs[i], lhs.regs[i]);
+    }
+    return lhs;
   }
 
   // RHS.
   vm::Register *rhs_reg = CompileExpr(expr->GetRhs());
   if (!rhs_reg) {
-    return nullptr;
+    return RegisterTuple();
   }
   if (expr->GetType() != fe::BINOP_ASSIGN) {
     // now rhs corresponds lhs op= rhs.
@@ -455,7 +463,7 @@ vm::Register *ExprCompiler::CompileAssign(fe::Expr *expr) {
   }
 
   vm::Insn *insn = new vm::Insn;
-  return CompileAssignToLhs(insn, expr->GetLhs(), rhs_reg);
+  return RegisterTuple(CompileAssignToLhs(insn, expr->GetLhs(), rhs_reg));
 }
 
 vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,

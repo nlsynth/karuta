@@ -20,7 +20,7 @@ public:
   static void FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas);
 
 private:
-  vm::Register *CompileAssign(fe::Expr *expr);
+  RegisterTuple CompileAssign(fe::Expr *expr);
   vm::Register *CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 				     vm::Register *rhs_reg);
   vm::Register *CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
@@ -31,12 +31,12 @@ private:
   vm::Register *CompileArrayRef(fe::Expr *expr);
   vm::Register *CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
 				   vm::Register *rhs_reg);
-  vm::Register *CompileComma(fe::Expr *expr);
+  RegisterTuple CompileComma(fe::Expr *expr);
   vm::Register *CompileElmRef(fe::Expr *expr);
-  vm::Register *CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
-  vm::Register *CompileMultiValueFuncall(vm::Register *obj_reg,
+  RegisterTuple CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
+  RegisterTuple CompileMultiValueFuncall(vm::Register *obj_reg,
 					 fe::Expr *funcall,
-					 vector<vm::Register *> &lhs_regs);
+					 int num_lhs);
   vm::Register *CompileSimpleExpr(fe::Expr *expr);
   vm::Register *CompileTriTerm(fe::Expr *expr);
   void CompileIncDecNonLocal(fe::Expr *expr);
@@ -49,9 +49,9 @@ private:
   void PropagateRegisterType(vm::Insn *insn,
 			     vm::Register *lhs, vm::Register *rhs,
 			     vm::RegisterType *t);
-  vm::Register *EmitFuncallDone(vm::Insn *call_insn,
+  RegisterTuple EmitFuncallDone(vm::Insn *call_insn,
 				vm::Method *method,
-				vector<vm::Register *> &lhs_regs);
+				int num_lhs);
   vm::Method *GetCalleeMethod(vm::Insn *call_insn);
   vm::Register *LoadNumericTypeRegister(sym_t obj_name);
 
