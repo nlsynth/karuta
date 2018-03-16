@@ -14,12 +14,13 @@ class ExprCompiler {
 public:
   ExprCompiler(Compiler *compiler);
 
-  vm::Register *CompileExpr(fe::Expr *expr);
+  RegisterTuple CompileExpr(fe::Expr *expr);
   vm::Register *CompileSymExpr(fe::Expr *expr);
   void CompileIncDecExpr(fe::Expr *expr);
   static void FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas);
 
 private:
+  vm::Register *CompileExprToOneReg(fe::Expr *expr);
   RegisterTuple CompileAssign(fe::Expr *expr);
   vm::Register *CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 				     vm::Register *rhs_reg);

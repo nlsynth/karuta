@@ -308,7 +308,8 @@ void Compiler::CompileReturn(fe::Stmt *stmt) {
   CHECK(num_returns == value_exprs.size());
   vector<vm::Register *> regs;
   for (size_t i = 0; i < value_exprs.size(); ++i) {
-    regs.push_back(exc_->CompileExpr(value_exprs[i]));
+    RegisterTuple rt = exc_->CompileExpr(value_exprs[i]);
+    regs.push_back(rt.GetOne());
   }
   for (size_t i = 0; i < value_exprs.size(); ++i) {
     vm::Insn *insn = new vm::Insn;
@@ -334,7 +335,8 @@ void Compiler::CompileLabel(fe::Stmt *stmt) {
 void Compiler::CompileIfStmt(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_IF;
-  insn->src_regs_.push_back(exc_->CompileExpr(stmt->GetExpr()));
+  RegisterTuple rt = exc_->CompileExpr(stmt->GetExpr());
+  insn->src_regs_.push_back(rt.GetOne());
   insn->insn_stmt_ = stmt;
   EmitInsn(insn);
 }
@@ -343,7 +345,8 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetVarDecl()->GetNameExpr();
   vm::Register *rhs_val = nullptr;
   if (stmt->GetVarDecl()->GetInitialVal() != nullptr) {
-    rhs_val = exc_->CompileExpr(stmt->GetVarDecl()->GetInitialVal());
+    RegisterTuple rt = exc_->CompileExpr(stmt->GetVarDecl()->GetInitialVal());
+    rhs_val = rt.GetOne();
   }
 
   if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF) {

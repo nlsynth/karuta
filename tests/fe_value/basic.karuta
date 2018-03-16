@@ -38,8 +38,9 @@ assert(x == 11);
 x --;
 assert(x == 10);
 
-x = 1, 2;
-assert(x == 1);
+// last value
+x = (1, 2);
+assert(x == 2);
 
 var p bool;
 p = (false, false, true);
