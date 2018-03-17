@@ -344,7 +344,17 @@ RegisterTuple ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
   vector<fe::Expr*> args;
   FlattenCommas(funcall->GetArgs(), &args);
   for (size_t i = 0; i < args.size(); ++i) {
-    vm::Register *reg = CompileExprToOneReg(args[i]);
+    RegisterTuple rp = CompileExpr(args[i]);
+    if (i == 0 && rp.regs.size() > 1) {
+      // Processes tuple argument.
+      for (vm::Register *reg : rp.regs) {
+	call_insn->src_regs_.push_back(reg);
+      }
+      CHECK(args.size() == 1);
+      // Does not see the remaining args.
+      break;
+    }
+    vm::Register *reg = rp.GetOne();
     if (!reg) {
       return RegisterTuple();
     }
