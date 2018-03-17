@@ -436,22 +436,9 @@ vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
 
 RegisterTuple ExprCompiler::CompileAssign(fe::Expr *expr) {
   // Special pattern.
-  // (x, y) = f(...)
-  if (expr->GetRhs()->GetType() == fe::EXPR_FUNCALL &&
-      expr->GetLhs()->GetType() == fe::BINOP_COMMA) {
-    vector<fe::Expr*> values;
-    FlattenCommas(expr->GetLhs(), &values);
-    RegisterTuple lhs;
-    for (auto *v : values) {
-      lhs.regs.push_back(CompileSymExpr(v));
-    }
-    RegisterTuple rhs =
-      CompileMultiValueFuncall(nullptr, expr->GetRhs(), values.size());
-    CHECK(lhs.regs.size() == rhs.regs.size());
-    for (int i = 0; i < lhs.regs.size(); ++i) {
-      compiler_->SimpleAssign(rhs.regs[i], lhs.regs[i]);
-    }
-    return lhs;
+  // (x, y) = ...
+  if (expr->GetLhs()->GetType() == fe::BINOP_COMMA) {
+    return CompileMultiAssign(expr->GetLhs(), expr->GetRhs());
   }
 
   // RHS.
@@ -467,6 +454,36 @@ RegisterTuple ExprCompiler::CompileAssign(fe::Expr *expr) {
 
   vm::Insn *insn = new vm::Insn;
   return RegisterTuple(CompileAssignToLhs(insn, expr->GetLhs(), rhs_reg));
+}
+
+RegisterTuple ExprCompiler::CompileMultiAssign(fe::Expr *lhs_expr,
+					       fe::Expr *rhs_expr) {
+  vector<fe::Expr*> values;
+  FlattenCommas(lhs_expr, &values);
+  RegisterTuple lhs;
+  for (auto *v : values) {
+    lhs.regs.push_back(CompileSymExpr(v));
+  }
+  RegisterTuple rhs;
+  if (rhs_expr->GetType() == fe::EXPR_FUNCALL) {
+    rhs = CompileMultiValueFuncall(nullptr, rhs_expr, values.size());
+  } else if (rhs_expr->GetType() == fe::BINOP_COMMA) {
+    // Assigns to temporary registers to avoid unnecesary dependency.
+    // e.g. (x, y) = (y, x) => x = y, y = x => (x,y) == (y,y)!
+    RegisterTuple tmp = CompileComma(rhs_expr);
+    for (vm::Register *reg : tmp.regs) {
+      vm::Register *dst = compiler_->AllocRegister();
+      compiler_->SimpleAssign(reg, dst);
+      rhs.regs.push_back(dst);
+    }
+  } else {
+    CHECK(false);
+  }
+  CHECK(lhs.regs.size() == rhs.regs.size());
+  for (int i = 0; i < lhs.regs.size(); ++i) {
+    compiler_->SimpleAssign(rhs.regs[i], lhs.regs[i]);
+  }
+  return lhs;
 }
 
 vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,

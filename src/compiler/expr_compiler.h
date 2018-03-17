@@ -22,6 +22,7 @@ public:
 private:
   vm::Register *CompileExprToOneReg(fe::Expr *expr);
   RegisterTuple CompileAssign(fe::Expr *expr);
+  RegisterTuple CompileMultiAssign(fe::Expr *lhs_expr, fe::Expr *rhs_expr);
   vm::Register *CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 				     vm::Register *rhs_reg);
   vm::Register *CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
