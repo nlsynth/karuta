@@ -69,7 +69,7 @@ void Thread::RunMethod() {
     if (method->IsTopLevel()) {
       DumpStream ds(cout);
       ds.os << "--post toplevel execution.\n";
-      method->Dump();
+      method->Dump(ds);
     }
   }
   PopMethodFrame();

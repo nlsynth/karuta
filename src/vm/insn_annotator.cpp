@@ -30,17 +30,17 @@ void InsnAnnotator::DoAnnotate() {
   if (!method_->IsTopLevel()) {
     ClearType();
   }
-  vector<Insn *> insns;
+  vector<Insn *> untyped_insns;
   for (auto *insn : method_->insns_) {
     if (!IsTyped(insn)) {
-      insns.push_back(insn);
+      untyped_insns.push_back(insn);
     }
   }
   int n;
   do {
     n = 0;
     vector<Insn *> tmp_insns;
-    for (auto *insn : insns) {
+    for (auto *insn : untyped_insns) {
       TryType(insn);
       if (IsTyped(insn)) {
 	++n;
@@ -48,7 +48,7 @@ void InsnAnnotator::DoAnnotate() {
 	tmp_insns.push_back(insn);
       }
     }
-    insns = tmp_insns;
+    untyped_insns = tmp_insns;
   } while (n > 0);
   PropagateType();
 }
@@ -110,7 +110,8 @@ void InsnAnnotator::ClearType() {
   for (auto *reg : method_->method_regs_) {
     if (!reg->GetIsDeclaredType()) {
       reg->type_.value_type_ = Value::NONE;
-      reg->type_.width_ = iroha::NumericWidth(false, 32);
+      // Sets the narrowest width so that CommonWidth() will not confuse.
+      reg->type_.width_ = iroha::NumericWidth(false, 0);
     }
   }
 }
