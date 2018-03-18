@@ -101,7 +101,6 @@ void yyerror(const char *msg) {
 namespace fe {
 
 std::unique_ptr<fe::ScannerInfo> FE::scanner_info_;
-string FE::dirname_;
 
 struct NLScannerInfo : ScannerInfo {
   virtual int LookupKeyword(sym_t sym) const {
@@ -157,6 +156,7 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 }
 
 bool FE::RunFile(const string &file, vm::VM *vm) {
+  Env::SetCurrentFile(file);
   vm::Method *method = CompileFile(file, dbg_parser_, vm);
   if (method == nullptr || method->IsCompileFailure()) {
     return false;
@@ -192,12 +192,6 @@ Method *FE::ReadFile(const string &file) {
 FileImage *FE::GetFileImage(const string &fn) {
   vector<string> paths;
   Env::SearchPathList(fn.c_str(), &paths);
-  if (!dirname_.empty()) {
-    char c = fn[0];
-    if (c != '/' && c != '.') {
-      paths.push_back(dirname_ + "/" + fn);
-    }
-  }
   FileImage *im = nullptr;
   for (const string &path : paths) {
     im = Scanner::CreateFileImage(path.c_str());

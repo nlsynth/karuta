@@ -1,5 +1,6 @@
 #include "synth/method_context.h"
 
+#include "base/stl_util.h"
 #include "synth/method_synth.h"
 
 namespace synth {

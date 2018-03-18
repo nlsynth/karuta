@@ -6,8 +6,7 @@
 
 class Util {
 public:
-  static string BaseName(const string &fn);
-  static string BaseNameWithoutSuffix(const string &fn);
+  static string DirName(const string &fn);
   static bool IsHtmlFileName(const string &fn);
   static bool IsCCFileName(const string &fn);
   static bool IsIrFileName(const string &fn);

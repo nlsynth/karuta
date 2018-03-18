@@ -2,6 +2,7 @@
 
 #include "base/annotation.h"
 #include "base/status.h"
+#include "base/stl_util.h"
 #include "fe/method.h"
 #include "iroha/i_design.h"
 #include "synth/design_synth.h"

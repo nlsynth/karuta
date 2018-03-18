@@ -1,6 +1,7 @@
 #include "vm/vm.h"
 
 #include "base/status.h"
+#include "base/stl_util.h"
 #include "compiler/compiler.h"
 #include "fe/expr.h"
 #include "vm/array_wrapper.h"

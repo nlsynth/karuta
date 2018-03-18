@@ -1,5 +1,7 @@
 #include "karuta.h"
 
+#include "base/util.h"
+
 #include <set>
 #include <string.h>
 
@@ -12,6 +14,7 @@ string Env::module_prefix_;
 bool Env::sandbox_mode_;
 string Env::argv0_;
 string Env::iroha_bin_path_;
+vector<string> Env::source_dirs_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -35,11 +38,18 @@ const char *Env::GetKarutaDir() {
 void Env::SearchPathList(const char *fn,
 			 vector<string> *paths) {
   if (fn[0] != '/' && fn[0] != '.') {
-    string fn1 = Env::GetKarutaDir() +
-      string("/") + string(fn);
-    paths->push_back(fn1);
+    auto dirs = SearchDirList();
+    for (string &d : dirs) {
+      paths->push_back(d + fn);
+    }
   }
   paths->push_back(string(fn));
+}
+
+vector<string> Env::SearchDirList() {
+  vector<string> dirs = source_dirs_;
+  dirs.push_back(Env::GetKarutaDir() + string("/"));
+  return dirs;
 }
 
 bool Env::GetOutputPath(const char *fn, string *path) {
@@ -86,6 +96,19 @@ void Env::SetArgv0(const string &c) {
 
 const string &Env::GetArgv0() {
   return argv0_;
+}
+
+void Env::SetCurrentFile(const string &fn) {
+  string dn = Util::DirName(fn);
+  if (dn.empty()) {
+    return;
+  }
+  for (string &s : source_dirs_) {
+    if (s == dn) {
+      return;
+    }
+  }
+  source_dirs_.push_back(dn);
 }
 
 bool Env::IsSandboxMode() {

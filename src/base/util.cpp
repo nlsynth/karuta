@@ -23,23 +23,13 @@ bool CheckFileSuffix(const string &fn,
 
 }  // namespace
 
-string Util::BaseName(const string &fn) {
+string Util::DirName(const string &fn) {
   const char *s = strrchr(fn.c_str(), '/');
-  if (s) {
-    s++;
-    return string(s);
+  if (s == nullptr) {
+    return "";
   }
-  return string(fn);
-}
-
-string Util::BaseNameWithoutSuffix(const string &fn) {
-  string base_name = BaseName(fn);
-  const char *s = strrchr(base_name.c_str(), '.');
-  if (!s) {
-    return base_name;
-  }
-  int len = s - base_name.c_str();
-  return string(base_name.c_str(), len);
+  int len = s - fn.c_str();
+  return string(fn.c_str(), len + 1);
 }
 
 bool Util::IsHtmlFileName(const string &fn) {

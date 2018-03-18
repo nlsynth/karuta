@@ -28,7 +28,6 @@ class FE {
   bool dbg_parser_;
 
   static std::unique_ptr<ScannerInfo> scanner_info_;
-  static string dirname_;
 };
 
 }  // namespace fe

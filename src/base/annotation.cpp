@@ -7,6 +7,7 @@
 #include "karuta.h"
 #include "base/annotation_builder.h"
 #include "base/pool.h"
+#include "base/stl_util.h"
 
 static const char kResource[] = "resource";
 static const char kFile[] = "file";

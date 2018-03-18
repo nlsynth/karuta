@@ -66,7 +66,11 @@ int Synth::RunIroha(vm::Object *obj, const string &args) {
     return -1;
   }
   string path = IrPath(obj);
-  string iopt = string("--iroha -I ") + Env::GetKarutaDir();
+  string iopt = "--iroha";
+  auto dirs = Env::SearchDirList();
+  for (auto &d : dirs) {
+    iopt += " -I " + d;
+  }
   string e = cmd + " " + iopt + " " +
     path + " " + args;
   cout << "command=" << e << "\n";
