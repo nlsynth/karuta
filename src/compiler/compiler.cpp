@@ -38,6 +38,12 @@ void Compiler::CompileMethod(vm::VM *vm, vm::Object *obj,
   }
   std::unique_ptr<Compiler> compiler(new Compiler(vm, obj, method));
   compiler->Compile();
+  if (Status::CheckAllErrors(false)) {
+    auto *parse_tree = method->GetParseTree();
+    Status::os(Status::USER_ERROR)
+      << "Failed in compilation of method: "
+      << parse_tree->GetName();
+  }
 }
 
 vm::Method *Compiler::CompileParseTree(vm::VM *vm, vm::Object *obj,

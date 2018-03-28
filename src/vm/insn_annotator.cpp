@@ -1,5 +1,6 @@
 #include "vm/insn_annotator.h"
 
+#include "base/status.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/stmt.h"
@@ -42,6 +43,9 @@ void InsnAnnotator::DoAnnotate() {
     vector<Insn *> tmp_insns;
     for (auto *insn : untyped_insns) {
       TryType(insn);
+      if (Status::CheckAllErrors(false)) {
+	return;
+      }
       if (IsTyped(insn)) {
 	++n;
       } else {
@@ -244,7 +248,11 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
   if (insn->obj_reg_ != nullptr) {
     obj = objs_[insn->obj_reg_];
     if (obj == nullptr) {
-      CHECK(method_->IsTopLevel());
+      if (!method_->IsTopLevel()) {
+	Status::os(Status::USER_ERROR)
+	  << "Can't get object to determine the return types: "
+	  << sym_cstr(insn->label_);
+      }
       return;
     }
   }

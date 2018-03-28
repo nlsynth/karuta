@@ -6,7 +6,8 @@
 
 namespace fe {
 
-Method::Method() : args_(nullptr), returns_(nullptr), annotation_(nullptr) {
+Method::Method(const string &name)
+  : name_(name), args_(nullptr), returns_(nullptr), annotation_(nullptr) {
 }
 
 void Method::Dump() const {
@@ -32,6 +33,10 @@ void Method::Dump(DumpStream &ds) const {
     returns_->Dump(ds);
     ds.pop_indent();
   }
+}
+
+const string &Method::GetName() const {
+  return name_;
 }
 
 const vector<Stmt*> &Method::GetStmts() const {

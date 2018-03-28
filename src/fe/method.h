@@ -8,10 +8,11 @@ namespace fe {
 
 class Method {
 public:
-  Method();
+  Method(const string &name);
 
   void Dump() const;
   void Dump(DumpStream &os) const;
+  const string &GetName() const;
 
   const vector<Stmt*> &GetStmts() const;
   vector<Stmt*> &GetMutableStmts();
@@ -23,6 +24,7 @@ public:
   void SetAnnotation(Annotation *an);
 
 private:
+  const string name_;
   vector<Stmt*> stmts_;
   VarDeclSet *args_;
   VarDeclSet *returns_;

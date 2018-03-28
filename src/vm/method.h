@@ -7,7 +7,7 @@
 
 namespace vm {
 
-// This can be either native implementation or in N language.
+// This can be either native implementation or in Karuta language.
 class Method {
 public:
   Method(bool is_toplevel);

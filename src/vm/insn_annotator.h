@@ -16,6 +16,7 @@ public:
   // Called from compiler.
   static void AnnotateMethod(VM *vm, Object *obj, Method *method);
 
+  // Called from AnnotateMethod()
   void DoAnnotate();
 
   // Add declared type by the compiler.

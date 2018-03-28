@@ -18,11 +18,12 @@ Annotation *Emitter::annotation_;
 Annotation *Emitter::func_annotation_;
 
 void Emitter::BeginFunction(Expr *name) {
-  Method *method = new Method;
+  string formatted_name = FormatMethodName(name);
+  Method *method = new Method(formatted_name);
   MethodDecl decl;
   decl.method_ = method;
   decl.name_expr_ = name;
-  decl.name_ = FormatMethodName(name);
+  decl.name_ = formatted_name;
   method_stack_.push_back(decl);
   NodePool::AddMethod(method);
 }

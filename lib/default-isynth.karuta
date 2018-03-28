@@ -1,6 +1,6 @@
 // Wrapper methods.
 // Adding __ prefix so that users can overwrite the original one.
-print("default-isynth.n loaded")
+print("default-isynth.karuta loaded")
 
 // Alias for convenience
 var Kernel.M object = Kernel
