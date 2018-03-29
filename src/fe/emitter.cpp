@@ -250,7 +250,7 @@ Stmt *Emitter::NewStmt(int type) {
 
 string Emitter::FormatMethodName(Expr *name) {
   if (name == nullptr) {
-    return "";
+    return "{Top Level}";
   }
   string n;
   Expr *e = name;

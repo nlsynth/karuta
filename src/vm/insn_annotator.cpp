@@ -122,14 +122,24 @@ void InsnAnnotator::ClearType() {
 
 void InsnAnnotator::TryType(Insn *insn) {
   if (insn->op_ == OP_LOAD_OBJ) {
+    vm::Object *obj;
     if (insn->obj_reg_ == nullptr) {
-      objs_[insn->dst_regs_[0]] = obj_;
+      obj = obj_;
     } else {
-      Value *obj_value = obj_->LookupValue(insn->label_, false);
-      CHECK(obj_value);
-      CHECK(obj_value->object_);
-      objs_[insn->dst_regs_[0]] = obj_value->object_;
+      obj = objs_[insn->obj_reg_];
     }
+    if (insn->label_ != sym_null) {
+      Value *obj_value = obj->LookupValue(insn->label_, false);
+      if (obj_value == nullptr) {
+	if (method_->IsTopLevel()) {
+	  return;
+	}
+      }
+      CHECK(obj_value) << sym_cstr(insn->label_) << "\n";
+      CHECK(obj_value->object_);
+      obj = obj_value->object_;
+    }
+    objs_[insn->dst_regs_[0]] = obj;
     insn->dst_regs_[0]->type_.value_type_ = Value::OBJECT;
     return;
   }
