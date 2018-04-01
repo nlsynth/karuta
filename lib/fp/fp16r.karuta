@@ -1,0 +1,58 @@
+// Regular/Relaxed version of FP16.
+// Not yet tested.
+//
+
+var Numerics.FP16R object = new()
+
+var FP16R object = Numerics.FP16R
+
+func FP16R.Build(s #0, e #5, f #10) (#16) {
+  return s :: e :: f
+}
+
+func FP16R.Add(x, y #16) (#16) {
+  return x + y
+}
+
+func FP16R.Mul(x, y #16) (#16) {
+  return mul1of2(mul0of2(x, y))
+}
+
+func FP16R.mul0of2(a0, a1 #16) (#0, #5, #5, #12) {
+  var ret0 #0
+  var ret1, ret2 #5
+  var ret3 #12
+  ret0 = a0[15:15] ^ a0[15:15]
+  ret1 = a0[14:10]
+  ret2 = a1[14:10]
+  var e0, e1 #1
+  if ret1 == 0 {
+    e0 = 0
+  } else {
+    e0 = 1
+  }
+  if ret2 == 0 {
+    e1 = 0
+  } else {
+    e1 = 1
+  }
+  var ff0 #10 = e0 :: a0[9:0]
+  var ff1 #10 = e1 :: a1[9:0]
+  var z #22 = ff0 * ff1
+  ret3 = z[21:10]
+  return ret0, ret1, ret2, ret3
+}
+
+func FP16R.mul1of2(a0 #0, a1, a2 #5, a3 #12) (#16) {
+  var ret0 #16
+  var e #6
+  e = a1 + a2 - 15 + a3[11:11]
+  var c #10
+  if (a3[11:11] == 1) {
+    c = a3[10:1]
+  } else {
+    c = a3[9:0]
+  }
+  ret0 = a0 :: e[4:0] :: c
+  return ret0
+}
