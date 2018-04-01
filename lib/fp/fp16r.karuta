@@ -18,6 +18,7 @@ func FP16R.Mul(x, y #16) (#16) {
   return mul1of2(mul0of2(x, y))
 }
 
+@ExtCombinational(resource="fp16rmul0", verilog="fp/fp16rmul.v", module="FP16RMulS0Of2", file="copy")
 func FP16R.mul0of2(a0, a1 #16) (#0, #5, #5, #12) {
   var ret0 #0
   var ret1, ret2 #5
@@ -43,6 +44,7 @@ func FP16R.mul0of2(a0, a1 #16) (#0, #5, #5, #12) {
   return ret0, ret1, ret2, ret3
 }
 
+@ExtCombinational(resource="fp16rmul1", verilog="fp/fp16rmul.v", module="FP16RMulS1Of2", file="copy")
 func FP16R.mul1of2(a0 #0, a1, a2 #5, a3 #12) (#16) {
   var ret0 #16
   var e #6
