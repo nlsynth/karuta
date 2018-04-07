@@ -11,7 +11,7 @@ func FP16R.Build(s #0, e #5, f #10) (#16) {
 }
 
 func FP16R.Add(x, y #16) (#16) {
-  return x + y
+  return addsub3of4(addsub2of4(addsub1of4(addsub0of4(x, y, 0))))
 }
 
 func FP16R.Mul(x, y #16) (#16) {
@@ -57,4 +57,24 @@ func FP16R.mul1of2(a0 #0, a1, a2 #5, a3 #12) (#16) {
   }
   ret0 = a0 :: e[4:0] :: c
   return ret0
+}
+
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS0Of4", file="copy")
+func FP16R.addsub0of4(a0, a1 #16, a2 #0) (#16, #16, #0, #0, #0) {
+  return 0, 0, 0, 0, 0
+}
+
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS1Of4", file="copy")
+func FP16R.addsub1of4(a0, a1 #16, a2, a3, a4 #0) (#12, #21, #5, #0) {
+  return 0, 0, 0, 0
+}
+
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS2Of4", file="copy")
+func FP16R.addsub2of4(a0 #12, a1 #21, a2 #5, a3 #0) (#5, #22) {
+  return 0, 0
+}
+
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS3Of4", file="copy")
+func FP16R.addsub3of4(a0 #5, a1 #22) (#16) {
+  return 0
 }

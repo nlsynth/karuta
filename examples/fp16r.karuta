@@ -3,6 +3,7 @@ import "fp/fp16r.karuta"
 def main() {
   var x #FP16R = Numerics.FP16R.Build(0, 15, 0)
   print(x * x)
+  print(x + x)
 }
 
 main()
