@@ -70,11 +70,11 @@ func FP16R.addsub1of4(a0, a1 #16, a2, a3, a4 #0) (#12, #21, #5, #0) {
 }
 
 @ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS2Of4", file="copy")
-func FP16R.addsub2of4(a0 #12, a1 #21, a2 #5, a3 #0) (#5, #22) {
-  return 0, 0
+func FP16R.addsub2of4(a0 #12, a1 #21, a2 #5, a3 #0) (#5, #22, #0) {
+  return 0, 0, 0
 }
 
 @ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS3Of4", file="copy")
-func FP16R.addsub3of4(a0 #5, a1 #22) (#16) {
+func FP16R.addsub3of4(a0 #5, a1 #22, a2 #0) (#16) {
   return 0
 }
