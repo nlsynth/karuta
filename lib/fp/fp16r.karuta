@@ -14,6 +14,10 @@ func FP16R.Add(x, y #16) (#16) {
   return addsub3of4(addsub2of4(addsub1of4(addsub0of4(x, y, 0))))
 }
 
+func FP16R.Sub(x, y #16) (#16) {
+  return addsub3of4(addsub2of4(addsub1of4(addsub0of4(x, y, 1))))
+}
+
 func FP16R.Mul(x, y #16) (#16) {
   return mul1of2(mul0of2(x, y))
 }
