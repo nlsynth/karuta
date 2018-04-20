@@ -11,11 +11,11 @@ func FP16R.Build(s #0, e #5, f #10) (#16) {
 }
 
 func FP16R.Add(x, y #16) (#16) {
-  return addsub3of4(addsub2of4(addsub1of4(addsub0of4(x, y, 0))))
+  return addsub4of5(addsub3of5(addsub2of5(addsub1of5(addsub0of5(x, y, 0)))))
 }
 
 func FP16R.Sub(x, y #16) (#16) {
-  return addsub3of4(addsub2of4(addsub1of4(addsub0of4(x, y, 1))))
+  return addsub4of5(addsub3of5(addsub2of5(addsub1of5(addsub0of5(x, y, 1)))))
 }
 
 func FP16R.Mul(x, y #16) (#16) {
@@ -63,22 +63,27 @@ func FP16R.mul1of2(a0 #0, a1, a2 #5, a3 #12) (#16) {
   return ret0
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS0Of4", file="copy")
-func FP16R.addsub0of4(a0, a1 #16, a2 #0) (#16, #16, #0, #0, #0) {
-  return 0, 0, 0, 0, 0
-}
-
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS1Of4", file="copy")
-func FP16R.addsub1of4(a0, a1 #16, a2, a3, a4 #0) (#12, #21, #5, #0) {
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS0Of5", file="copy")
+func FP16R.addsub0of5(a0, a1 #16, a2 #0) (#16, #16, #0, #0) {
   return 0, 0, 0, 0
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS2Of4", file="copy")
-func FP16R.addsub2of4(a0 #12, a1 #21, a2 #5, a3 #0) (#5, #22, #0) {
-  return 0, 0, 0
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS1Of5", file="copy")
+func FP16R.addsub1of5(a0, a1 #16, a2, a3 #0) (#0, #0, #22, #22, #5, #0, #0) {
+  return 0, 0, 0, 0, 0, 0, 0
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS3Of4", file="copy")
-func FP16R.addsub3of4(a0 #5, a1 #22, a2 #0) (#16) {
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS2Of5", file="copy")
+func FP16R.addsub2of5(a0, a1 #0, a2, a3 #22, a4 #5, a5, a6 #0) (#22, #0, #0, #5, #0, #0) {
+  return 0, 0, 0, 0, 0, 0
+}
+
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS3Of5", file="copy")
+func FP16R.addsub3of5(a0 #22, a1, a2 #0, a3 #5, a4, a5 #0) (#21, #0, #0, #5, #0, #0, #0) {
+  return 0, 0, 0, 0, 0, 0, 0
+}
+
+@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS4Of5", file="copy")
+func FP16R.addsub4of5(a0 #21, a1, a2 #0, a3 #5, a4, a5, a6 #0) (#16) {
   return 0
 }
