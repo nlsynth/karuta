@@ -35,9 +35,9 @@ void ObjectMethod::Synth() {
     iinsn = new IInsn(rset->PrintResource());
   } else if (name == kAssert) {
     iinsn = new IInsn(rset->AssertResource());
-  } else if (name == kLoad) {
+  } else if (name == kAxiLoad) {
     iinsn = SynthAxiAccess(obj, false);
-  } else if (name == kStore) {
+  } else if (name == kAxiStore) {
     iinsn = SynthAxiAccess(obj, true);
   } else if (name == kSlaveWait) {
     iinsn = SynthAxiWait(obj);
@@ -78,7 +78,7 @@ void ObjectMethod::Scan() {
   CHECK(obj);
   string name = GetSynthName(obj);
   SharedResourceSet *sres = walker_->GetSharedResourceSet();
-  if (name == kLoad || name == kStore ||
+  if (name == kAxiLoad || name == kAxiStore ||
       name == kMailboxPut || name == kMailboxGet ||
       name == kMailboxNotify || name == kMailboxWait ||
       name == kChannelWrite || name == kChannelNoWaitWrite ||

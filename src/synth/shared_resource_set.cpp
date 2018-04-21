@@ -103,7 +103,7 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
     res->writers_.insert(thr);
   }
   if (insn->op_ == vm::OP_FUNCALL) {
-    if (synth_name == kLoad || synth_name == kStore) {
+    if (synth_name == kAxiLoad || synth_name == kAxiStore) {
       res->axi_ctrl_thrs_.insert(thr);
     }
     if (synth_name == kMailboxGet || synth_name == kMailboxPut) {

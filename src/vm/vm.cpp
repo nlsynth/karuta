@@ -104,6 +104,10 @@ void VM::InstallObjects() {
   object_value.object_ = numerics_object_;
   kernel_object_->InstallValue(sym_lookup("Numerics"), object_value);
 
+  array_object_ = root_object_->Clone(this);
+  object_value.object_ = array_object_;
+  kernel_object_->InstallValue(sym_lookup("Array"), object_value);
+
   Object *env = root_object_->Clone(this);
   object_value.object_ = env;
   kernel_object_->InstallValue(sym_lookup("Env"), object_value);

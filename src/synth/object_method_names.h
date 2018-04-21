@@ -7,8 +7,8 @@ namespace synth {
 const char kAssert[] = "assert";
 const char kPrint[] = "print";
 const char kMain[] = "main";
-const char kLoad[] = "load";
-const char kStore[] = "store";
+const char kAxiLoad[] = "load";
+const char kAxiStore[] = "store";
 const char kChannelRead[] = "channel_read";
 const char kChannelWrite[] = "channel_write";
 const char kChannelNoWaitWrite[] = "channel_no_wait_write";

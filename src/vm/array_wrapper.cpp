@@ -67,7 +67,7 @@ bool ArrayWrapper::IsIntArray(Object *obj) {
 }
 
 Object *ArrayWrapper::Copy(VM *vm, Object *src_obj) {
-  Object *array_obj = vm->root_object_->Clone(vm);
+  Object *array_obj = vm->array_object_->Clone(vm);
   InstallMethods(vm, array_obj);
   ArrayWrapperData *src_data =
     (ArrayWrapperData *)src_obj->object_specific_.get();
@@ -90,7 +90,7 @@ string ArrayWrapper::ToString(Object *obj) {
 }
 
 Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
-  Object *array_obj = vm->root_object_->Clone(vm);
+  Object *array_obj = vm->array_object_->Clone(vm);
   InstallMethods(vm, array_obj);
   iroha::NumericWidth dw;
   ArrayWrapperData *data = new ArrayWrapperData(vm, size, false, dw, nullptr);
@@ -101,7 +101,7 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, uint64_t size,
 					 const iroha::NumericWidth &width,
 					 Annotation *an) {
-  Object *array_obj = vm->root_object_->Clone(vm);
+  Object *array_obj = vm->array_object_->Clone(vm);
   InstallMethods(vm, array_obj);
   ArrayWrapperData *data = new ArrayWrapperData(vm, size, true, width, an);
   array_obj->object_specific_.reset(data);
@@ -230,9 +230,15 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m =
     Method::InstallNativeMethod(vm, obj, "load", &ArrayWrapper::Load, rets);
-  m->SetSynthName(synth::kLoad);
+  m->SetSynthName(synth::kAxiLoad);
   m = Method::InstallNativeMethod(vm, obj, "store", &ArrayWrapper::Store, rets);
-  m->SetSynthName(synth::kStore);
+  m->SetSynthName(synth::kAxiStore);
+  m = Method::InstallNativeMethod(vm, obj, "axiLoad",
+				  &ArrayWrapper::Load, rets);
+  m->SetSynthName(synth::kAxiLoad);
+  m = Method::InstallNativeMethod(vm, obj, "axiStore",
+				  &ArrayWrapper::Store, rets);
+  m->SetSynthName(synth::kAxiStore);
   m = Method::InstallNativeMethod(vm, obj, "wait", &ArrayWrapper::Wait, rets);
   m->SetSynthName(synth::kSlaveWait);
 }
