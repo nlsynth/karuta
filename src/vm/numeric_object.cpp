@@ -31,7 +31,7 @@ int NumericObject::Width(Object *obj) {
   sym_t build = sym_lookup("Build");
   Value *v = obj->LookupValue(build, false);
   CHECK(v != nullptr && v->type_ == Value::METHOD);
-  // Acauires from the parse tree, since the method might not be compiled yet.
+  // Acquires from the parse tree, since the method might not be compiled yet.
   const fe::Method *m = v->method_->GetParseTree();
   CHECK(m && m->GetReturns()->decls.size() == 1);
   fe::VarDecl *vd = m->GetReturns()->decls[0];

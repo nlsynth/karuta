@@ -158,13 +158,15 @@ void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
   arr->Write(addr, num);
 }
 
-void ArrayWrapper::Load(Thread *thr, Object *obj, const vector<Value> &args) {
+void ArrayWrapper::AxiLoad(Thread *thr, Object *obj,
+			   const vector<Value> &args) {
   CHECK(args.size() > 0) << "load requires an address";
   MemBurstAccess(thr, obj, args, true);
   MayNotifyWaiters(obj);
 }
 
-void ArrayWrapper::Store(Thread *thr, Object *obj, const vector<Value> &args) {
+void ArrayWrapper::AxiStore(Thread *thr, Object *obj,
+			    const vector<Value> &args) {
   CHECK(args.size() > 0) << "store requires an address";
   MemBurstAccess(thr, obj, args, false);
   MayNotifyWaiters(obj);
@@ -228,16 +230,12 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
 
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
-  Method *m =
-    Method::InstallNativeMethod(vm, obj, "load", &ArrayWrapper::Load, rets);
-  m->SetSynthName(synth::kAxiLoad);
-  m = Method::InstallNativeMethod(vm, obj, "store", &ArrayWrapper::Store, rets);
-  m->SetSynthName(synth::kAxiStore);
+  Method *m;
   m = Method::InstallNativeMethod(vm, obj, "axiLoad",
-				  &ArrayWrapper::Load, rets);
+				  &ArrayWrapper::AxiLoad, rets);
   m->SetSynthName(synth::kAxiLoad);
   m = Method::InstallNativeMethod(vm, obj, "axiStore",
-				  &ArrayWrapper::Store, rets);
+				  &ArrayWrapper::AxiStore, rets);
   m->SetSynthName(synth::kAxiStore);
   m = Method::InstallNativeMethod(vm, obj, "wait", &ArrayWrapper::Wait, rets);
   m->SetSynthName(synth::kSlaveWait);

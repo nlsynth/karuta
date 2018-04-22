@@ -26,8 +26,8 @@ public:
   static void InstallSramIfMethods(VM *vm ,Object *obj);
 
 private:
-  static void Load(Thread *thr, Object *obj, const vector<Value> &args);
-  static void Store(Thread *thr, Object *obj, const vector<Value> &args);
+  static void AxiLoad(Thread *thr, Object *obj, const vector<Value> &args);
+  static void AxiStore(Thread *thr, Object *obj, const vector<Value> &args);
   static void Wait(Thread *thr, Object *obj, const vector<Value> &args);
   static void Read(Thread *thr, Object *obj, const vector<Value> &args);
   static void Write(Thread *thr, Object *obj, const vector<Value> &args);

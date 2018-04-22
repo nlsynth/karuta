@@ -7,6 +7,7 @@
 #include "synth/object_synth.h"
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
+#include "vm/array_wrapper.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/numeric_object.h"
@@ -93,6 +94,9 @@ bool InsnWalker::IsSubObjCall(vm::Insn *insn) {
   vm::Object *callee_obj = GetCalleeObject(insn);
   if (callee_obj != obj_) {
     if (vm::NumericObject::IsNumericObject(vm_, callee_obj)) {
+      return false;
+    }
+    if (vm::ArrayWrapper::IsIntArray(callee_obj)) {
       return false;
     }
     if (IsDataFlowCall(insn)) {
