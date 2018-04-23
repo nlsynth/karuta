@@ -52,7 +52,15 @@ func FP16R.mul0of2(a0, a1 #16) (#0, #5, #5, #12) {
 func FP16R.mul1of2(a0 #0, a1, a2 #5, a3 #12) (#16) {
   var ret0 #16
   var e #6
-  e = a1 + a2 - 15 + a3[11:11]
+  e = a1 + a2 + a3[11:11]
+  if e > 15 {
+    e = e - 15
+    if e > 31 {
+       e = 31
+    }
+  } else {
+    e = 0
+  }
   var c #10
   if (a3[11:11] == 1) {
     c = a3[10:1]
