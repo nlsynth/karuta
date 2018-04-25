@@ -80,7 +80,7 @@ module FP16RAddSubS1Of5(
    wire [9:0]  yf;
    wire [20:0] xr;
    wire [20:0] xrn;
-   wire [10:0] yr10;
+   wire [20:0] yr10;
    wire [4:0]  d;
    wire [20:0] yr1;
    wire [20:0] yr2;
@@ -102,7 +102,7 @@ module FP16RAddSubS1Of5(
    assign y1 = ye > 0;
    assign xr = {x1, xf, 10'b0};
    assign xrn = xn ? ~xr : xr;
-   assign yr10 = {y1, yf};
+   assign yr10 = {y1, yf, 10'b0};
    assign d = xe - ye;
    // barrel shifter to adjust y.
    assign yr1 = d[0:0] ? {1'b0, yr10[20:1]} : yr10;
@@ -188,7 +188,7 @@ module FP16RAddSubS3Of5(
    wire        xn;
    wire        yn;
    wire        diff_sign;
-   wire        has_carry;
+   wire        with_carry;
    wire        neg;
    wire [20:0] neg_r;
    wire [20:0] half_r;
@@ -206,7 +206,7 @@ module FP16RAddSubS3Of5(
    assign xn = arg_4;
    assign yn = arg_5;
    assign diff_sign = (xn != yn);
-   assign with_carry = r[21:0];
+   assign with_carry = r[21:21];
    assign neg_r = (~r) + 1;
    assign half_r = r[21:1];
    assign neg = diff_sign & !with_carry;
