@@ -271,7 +271,7 @@ module FP16RAddSubS4Of5(
 
    assign l0count = {r[20:13] == 0, r8[20:17] == 0, r4[20:19] == 0, r2[20:20] == 0};
    assign rr = (xn == yn) ? r[20:10] : r1;
-   assign e_final = (xn == yn) ? e : e + l0count;
+   assign e_final = (xn == yn) ? e : e - l0count;
 
    assign ret_0 = {s, e_final, rr[9:0]};
    

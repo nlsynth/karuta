@@ -163,6 +163,27 @@ module FP16RAddSub_Test;
       #1
       $display("1.0+1.0= %d %s", s4_ret_0, (rs == 0 && re == 16 && rf == 0) ? "OK" : "FAIL");
 
+      // 1.0 + 2.0
+      is_sub <= 0;
+      xs <= 0; xe <= 15; xf <= 0;
+      ys <= 0; ye <= 16; yf <= 0;
+      #1
+      $display("1.0+2.0= %d %s", s4_ret_0, (rs == 0 && re == 16 && rf == 512) ? "OK" : "FAIL");
+
+      // 2.0 + 1.0
+      is_sub <= 0;
+      xs <= 0; xe <= 16; xf <= 0;
+      ys <= 0; ye <= 15; yf <= 0;
+      #1
+      $display("1.0+2.0= %d %s", s4_ret_0, (rs == 0 && re == 16 && rf == 512) ? "OK" : "FAIL");
+
+      // 2.0 - 1.0
+      is_sub <= 1;
+      xs <= 0; xe <= 16; xf <= 0;
+      ys <= 0; ye <= 15; yf <= 0;
+      #1
+      $display("2.0-1.0= %d %s", s4_ret_0, (rs == 0 && re == 15 && rf == 0) ? "OK" : "FAIL");
+
       // Use this line to debug a specific case.
       $display("%d %d %d", rs, re, rf);
    end
