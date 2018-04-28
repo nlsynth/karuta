@@ -1,8 +1,8 @@
 # Language Reference Manual
 
-## Progmram structure
+## Program structure
 
-A program is comprised of top level enviroment and method environment.
+A program is comprised of top level environment and method environment.
 Methods and various things can be declared only in top level environment.
 
     // * Top level environment
@@ -17,10 +17,20 @@ TODO: Consider non synthesizable methods.
 
 ### Methods
 
+A methods is declared as a member of an object.
+If no object name is given in the declaration, the method will belong to Kernel object.
+
+    // This declaration is equivalent to Kernel.f()
+    def f() {
+    }
+    
     @Annotation(key1="value1", key2="value2")
     def mod.f(x, y #32) (#16, #16) {
       return (0, 0)
     }
+
+A method declaration can have an argument list and return value list.
+
 
 ### Threads
 
@@ -143,6 +153,13 @@ As for variable declaration, please see types section.
     def f(x int) (int) {
     }
 
+#### Ext combinational logic.
+
+    @ExtCombinational(resource = "a", verilog = "resource.v", file="copy", module="hello")
+    def f(x #32) (#32) {
+      return x
+    }
+
 #### AXI
 
     // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
@@ -213,6 +230,11 @@ This assumes 32bit address/data for now.
 
 ### Shared register
 
+    var M.x int
+
+### Thread local
+
+    @ThreadLocal()
     var M.x int
 
 ### Type class
