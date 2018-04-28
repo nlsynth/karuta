@@ -1,6 +1,5 @@
 // FP16 Regular/Relaxed version.
-// TODO: Finish the implementation.
-// TODO: Write tests and fix obvious bugs first.
+// TODO: Implement overflow/underflow.
 module FP16RAddSubS0Of5(
  input 	       clk,
  input 	       rst,

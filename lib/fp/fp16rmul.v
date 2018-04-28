@@ -1,5 +1,5 @@
 // FP16 Regular/Relaxed version.
-// TODO: Write tests and fix obvious bugs first.
+// TODO: Implement overflow/underflow.
 module FP16RMulS0Of2(
  input 	       clk,
  input 	       rst,
