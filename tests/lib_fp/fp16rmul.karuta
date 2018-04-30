@@ -1,0 +1,17 @@
+// VERILOG_OUTPUT: a.v
+
+import "fp/fp16r.karuta"
+
+def main() {
+  var x1 #FP16R = Numerics.FP16R.Build(0, 15, 0)
+  var y #FP16R
+  y = x1 * x1
+  assert(y == x1)
+  var x2 #FP16R = Numerics.FP16R.Build(0, 16, 0)
+  y = x2 * x1
+  assert(x2 == y)
+}
+
+main()
+compile()
+writeHdl("a.v")

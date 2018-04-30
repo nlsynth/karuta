@@ -1,17 +1,19 @@
 Quality Assurance strategy
 
-* N Interpreter standard tests.
+* Karuta Interpreter standard tests.
  fe_lang/ language features
  fe_misc/ others
  fe_obj/ object systems
  fe_value/ value and calculation
  fe_error/ errorneous inputs
-* N Compiler standard tests. (run in interpreter and verilog)
+* Karuta Compiler standard tests. (run in interpreter and verilog)
  synth_lang/ language features
  synth_misc/ others
  synth_regression/ regression tests from previous versions
  synth_value/ value and calculation
-* N regression tests
+* Karuta library tests
+ lib_fp/ floating point related code.
+* Karuta regression tests
  synth_regression/
 * t09?: broken by spec changes.
 
