@@ -41,8 +41,8 @@ func FP16R.mul0of2(a0, a1 #16) (#0, #5, #5, #12) {
   } else {
     e1 = 1
   }
-  var ff0 #10 = e0 :: a0[9:0]
-  var ff1 #10 = e1 :: a1[9:0]
+  var ff0 #11 = e0 :: a0[9:0]
+  var ff1 #11 = e1 :: a1[9:0]
   var z #22 = ff0 * ff1
   ret3 = z[21:10]
   return ret0, ret1, ret2, ret3
@@ -52,7 +52,10 @@ func FP16R.mul0of2(a0, a1 #16) (#0, #5, #5, #12) {
 func FP16R.mul1of2(a0 #0, a1, a2 #5, a3 #12) (#16) {
   var ret0 #16
   var e #6
-  e = a1 + a2 + a3[11:11]
+  e = a1 + a2
+  if a3[11:11] == 1 {
+    e = e + 1
+  }
   if e > 15 {
     e = e - 15
     if e > 31 {
