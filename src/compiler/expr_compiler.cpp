@@ -322,7 +322,11 @@ RegisterTuple ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
 						     fe::Expr *funcall,
 						     int num_lhs) {
   vm::Insn *call_insn = new vm::Insn;
-  call_insn->op_ = vm::OP_FUNCALL;
+  if (compiler_->IsTopLevel()) {
+    call_insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
+  } else {
+    call_insn->op_ = vm::OP_FUNCALL;
+  }
   call_insn->insn_expr_ = funcall;
   if (obj_reg == nullptr) {
     call_insn->obj_reg_ = compiler_->CompilePathHead(funcall->GetFunc());
@@ -381,7 +385,11 @@ RegisterTuple ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
 					    int num_lhs) {
   RegisterTuple rt;
   vm::Insn *done_insn = new vm::Insn;
-  done_insn->op_ = vm::OP_FUNCALL_DONE;
+  if (compiler_->IsTopLevel()) {
+    done_insn->op_ = vm::OP_FUNCALL_DONE_WITH_CHECK;
+  } else {
+    done_insn->op_ = vm::OP_FUNCALL_DONE;
+  }
   done_insn->insn_expr_ = call_insn->insn_expr_;
   done_insn->obj_reg_ = call_insn->obj_reg_;
   done_insn->label_ = call_insn->label_;
@@ -647,7 +655,11 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
     return nullptr;
   }
   vm::Insn *call_insn = new vm::Insn;
-  call_insn->op_ = vm::OP_FUNCALL;
+  if (compiler_->IsTopLevel()) {
+    call_insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
+  } else {
+    call_insn->op_ = vm::OP_FUNCALL;
+  }
   call_insn->obj_reg_ = type_obj_reg;
   call_insn->label_ = label;
   call_insn->src_regs_.push_back(orig_insn->src_regs_[0]);
@@ -655,7 +667,11 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
   compiler_->EmitInsn(call_insn);
 
   vm::Insn *done_insn = new vm::Insn;
-  done_insn->op_ = vm::OP_FUNCALL_DONE;
+  if (compiler_->IsTopLevel()) {
+    done_insn->op_ = vm::OP_FUNCALL_DONE_WITH_CHECK;
+  } else {
+    done_insn->op_ = vm::OP_FUNCALL_DONE;
+  }
   done_insn->obj_reg_ = call_insn->obj_reg_;
   done_insn->label_ = call_insn->label_;
   done_insn->dst_regs_.push_back(orig_insn->dst_regs_[0]);

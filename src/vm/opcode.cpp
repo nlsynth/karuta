@@ -57,6 +57,8 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_CHANNEL_DECL, "channel_decl"},
     {vm::OP_THREAD_DECL, "thread_decl"},
     {vm::OP_SET_TYPE_OBJECT, "set_type_object"},
+    {vm::OP_FUNCALL_WITH_CHECK, "funcall_with_check"},
+    {vm::OP_FUNCALL_DONE_WITH_CHECK, "funcall_done_with_check"},
   };
   auto it = codes.find(node);
   if (it == codes.end()) {

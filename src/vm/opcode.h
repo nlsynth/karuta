@@ -60,6 +60,10 @@ enum OpCode {
   // Sets type object (and width) by the executor.
   // e.g. var x #type_obj (local var at top level)
   OP_SET_TYPE_OBJECT,
+
+  // OPs with top level specific checks.
+  OP_FUNCALL_WITH_CHECK,
+  OP_FUNCALL_DONE_WITH_CHECK,
 };
 
 const char *OpCodeName(enum OpCode node);

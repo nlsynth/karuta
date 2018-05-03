@@ -59,13 +59,13 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
   case OP_ARRAY_WRITE:
     ExecutorToplevel::ExecArrayWrite(method, frame, insn);
     break;
-  case OP_FUNCALL:
+  case OP_FUNCALL_WITH_CHECK:
     need_suspend = ExecutorToplevel::ExecFuncall(frame, insn);
     if (!thr_->IsRunnable()) {
       return true;
     }
     break;
-  case OP_FUNCALL_DONE:
+  case OP_FUNCALL_DONE_WITH_CHECK:
     ExecutorToplevel::ExecFuncallDone(method, frame, insn);
     break;
   case OP_SET_TYPE_OBJECT:
@@ -78,6 +78,11 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
       break;
     }
     return Executor::ExecInsn(method, frame, insn);
+    // Just a sanity check. Can be removed later.
+  case OP_FUNCALL:
+  case OP_FUNCALL_DONE:
+    CHECK(false);
+    break;
   default:
     return Executor::ExecInsn(method, frame, insn);
   }
