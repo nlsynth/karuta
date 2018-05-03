@@ -66,6 +66,11 @@ enum OpCode {
   OP_FUNCALL_DONE_WITH_CHECK,
   OP_ARRAY_WRITE_WITH_CHECK,
   OP_MEMBER_READ_WITH_CHECK,
+
+  // OPs for operator override.
+  OP_ADD_MAY_WITH_TYPE,
+  OP_SUB_MAY_WITH_TYPE,
+  OP_MUL_MAY_WITH_TYPE,
 };
 
 const char *OpCodeName(enum OpCode node);

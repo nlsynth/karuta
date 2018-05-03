@@ -61,6 +61,9 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_FUNCALL_DONE_WITH_CHECK, "funcall_done_with_check"},
     {vm::OP_ARRAY_WRITE_WITH_CHECK, "array_write_with_check"},
     {vm::OP_MEMBER_READ_WITH_CHECK, "member_read_with_check"},
+    {vm::OP_ADD_MAY_WITH_TYPE, "add_may_with_type"},
+    {vm::OP_SUB_MAY_WITH_TYPE, "sub_may_with_type"},
+    {vm::OP_MUL_MAY_WITH_TYPE, "mul_may_with_type"},
   };
   auto it = codes.find(node);
   if (it == codes.end()) {

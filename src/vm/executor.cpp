@@ -66,8 +66,11 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     ExecStr(frame, insn);
     break;
   case OP_ADD:
+  case OP_ADD_MAY_WITH_TYPE:
   case OP_SUB:
+  case OP_SUB_MAY_WITH_TYPE:
   case OP_MUL:
+  case OP_MUL_MAY_WITH_TYPE:
   case OP_ASSIGN:
   case OP_GT:
   case OP_LT:
@@ -156,6 +159,7 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
   int rhs = insn->src_regs_[1]->id_;
   switch (insn->op_) {
   case OP_ADD:
+  case OP_ADD_MAY_WITH_TYPE:
     iroha::Op::Add(frame->reg_values_[lhs].num_,
 		   frame->reg_values_[rhs].num_,
 		   &frame->reg_values_[dst].num_);
@@ -163,6 +167,7 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			  &frame->reg_values_[dst].num_);
     break;
   case OP_SUB:
+  case OP_SUB_MAY_WITH_TYPE:
     iroha::Op::Sub(frame->reg_values_[lhs].num_,
 		   frame->reg_values_[rhs].num_,
 		   &frame->reg_values_[dst].num_);
@@ -170,6 +175,7 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			  &frame->reg_values_[dst].num_);
     break;
   case OP_MUL:
+  case OP_MUL_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_MUL,
 			 frame->reg_values_[lhs].num_,
 			 frame->reg_values_[rhs].num_,
@@ -415,6 +421,7 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
     }
     break;
   case OP_ADD:
+  case OP_ADD_MAY_WITH_TYPE:
     {
       CHECK(frame->reg_values_[lhs].type_ == Value::OBJECT);
       CHECK(frame->reg_values_[rhs].type_ == Value::OBJECT);

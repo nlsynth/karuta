@@ -70,17 +70,16 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
   case OP_SET_TYPE_OBJECT:
     ExecSetTypeObject(method, insn);
     break;
-  case OP_ADD:
-  case OP_SUB:
-  case OP_MUL:
+  case OP_ADD_MAY_WITH_TYPE:
+  case OP_SUB_MAY_WITH_TYPE:
+  case OP_MUL_MAY_WITH_TYPE:
     if (MayExecuteCustomOp(method, frame, insn)) {
       break;
     }
     return Executor::ExecInsn(method, frame, insn);
     // Just a sanity check. Can be removed later.
-  case OP_MEMBER_READ:
-  case OP_FUNCALL:
-  case OP_FUNCALL_DONE:
+  case OP_ADD: case OP_SUB: case OP_MUL:
+  case OP_MEMBER_READ: case OP_FUNCALL: case OP_FUNCALL_DONE:
     CHECK(false);
     break;
   default:
@@ -299,6 +298,8 @@ bool ExecutorToplevel::MayExecuteCustomOp(const Method *method, MethodFrame *fra
       frame->reg_values_[rhs].type_ != Value::NUM) {
     return false;
   }
+  // TODO: Use type_.object_name_ instead, as type_object_ may not yet be
+  // resolved (or resolve it).
   if (method->method_regs_[rhs]->type_object_ != nullptr &&
       method->method_regs_[lhs]->type_object_ ==
       method->method_regs_[rhs]->type_object_) {

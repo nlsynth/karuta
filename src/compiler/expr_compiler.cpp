@@ -87,13 +87,17 @@ RegisterTuple ExprCompiler::CompileExpr(fe::Expr *expr) {
 vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
   vm::Register *dst_reg = compiler_->AllocRegister();
   vm::Insn *insn = new vm::Insn;
-  insn->op_ = GetOpCodeFromExpr(expr);
+  vm::OpCode op = GetOpCodeFromExpr(expr);
+  insn->op_ = MayRewriteToOpWithType(op);
   insn->insn_expr_ = expr;
   insn->dst_regs_.push_back(dst_reg);
   switch (insn->op_) {
   case vm::OP_ADD:
+  case vm::OP_ADD_MAY_WITH_TYPE:
   case vm::OP_SUB:
+  case vm::OP_SUB_MAY_WITH_TYPE:
   case vm::OP_MUL:
+  case vm::OP_MUL_MAY_WITH_TYPE:
   case vm::OP_GT:
   case vm::OP_LT:
   case vm::OP_GTE:
@@ -256,6 +260,17 @@ vm::OpCode ExprCompiler::GetOpCodeFromExpr(fe::Expr *expr) {
     CHECK(false) << "Unknown expr:" << fe::NodeName(expr->GetType());
   }
   return vm::OP_INVALID;
+}
+
+vm::OpCode ExprCompiler::MayRewriteToOpWithType(vm::OpCode op) {
+  if (compiler_->IsTopLevel()) {
+    switch (op) {
+    case vm::OP_ADD: return vm::OP_ADD_MAY_WITH_TYPE;
+    case vm::OP_SUB: return vm::OP_SUB_MAY_WITH_TYPE;
+    case vm::OP_MUL: return vm::OP_MUL_MAY_WITH_TYPE;
+    }
+  }
+  return op;
 }
 
 vm::Register *ExprCompiler::CompileTriTerm(fe::Expr *expr) {
@@ -608,11 +623,11 @@ vm::Register *ExprCompiler::UpdateModifyOp(fe::NodeCode type,
   vm::Register *lhs_reg = CompileExprToOneReg(lhs_expr);
   vm::Insn *insn = new vm::Insn;
   if (type == fe::BINOP_ADD_ASSIGN) {
-    insn->op_ = vm::OP_ADD;
+    insn->op_ = MayRewriteToOpWithType(vm::OP_ADD);
   } else if (type == fe::BINOP_SUB_ASSIGN) {
-    insn->op_ = vm::OP_SUB;
+    insn->op_ = MayRewriteToOpWithType(vm::OP_SUB);
   } else if (type == fe::BINOP_MUL_ASSIGN) {
-    insn->op_ = vm::OP_MUL;
+    insn->op_ = MayRewriteToOpWithType(vm::OP_MUL);
   } else if (type == fe::BINOP_LSHIFT_ASSIGN) {
     insn->op_ = vm::OP_LSHIFT;
   } else if (type == fe::BINOP_RSHIFT_ASSIGN) {
@@ -691,8 +706,8 @@ vm::Register *ExprCompiler::LoadNumericTypeRegister(sym_t obj_name) {
 void ExprCompiler::PropagateRegisterType(vm::Insn *insn,
 					 vm::Register *lhs, vm::Register *rhs,
 					 vm::RegisterType *t) {
-  if (insn->op_ == vm::OP_ADD ||
-      insn->op_ == vm::OP_SUB) {
+  if (insn->op_ == vm::OP_ADD || insn->op_ == vm::OP_ADD_MAY_WITH_TYPE ||
+      insn->op_ == vm::OP_SUB || insn->op_ == vm::OP_SUB_MAY_WITH_TYPE) {
     *t = lhs->type_;
   }
 }

@@ -48,6 +48,7 @@ private:
   vm::Register *UpdateModifyOp(fe::NodeCode type, fe::Expr *lhs_expr,
 			       vm::Register *rhs_reg);
   vm::Register *MayRewriteOperator(vm::Insn *orig_insn);
+  vm::OpCode MayRewriteToOpWithType(vm::OpCode op);
   void PropagateRegisterType(vm::Insn *insn,
 			     vm::Register *lhs, vm::Register *rhs,
 			     vm::RegisterType *t);
