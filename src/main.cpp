@@ -150,6 +150,11 @@ bool ArgParser::Parse(int argc, char **argv) {
 	if (has_value) {
 	  flag_values_[canonical_flag_name] = flag_value;
 	} else {
+	  if (next_arg == nullptr) {
+	    Status::os(Status::USER_ERROR) << "Missing value for:" << flag_name;
+	    MessageFlush::Get(Status::USER_ERROR);
+	    return false;
+	  }
 	  flag_values_[canonical_flag_name] = next_arg;
 	  i++;
 	}
