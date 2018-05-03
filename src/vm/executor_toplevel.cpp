@@ -289,6 +289,11 @@ void ExecutorToplevel::ExecSetTypeObject(Method *method, Insn *insn) {
   Register *reg = method->method_regs_[dst_id];
   reg->type_object_ = NumericObject::Get(thr_->GetVM(),
 					 reg->type_.object_name_);
+  if (reg->type_object_ == nullptr) {
+    Status::os(Status::USER_ERROR) << "Can't find numeric type: "
+				   << sym_cstr(reg->type_.object_name_);
+    thr_->UserError();
+  }
 }
 
 bool ExecutorToplevel::MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn) {
@@ -298,8 +303,6 @@ bool ExecutorToplevel::MayExecuteCustomOp(const Method *method, MethodFrame *fra
       frame->reg_values_[rhs].type_ != Value::NUM) {
     return false;
   }
-  // TODO: Use type_.object_name_ instead, as type_object_ may not yet be
-  // resolved (or resolve it).
   if (method->method_regs_[rhs]->type_object_ != nullptr &&
       method->method_regs_[lhs]->type_object_ ==
       method->method_regs_[rhs]->type_object_) {
