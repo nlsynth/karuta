@@ -64,6 +64,8 @@ enum OpCode {
   // OPs with top level specific checks.
   OP_FUNCALL_WITH_CHECK,
   OP_FUNCALL_DONE_WITH_CHECK,
+  OP_ARRAY_WRITE_WITH_CHECK,
+  OP_MEMBER_READ_WITH_CHECK,
 };
 
 const char *OpCodeName(enum OpCode node);

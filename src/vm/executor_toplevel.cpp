@@ -52,11 +52,10 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
     ExecImport(insn);
     need_suspend = true;
     break;
-  case OP_MEMBER_READ:
-  case OP_MEMBER_WRITE:
-    ExecutorToplevel::ExecMemberAccess(method, frame, insn);
+  case OP_MEMBER_READ_WITH_CHECK:
+    ExecutorToplevel::ExecMemberRead(method, frame, insn);
     break;
-  case OP_ARRAY_WRITE:
+  case OP_ARRAY_WRITE_WITH_CHECK:
     ExecutorToplevel::ExecArrayWrite(method, frame, insn);
     break;
   case OP_FUNCALL_WITH_CHECK:
@@ -79,6 +78,7 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
     }
     return Executor::ExecInsn(method, frame, insn);
     // Just a sanity check. Can be removed later.
+  case OP_MEMBER_READ:
   case OP_FUNCALL:
   case OP_FUNCALL_DONE:
     CHECK(false);
@@ -221,18 +221,17 @@ void ExecutorToplevel::AddThreadEntry(MethodFrame *frame, Insn *insn,
   }
 }
 
-void ExecutorToplevel::ExecMemberAccess(Method *method, MethodFrame *frame,
-					const Insn *insn) {
+void ExecutorToplevel::ExecMemberRead(Method *method, MethodFrame *frame,
+				      const Insn *insn) {
   Executor::ExecMemberAccess(frame, insn);
-  // Annotate the type now.
-  if (insn->op_ == OP_MEMBER_READ) {
-    Value &obj_value = frame->reg_values_[insn->src_regs_[0]->id_];
-    CHECK(obj_value.type_ == Value::OBJECT);
-    Object *obj = obj_value.object_;
-    Value *member = obj->LookupValue(insn->label_, false);
-    int dst_id = insn->dst_regs_[0]->id_;
-    method->method_regs_[dst_id]->type_.value_type_ = member->type_;
-  }
+  // Annotate the type of the results now.
+  CHECK(insn->op_ == OP_MEMBER_READ_WITH_CHECK);
+  Value &obj_value = frame->reg_values_[insn->src_regs_[0]->id_];
+  CHECK(obj_value.type_ == Value::OBJECT);
+  Object *obj = obj_value.object_;
+  Value *member = obj->LookupValue(insn->label_, false);
+  int dst_id = insn->dst_regs_[0]->id_;
+  method->method_regs_[dst_id]->type_.value_type_ = member->type_;
 }
 
 bool ExecutorToplevel::ExecFuncall(MethodFrame *frame, Insn *insn) {
@@ -258,7 +257,7 @@ void ExecutorToplevel::ExecFuncallDone(const Method *method,
   CHECK(callee_method);
   int num_returns = callee_method->GetNumReturnRegisters();
   int num_dsts = insn->dst_regs_.size();
-  // annotate return values.
+  // Annotates return values.
   CHECK(num_dsts == 1 || num_dsts == num_returns);
   for (int i = 0; i < num_dsts && i < num_returns; ++i) {
     insn->dst_regs_[i]->type_ = callee_method->return_types_[i];
@@ -269,7 +268,8 @@ void ExecutorToplevel::ExecFuncallDone(const Method *method,
 void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
 				      Insn *insn) {
   if (insn->obj_reg_) {
-    // Member array.
+    // Annotates the result value.
+    // e.g. result = (a[i] = v)
     Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
     if (ArrayWrapper::IsIntArray(array_obj)) {
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);

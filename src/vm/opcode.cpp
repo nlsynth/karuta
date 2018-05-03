@@ -59,6 +59,8 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_SET_TYPE_OBJECT, "set_type_object"},
     {vm::OP_FUNCALL_WITH_CHECK, "funcall_with_check"},
     {vm::OP_FUNCALL_DONE_WITH_CHECK, "funcall_done_with_check"},
+    {vm::OP_ARRAY_WRITE_WITH_CHECK, "array_write_with_check"},
+    {vm::OP_MEMBER_READ_WITH_CHECK, "member_read_with_check"},
   };
   auto it = codes.find(node);
   if (it == codes.end()) {

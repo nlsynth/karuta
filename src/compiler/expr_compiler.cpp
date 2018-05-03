@@ -524,7 +524,11 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   // DST: RHS_REG
   // OBJ: ARRAY
   vm::Register *local_array = nullptr;
-  insn->op_ = vm::OP_ARRAY_WRITE;
+  if (compiler_->IsTopLevel()) {
+    insn->op_ = vm::OP_ARRAY_WRITE_WITH_CHECK;
+  } else {
+    insn->op_ = vm::OP_ARRAY_WRITE;
+  }
   // index
   vm::Register *index_reg = CompileExprToOneReg(lhs->GetRhs());
   fe::Expr *array_expr = lhs->GetLhs();

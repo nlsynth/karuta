@@ -535,7 +535,11 @@ vm::Register *Compiler::EmitLoadObj(sym_t label) {
 vm::Register *Compiler::EmitMemberLoad(vm::Register *obj_reg, sym_t m) {
   vm::Insn *insn = new vm::Insn;
   insn->src_regs_.push_back(obj_reg);
-  insn->op_ = vm::OP_MEMBER_READ;
+  if (IsTopLevel()) {
+    insn->op_ = vm::OP_MEMBER_READ_WITH_CHECK;
+  } else {
+    insn->op_ = vm::OP_MEMBER_READ;
+  }
   insn->label_ = m;
   vm::Register *value_reg = AllocRegister();
   insn->dst_regs_.push_back(value_reg);

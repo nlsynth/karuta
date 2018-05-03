@@ -51,13 +51,14 @@ void Insn::Dump(DumpStream &ds) const {
   if (label_) {
     ds.os << " " << sym_cstr(label_) << ":";
   }
-  if (op_ == OP_ARRAY_WRITE) {
+  if (op_ == OP_ARRAY_WRITE || op_ == OP_ARRAY_WRITE_WITH_CHECK) {
     ds.os << sym_cstr(insn_expr_->GetSym()) << "[]";
   }
   if (op_ == OP_ARRAY_READ) {
     ds.os << sym_cstr(insn_expr_->GetSym()) << "[]";
   }
-  if (op_ == OP_FUNCALL || op_ == OP_FUNCALL_DONE) {
+  if (op_ == OP_FUNCALL || op_ == OP_FUNCALL_WITH_CHECK ||
+      op_ == OP_FUNCALL_DONE || op_ == OP_FUNCALL_DONE_WITH_CHECK) {
     if (insn_expr_ != nullptr) {
       ds.os << " " << sym_cstr(insn_expr_->GetFunc()->GetSym()) << "()";
     }

@@ -533,7 +533,7 @@ void Executor::MemoryRead(int addr, int data_width, iroha::Numeric *res) {
 
 void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
   Object *obj;
-  if (insn->op_ == OP_MEMBER_READ) {
+  if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
     obj = frame->reg_values_[insn->src_regs_[0]->id_].object_;
   } else {
     obj = frame->reg_values_[insn->src_regs_[1]->id_].object_;
@@ -548,7 +548,7 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
   if (TlsWrapper::IsTlsValue(member)) {
     member = TlsWrapper::GetValue(member->object_, thr_);
   }
-  if (insn->op_ == OP_MEMBER_READ) {
+  if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
     frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member);
   } else {
     // OP_MEMBER_WRITE
