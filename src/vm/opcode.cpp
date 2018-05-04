@@ -64,6 +64,7 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_ADD_MAY_WITH_TYPE, "add_may_with_type"},
     {vm::OP_SUB_MAY_WITH_TYPE, "sub_may_with_type"},
     {vm::OP_MUL_MAY_WITH_TYPE, "mul_may_with_type"},
+    {vm::OP_MAY_WITH_TYPE_DONE, "may_with_type_done"},
   };
   auto it = codes.find(node);
   if (it == codes.end()) {

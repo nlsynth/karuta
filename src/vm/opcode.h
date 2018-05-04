@@ -71,6 +71,7 @@ enum OpCode {
   OP_ADD_MAY_WITH_TYPE,
   OP_SUB_MAY_WITH_TYPE,
   OP_MUL_MAY_WITH_TYPE,
+  OP_MAY_WITH_TYPE_DONE,
 };
 
 const char *OpCodeName(enum OpCode node);

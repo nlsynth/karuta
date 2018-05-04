@@ -17,9 +17,6 @@
 #include "vm/value.h"
 #include "vm/vm.h"
 
-#include <map>
-using std::map;
-
 namespace compiler {
 
 bool Compiler::dbg_bytecode_;

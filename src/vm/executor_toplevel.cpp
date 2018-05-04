@@ -77,6 +77,9 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
       break;
     }
     return Executor::ExecInsn(method, frame, insn);
+  case OP_MAY_WITH_TYPE_DONE:
+    ExecMayWithTypeDone(method, frame, insn);
+    break;
     // Just a sanity check. Can be removed later.
   case OP_ADD: case OP_SUB: case OP_MUL:
   case OP_MEMBER_READ: case OP_FUNCALL: case OP_FUNCALL_DONE:
@@ -310,6 +313,10 @@ bool ExecutorToplevel::MayExecuteCustomOp(const Method *method, MethodFrame *fra
     return false;
   }
   return false;
+}
+
+void ExecutorToplevel::ExecMayWithTypeDone(const Method *method,
+					   MethodFrame *frame, Insn *insn) {
 }
 
 }  // namespace vm

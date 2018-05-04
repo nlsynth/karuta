@@ -168,6 +168,7 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
     return rewritten;
   }
   compiler_->EmitInsn(insn);
+  MayEmitTypeDoneInsn(insn);
   return dst_reg;
 }
 
@@ -446,6 +447,18 @@ RegisterTuple ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
   return rt;
 }
 
+void ExprCompiler::MayEmitTypeDoneInsn(vm::Insn *insn) {
+  if (insn->op_ == vm::OP_ADD_MAY_WITH_TYPE ||
+      insn->op_ == vm::OP_ADD_MAY_WITH_TYPE ||
+      insn->op_ == vm::OP_ADD_MAY_WITH_TYPE) {
+    vm::Insn *done_insn = new vm::Insn;
+    done_insn->op_ = vm::OP_MAY_WITH_TYPE_DONE;
+    done_insn->src_regs_ = insn->src_regs_;
+    done_insn->dst_regs_ = insn->dst_regs_;
+    compiler_->EmitInsn(done_insn);
+  }
+}
+
 vm::Method *ExprCompiler::GetCalleeMethod(vm::Insn *call_insn) {
   if (compiler_->IsTopLevel()) {
     return nullptr;
@@ -646,6 +659,7 @@ vm::Register *ExprCompiler::UpdateModifyOp(fe::NodeCode type,
   insn->src_regs_.push_back(lhs_reg);
   insn->src_regs_.push_back(rhs_reg);
   compiler_->EmitInsn(insn);
+  MayEmitTypeDoneInsn(insn);
   return reg;
 }
 

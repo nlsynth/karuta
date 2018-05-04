@@ -55,6 +55,7 @@ private:
   RegisterTuple EmitFuncallDone(vm::Insn *call_insn,
 				vm::Method *method,
 				int num_lhs);
+  void MayEmitTypeDoneInsn(vm::Insn *insn);
   vm::Method *GetCalleeMethod(vm::Insn *call_insn);
   vm::Register *LoadNumericTypeRegister(sym_t obj_name);
 
