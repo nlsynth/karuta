@@ -195,6 +195,10 @@ void ArrayWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
   thr->Suspend();
 }
 
+void ArrayWrapper::Notify(Thread *thr, Object *obj, const vector<Value> &args) {
+  MayNotifyWaiters(obj);
+}
+
 void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
 				  const vector<Value> &args,
 				  bool is_load) {
@@ -237,8 +241,12 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   m = Method::InstallNativeMethod(vm, obj, "axiStore",
 				  &ArrayWrapper::AxiStore, rets);
   m->SetSynthName(synth::kAxiStore);
-  m = Method::InstallNativeMethod(vm, obj, "wait", &ArrayWrapper::Wait, rets);
+  m = Method::InstallNativeMethod(vm, obj, "waitAccess", &ArrayWrapper::Wait,
+				  rets);
   m->SetSynthName(synth::kSlaveWait);
+  m = Method::InstallNativeMethod(vm, obj, "notifyAccess",
+				  &ArrayWrapper::Notify,
+				  rets);
 }
 
 void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {
