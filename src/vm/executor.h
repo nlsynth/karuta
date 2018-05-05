@@ -41,8 +41,9 @@ protected:
   Method *LookupMethod(MethodFrame *frame, Insn *insn, Object **obj);
   Method *LookupCompiledMethod(MethodFrame *frame, Insn *insn, Object **obj);
   void ExecLoadObj(MethodFrame *frame, Insn *insn);
-
   void ExecArrayWrite(MethodFrame *frame, Insn *insn);
+  void SetupCallee(Object *obj, Method *callee_method,
+		   const vector<Value> &args);
 
   Thread *thr_;
 private:
@@ -57,8 +58,6 @@ private:
   void ExecIf(MethodFrame *frame, Insn *insn);
   void ExecGoto(MethodFrame *frame, Insn *insn);
   void ExecBitRange(MethodFrame *frame, Insn *insn);
-  void SetupCallee(Object *obj, Method *callee_method,
-		   const vector<Value> &args);
 
   void MemoryRead(int addr, int data_width, iroha::Numeric *res);
   void MemoryWrite(uint64_t addr, int data_width, const iroha::Numeric &data);

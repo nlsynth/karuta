@@ -3,6 +3,7 @@
 #include "base/annotation.h"
 #include "base/dump_stream.h"
 #include "base/status.h"
+#include "compiler/compiler.h"
 #include "fe/fe.h"
 #include "fe/expr.h"
 #include "fe/method.h"
@@ -74,6 +75,10 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
   case OP_SUB_MAY_WITH_TYPE:
   case OP_MUL_MAY_WITH_TYPE:
     if (MayExecuteCustomOp(method, frame, insn)) {
+      need_suspend = true;
+      if (!thr_->IsRunnable()) {
+	return true;
+      }
       break;
     }
     return Executor::ExecInsn(method, frame, insn);
@@ -306,17 +311,54 @@ bool ExecutorToplevel::MayExecuteCustomOp(const Method *method, MethodFrame *fra
       frame->reg_values_[rhs].type_ != Value::NUM) {
     return false;
   }
-  if (method->method_regs_[rhs]->type_object_ != nullptr &&
-      method->method_regs_[lhs]->type_object_ ==
-      method->method_regs_[rhs]->type_object_) {
-    CHECK(false) << "Custom op is not allowed from top level";
-    return false;
+  if (IsCustomOpCall(method, insn)) {
+    return ExecCustomOp(method, frame, insn);
   }
   return false;
 }
 
+bool ExecutorToplevel::ExecCustomOp(const Method *method, MethodFrame *frame,
+				    Insn *insn) {
+  int lhs = insn->src_regs_[0]->id_;
+  Object *type_obj = method->method_regs_[lhs]->type_object_;
+  sym_t s = NumericObject::GetMethodName(type_obj, insn->op_);
+  CHECK(s);
+  Value *value = type_obj->LookupValue(s, false);
+  CHECK(value != nullptr && value->type_ == Value::METHOD &&
+	value->method_ != nullptr);
+  Method *op_method = value->method_;
+  compiler::Compiler::CompileMethod(thr_->GetVM(), type_obj, op_method);
+  CHECK(!method->IsCompileFailure());
+  vector<Value> args;
+  for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
+    args.push_back(frame->reg_values_[insn->src_regs_[i]->id_]);
+  }
+  auto fn = op_method->GetMethodFunc();
+  CHECK(fn == nullptr);
+  SetupCallee(type_obj, op_method, args);
+  return true;
+}
+
+
 void ExecutorToplevel::ExecMayWithTypeDone(const Method *method,
 					   MethodFrame *frame, Insn *insn) {
+  int lhs = insn->src_regs_[0]->id_;
+  int rhs = insn->src_regs_[1]->id_;
+  if (IsCustomOpCall(method, insn)) {
+    insn->dst_regs_[0]->type_ = insn->src_regs_[0]->type_;
+    Executor::ExecFuncallDone(method, frame, insn);
+  }
+}
+
+bool ExecutorToplevel::IsCustomOpCall(const Method *method, Insn *insn) {
+  int lhs = insn->src_regs_[0]->id_;
+  int rhs = insn->src_regs_[1]->id_;
+  if (method->method_regs_[rhs]->type_object_ != nullptr &&
+      method->method_regs_[lhs]->type_object_ ==
+      method->method_regs_[rhs]->type_object_) {
+    return true;
+  }
+  return false;
 }
 
 }  // namespace vm

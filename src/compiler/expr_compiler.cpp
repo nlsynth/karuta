@@ -664,7 +664,6 @@ vm::Register *ExprCompiler::UpdateModifyOp(fe::NodeCode type,
 }
 
 vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
-  // Concept proof code.
   if (orig_insn->op_ != vm::OP_ADD &&
       orig_insn->op_ != vm::OP_SUB &&
       orig_insn->op_ != vm::OP_MUL) {
