@@ -16,11 +16,13 @@ public:
   }
 };
 
-Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name) {
+Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name,
+					bool is_soft) {
   Object *thr = vm->root_object_->Clone(vm);
   ThreadWrapperData *data = new ThreadWrapperData;
   data->entry.method_name = sym_str(method_name);
   data->entry.thread_obj = thr;
+  data->entry.is_soft_thread = is_soft;
 
   thr->object_specific_.reset(data);
 
@@ -29,7 +31,7 @@ Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name) {
 
 void ThreadWrapper::Run(VM *vm, Object *obj) {
   vector<ThreadEntry> methods;
-  GetThreadMethods(obj, &methods);
+  GetThreadEntryMethods(obj, &methods, true);
   for (size_t i = 0; i < methods.size(); ++i) {
     string &name = methods[i].method_name;
     Value *method_value =
@@ -39,8 +41,9 @@ void ThreadWrapper::Run(VM *vm, Object *obj) {
   }
 }
 
-void ThreadWrapper::GetThreadMethods(Object *obj,
-				     vector<ThreadEntry> *methods) {
+void ThreadWrapper::GetThreadEntryMethods(Object *obj,
+					  vector<ThreadEntry> *methods,
+					  bool with_soft_thread) {
   for (map<sym_t, Value>::iterator it = obj->members_.begin();
        it != obj->members_.end(); ++it) {
     Value &value = it->second;
@@ -53,6 +56,9 @@ void ThreadWrapper::GetThreadMethods(Object *obj,
     }
     ThreadWrapperData *data =
       (ThreadWrapperData *)member_obj->object_specific_.get();
+    if (!with_soft_thread && data->entry.is_soft_thread) {
+      continue;
+    }
     ThreadEntry entry = data->entry;
     entry.thread_name = sym_str(it->first);
     methods->push_back(entry);

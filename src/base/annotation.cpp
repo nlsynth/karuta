@@ -148,7 +148,12 @@ int Annotation::GetDepth() {
 
 bool Annotation::IsThreadEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "ThreadEntry") || (s == "thread_entry");
+  return (s == "ThreadEntry");
+}
+
+bool Annotation::IsSoftThreadEntry() {
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "SoftThreadEntry");
 }
 
 string Annotation::GetName() {

@@ -28,7 +28,8 @@ public:
   void ExecMayWithTypeDone(const Method *method, MethodFrame *frame, Insn *insn);
   bool ExecCustomOp(const Method *method, MethodFrame *frame, Insn *insn);
 
-  void AddThreadEntry(MethodFrame *frame, Insn *insn, const string &name, int num);
+  void AddThreadEntry(MethodFrame *frame, Insn *insn, const string &name,
+		      int num, bool is_soft);
   bool IsCustomOpCall(const Method *method, Insn *insn);
 };
 

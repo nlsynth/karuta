@@ -61,6 +61,7 @@ public:
   string GetInputPinName();
 
   bool IsThreadEntry();
+  bool IsSoftThreadEntry();
   bool IsDataFlowEntry();
   bool IsExtEntry();
   bool IsExtMethodStub();

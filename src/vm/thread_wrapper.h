@@ -8,15 +8,17 @@ namespace vm {
 
 class ThreadWrapper {
 public:
-  static Object *NewThreadWrapper(VM *vm, sym_t method_name);
+  static Object *NewThreadWrapper(VM *vm, sym_t method_name, bool is_soft);
   static void Run(VM *vm, Object *obj);
 
   struct ThreadEntry {
     string method_name;
     string thread_name;
     Object *thread_obj;
+    bool is_soft_thread;
   };
-  static void GetThreadMethods(Object *obj, vector<ThreadEntry> *methods);
+  static void GetThreadEntryMethods(Object *obj, vector<ThreadEntry> *methods,
+				    bool with_soft_thread);
 };
 
 }  // namespace vm

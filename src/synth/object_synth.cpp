@@ -91,7 +91,7 @@ vm::Object *ObjectSynth::GetObject() const {
 
 void ObjectSynth::CollectThreads(IModule *mod) {
   vector<vm::ThreadWrapper::ThreadEntry> thread_entries;
-  vm::ThreadWrapper::GetThreadMethods(obj_, &thread_entries);
+  vm::ThreadWrapper::GetThreadEntryMethods(obj_, &thread_entries, false);
 
   vector<string> ext_entries;
   CollectExtEntries(&ext_entries);
