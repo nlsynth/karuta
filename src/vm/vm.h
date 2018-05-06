@@ -18,6 +18,7 @@ public:
 
   void Run();
   void AddThreadFromMethod(Thread *parent, Object *object, Method *method);
+  void Yield(Thread *thr);
   void GC();
   IntArray *GetDefaultMemory();
   int GetAddressSpaceWidth(Object *obj);
@@ -36,6 +37,7 @@ public:
 
 private:
   set<Thread*> threads_;
+  set<Thread*> yielded_threads_;
 
   std::unique_ptr<Pool<Method> > methods_;
   set<Object*> objects_;

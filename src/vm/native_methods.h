@@ -27,6 +27,7 @@ public:
   static void Wait(Thread *thr, Object *obj, const vector<Value> &args);
   static void WidthOf(Thread *thr, Object *obj, const vector<Value> &args);
   static void WriteHdl(Thread *thr, Object *obj, const vector<Value> &args);
+  static void Yield(Thread *thr, Object *obj, const vector<Value> &args);
 
   // Iroha.
   static void SetIROutput(Thread *thr, Object *obj, const vector<Value> &arg);

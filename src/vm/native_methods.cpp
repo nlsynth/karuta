@@ -232,6 +232,17 @@ void NativeMethods::WriteHdl(Thread *thr, Object *obj,
   synth::Synth::WriteHdl(StringWrapper::String(arg.object_), obj);
 }
 
+void NativeMethods::Yield(Thread *thr, Object *obj,
+			  const vector<Value> &args) {
+  if (!thr->GetInYield()) {
+    thr->GetVM()->Yield(thr);
+    thr->SetInYield(true);
+  } else {
+    // proceed to the next insn.
+    thr->SetInYield(false);
+  }
+}
+
 void NativeMethods::IsMain(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
   Value value;
@@ -282,6 +293,7 @@ void Method::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
 		      &NativeMethods::SetSynthParam, rets);
   InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
   InstallNativeMethod(vm, obj, "writeHdl", &NativeMethods::WriteHdl, rets);
+  InstallNativeMethod(vm, obj, "yield", &NativeMethods::Yield, rets);
 }
 
 Method *Method::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,

@@ -30,13 +30,21 @@ VM::~VM() {
 }
 
 void VM::Run() {
-  bool ran = true;
-  while (ran) {
-    ran = false;
+  bool may_continue = true;
+  while (may_continue) {
+    may_continue = false;
     for (Thread *thr : threads_) {
       if (thr->IsRunnable()) {
 	thr->Run();
-	ran = true;
+	may_continue = true;
+      }
+    }
+    if (!may_continue) {
+      if (yielded_threads_.size() > 0) {
+	Thread *thr = *(yielded_threads_.begin());
+	yielded_threads_.erase(thr);
+	thr->Resume();
+	may_continue = true;
       }
     }
   }
@@ -54,6 +62,11 @@ void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method) {
   compiler::Compiler::CompileMethod(this, object, method);
   Thread *thread = new Thread(this, parent, object, method);
   threads_.insert(thread);
+}
+
+void VM::Yield(Thread *thr) {
+  thr->Suspend();
+  yielded_threads_.insert(thr);
 }
 
 void VM::GC() {

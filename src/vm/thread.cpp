@@ -19,7 +19,8 @@ bool Thread::dbg_bytecode_;
 Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method)
   : vm_(vm), parent_thread_(parent),
     executor_(new Executor(this)),
-    executor_toplevel_(new ExecutorToplevel(this)) {
+    executor_toplevel_(new ExecutorToplevel(this)),
+    in_yield_(false) {
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
 }
@@ -97,6 +98,14 @@ void Thread::Exit() {
 void Thread::Resume() {
   CHECK(stat_ == SUSPENDED);
   stat_ = RUNNABLE;
+}
+
+void Thread::SetInYield(bool in_yield) {
+  in_yield_ = in_yield;
+}
+
+bool Thread::GetInYield() {
+  return in_yield_;
 }
 
 VM *Thread::GetVM() {

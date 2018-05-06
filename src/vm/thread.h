@@ -18,6 +18,8 @@ public:
   void Suspend();
   void Exit();
   void Resume();
+  void SetInYield(bool in_yield);
+  bool GetInYield();
 
   VM *GetVM();
   static void SetByteCodeDebug(bool enable);
@@ -53,6 +55,7 @@ private:
   std::unique_ptr<ExecutorToplevel> executor_toplevel_;
 
   vector<MethodFrame*> method_stack_;
+  bool in_yield_;
 };
 
 }  // namespace vm
