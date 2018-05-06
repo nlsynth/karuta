@@ -1,0 +1,103 @@
+// Example to multiply a matrix and a vector.
+//
+// Possible improvements are.
+// * Parallelize the computation by splitting the matrix into mulitple threads.
+// * Generate an interrupt when the computation is done.
+// * Make a loop to process multiple inputs.
+// * Use floating point numbers, complex numbers or so on.
+//
+
+// Array attached to an AXI master interface to read/write external memory.
+@AxiMaster()
+var M.buf #32 [256]
+// Array attached to an AXI slave interface to set parameters from
+// the outside circuits.
+@AxiSlave()
+var M.regs #32 [4]
+
+// Matrix values.
+// Y=AX where Y(16*1), A(16*16) and X(16*1).
+var M.A #32 [256]
+var M.X #32 [16]
+var M.Y #32 [16]
+
+// mailbox to request to start the calculation.
+mailbox M.start #0
+// mailbox to notify the calculation is done.
+mailbox M.done #0
+
+// Thread to handle a request and data copies.
+@ThreadEntry()
+def M.main() {
+  // Waits until something is writting to regs[3] to start.
+  do {
+    regs.waitAccess()
+  } while (regs[3] == 0)
+  // Copies A from external memory through AXI.
+  buf.load(regs[0], 0, 256)
+  var i int
+  for (i = 0; i < 256; ++i) {
+    A[i] = buf[i]
+  }
+  // Copies X from external memory through AXI.
+  buf.load(regs[1], 0, 16)
+  for (i = 0; i < 16; ++i) {
+    X[i] = buf[i]
+  }
+  // Start the calculation thread and wait for it to be done.
+  start.put(1)
+  done.get()
+  // Copies Y to external memory through AXI.
+  for (i = 0; i < 16; ++i) {
+    buf[i] = Y[i]
+  }
+  buf.store(0, regs[2], 16)
+  // Mark it done.
+  regs[3] = 0
+}
+
+// Thread to handle matrix multiplication.
+@ThreadEntry()
+def M.mul() {
+  // Wait for start request.
+  start.get()
+  // Actually multiply the matrix and the vector.
+  var i, j int
+  for (i = 0; i < 16; i++) {
+    var s int = 0
+    for (j = 0; j < 16; j++) {
+      var idx int = i[3:0] :: j[3:0]
+      s += A[idx] * X[j]
+    }
+    Y[i] = s
+  }
+  // Notify it is done.
+  done.put(1)
+}
+
+// This is for test and will not be included in the output to be synthesized.
+@SoftThreadEntry()
+def M.testDrive() {
+  // Makes sure the main thread starts.
+  yield()
+  // Writes register values.
+  // Address of the matrix A.
+  regs[0] = 0
+  // Address of the matrix X.
+  regs[1] = 1024
+  // Address of the matrix Y (the result will be written).
+  regs[2] = 2048
+  // Request to start by writing non zero value.
+  regs[3] = 1
+  // Tell the main thread that regs is accessed.
+  // (Access from AXI slave generates this notification in Verilog code)
+  regs.notifyAccess()
+}
+
+// Runs all the threads.
+M.run()
+
+// Takes a snapshot of object M and convert it into a synthesizable
+// Verilog file.
+M.compile()
+M.writeHdl("/tmp/a.v")
