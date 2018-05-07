@@ -362,12 +362,17 @@ IF_STMT : IF_COND_PART BLOCK {
   Emitter::EmitLabel($1->GetLabel(true, false));
 }
 
-FOR_HEAD : K_FOR '(' EXPR ';' {
+FOR_HEAD : K_FOR '(' {
   Emitter::BeginBlock();
-  Emitter::EmitExprStmt($3);
 }
 
-FOR_COND_PART : FOR_HEAD EXPR {
+FOR_HEAD_PART : FOR_HEAD EXPR ';' {
+  Emitter::EmitExprStmt($2);
+} | FOR_HEAD VAR_DECL_STMT ';' {
+  Emitter::EmitVarDeclStmtSet($2);
+}
+
+FOR_COND_PART : FOR_HEAD_PART EXPR {
   $$ = Emitter::EmitForStmt($2);
   Emitter::EmitLabel($$->GetLabel(false, true));
 }
