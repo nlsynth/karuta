@@ -2,7 +2,7 @@
 #ifndef _fe_scanner_h_
 #define _fe_scanner_h_
 
-#include "karuta.h"
+#include "fe/common.h"
 
 namespace fe {
 
@@ -25,12 +25,10 @@ struct NumericLiteral {
   int width;
 };
 
-// Language dependent scanner configuration.
 class ScannerInfo {
 public:
-  virtual ~ScannerInfo();
-  virtual int LookupKeyword(sym_t sym) const = 0;
-  struct OperatorTableEntry *op_tab;
+  int LookupKeyword(sym_t sym) const;
+
   // parser's token id.
   int num_token;
   int sym_token;
@@ -55,7 +53,7 @@ struct ScannerPos {
 class Scanner {
 public:
   Scanner();
-  static void Init(const ScannerInfo *si, bool dbg);
+  static void Init(const ScannerInfo *si, OperatorTableEntry *ops, bool dbg);
   static FileImage *CreateFileImage(const char *fn);
   void SetFileImage(FileImage *im);
   void ReleaseFileImage();
@@ -112,8 +110,14 @@ private:
   int ln_;
   bool in_semicolon_;
   bool in_array_elm_;
+
+public:
+  static OperatorTableEntry *op_tab;
+  static const ScannerInfo *s_info;
+  static bool dbg_scanner;
 };
 
+// Interface to access current Scanner instance from the parser.
 class ScannerInterface {
 public:
   static Scanner *CreateScanner();

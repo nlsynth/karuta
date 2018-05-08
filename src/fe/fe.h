@@ -16,7 +16,6 @@ class FE {
   static vm::Method *CompileFile(const string &file, bool dbg_parser,
 				 vm::VM *vm);
   static FileImage *GetFileImage(const string &fn);
-  static int LookupKeyword(sym_t sym);
 
  private:
   bool RunFile(const string &file, vm::VM *vm);

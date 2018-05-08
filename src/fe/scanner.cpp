@@ -13,14 +13,11 @@
 
 namespace fe {
 
-static struct OperatorTableEntry *op_tab;
-static const ScannerInfo *s_info;
+OperatorTableEntry *Scanner::op_tab;
+const ScannerInfo *Scanner::s_info;
 
 Scanner *Scanner::current_scanner_;
-static bool dbg_scanner;
-
-ScannerInfo::~ScannerInfo() {
-}
+bool Scanner::dbg_scanner;
 
 Scanner::Scanner() {
   Reset();
@@ -320,8 +317,8 @@ bool Scanner::IsSymBody(char c) {
   return false;
 }
 
-void Scanner::Init(const ScannerInfo *si, bool dbg) {
-  op_tab = si->op_tab;
+void Scanner::Init(const ScannerInfo *si, OperatorTableEntry *ops, bool dbg) {
+  op_tab = ops;
   s_info = si;
   dbg_scanner = dbg;
 }
@@ -404,29 +401,29 @@ int ScannerInterface::GetToken(ScannerToken *tk) {
   int r = Scanner::current_scanner_->GetToken(&sub_op);
   tk->sub_op = 0;
   tk->str = nullptr;
-  if (r == s_info->num_token) {
+  if (r == Scanner::s_info->num_token) {
     tk->num = Scanner::current_scanner_->GetNum();
-    if (dbg_scanner) {
-      printf("num=(%lu)\n", tk->num.value);
+    if (Scanner::dbg_scanner) {
+      cout << "num=(" << tk->num.value << ")\n";
     }
-  } else if (r == s_info->sym_token) {
+  } else if (r == Scanner::s_info->sym_token) {
     int k;
     tk->sym = Scanner::current_scanner_->GetSym();
-    if (dbg_scanner) {
-      printf("sym=(%s)\n", sym_cstr(tk->sym));
+    if (Scanner::dbg_scanner) {
+      cout << "sym=(" << sym_cstr(tk->sym) << ")\n";
     }
-    k = s_info->LookupKeyword(tk->sym);
+    k = Scanner::s_info->LookupKeyword(tk->sym);
     if (k) {
       return k;
     }
-  } else if (r == s_info->str_token) {
+  } else if (r == Scanner::s_info->str_token) {
     tk->str = Scanner::current_scanner_->GetStr();
-    if (dbg_scanner) {
-      printf("str=(%s)\n", tk->str);
+    if (Scanner::dbg_scanner) {
+      cout << "str=(" << tk->str << ")\n";
     }
   } else {
-    if (dbg_scanner) {
-      printf("op=(%d(%d))\n", r, sub_op);
+    if (Scanner::dbg_scanner) {
+      cout << "op=(" << r << "(" << sub_op<< "))\n";
     }
     tk->sub_op = sub_op;
   }

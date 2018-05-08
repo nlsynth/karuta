@@ -102,18 +102,67 @@ namespace fe {
 
 std::unique_ptr<fe::ScannerInfo> FE::scanner_info_;
 
-struct NLScannerInfo : ScannerInfo {
-  virtual int LookupKeyword(sym_t sym) const {
-    return FE::LookupKeyword(sym);
+int ScannerInfo::LookupKeyword(sym_t sym) const {
+  if (sym == sym_def) {
+    return K_DEF;
+  }else if (sym == sym_func) {
+    return K_FUNC;
+  } else if (sym == sym_bool) {
+    return K_BOOL;
+  } else if (sym == sym_int) {
+    return K_INT;
+  } else if (sym == sym_object) {
+    return K_OBJECT;
+  } else if (sym == sym_thread) {
+    return K_THREAD;
+  } else if (sym == sym_channel) {
+    return K_CHANNEL;
+  } else if (sym == sym_mailbox) {
+    return K_MAILBOX;
+  } else if (sym == sym_goto) {
+    return K_GOTO;
+  } else if (sym == sym_return) {
+    return K_RETURN;
+  } else if (sym == sym_if) {
+    return K_IF;
+  } else if (sym == sym_else) {
+    return K_ELSE;
+  } else if (sym == sym_enum) {
+    return K_ENUM;
+  } else if (sym == sym_import) {
+    return K_IMPORT;
+  } else if (sym == sym_for) {
+    return K_FOR;
+  } else if (sym == sym_while) {
+    return K_WHILE;
+  } else if (sym == sym_do) {
+    return K_DO;
+  } else if (sym == sym_const) {
+    return K_CONST;
+  } else if (sym == sym_switch) {
+    return K_SWITCH;
+  } else if (sym == sym_case) {
+    return K_CASE;
+  } else if (sym == sym_default) {
+    return K_DEFAULT;
+  } else if (sym == sym_break) {
+    return K_BREAK;
+  } else if (sym == sym_continue) {
+    return K_CONTINUE;
+  } else if (sym == sym_string) {
+    return K_STRING;
+  } else if (sym == sym_var) {
+    return K_VAR;
   }
-};
+  return 0;
+}
 
 FE::FE(bool dbg_parser, bool dbg_scanner, bool dbg_bytecode)
   : dbg_parser_(dbg_parser) {
   InitSyms();
-  scanner_info_.reset(new NLScannerInfo);
+  scanner_info_.reset(new ScannerInfo);
   InitScannerInfo(scanner_info_.get());
-  Scanner::Init(scanner_info_.get(), dbg_scanner);
+  Scanner::Init(scanner_info_.get(), op_tab, dbg_scanner);
   compiler::Compiler::SetByteCodeDebug(dbg_bytecode);
   vm::Thread::SetByteCodeDebug(dbg_bytecode);
 }
@@ -205,61 +254,6 @@ FileImage *FE::GetFileImage(const string &fn) {
   return im;
 }
 
-int FE::LookupKeyword(sym_t sym) {
-  if (sym == sym_def) {
-    return K_DEF;
-  }else if (sym == sym_func) {
-    return K_FUNC;
-  } else if (sym == sym_bool) {
-    return K_BOOL;
-  } else if (sym == sym_int) {
-    return K_INT;
-  } else if (sym == sym_object) {
-    return K_OBJECT;
-  } else if (sym == sym_thread) {
-    return K_THREAD;
-  } else if (sym == sym_channel) {
-    return K_CHANNEL;
-  } else if (sym == sym_mailbox) {
-    return K_MAILBOX;
-  } else if (sym == sym_goto) {
-    return K_GOTO;
-  } else if (sym == sym_return) {
-    return K_RETURN;
-  } else if (sym == sym_if) {
-    return K_IF;
-  } else if (sym == sym_else) {
-    return K_ELSE;
-  } else if (sym == sym_enum) {
-    return K_ENUM;
-  } else if (sym == sym_import) {
-    return K_IMPORT;
-  } else if (sym == sym_for) {
-    return K_FOR;
-  } else if (sym == sym_while) {
-    return K_WHILE;
-  } else if (sym == sym_do) {
-    return K_DO;
-  } else if (sym == sym_const) {
-    return K_CONST;
-  } else if (sym == sym_switch) {
-    return K_SWITCH;
-  } else if (sym == sym_case) {
-    return K_CASE;
-  } else if (sym == sym_default) {
-    return K_DEFAULT;
-  } else if (sym == sym_break) {
-    return K_BREAK;
-  } else if (sym == sym_continue) {
-    return K_CONTINUE;
-  } else if (sym == sym_string) {
-    return K_STRING;
-  } else if (sym == sym_var) {
-    return K_VAR;
-  }
-  return 0;
-}
-
 void FE::InitSyms() {
   sym_def = sym_lookup("def");
   sym_enum = sym_lookup("enum");
@@ -269,7 +263,6 @@ void FE::InitSyms() {
 }
 
 void FE::InitScannerInfo(ScannerInfo *s_info) {
-  s_info->op_tab = op_tab;
   s_info->num_token = NUM;
   s_info->sym_token = SYM;
   s_info->str_token = STR;
