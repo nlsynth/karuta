@@ -16,6 +16,7 @@ public:
   FP16() {
     im_ = 0;
   }
+
   FP16(float f) {
     im_ = 0;
     int fi = f2i(f);
@@ -28,6 +29,13 @@ public:
     // 23bits -> 10
     int fr = fi & 0x7fffff;
     SetFraction(fr >> 13);
+  }
+
+  FP16(int s, int e, int f) {
+    im_ = 0;
+    SetSign(s);
+    SetExponent(e);
+    SetFraction(f);
   }
 
   int GetSign() {
@@ -124,6 +132,8 @@ FP16 MulP1(bool sign, int xe, int ye, int m) {
   int f;
   if (c) {
     f = m >> 1;
+  } else if (e <= 0) {
+    f = 0;
   } else {
     f = m;
   }
@@ -304,6 +314,10 @@ void TestMul() {
   cout << "-- Testing multiplier --\n";
   FP16 z = Mul(FP16(1.5), FP16(1.5));
   if (!CheckFP(z, 2.25)) {
+  }
+  // 2^-14 * 0.5
+  z = Mul(FP16(0, 1, 0), FP16(0.5));
+  if (!CheckFP(z, FP16(0, 0, 0).GetValue())) {
   }
 }
 

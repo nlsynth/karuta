@@ -91,6 +91,12 @@ module FP16RMul_Test;
       #1
       $display("0.75*0.75= %d %s", s1_ret_0, (rs == 0 && re == 14 && rf == 128) ? "OK" : "FAIL");
 
+      // 2^-14 * 0.5
+      xs <= 0; xe <= 1; xf <= 0;
+      ys <= 0; ye <= 14; yf <= 0;
+      #1
+      $display("2^-14*0.5= %d %s", s1_ret_0, (rs == 0 && re == 0 && rf == 0) ? "OK" : "FAIL");
+
       // Use this line to debug a specific case.
       $display("%d %d %d", rs, re, rf);
 

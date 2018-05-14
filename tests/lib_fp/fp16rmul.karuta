@@ -13,6 +13,18 @@ def main() {
   var x4 #FP16R = Numerics.FP16R.Build(0, 17, 0)
   y = x2 * x2
   assert(x4 == y)
+
+  var x1_2 #FP16R = Numerics.FP16R.Build(0, 14, 0)
+  y = x1_2 * x1
+  assert(y == x1_2)
+
+  var x1_4 #FP16R = Numerics.FP16R.Build(0, 13, 0)
+  y = x1_2 * x1_2
+  assert(y == x1_4)
+
+  var x_14 #FP16R = Numerics.FP16R.Build(0, 1, 0)
+  y = x_14 * x1_2
+  assert(y == 0)
 }
 
 main()
