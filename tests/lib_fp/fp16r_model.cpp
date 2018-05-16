@@ -132,10 +132,13 @@ FP16 MulP1(bool sign, int xe, int ye, int m) {
   int f;
   if (c) {
     f = m >> 1;
-  } else if (e <= 0) {
+  } else if (e <= 0 || e >= 31 || xe == 31 || ye == 31) {
     f = 0;
   } else {
     f = m;
+  }
+  if (e >= 31 || xe == 31 || ye == 31) {
+    e = 31;
   }
   z.SetSign(sign);
   z.SetExponent(e);
@@ -318,6 +321,10 @@ void TestMul() {
   // 2^-14 * 0.5
   z = Mul(FP16(0, 1, 0), FP16(0.5));
   if (!CheckFP(z, FP16(0, 0, 0).GetValue())) {
+  }
+  // 2^9 * 2^9
+  z = Mul(FP16(0, 24, 0), FP16(0, 24, 0));
+  if (!CheckFP(z, FP16(0, 31, 0).GetValue())) {
   }
 }
 
