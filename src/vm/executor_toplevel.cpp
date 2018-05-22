@@ -194,19 +194,26 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   new_method->SetParseTree(insn->insn_stmt_->GetMethodDef());
   value->method_ = new_method;
   Annotation *an = new_method->GetAnnotation();
+  bool is_soft_thread = false;
+  bool is_thread_entry = false;
+  string thr_name;
   if (an != nullptr) {
-    string name = an->GetName();
-    if (name.empty()) {
-      name = "$thr_" + sym_str(insn->label_);
-    }
-    bool is_soft_thread = an->IsSoftThreadEntry();
-    if (an->IsThreadEntry() || is_soft_thread) {
-      int num = an->GetNum();
-      AddThreadEntry(frame, insn, name, num, is_soft_thread);
-    }
-    if (an->IsDataFlowEntry()) {
-      AddThreadEntry(frame, insn, name, 1, false);
-    }
+    thr_name = an->GetName();
+    is_thread_entry = an->IsThreadEntry();
+    is_soft_thread = an->IsSoftThreadEntry();
+  }
+  if (sym_str(insn->label_) == "main") {
+    is_thread_entry = true;
+  }
+  if (thr_name.empty()) {
+    thr_name = "$thr_" + sym_str(insn->label_);
+  }
+  if (is_thread_entry || is_soft_thread) {
+    int num = an->GetNum();
+    AddThreadEntry(frame, insn, thr_name, num, is_soft_thread);
+  }
+  if (an != nullptr && an->IsDataFlowEntry()) {
+    AddThreadEntry(frame, insn, thr_name, 1, false);
   }
 }
 

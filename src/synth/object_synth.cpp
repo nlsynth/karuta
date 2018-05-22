@@ -96,6 +96,7 @@ void ObjectSynth::CollectThreads(IModule *mod) {
   vector<string> ext_entries;
   CollectExtEntries(&ext_entries);
 
+  // Falls back to native main().
   if (thread_entries.size() == 0) {
     ThreadSynth *ts = new ThreadSynth(this, "main", "main", obj_);
     threads_.push_back(ts);
