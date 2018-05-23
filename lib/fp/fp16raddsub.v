@@ -1,5 +1,6 @@
 // FP16 Regular/Relaxed version.
-// TODO: Implement overflow/underflow.
+// TODO: Finish the implementation.
+// TODO: Write tests and fix obvious bugs first.
 module FP16RAddSubS0Of5(
  input 	       clk,
  input 	       rst,
@@ -243,10 +244,14 @@ module FP16RAddSubS4Of5(
    wire        ys;
    wire [4:0]  e;
    wire [4:0]  e_final;
+   wire [5:0]  e_l0adjust;
+   wire        underflow;
+   wire [4:0]  e_adjust;
    wire        neg;
    wire        xn;
    wire        yn;
    wire [10:0] rr;
+   wire [9:0] r_final;
    wire [21:0] r8;
    wire [21:0] r4;
    wire [21:0] r2;
@@ -270,8 +275,12 @@ module FP16RAddSubS4Of5(
 
    assign l0count = {r[20:13] == 0, r8[20:17] == 0, r4[20:19] == 0, r2[20:20] == 0};
    assign rr = (xn == yn) ? r[20:10] : r1;
-   assign e_final = (xn == yn) ? e : e - l0count;
+   assign e_l0adjust = e - l0count;
+   assign underflow = e_l0adjust[5:5];
+   assign e_adjust = underflow ? 0 : e_l0adjust[4:0];
+   assign e_final = (xn == yn) ? e : e_adjust[4:0];
+   assign r_final = underflow ? 0 : rr[9:0];
 
-   assign ret_0 = {s, e_final, rr[9:0]};
+   assign ret_0 = {s, e_final, r_final};
    
 endmodule // FP16RAddSubS4Of5

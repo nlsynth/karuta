@@ -186,22 +186,27 @@ func FP16R.addsub3of5(r #22, xs, ys #0, e #5, xn, yn #0) (#21, #0, #0, #5, #0, #
 
 @ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS4Of5", file="copy")
 func FP16R.addsub4of5(r #21, xs, ys #0, e #5, neg, xn, yn #0) (#16) {
+  var e_adjust #6 = e
   if xn || yn {
     if r[20:13] == 0 {
-      e = e - 8
+      e_adjust = e_adjust - 8
       r <<= 8
     }
     if r[20:17] == 0 {
-      e = e - 4
+      e_adjust = e_adjust - 4
       r <<= 4
     }
     if r[20:19] == 0 {
-      e = e - 2
+      e_adjust = e_adjust - 2
       r <<= 2
     }
     if r[20:20] == 0 {
-      e = e - 1
+      e_adjust = e_adjust - 1
       r <<= 1
+    }
+    if e_adjust[5:5] == 1 {
+      // underflow.
+      e_adjust = 0
     }
   }
   var f #10 = r[19:10]
@@ -215,5 +220,5 @@ func FP16R.addsub4of5(r #21, xs, ys #0, e #5, neg, xn, yn #0) (#16) {
   } else {
     s = xs
   }
-  return s :: e :: f
+  return s :: e[4:0] :: f
 }

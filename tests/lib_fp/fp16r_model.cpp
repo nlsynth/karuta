@@ -198,6 +198,10 @@ FP16 AddSubP4(int r, bool xs, bool ys, int e, bool neg, bool xn, bool yn) {
   } else {
     s = xs;
   }
+  if (e < 0) {
+    e = 0;
+    r = 0;
+  }
   FP16 z;
   z.SetSign(s);
   z.SetExponent(e);

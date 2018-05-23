@@ -198,6 +198,13 @@ module FP16RAddSub_Test;
       #1
       $display("1.0-2.0= %d %s", s4_ret_0, (rs == 1 && re == 15 && rf == 0) ? "OK" : "FAIL");
 
+      // 2^-14 - 2.0
+      is_sub <= 1;
+      xs <= 0; xe <= 1; xf <= 512;
+      ys <= 0; ye <= 1; yf <= 511;
+      #1
+      $display("1536/1024 * 2^-14 - 1535/1024*2^14= %d %s", s4_ret_0, (rs == 0 && re == 0 && rf == 0) ? "OK" : "FAIL");
+
       // Use this line to debug a specific case.
       $display("%d %d %d", rs, re, rf);
    end
