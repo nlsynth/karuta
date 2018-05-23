@@ -17,7 +17,8 @@ See https://sites.google.com/site/neonlightcompiler/ for some more details.
 
 -- Get the code
 
-To check out the code including Iroha submodule.
+Check out the code with Iroha submodule.
+
     > $ git clone --recursive https://github.com/nlsynth/karuta
     or
     > $ git submodule update --init
