@@ -44,25 +44,44 @@ void ThreadWrapper::Run(VM *vm, Object *obj) {
 void ThreadWrapper::GetThreadEntryMethods(Object *obj,
 					  vector<ThreadEntry> *methods,
 					  bool with_soft_thread) {
-  for (map<sym_t, Value>::iterator it = obj->members_.begin();
-       it != obj->members_.end(); ++it) {
-    Value &value = it->second;
-    if (value.type_ != Value::OBJECT) {
+  for (auto it : obj->members_) {
+    Value &value = it.second;
+    ThreadWrapperData *data = GetData(value);
+    if (data == nullptr) {
       continue;
     }
-    Object *member_obj = value.object_;
-    if (member_obj->ObjectTypeKey() != kThreadObjectKey) {
-      continue;
-    }
-    ThreadWrapperData *data =
-      (ThreadWrapperData *)member_obj->object_specific_.get();
     if (!with_soft_thread && data->entry.is_soft_thread) {
       continue;
     }
     ThreadEntry entry = data->entry;
-    entry.thread_name = sym_str(it->first);
+    entry.thread_name = sym_str(it.first);
     methods->push_back(entry);
   }
+}
+
+void ThreadWrapper::DeleteThreadByMethodName(Object *obj, const string &name) {
+  auto members = obj->members_;
+  for (auto it : members) {
+    Value &value = it.second;
+    ThreadWrapperData *data = GetData(value);
+    if (data == nullptr) {
+      continue;
+    }
+    if (data->entry.method_name == name) {
+      obj->members_.erase(it.first);
+    }
+  }
+}
+
+ThreadWrapperData *ThreadWrapper::GetData(Value &value) {
+  if (value.type_ != Value::OBJECT) {
+    return nullptr;
+  }
+  Object *member_obj = value.object_;
+  if (member_obj->ObjectTypeKey() != kThreadObjectKey) {
+    return nullptr;
+  }
+  return (ThreadWrapperData *)member_obj->object_specific_.get();
 }
 
 }  // namespace vm

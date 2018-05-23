@@ -30,6 +30,7 @@ public:
 
   void AddThreadEntry(MethodFrame *frame, Insn *insn, const string &name,
 		      int num, bool is_soft);
+  void ClearThreadEntry(MethodFrame *frame, Insn *insn);
   bool IsCustomOpCall(const Method *method, Insn *insn);
 };
 

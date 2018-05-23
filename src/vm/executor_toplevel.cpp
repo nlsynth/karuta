@@ -193,10 +193,12 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
   Method *new_method = thr_->GetVM()->NewMethod(false /* not toplevel */);
   new_method->SetParseTree(insn->insn_stmt_->GetMethodDef());
   value->method_ = new_method;
-  Annotation *an = new_method->GetAnnotation();
+
+  ClearThreadEntry(frame, insn);
   bool is_soft_thread = false;
   bool is_thread_entry = false;
   string thr_name;
+  Annotation *an = new_method->GetAnnotation();
   if (an != nullptr) {
     thr_name = an->GetName();
     is_thread_entry = an->IsThreadEntry();
@@ -209,7 +211,10 @@ void ExecutorToplevel::ExecFuncdecl(const Method *method, MethodFrame *frame,
     thr_name = "$thr_" + sym_str(insn->label_);
   }
   if (is_thread_entry || is_soft_thread) {
-    int num = an->GetNum();
+    int num = 1;
+    if (an != nullptr) {
+      an->GetNum();
+    }
     AddThreadEntry(frame, insn, thr_name, num, is_soft_thread);
   }
   if (an != nullptr && an->IsDataFlowEntry()) {
@@ -235,6 +240,11 @@ void ExecutorToplevel::AddThreadEntry(MethodFrame *frame, Insn *insn,
     value->type_ = Value::OBJECT;
     value->object_ = thread_obj;
   }
+}
+
+void ExecutorToplevel::ClearThreadEntry(MethodFrame *frame, Insn *insn) {
+  Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
+  ThreadWrapper::DeleteThreadByMethodName(obj, sym_str(insn->label_));
 }
 
 void ExecutorToplevel::ExecMemberRead(Method *method, MethodFrame *frame,
