@@ -1,5 +1,6 @@
 #include "vm/tls_wrapper.h"
 
+#include "base/status.h"
 #include "vm/array_wrapper.h"
 #include "vm/gc.h"
 #include "vm/object.h"
@@ -44,6 +45,12 @@ bool TlsWrapper::IsTlsValue(Value *value) {
 }
 
 void TlsWrapper::InjectTlsWrapper(VM *vm, Value *value) {
+  if (value->type_ == Value::OBJECT ||
+      value->type_ == Value::OBJECT_ARRAY) {
+    Status::os(Status::USER_ERROR)
+      << "Can't attach @ThreadLocal() to object(s).";
+    return;
+  }
   Object *tls_obj = vm->root_object_->Clone(vm);
   TlsWrapperData *data = new TlsWrapperData();
   tls_obj->object_specific_.reset(data);
