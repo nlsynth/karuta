@@ -110,8 +110,6 @@
         'vm/common.h',
         'vm/executor.cpp',
         'vm/executor.h',
-        'vm/executor_toplevel.cpp',
-        'vm/executor_toplevel.h',
         'vm/gc.cpp',
         'vm/gc.h',
         'vm/insn_annotator.cpp',

@@ -6,7 +6,6 @@
 #include "base/status.h"
 #include "vm/value.h"
 #include "vm/executor.h"
-#include "vm/executor_toplevel.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -19,7 +18,6 @@ bool Thread::dbg_bytecode_;
 Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method)
   : vm_(vm), parent_thread_(parent),
     executor_(new Executor(this)),
-    executor_toplevel_(new ExecutorToplevel(this)),
     in_yield_(false) {
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
@@ -51,12 +49,7 @@ void Thread::Run() {
 void Thread::RunMethod() {
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
-  Executor *executor;
-  if (method->IsTopLevel()) {
-    executor = executor_toplevel_.get();
-  } else {
-    executor = executor_.get();
-  }
+  Executor *executor = executor_.get();
   while (frame->pc_ < method->insns_.size()) {
     Insn *insn = method->insns_[frame->pc_];
     bool need_suspend = executor->ExecInsn(method, frame, insn);

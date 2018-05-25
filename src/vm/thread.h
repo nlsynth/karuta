@@ -52,7 +52,6 @@ private:
   Thread *parent_thread_;
 
   std::unique_ptr<Executor> executor_;
-  std::unique_ptr<ExecutorToplevel> executor_toplevel_;
 
   vector<MethodFrame*> method_stack_;
   bool in_yield_;
