@@ -54,19 +54,19 @@ bool ExecutorToplevel::ExecInsn(Method *method, MethodFrame *frame,
     need_suspend = true;
     break;
   case OP_MEMBER_READ_WITH_CHECK:
-    ExecutorToplevel::ExecMemberRead(method, frame, insn);
+    ExecMemberReadWithCheck(method, frame, insn);
     break;
   case OP_ARRAY_WRITE_WITH_CHECK:
-    ExecutorToplevel::ExecArrayWrite(method, frame, insn);
+    ExecArrayWriteWithCheck(method, frame, insn);
     break;
   case OP_FUNCALL_WITH_CHECK:
-    need_suspend = ExecutorToplevel::ExecFuncall(frame, insn);
+    need_suspend = ExecFuncallWithCheck(frame, insn);
     if (!thr_->IsRunnable()) {
       return true;
     }
     break;
   case OP_FUNCALL_DONE_WITH_CHECK:
-    ExecutorToplevel::ExecFuncallDone(method, frame, insn);
+    ExecFuncallDoneWithCheck(method, frame, insn);
     break;
   case OP_SET_TYPE_OBJECT:
     ExecSetTypeObject(method, insn);
@@ -247,8 +247,9 @@ void ExecutorToplevel::ClearThreadEntry(MethodFrame *frame, Insn *insn) {
   ThreadWrapper::DeleteThreadByMethodName(obj, sym_str(insn->label_));
 }
 
-void ExecutorToplevel::ExecMemberRead(Method *method, MethodFrame *frame,
-				      const Insn *insn) {
+void ExecutorToplevel::ExecMemberReadWithCheck(Method *method,
+					       MethodFrame *frame,
+					       const Insn *insn) {
   Executor::ExecMemberAccess(frame, insn);
   // Annotate the type of the results now.
   CHECK(insn->op_ == OP_MEMBER_READ_WITH_CHECK);
@@ -260,7 +261,7 @@ void ExecutorToplevel::ExecMemberRead(Method *method, MethodFrame *frame,
   method->method_regs_[dst_id]->type_.value_type_ = member->type_;
 }
 
-bool ExecutorToplevel::ExecFuncall(MethodFrame *frame, Insn *insn) {
+bool ExecutorToplevel::ExecFuncallWithCheck(MethodFrame *frame, Insn *insn) {
   Object *obj;
   Method *callee_method = LookupMethod(frame, insn, &obj);
   if (callee_method == nullptr) {
@@ -275,9 +276,9 @@ bool ExecutorToplevel::ExecFuncall(MethodFrame *frame, Insn *insn) {
   return Executor::ExecFuncall(frame, insn);
 }
 
-void ExecutorToplevel::ExecFuncallDone(const Method *method,
-				       MethodFrame *frame,
-				       Insn *insn) {
+void ExecutorToplevel::ExecFuncallDoneWithCheck(const Method *method,
+						MethodFrame *frame,
+						Insn *insn) {
   Object *obj;
   Method *callee_method = LookupMethod(frame, insn, &obj);
   CHECK(callee_method);
@@ -291,8 +292,9 @@ void ExecutorToplevel::ExecFuncallDone(const Method *method,
   Executor::ExecFuncallDone(method, frame, insn);
 }
 
-void ExecutorToplevel::ExecArrayWrite(Method *method, MethodFrame *frame,
-				      Insn *insn) {
+void ExecutorToplevel::ExecArrayWriteWithCheck(Method *method,
+					       MethodFrame *frame,
+					       Insn *insn) {
   if (insn->obj_reg_) {
     // Annotates the result value.
     // e.g. result = (a[i] = v)

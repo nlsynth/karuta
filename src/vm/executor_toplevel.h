@@ -19,10 +19,11 @@ public:
   
   void ExecImport(Insn *insn);
   void ExecFuncdecl(const Method *method, MethodFrame *frame, Insn *insn);
-  void ExecMemberRead(Method *method, MethodFrame *frame, const Insn *insn);
-  bool ExecFuncall(MethodFrame *frame, Insn *insn);
-  void ExecFuncallDone(const Method *method, MethodFrame *frame, Insn *insn);
-  void ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn);
+  void ExecMemberReadWithCheck(Method *method, MethodFrame *frame,
+			       const Insn *insn);
+  bool ExecFuncallWithCheck(MethodFrame *frame, Insn *insn);
+  void ExecFuncallDoneWithCheck(const Method *method, MethodFrame *frame, Insn *insn);
+  void ExecArrayWriteWithCheck(Method *method, MethodFrame *frame, Insn *insn);
   void ExecSetTypeObject(Method *method, Insn *insn);
   bool MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecMayWithTypeDone(const Method *method, MethodFrame *frame, Insn *insn);
