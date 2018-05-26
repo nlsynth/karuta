@@ -146,7 +146,7 @@ def M.sha256(addr, blocks #32) (#256) {
   init()
   var i int
   for (i = 0; i < blocks; ++i) {
-    buf.load(addr, 15, 0)
+    buf.load(addr, 16, 0)
     transform()
     addr += 64
   }

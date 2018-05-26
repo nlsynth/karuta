@@ -31,10 +31,10 @@ def Kernel.__wait(cycles int) {
 def Kernel.__exit() {
 }
 
-def Array.load(maddr #64, aaddr #32, len #32) {
-  axiLoad(maddr, aaddr, len - 1)
+def Array.load(maddr #64, len #32, aaddr #32) {
+  axiLoad(maddr, len - 1, aaddr)
 }
 
-def Array.store(maddr #64, aaddr #32, len #32) {
-  axiStore(maddr, aaddr, len - 1)
+def Array.store(maddr #64, len #32, aaddr #32) {
+  axiStore(maddr, len - 1, aaddr)
 }
