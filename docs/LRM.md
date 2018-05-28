@@ -1,4 +1,4 @@
-# Language Reference Manual
+# Karuta Language Reference Manual
 
 ## Program structure
 
@@ -34,6 +34,8 @@ A method declaration can have an argument list and return value list.
 
 ### Threads
 
+A thread can be be declared either by an annotation to a method or by using thread declaration syntax.
+
     @ThreadEntry()
     def f() {
       print("hello?")
@@ -47,6 +49,8 @@ or
     }
     thread Kernel.thr1 = f()
     run()
+
+@SoftThreadEntry() can be used instead of @ThreadEntry() to specify the method is not a target of synthesis (only for tests).
 
 ### Data flow
 
@@ -139,12 +143,16 @@ As for variable declaration, please see types section.
 
 ### Ext call/stub with method interface
 
+    // f() will be callable outside of the design.
     @ExtEntry(name="e")
     def f(x int) (int) {
+      return 0
     }
 
+    // Actual implementation of f() will be outside of the design.
     @ExtStub(name="e")
     def f(x int) (int) {
+      return 0
     }
 
 #### Ext data flow
@@ -175,7 +183,14 @@ As for variable declaration, please see types section.
 
 ### Channel
 
+A channel can be declared like
+
     channel M.c1 int
+
+It can be accessed like
+
+    c1.write(1)
+    c1.read()
 
 ## Misc features (or to be classified)
 
