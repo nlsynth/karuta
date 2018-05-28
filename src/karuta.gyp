@@ -4,7 +4,7 @@
   ],
   'target_defaults': {
     'cflags': [ '-std=c++11', ],
-    'defines': ['PACKAGE="karuta"', 'VERSION="0.3.2"'],
+    'defines': ['PACKAGE="karuta"', 'VERSION="0.3.3wip"'],
     'xcode_settings': {
       'OTHER_CFLAGS': [
           '-std=c++11',
