@@ -669,7 +669,7 @@ void Executor::ExecThreadDecl(const Method *method, MethodFrame *frame,
   CHECK(callee_method) << "no method";
   sym_t method_name = insn->label_;
   Object *thread_obj =
-    ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, false);
+    ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, false, 0);
 
   CHECK(callee_obj == frame->reg_values_[insn->obj_reg_->id_].object_);
   sym_t member_name = insn->insn_stmt_->GetExpr()->GetLhs()->GetSym();
@@ -714,7 +714,7 @@ void Executor::ExecImport(Insn *insn) {
     thr_->UserError();
     return;
   }
-  vm->AddThreadFromMethod(thr_, vm->kernel_object_, method);
+  vm->AddThreadFromMethod(thr_, vm->kernel_object_, method, 0);
   thr_->Suspend();
 }
 
@@ -752,7 +752,7 @@ void Executor::ExecFuncdecl(const Method *method, MethodFrame *frame,
   if (is_thread_entry || is_soft_thread) {
     int num = 1;
     if (an != nullptr) {
-      an->GetNum();
+      num = an->GetNum();
     }
     AddThreadEntry(frame, insn, thr_name, num, is_soft_thread);
   }
@@ -768,7 +768,7 @@ void Executor::AddThreadEntry(MethodFrame *frame, Insn *insn,
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   for (int i = 0; i < num; ++i) {
     Object *thread_obj =
-      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), insn->label_, is_soft);
+      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), insn->label_, is_soft, i);
     string thr_name = name;
     if (num > 1) {
       char buf[20];

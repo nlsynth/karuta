@@ -58,9 +58,10 @@ void VM::Run() {
   Status::CheckAllErrors(true);
 }
 
-void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method) {
+void VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method,
+			     int index) {
   compiler::Compiler::CompileMethod(this, object, method);
-  Thread *thread = new Thread(this, parent, object, method);
+  Thread *thread = new Thread(this, parent, object, method, index);
   threads_.insert(thread);
 }
 

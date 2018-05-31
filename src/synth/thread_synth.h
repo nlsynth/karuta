@@ -17,7 +17,8 @@ public:
   ThreadSynth(ObjectSynth *obj_synth,
 	      const string &thread_name,
 	      const string &method_name,
-	      vm::Object *thread_obj);
+	      vm::Object *thread_obj,
+	      int index);
   virtual ~ThreadSynth();
 
   static bool HasResource(vm::Object *obj);
@@ -58,6 +59,7 @@ private:
   // (2). Thread object for thread entries.
   // (3). nullptr for sub module call entries.
   vm::Object *thread_obj_;
+  int index_;
   ITable *tab_;
   bool is_task_;
   std::unique_ptr<ResourceSet> resource_;

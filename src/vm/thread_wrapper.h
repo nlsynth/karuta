@@ -10,7 +10,8 @@ class ThreadWrapperData;
 
 class ThreadWrapper {
 public:
-  static Object *NewThreadWrapper(VM *vm, sym_t method_name, bool is_soft);
+  static Object *NewThreadWrapper(VM *vm, sym_t method_name, bool is_soft,
+				  int index);
   static void Run(VM *vm, Object *obj);
   static void DeleteThreadByMethodName(Object *obj, const string &name);
 
@@ -19,6 +20,7 @@ public:
     string thread_name;
     Object *thread_obj;
     bool is_soft_thread;
+    int index;
   };
   static void GetThreadEntryMethods(Object *obj, vector<ThreadEntry> *methods,
 				    bool with_soft_thread);

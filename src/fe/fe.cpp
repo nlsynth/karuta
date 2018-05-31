@@ -210,7 +210,7 @@ bool FE::RunFile(const string &file, vm::VM *vm) {
   if (method == nullptr || method->IsCompileFailure()) {
     return false;
   }
-  vm->AddThreadFromMethod(nullptr, vm->kernel_object_, method);
+  vm->AddThreadFromMethod(nullptr, vm->kernel_object_, method, 0);
   vm->Run();
   return true;
 }

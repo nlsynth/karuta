@@ -20,7 +20,7 @@ public:
   bool Synth();
   MethodContext *GetContext();
   void SetTaskEntry();
-  void SetRoot();
+  void SetRoot(int thread_index);
   bool IsDataFlowEntry() const;
   bool IsExtEntry() const;
   bool IsThreadEntry() const;
@@ -88,6 +88,7 @@ private:
   vm::Method *method_;
   bool is_task_entry_;
   bool is_root_;
+  int thread_index_;
 
   // VM -> Iroha mapping.
   map<vm::Register *, IRegister *> local_reg_map_;

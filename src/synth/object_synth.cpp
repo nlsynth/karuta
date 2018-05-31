@@ -38,7 +38,7 @@ void ObjectSynth::AddTaskEntryName(const string &task_entry) {
     return;
   }
   ThreadSynth *th =
-    new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), nullptr);
+    new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), nullptr, 0);
   th->SetIsTask(true);
   threads_.push_back(th);
   task_entry_names_.insert(task_entry);
@@ -98,15 +98,15 @@ void ObjectSynth::CollectThreads(IModule *mod) {
 
   // Falls back to native main().
   if (thread_entries.size() == 0) {
-    ThreadSynth *ts = new ThreadSynth(this, "main", "main", obj_);
+    ThreadSynth *ts = new ThreadSynth(this, "main", "main", obj_, 0);
     threads_.push_back(ts);
   }
   for (auto &te : thread_entries) {
     threads_.push_back(new ThreadSynth(this, te.thread_name,
-				       te.method_name, te.thread_obj));
+				       te.method_name, te.thread_obj, te.index));
   }
   for (string &ee : ext_entries) {
-    threads_.push_back(new ThreadSynth(this, ee, ee, obj_));
+    threads_.push_back(new ThreadSynth(this, ee, ee, obj_, 0));
   }
 }
 

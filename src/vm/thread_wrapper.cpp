@@ -17,12 +17,13 @@ public:
 };
 
 Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name,
-					bool is_soft) {
+					bool is_soft, int index) {
   Object *thr = vm->root_object_->Clone(vm);
   ThreadWrapperData *data = new ThreadWrapperData;
   data->entry.method_name = sym_str(method_name);
   data->entry.thread_obj = thr;
   data->entry.is_soft_thread = is_soft;
+  data->entry.index = index;
 
   thr->object_specific_.reset(data);
 
@@ -32,12 +33,12 @@ Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name,
 void ThreadWrapper::Run(VM *vm, Object *obj) {
   vector<ThreadEntry> methods;
   GetThreadEntryMethods(obj, &methods, true);
-  for (size_t i = 0; i < methods.size(); ++i) {
-    string &name = methods[i].method_name;
+  for (auto &m : methods) {
+    string &name = m.method_name;
     Value *method_value =
       obj->LookupValue(sym_lookup(name.c_str()), false);
     CHECK(method_value && method_value->type_ == Value::METHOD) << name;
-    vm->AddThreadFromMethod(nullptr, obj, method_value->method_);
+    vm->AddThreadFromMethod(nullptr, obj, method_value->method_, m.index);
   }
 }
 

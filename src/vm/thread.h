@@ -8,7 +8,7 @@ namespace vm {
 
 class Thread {
 public:
-  Thread(VM *vm, Thread *parent, Object *obj, Method *method);
+  Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index);
   ~Thread();
 
   void Run();
@@ -56,6 +56,7 @@ private:
 
   vector<MethodFrame*> method_stack_;
   bool in_yield_;
+  int index_;
 };
 
 }  // namespace vm

@@ -23,11 +23,13 @@ namespace synth {
 ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
 			 const string &thread_name,
 			 const string &entry_method_name,
-			 vm::Object *thread_obj)
+			 vm::Object *thread_obj,
+			 int index)
   : obj_synth_(obj_synth),
     thread_name_(thread_name), entry_method_name_(entry_method_name),
     is_primary_thread_(false),
     thread_obj_(thread_obj),
+    index_(index),
     tab_(nullptr),
     is_task_(false),
     reg_name_index_(0) {
@@ -115,7 +117,7 @@ bool ThreadSynth::Synth() {
   }
   MethodSynth *root_method =
     obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
-  root_method->SetRoot();
+  root_method->SetRoot(index_);
   if (is_task_) {
     root_method->SetTaskEntry();
   }

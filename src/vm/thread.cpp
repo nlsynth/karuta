@@ -15,10 +15,10 @@ namespace vm {
 
 bool Thread::dbg_bytecode_;
 
-Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method)
+Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index)
   : vm_(vm), parent_thread_(parent),
     executor_(new Executor(this)),
-    in_yield_(false) {
+    in_yield_(false), index_(index) {
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
   MaySetThreadIndex();
@@ -189,8 +189,7 @@ void Thread::MaySetThreadIndex() {
   CHECK(frame->method_->GetNumArgRegisters() <= 1)
     << "Too many arguments for a thread entry method";
   if (frame->method_->GetNumArgRegisters() == 1) {
-    // TODO: Set the actual thread index.
-    frame->reg_values_[0].num_.SetValue0(0);
+    frame->reg_values_[0].num_.SetValue0(index_);
   }
 }
 

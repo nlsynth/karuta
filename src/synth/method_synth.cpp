@@ -33,7 +33,7 @@ MethodSynth::MethodSynth(ThreadSynth *thr_synth,
   : InsnWalker(thr_synth, obj),
     thr_synth_(thr_synth), method_name_(method_name),
     tab_(tab), rsynth_(rsynth), res_set_(res), method_(nullptr),
-    is_task_entry_(false), is_root_(false) {
+    is_task_entry_(false), is_root_(false), thread_index_(0) {
   context_.reset(new MethodContext(this));
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
   method_ = value->method_;
@@ -114,8 +114,9 @@ void MethodSynth::SetTaskEntry() {
   is_task_entry_ = true;
 }
 
-void MethodSynth::SetRoot() {
+void MethodSynth::SetRoot(int thread_index) {
   is_root_ = true;
+  thread_index_ = thread_index;
 }
 
 MethodContext *MethodSynth::GetContext() {
@@ -235,9 +236,9 @@ void MethodSynth::MayEmitThreadIndex(IState *st) {
   IRegister *arg_reg = local_reg_map_[arg];
   IResource *assign = res_set_->AssignResource();
   IInsn *iinsn = new IInsn(assign);
-  // TODO: Set the actual thread index.
   IRegister *ireg =
-    DesignTool::AllocConstNum(tab_, arg_reg->value_type_.GetWidth(), 0);
+    DesignTool::AllocConstNum(tab_, arg_reg->value_type_.GetWidth(),
+			      thread_index_);
   iinsn->inputs_.push_back(ireg);
   iinsn->outputs_.push_back(arg_reg);
   st->insns_.push_back(iinsn);
