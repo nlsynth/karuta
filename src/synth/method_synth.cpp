@@ -104,6 +104,9 @@ bool MethodSynth::SynthFromInsns() {
   if (is_root_ && IsDataFlowEntry()) {
     EmitDataFlowEntry(context_->states_[0]->state_);
   }
+  if (IsThreadEntry()) {
+    MayEmitThreadIndex(context_->states_[0]->state_);
+  }
   return true;
 }
 
@@ -222,12 +225,34 @@ void MethodSynth::EmitExtTaskDone(IState *st) {
   }
 }
 
+void MethodSynth::MayEmitThreadIndex(IState *st) {
+  CHECK(method_->GetNumArgRegisters() <= 1)
+    << "Too many arguments for a thread entry method";
+  if (method_->GetNumArgRegisters() != 1) {
+    return;
+  }
+  vm::Register *arg = method_->method_regs_[0];
+  IRegister *arg_reg = local_reg_map_[arg];
+  IResource *assign = res_set_->AssignResource();
+  IInsn *iinsn = new IInsn(assign);
+  // TODO: Set the actual thread index.
+  IRegister *ireg =
+    DesignTool::AllocConstNum(tab_, arg_reg->value_type_.GetWidth(), 0);
+  iinsn->inputs_.push_back(ireg);
+  iinsn->outputs_.push_back(arg_reg);
+  st->insns_.push_back(iinsn);
+}
+
 bool MethodSynth::IsDataFlowEntry() const {
   return method_->GetAnnotation()->IsDataFlowEntry();
 }
 
 bool MethodSynth::IsExtEntry() const {
   return method_->GetAnnotation()->IsExtEntry();
+}
+
+bool MethodSynth::IsThreadEntry() const {
+  return is_root_ && !is_task_entry_ && !IsExtEntry() && !IsDataFlowEntry();
 }
 
 void MethodSynth::SynthAlternativeImplMethod(vm::Method *method) {

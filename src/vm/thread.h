@@ -44,6 +44,7 @@ private:
   void PopMethodFrame();
   MethodFrame *CurrentMethodFrame() const;
   MethodFrame *ParentMethodFrame() const;
+  void MaySetThreadIndex();
 
   static bool dbg_bytecode_;
 

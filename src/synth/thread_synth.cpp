@@ -115,14 +115,9 @@ bool ThreadSynth::Synth() {
   }
   MethodSynth *root_method =
     obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
+  root_method->SetRoot();
   if (is_task_) {
     root_method->SetTaskEntry();
-  }
-  if (root_method->IsDataFlowEntry()) {
-    root_method->SetRoot();
-  }
-  if (root_method->IsExtEntry()) {
-    root_method->SetRoot();
   }
   // Actually synthesize all.
   for (auto &it : obj_methods_) {

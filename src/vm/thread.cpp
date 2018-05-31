@@ -21,6 +21,7 @@ Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method)
     in_yield_(false) {
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
+  MaySetThreadIndex();
 }
 
 Thread::~Thread() {
@@ -181,6 +182,16 @@ MethodFrame *Thread::ParentMethodFrame() const {
     return nullptr;
   }
   return method_stack_[method_stack_.size() - 2];
+}
+
+void Thread::MaySetThreadIndex() {
+  MethodFrame *frame = CurrentMethodFrame();
+  CHECK(frame->method_->GetNumArgRegisters() <= 1)
+    << "Too many arguments for a thread entry method";
+  if (frame->method_->GetNumArgRegisters() == 1) {
+    // TODO: Set the actual thread index.
+    frame->reg_values_[0].num_.SetValue0(0);
+  }
 }
 
 }  // namespace vm
