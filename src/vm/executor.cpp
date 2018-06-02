@@ -129,7 +129,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     ExecArrayRead(frame, insn);
     break;
   case OP_ARRAY_WRITE:
-    ExecArrayWrite(frame, insn);
+    ExecArrayWrite(method, frame, insn);
     break;
   case OP_LOGIC_INV:
     ExecLogicInv(frame, insn);
@@ -202,7 +202,8 @@ void Executor::ExecStr(MethodFrame *frame, Insn *insn) {
 void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			 Insn *insn) {
   int dst = insn->dst_regs_[0]->id_;
-  if (frame->reg_values_[dst].type_ != Value::NUM) {
+  // TODO: Dst may not be typed.
+  if (method->method_regs_[dst]->type_.value_type_!= Value::NUM) {
     ExecNonNumResultBinop(method, frame, insn);
     return;
   }
@@ -302,7 +303,7 @@ void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
   }
 }
 
-void Executor::ExecArrayWrite(MethodFrame *frame, Insn *insn) {
+void Executor::ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn) {
   int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
   CHECK(insn->obj_reg_ != nullptr);
   Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
@@ -313,7 +314,8 @@ void Executor::ExecArrayWrite(MethodFrame *frame, Insn *insn) {
 		 frame->reg_values_[insn->src_regs_[1]->id_].num_);
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
-    CHECK(frame->reg_values_[insn->src_regs_[1]->id_].type_ == Value::OBJECT);
+    CHECK(method->method_regs_[insn->src_regs_[1]->id_]->type_.value_type_
+	  == Value::OBJECT);
     ArrayWrapper::Set(array_obj, index,
 		      frame->reg_values_[insn->src_regs_[1]->id_].object_);
   }
@@ -429,14 +431,14 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
   case OP_LTE:
     {
       // fall through.
-      CHECK(frame->reg_values_[lhs].type_ == Value::NUM &&
-	    frame->reg_values_[rhs].type_ == Value::NUM);
+      CHECK(method->method_regs_[lhs]->type_.value_type_ == Value::NUM &&
+	    method->method_regs_[rhs]->type_.value_type_ == Value::NUM);
     }
   case OP_EQ:
   case OP_NE:
     {
       bool r;
-      if (frame->reg_values_[rhs].type_ == Value::NUM) {
+      if (method->method_regs_[rhs]->type_.value_type_ == Value::NUM) {
 	iroha::CompareOp op;
 	switch (insn->op_) {
 	case OP_LT:
@@ -458,7 +460,7 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
 	}
 	r = iroha::Op::Compare(op, frame->reg_values_[lhs].num_,
 			       frame->reg_values_[rhs].num_);
-      } else if (frame->reg_values_[rhs].type_ == Value::ENUM_ITEM) {
+      } else if (method->method_regs_[rhs]->type_.value_type_ == Value::ENUM_ITEM) {
 	r = (frame->reg_values_[lhs].enum_val_.val ==
 	     frame->reg_values_[rhs].enum_val_.val);
       } else {
@@ -474,8 +476,8 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
     {
-      CHECK(frame->reg_values_[lhs].type_ == Value::OBJECT);
-      CHECK(frame->reg_values_[rhs].type_ == Value::OBJECT);
+      CHECK(method->method_regs_[lhs]->type_.value_type_ == Value::OBJECT);
+      CHECK(method->method_regs_[rhs]->type_.value_type_ == Value::OBJECT);
       string r = frame->reg_values_[lhs].object_->ToString() +
 	frame->reg_values_[rhs].object_->ToString();
       frame->reg_values_[dst].object_ =
@@ -787,8 +789,8 @@ void Executor::ClearThreadEntry(MethodFrame *frame, Insn *insn) {
 }
 
 void Executor::ExecMemberReadWithCheck(Method *method,
-					       MethodFrame *frame,
-					       const Insn *insn) {
+				       MethodFrame *frame,
+				       const Insn *insn) {
   Executor::ExecMemberAccess(frame, insn);
   // Annotate the type of the results now.
   CHECK(insn->op_ == OP_MEMBER_READ_WITH_CHECK);
@@ -816,8 +818,8 @@ bool Executor::ExecFuncallWithCheck(MethodFrame *frame, Insn *insn) {
 }
 
 void Executor::ExecFuncallDoneWithCheck(const Method *method,
-						MethodFrame *frame,
-						Insn *insn) {
+					MethodFrame *frame,
+					Insn *insn) {
   Object *obj;
   Method *callee_method = LookupMethod(frame, insn, &obj);
   CHECK(callee_method);
@@ -832,8 +834,8 @@ void Executor::ExecFuncallDoneWithCheck(const Method *method,
 }
 
 void Executor::ExecArrayWriteWithCheck(Method *method,
-					       MethodFrame *frame,
-					       Insn *insn) {
+				       MethodFrame *frame,
+				       Insn *insn) {
   if (insn->obj_reg_) {
     // Annotates the result value.
     // e.g. result = (a[i] = v)
@@ -849,7 +851,7 @@ void Executor::ExecArrayWriteWithCheck(Method *method,
       method->method_regs_[dst_id]->type_.value_type_ = Value::OBJECT;
     }
   }
-  Executor::ExecArrayWrite(frame, insn);
+  Executor::ExecArrayWrite(method, frame, insn);
 }
 
 void Executor::ExecSetTypeObject(Method *method, Insn *insn) {
@@ -867,8 +869,8 @@ void Executor::ExecSetTypeObject(Method *method, Insn *insn) {
 bool Executor::MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn) {
   int lhs = insn->src_regs_[0]->id_;
   int rhs = insn->src_regs_[1]->id_;
-  if (frame->reg_values_[lhs].type_ != Value::NUM ||
-      frame->reg_values_[rhs].type_ != Value::NUM) {
+  if (method->method_regs_[lhs]->type_.value_type_ != Value::NUM ||
+      method->method_regs_[rhs]->type_.value_type_ != Value::NUM) {
     return false;
   }
   if (IsCustomOpCall(method, insn)) {

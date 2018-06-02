@@ -30,7 +30,7 @@ private:
   Method *LookupMethod(MethodFrame *frame, Insn *insn, Object **obj);
   Method *LookupCompiledMethod(MethodFrame *frame, Insn *insn, Object **obj);
   void ExecLoadObj(MethodFrame *frame, Insn *insn);
-  void ExecArrayWrite(MethodFrame *frame, Insn *insn);
+  void ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn);
   void SetupCallee(Object *obj, Method *callee_method,
 		   const vector<Value> &args);
   void ExecStr(MethodFrame *frame, Insn *insn);
