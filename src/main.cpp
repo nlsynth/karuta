@@ -234,7 +234,8 @@ void Main::InstallTimeout() {
   ival.it_interval.tv_usec = 0;
   ival.it_value.tv_sec = sec;
   ival.it_value.tv_usec = usec;
-  setitimer(ITIMER_VIRTUAL, &ival, nullptr);
+  // ITIMER_VIRTUAL doesn't work on WSL (as of 2018/06).
+  setitimer(ITIMER_REAL, &ival, nullptr);
 }
 
 void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
