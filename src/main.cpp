@@ -10,6 +10,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
 */
+#include <errno.h>
 #include <signal.h>
 #include <sys/time.h>
 #include <stdio.h>
@@ -235,7 +236,9 @@ void Main::InstallTimeout() {
   ival.it_value.tv_sec = sec;
   ival.it_value.tv_usec = usec;
   // ITIMER_VIRTUAL doesn't work on WSL (as of 2018/06).
-  setitimer(ITIMER_REAL, &ival, nullptr);
+  if (setitimer(ITIMER_VIRTUAL, &ival, nullptr) == -1 && errno == EINVAL) {
+    setitimer(ITIMER_REAL, &ival, nullptr);
+  }
 }
 
 void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
