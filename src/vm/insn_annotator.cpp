@@ -5,6 +5,7 @@
 #include "fe/method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "vm/array_wrapper.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/numeric_object.h"
@@ -222,7 +223,18 @@ void InsnAnnotator::TryType(Insn *insn) {
     return;
   }
   if (insn->op_ == OP_ARRAY_READ) {
+    Object *obj = objs_[insn->obj_reg_];
+    if (obj == nullptr) {
+      CHECK(method_->IsTopLevel());
+      return;
+    }
+    if (TlsWrapper::IsTls(obj)) {
+      Value *value = TlsWrapper::GetValue(obj, nullptr);
+      obj = value->object_;
+    }
+    CHECK(ArrayWrapper::IsIntArray(obj));
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, ArrayWrapper::GetDataWidth(obj));
     return;
   }
   if (insn->op_ == OP_MEMBER_READ ||
@@ -243,7 +255,7 @@ void InsnAnnotator::TryType(Insn *insn) {
 	value = TlsWrapper::GetValue(value->object_, nullptr);
       }
       insn->dst_regs_[0]->type_.value_type_ = value->type_;
-      if (value->type_ == Value::OBJECT) {
+      if (value->IsObjectType()) {
 	CHECK(value->object_ != nullptr);
 	objs_[insn->dst_regs_[0]] = value->object_;
       }
