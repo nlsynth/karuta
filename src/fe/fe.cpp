@@ -10,6 +10,7 @@
 #include "fe/nodecode.h"
 #include "fe/scanner.h"
 #include "vm/method.h"
+#include "vm/object.h"
 #include "vm/thread.h"
 #include "vm/vm.h"
 // This should be the last.
@@ -189,7 +190,7 @@ void FE::Run(bool vanilla, const vector<string>& files) {
 }
 
 vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
-			    vm::VM *vm) {
+			    vm::VM *vm, vm::Object *obj) {
   Method *parse_tree = ReadFile(file);
   if (parse_tree == nullptr) {
     Status::os(Status::USER_ERROR) << "Failed to load: " << file;
@@ -201,16 +202,17 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
   }
 
   return
-    compiler::Compiler::CompileParseTree(vm, vm->kernel_object_, parse_tree);
+    compiler::Compiler::CompileParseTree(vm, obj, parse_tree);
 }
 
 bool FE::RunFile(const string &file, vm::VM *vm) {
   Env::SetCurrentFile(file);
-  vm::Method *method = CompileFile(file, dbg_parser_, vm);
+  vm::Object *thr_obj = vm->kernel_object_->Clone(vm);
+  vm::Method *method = CompileFile(file, dbg_parser_, vm, thr_obj);
   if (method == nullptr || method->IsCompileFailure()) {
     return false;
   }
-  vm->AddThreadFromMethod(nullptr, vm->kernel_object_, method, 0);
+  vm->AddThreadFromMethod(nullptr, thr_obj, method, 0);
   vm->Run();
   return true;
 }

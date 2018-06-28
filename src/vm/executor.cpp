@@ -681,7 +681,7 @@ void Executor::ExecThreadDecl(const Method *method, MethodFrame *frame,
 }
 
 void Executor::ExecChannelDecl(const Method *method,
-				       MethodFrame *frame, Insn *insn) {
+			       MethodFrame *frame, Insn *insn) {
   int width = insn->insn_stmt_->GetWidth().GetWidth();
   Annotation *an = insn->insn_stmt_->GetAnnotation();
   CHECK(an == nullptr || !an->IsThreadLocal());
@@ -696,7 +696,7 @@ void Executor::ExecChannelDecl(const Method *method,
 }
 
 void Executor::ExecMailboxDecl(const Method *method,
-				       MethodFrame *frame, Insn *insn) {
+			       MethodFrame *frame, Insn *insn) {
   int width = insn->insn_stmt_->GetWidth().GetWidth();
   Object *mailbox_obj =
     MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn->label_);
@@ -710,13 +710,14 @@ void Executor::ExecMailboxDecl(const Method *method,
 void Executor::ExecImport(Insn *insn) {
   const string &fn = insn->insn_stmt_->GetString();
   VM *vm = thr_->GetVM();
-  Method *method = fe::FE::CompileFile(fn, false, vm);
+  vm::Object *thr_obj = vm->kernel_object_->Clone(vm);
+  Method *method = fe::FE::CompileFile(fn, false, vm, thr_obj);
   if (!method) {
     Status::os(Status::USER_ERROR) << "Failed to import: " << fn;
     thr_->UserError();
     return;
   }
-  vm->AddThreadFromMethod(thr_, vm->kernel_object_, method, 0);
+  vm->AddThreadFromMethod(thr_, thr_obj, method, 0);
   thr_->Suspend();
 }
 

@@ -15,6 +15,7 @@ class NumericWidth;
 
 namespace vm {
 class Method;
+class Object;
 class VM;
 }  // namespace vm
 

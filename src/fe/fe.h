@@ -14,7 +14,7 @@ class FE {
   void Run(bool vanilla, const vector<string> &files);
 
   static vm::Method *CompileFile(const string &file, bool dbg_parser,
-				 vm::VM *vm);
+				 vm::VM *vm, vm::Object *obj);
   static FileImage *GetFileImage(const string &fn);
 
  private:
