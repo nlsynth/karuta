@@ -2,7 +2,7 @@
 var Kernel.MT int[1024] = {0};
 var Kernel.index int = 0;
 
-def main() {
+def Kernel.main() {
   var i int;
   for (i = 0; i < 1; ++i) {
     var y int = MT[index];
@@ -11,7 +11,7 @@ def main() {
   }
 }
 
-main();
+Kernel.main();
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");

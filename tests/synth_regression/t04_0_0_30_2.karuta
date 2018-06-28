@@ -4,7 +4,7 @@
 
 var Kernel.MT int[1024] = {0};
 
-def main() {
+def Kernel.main() {
   var i int;
   i = 1;
   var prev int = MT[0];
@@ -17,7 +17,7 @@ def main() {
 //  print(MT[1]);
 }
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");
 
-main();
+Kernel.main();

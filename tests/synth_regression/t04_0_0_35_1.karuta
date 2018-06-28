@@ -4,7 +4,7 @@
 
 var Kernel.MT int[1024] = {0};
 
-def main() {
+def Kernel.main() {
   var i int;
   for (i = 1; i < 10; ++i) {
     var prev int = 0;
@@ -15,5 +15,5 @@ def main() {
   assert(i == 10);
 }
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");

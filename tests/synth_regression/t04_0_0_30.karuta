@@ -4,7 +4,7 @@
 
 var Kernel.MT int[1024] = {0};
 
-def main() {
+def Kernel.main() {
   MT[0] = 0;
   var prev int = MT[0];
   prev = prev + 1;
@@ -12,8 +12,8 @@ def main() {
   assert(MT[1] == 1);
 }
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");
 
 // main should run later not to write ram.
-main();
+Kernel.main();

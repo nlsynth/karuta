@@ -1,18 +1,18 @@
 // VERILOG_OUTPUT: a.v
 var Kernel.X object = Kernel.clone();
 
-def X.f() {
+def Kernel.X.f() {
   print(1);
 }
 
-def X.g() {
+def Kernel.X.g() {
   print(2);
 }
 
-def main() {
+def Kernel.main() {
   X.f();
   X.g();
 }
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");

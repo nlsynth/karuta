@@ -1,26 +1,26 @@
-def f1(x int, y #16) {
+def Kernel.f1(x int, y #16) {
   assert(x == 10)
   assert(y == 20)
   assert(widthof(x) == 32)
   assert(widthof(y) == 16)
 }
 
-f1(10, 20)
+Kernel.f1(10, 20)
 
 /* it once failed, since array referene didn't set correct width information */
-def f3(x int) {
+def Kernel.f3(x int) {
 }
 
 var Kernel.a int[10] = {0}
-f3(a[0])
+Kernel.f3(Kernel.a[0])
 
 /**/
 var i int
 
-def f(p int, q int) {
+def Kernel.f(p int, q int) {
   assert(p == q)
 }
 
 i = 1
 
-f(a[i], a[i+1])
+Kernel.f(Kernel.a[i], Kernel.a[i+1])

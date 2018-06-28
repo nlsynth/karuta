@@ -1,6 +1,6 @@
 //
 channel Kernel.c = int;
-c.write(1);
-c.write(10);
-assert(c.read() == 1);
-assert(c.read() == 10);
+Kernel.c.write(1);
+Kernel.c.write(10);
+assert(Kernel.c.read() == 1);
+assert(Kernel.c.read() == 10);

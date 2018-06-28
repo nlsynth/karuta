@@ -2,7 +2,7 @@
 // VERILOG_TB: ext_entry_tb.v
 
 @ExtEntry()
-def M.f(a1, a2 #32) (#64) {
+def f(a1, a2 #32) (#64) {
   assert(a1 == 1)
   assert(a2 == 2)
   return a1::a2

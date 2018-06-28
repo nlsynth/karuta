@@ -6,7 +6,7 @@ def Kernel.main() {
   assert(x[3] == 0);
 }
 
-x[3] = 0;
+Kernel.x[3] = 0;
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");

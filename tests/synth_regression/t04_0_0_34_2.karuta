@@ -4,11 +4,11 @@
 
 var Kernel.MT int[1024] = {0};
 
-def main() {
+def Kernel.main() {
   var x int = MT[0];
   x = x ^ (x >> 30);
   MT[0] = x;
 }
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");

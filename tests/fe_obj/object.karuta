@@ -2,11 +2,11 @@
 var Kernel.x int = 3;
 var Kernel.Hoge object = Kernel.clone();
 assert(Kernel.x == 3);
-assert(Hoge.x == 3);
+assert(Kernel.Hoge.x == 3);
 
-Hoge.x = 2;
+Kernel.Hoge.x = 2;
 assert(Kernel.x == 3);
-assert(Hoge.x == 2);
+assert(Kernel.Hoge.x == 2);
 
 
 def Kernel.f() (int) {

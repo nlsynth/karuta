@@ -1,4 +1,6 @@
 var Kernel.x bool = false;
 
+var x bool = false
+
 assert(Kernel.x == false);
 assert(x == false);

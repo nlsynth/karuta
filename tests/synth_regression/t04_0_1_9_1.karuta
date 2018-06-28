@@ -2,15 +2,15 @@
 
 // Synth failure for an inifinite loop.
 
-channel Kernel.c int
+channel M.c int
 
-func main() {
+func M.main() {
   while (true) {
     c.write(10)
     print(c.read())
   }
 }
 
-compile();
+M.compile();
 // Unused. Just to see if this doesn't fail.
-writeHdl("a.v")
+M.writeHdl("a.v")

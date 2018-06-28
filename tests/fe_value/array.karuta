@@ -1,9 +1,9 @@
 // Member variable
 var Kernel.a #7[] = {1,2,3,4};
 
-assert(a[2] == 3);
+assert(Kernel.a[2] == 3);
 
-a[2] = 4
-assert(a[2] == 4);
+Kernel.a[2] = 4
+assert(Kernel.a[2] == 4);
 
-assert(widthof(a[2]) == 7);
+assert(widthof(Kernel.a[2]) == 7);

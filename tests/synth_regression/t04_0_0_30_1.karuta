@@ -4,7 +4,7 @@
 
 var Kernel.MT int[1024] = {0};
 
-def main() {
+def Kernel.main() {
   var i int;
   i = 1;
   var cur int;
@@ -15,8 +15,8 @@ def main() {
   assert(MT[1] == 1);
 }
 
-compile();
-writeHdl("a.v");
+Kernel.compile();
+Kernel.writeHdl("a.v");
 
 // main should run later not to write ram.
-main();
+Kernel.main();
