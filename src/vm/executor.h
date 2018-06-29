@@ -24,7 +24,7 @@ public:
   bool ExecInsn(Method *method, MethodFrame *frame, Insn *insn);
 
 private:
-  void ExecMemberAccess(MethodFrame *frame, const Insn *insn);
+  void ExecMemberAccess(Method *method, MethodFrame *frame, const Insn *insn);
   bool ExecFuncall(MethodFrame *frame, Insn *insn);
   void ExecFuncallDone(const Method *method, MethodFrame *frame, Insn *insn);
   Method *LookupMethod(MethodFrame *frame, Insn *insn, Object **obj);
@@ -65,6 +65,7 @@ private:
   bool MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecMayWithTypeDone(const Method *method, MethodFrame *frame, Insn *insn);
   bool ExecCustomOp(const Method *method, MethodFrame *frame, Insn *insn);
+  void RetryBinopWithType(const Method *method, MethodFrame *frame, Insn *insn);
 
   void AddThreadEntry(MethodFrame *frame, Insn *insn, const string &name,
 		      int num, bool is_soft);

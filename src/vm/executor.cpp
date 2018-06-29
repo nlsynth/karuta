@@ -141,7 +141,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     break;
   case OP_MEMBER_READ:
   case OP_MEMBER_WRITE:
-    ExecMemberAccess(frame, insn);
+    ExecMemberAccess(method, frame, insn);
     break;
   case OP_BIT_RANGE:
     ExecBitRange(frame, insn);
@@ -202,9 +202,12 @@ void Executor::ExecStr(MethodFrame *frame, Insn *insn) {
 void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			 Insn *insn) {
   int dst = insn->dst_regs_[0]->id_;
-  // TODO: Dst may not be typed.
-  if (method->method_regs_[dst]->type_.value_type_!= Value::NUM) {
-    ExecNonNumResultBinop(method, frame, insn);
+  if (method->method_regs_[dst]->type_.value_type_ != Value::NUM) {
+    if (method->method_regs_[dst]->type_.value_type_ == Value::NONE) {
+      RetryBinopWithType(method, frame, insn);
+    } else {
+      ExecNonNumResultBinop(method, frame, insn);
+    }
     return;
   }
   int lhs = insn->src_regs_[0]->id_;
@@ -284,6 +287,23 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
   default:
     CHECK(false) << "unknown binop:" << vm::OpCodeName(insn->op_);
   }
+}
+
+void Executor::RetryBinopWithType(const Method *method, MethodFrame *frame, Insn *insn) {
+  CHECK(insn->op_ == OP_ADD_MAY_WITH_TYPE ||
+	insn->op_ == OP_SUB_MAY_WITH_TYPE ||
+	insn->op_ == OP_MUL_MAY_WITH_TYPE);
+  int lhs = insn->src_regs_[0]->id_;
+  int rhs = insn->src_regs_[1]->id_;
+  CHECK(method->method_regs_[lhs]->type_.value_type_ ==
+	method->method_regs_[rhs]->type_.value_type_);
+  int dst = insn->dst_regs_[0]->id_;
+  if (method->method_regs_[lhs]->type_.value_type_ == Value::NUM) {
+    method->method_regs_[dst]->type_.value_type_ = Value::NUM;
+  } else if (method->method_regs_[lhs]->type_.value_type_ == Value::OBJECT) {
+    method->method_regs_[dst]->type_.value_type_ = Value::OBJECT;
+  }
+  ExecBinop(method, frame, insn);
 }
 
 void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
@@ -476,8 +496,9 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
     {
+      CHECK(method->method_regs_[lhs]->type_.value_type_ ==
+	    method->method_regs_[rhs]->type_.value_type_);
       CHECK(method->method_regs_[lhs]->type_.value_type_ == Value::OBJECT);
-      CHECK(method->method_regs_[rhs]->type_.value_type_ == Value::OBJECT);
       string r = frame->reg_values_[lhs].object_->ToString() +
 	frame->reg_values_[rhs].object_->ToString();
       frame->reg_values_[dst].object_ =
@@ -591,7 +612,7 @@ void Executor::MemoryRead(int addr, int data_width, iroha::Numeric *res) {
   *res = mem->ReadWide(addr, data_width);
 }
 
-void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
+void Executor::ExecMemberAccess(Method *method, MethodFrame *frame, const Insn *insn) {
   Object *obj;
   if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
     obj = frame->reg_values_[insn->src_regs_[0]->id_].object_;
@@ -617,6 +638,7 @@ void Executor::ExecMemberAccess(MethodFrame *frame, const Insn *insn) {
     // src: value, obj
     Value &src = frame->reg_values_[insn->src_regs_[0]->id_];
     member->CopyDataFrom(src);
+    member->type_ = method->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_;
   }
 }
 
@@ -792,7 +814,7 @@ void Executor::ClearThreadEntry(MethodFrame *frame, Insn *insn) {
 void Executor::ExecMemberReadWithCheck(Method *method,
 				       MethodFrame *frame,
 				       const Insn *insn) {
-  Executor::ExecMemberAccess(frame, insn);
+  Executor::ExecMemberAccess(method, frame, insn);
   // Annotate the type of the results now.
   CHECK(insn->op_ == OP_MEMBER_READ_WITH_CHECK);
   Value &obj_value = frame->reg_values_[insn->src_regs_[0]->id_];
