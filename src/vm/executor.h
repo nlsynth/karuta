@@ -43,7 +43,7 @@ private:
 			     Insn *insn);
   void ExecIf(MethodFrame *frame, Insn *insn);
   void ExecGoto(MethodFrame *frame, Insn *insn);
-  void ExecBitRange(MethodFrame *frame, Insn *insn);
+  void ExecBitRange(const Method *method, MethodFrame *frame, Insn *insn);
 
   void MemoryRead(int addr, int data_width, iroha::Numeric *res);
   void MemoryWrite(uint64_t addr, int data_width, const iroha::Numeric &data);

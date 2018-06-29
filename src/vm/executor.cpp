@@ -144,7 +144,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     ExecMemberAccess(method, frame, insn);
     break;
   case OP_BIT_RANGE:
-    ExecBitRange(frame, insn);
+    ExecBitRange(method, frame, insn);
     break;
   case OP_FUNCDECL:
     ExecFuncdecl(method, frame, insn);
@@ -290,9 +290,14 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 }
 
 void Executor::RetryBinopWithType(const Method *method, MethodFrame *frame, Insn *insn) {
-  CHECK(insn->op_ == OP_ADD_MAY_WITH_TYPE ||
-	insn->op_ == OP_SUB_MAY_WITH_TYPE ||
-	insn->op_ == OP_MUL_MAY_WITH_TYPE);
+  if (insn->op_ == OP_CONCAT) {
+    InsnAnnotator::AnnotateConcatInsn(insn);
+    // TODO: Annotate other types of insns.
+  } else {
+    CHECK(insn->op_ == OP_ADD_MAY_WITH_TYPE ||
+	  insn->op_ == OP_SUB_MAY_WITH_TYPE ||
+	  insn->op_ == OP_MUL_MAY_WITH_TYPE);
+  }
   int lhs = insn->src_regs_[0]->id_;
   int rhs = insn->src_regs_[1]->id_;
   CHECK(method->method_regs_[lhs]->type_.value_type_ ==
@@ -642,11 +647,15 @@ void Executor::ExecMemberAccess(Method *method, MethodFrame *frame, const Insn *
   }
 }
 
-void Executor::ExecBitRange(MethodFrame *frame, Insn *insn) {
+void Executor::ExecBitRange(const Method *method, MethodFrame *frame, Insn *insn) {
+  int dst = insn->dst_regs_[0]->id_;
+  if (method->method_regs_[dst]->type_.value_type_ == Value::NONE) {
+    InsnAnnotator::AnnotateBitRangeInsn(insn);
+  }
   int h = frame->reg_values_[insn->src_regs_[1]->id_].num_.GetValue0();
   int l = frame->reg_values_[insn->src_regs_[2]->id_].num_.GetValue0();
   Value &value = frame->reg_values_[insn->src_regs_[0]->id_];
-  Value &res = frame->reg_values_[insn->dst_regs_[0]->id_];
+  Value &res = frame->reg_values_[dst];
   iroha::Op::SelectBits(value.num_, h, l, &res.num_);
 }
 

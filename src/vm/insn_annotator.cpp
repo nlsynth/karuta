@@ -180,23 +180,10 @@ void InsnAnnotator::TryType(Insn *insn) {
     }
   }
   if (insn->op_ == OP_CONCAT) {
-    if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
-	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
-      insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-      int w = insn->src_regs_[0]->type_.width_.GetWidth() +
-	insn->src_regs_[1]->type_.width_.GetWidth();
-      insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
-      return;
-    }
+    AnnotateConcatInsn(insn);
   }
   if (insn->op_ == OP_BIT_RANGE) {
-    if (insn->src_regs_[0]->type_.value_type_ == Value::NUM) {
-      insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-      int w = insn->src_regs_[1]->initial_num_.GetValue0() -
-	insn->src_regs_[2]->initial_num_.GetValue0() + 1;
-      insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
-      return;
-    }
+    AnnotateBitRangeInsn(insn);
   }
   if (insn->op_ == OP_LOGIC_INV ||
       insn->op_ == OP_LAND || insn->op_ == OP_LOR ||
@@ -262,6 +249,25 @@ void InsnAnnotator::TryType(Insn *insn) {
     }
     // else, the type should be determined in the compiler.
     return;
+  }
+}
+
+void InsnAnnotator::AnnotateBitRangeInsn(Insn *insn) {
+  if (insn->src_regs_[0]->type_.value_type_ == Value::NUM) {
+    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+    int w = insn->src_regs_[1]->initial_num_.GetValue0() -
+      insn->src_regs_[2]->initial_num_.GetValue0() + 1;
+    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
+  }
+}
+
+void InsnAnnotator::AnnotateConcatInsn(Insn *insn) {
+  if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
+      insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
+    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+    int w = insn->src_regs_[0]->type_.width_.GetWidth() +
+      insn->src_regs_[1]->type_.width_.GetWidth();
+    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
   }
 }
 
