@@ -11,7 +11,7 @@ As of now, this software has too many bugs and unimplemented features. In additi
 
 This software package is under development to explore efficient logic circuit design methodology.
 
-See https://sites.google.com/site/neonlightcompiler/ for some more details.
+See https://sites.google.com/site/karutacompiler/ for some more details.
 
 ## Usage
 
@@ -118,9 +118,9 @@ Now some computation is defined within object 'Kernel', so Karuta compiler can t
 * src/base
     * Common code for other components.
 * src/compiler
-    * Karuta Light Script to bytecode.
+    * Karuta Script to bytecode.
 * src/fe
-    * Karuta Light Script parser.
+    * Karuta Script parser.
 * src/synth
     * Bytecode to Iroha IR.
 * src/vm
