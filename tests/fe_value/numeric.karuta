@@ -6,15 +6,20 @@ y = x[3:0];
 assert(y == 10);
 
 
-var p #7;
-assert(widthof(p) == 7); // not yet used variable.
-var q int = 0xffff;
-p = q;
-assert(p == 0x7f);
-assert(widthof(p) == 7);
-assert(widthof(11) == 32); // constant literal
-assert(widthof(11#16) == 16); // constant literal
-
 var z #8 = 255;
 z = z[6:0] :: z[7:7];
 assert(z == 255);
+
+def main() {
+  // widthof() is not allowed in top level.
+  var p #7;
+  assert(widthof(p) == 7); // not yet used variable.
+  var q int = 0xffff;
+  p = q;
+  assert(p == 0x7f);
+  assert(widthof(p) == 7);
+  assert(widthof(11) == 32); // constant literal
+  assert(widthof(11#16) == 16); // constant literal
+}
+
+main()

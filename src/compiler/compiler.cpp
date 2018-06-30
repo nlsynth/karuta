@@ -352,7 +352,7 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     rhs_val = rt.GetOne();
   }
 
-  if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF) {
+  if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF || (IsTopLevel() && bindings_.size() == 1)) {
     CHECK(IsTopLevel());
     if (rhs_val != nullptr) {
       SetWidthByDecl(stmt->GetVarDecl(), rhs_val);
