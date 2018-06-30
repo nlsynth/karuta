@@ -85,12 +85,12 @@ Annotation *Method::GetAnnotation() const {
   return Annotation::EmptyAnnotation();
 }
 
-void Method::Dump() {
+void Method::Dump() const {
   DumpStream ds(cout);
   Dump(ds);
 }
 
-void Method::Dump(DumpStream &ds) {
+void Method::Dump(DumpStream &ds) const {
   ds.os << "method insns\n";
   for (size_t i = 0; i < insns_.size(); ++i) {
     Insn *insn = insns_[i];

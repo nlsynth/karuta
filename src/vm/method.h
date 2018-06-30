@@ -13,8 +13,8 @@ public:
   Method(bool is_toplevel);
   ~Method();
 
-  void Dump();
-  void Dump(DumpStream &os);
+  void Dump() const;
+  void Dump(DumpStream &os) const;
 
   typedef void (*method_func)(Thread *thr, Object *obj,
 			      const vector<Value> &args);

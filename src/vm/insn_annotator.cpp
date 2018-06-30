@@ -309,6 +309,9 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
 	// TODO: type object.
 	if (decl->GetType() == sym_object) {
 	  insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
+	} else if (decl->GetType() == sym_bool) {
+	  insn->dst_regs_[i]->type_.value_type_ = Value::ENUM_ITEM;
+	  insn->dst_regs_[i]->type_.enum_type_ = vm_->bool_type_;
 	} else {
 	  insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
 	  insn->dst_regs_[i]->type_.width_ = decl->GetWidth();

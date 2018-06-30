@@ -543,13 +543,20 @@ bool Executor::ExecFuncall(MethodFrame *frame,
   }
   auto fn = callee_method->GetMethodFunc();
   if (fn != nullptr) {
-    // native
+    // Native method call (implementation in C++).
+    // Copy types of argument values too, since (most of) native methods
+    // don't assume argument types.
+    for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
+      args[i].type_ = insn->src_regs_[i]->type_.value_type_;
+      args[i].num_.type_ = insn->src_regs_[i]->type_.width_;
+    }
     fn(thr_, obj, args);
     if (!thr_->IsRunnable()) {
       return true;
     }
   } else {
-    SetupCallee(obj, callee_method, args);
+    // Karuta method.
+    SetupCalleeFrame(obj, callee_method, args);
     return true;
   }
   return false;
@@ -594,8 +601,8 @@ void Executor::ExecFuncallDone(const Method *method,
   frame->returns_.clear();
 }
 
-void Executor::SetupCallee(Object *obj, Method *callee_method,
-			   const vector<Value> &args) {
+void Executor::SetupCalleeFrame(Object *obj, Method *callee_method,
+				const vector<Value> &args) {
   MethodFrame *frame = thr_->PushMethodFrame(obj, callee_method);
   for (size_t i = 0; i < args.size(); ++i) {
     frame->reg_values_[i] = args[i];
@@ -898,7 +905,8 @@ void Executor::ExecSetTypeObject(Method *method, Insn *insn) {
   }
 }
 
-bool Executor::MayExecuteCustomOp(const Method *method, MethodFrame *frame, Insn *insn) {
+bool Executor::MayExecuteCustomOp(const Method *method, MethodFrame *frame,
+				  Insn *insn) {
   int lhs = insn->src_regs_[0]->id_;
   int rhs = insn->src_regs_[1]->id_;
   if (method->method_regs_[lhs]->type_.value_type_ != Value::NUM ||
@@ -929,7 +937,7 @@ bool Executor::ExecCustomOp(const Method *method, MethodFrame *frame,
   }
   auto fn = op_method->GetMethodFunc();
   CHECK(fn == nullptr);
-  SetupCallee(type_obj, op_method, args);
+  SetupCalleeFrame(type_obj, op_method, args);
   return true;
 }
 
