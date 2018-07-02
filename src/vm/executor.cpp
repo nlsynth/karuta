@@ -624,7 +624,8 @@ void Executor::MemoryRead(int addr, int data_width, iroha::Numeric *res) {
   *res = mem->ReadWide(addr, data_width);
 }
 
-void Executor::ExecMemberAccess(Method *method, MethodFrame *frame, const Insn *insn) {
+void Executor::ExecMemberAccess(Method *method, MethodFrame *frame,
+				const Insn *insn) {
   Object *obj;
   if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
     obj = frame->reg_values_[insn->src_regs_[0]->id_].object_;
@@ -643,6 +644,14 @@ void Executor::ExecMemberAccess(Method *method, MethodFrame *frame, const Insn *
   }
   if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
     frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member);
+    if (method->IsTopLevel()) {
+      // Copies data type to the stack and method.
+      auto *dst_reg = insn->dst_regs_[0];
+      dst_reg->type_.value_type_ = member->type_;
+      dst_reg->type_.width_ = member->num_.type_;
+      frame->reg_values_[dst_reg->id_].type_ = member->type_;
+      frame->reg_values_[dst_reg->id_].num_.type_ = member->num_.type_;
+    }
   } else {
     // OP_MEMBER_WRITE
     CHECK(insn->src_regs_.size() == 2);
