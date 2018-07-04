@@ -12,6 +12,8 @@ public:
   Method *method_;
   size_t pc_;
   Object *obj_;
+  // Value.type_ and Value.num_.type_, Value.type_object_name_ are set in
+  // Top Level environment.
   vector<Value> reg_values_;
   // callee writes here.
   vector<Value> returns_;
@@ -33,7 +35,7 @@ private:
   void ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn);
   void SetupCalleeFrame(Object *obj, Method *callee_method,
 			const vector<Value> &args);
-  void ExecStr(MethodFrame *frame, Insn *insn);
+  void ExecStr(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecBinop(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecIncDec(MethodFrame *frame, Insn *insn);
   void ExecArrayRead(MethodFrame *frame, Insn *insn);

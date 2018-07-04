@@ -62,11 +62,14 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     {
       int dst = insn->dst_regs_[0]->id_;
       frame->reg_values_[dst].num_ = insn->src_regs_[0]->initial_num_;
-      frame->reg_values_[dst].num_.type_ = method->method_regs_[dst]->type_.width_;
+      if (method->IsTopLevel()) {
+	frame->reg_values_[dst].num_.type_ =
+	  method->method_regs_[dst]->type_.width_;
+      }
     }
     break;
   case OP_STR:
-    ExecStr(frame, insn);
+    ExecStr(method, frame, insn);
     break;
   case OP_ADD_MAY_WITH_TYPE:
   case OP_SUB_MAY_WITH_TYPE:
@@ -193,10 +196,13 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   return need_suspend;
 }
 
-void Executor::ExecStr(MethodFrame *frame, Insn *insn) {
+void Executor::ExecStr(const Method *method, MethodFrame *frame, Insn *insn) {
   int dst = insn->dst_regs_[0]->id_;
   frame->reg_values_[dst].object_ =
     StringWrapper::NewStringWrapper(thr_->GetVM(), InsnOpUtils::Str(insn));
+  if (method->IsTopLevel()) {
+    frame->reg_values_[dst].type_ = Value::OBJECT;
+  }
 }
 
 void Executor::ExecBinop(const Method *method, MethodFrame *frame,
@@ -847,7 +853,11 @@ void Executor::ExecMemberReadWithCheck(Method *method,
   Object *obj = obj_value.object_;
   Value *member = obj->LookupValue(insn->label_, false);
   int dst_id = insn->dst_regs_[0]->id_;
-  method->method_regs_[dst_id]->type_.value_type_ = member->type_;
+  Register *dst_reg = method->method_regs_[dst_id];
+  dst_reg->type_.value_type_ = member->type_;
+  dst_reg->type_.object_name_ = member->type_object_name_;
+  dst_reg->type_object_ = NumericObject::Get(thr_->GetVM(),
+					     member->type_object_name_);
 }
 
 bool Executor::ExecFuncallWithCheck(MethodFrame *frame, Insn *insn) {
@@ -929,7 +939,7 @@ bool Executor::MayExecuteCustomOp(const Method *method, MethodFrame *frame,
 }
 
 bool Executor::ExecCustomOp(const Method *method, MethodFrame *frame,
-				    Insn *insn) {
+			    Insn *insn) {
   int lhs = insn->src_regs_[0]->id_;
   Object *type_obj = method->method_regs_[lhs]->type_object_;
   sym_t s = NumericObject::GetMethodName(type_obj, insn->op_);
