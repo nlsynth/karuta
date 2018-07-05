@@ -27,8 +27,10 @@ public:
   // top level executor to set type of declared member dynamically
   static void AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value);
 
+  // Annotate for top level execution.
   static void AnnotateBitRangeInsn(Insn *insn);
   static void AnnotateConcatInsn(Insn *insn);
+  static void AnnotateNumCalculationOp(Insn *insn);
 
 private:
   void ClearType();

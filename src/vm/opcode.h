@@ -62,12 +62,14 @@ enum OpCode {
   OP_SET_TYPE_OBJECT,
 
   // OPs with top level specific checks.
+  // (for top level)
   OP_FUNCALL_WITH_CHECK,
   OP_FUNCALL_DONE_WITH_CHECK,
   OP_ARRAY_WRITE_WITH_CHECK,
   OP_MEMBER_READ_WITH_CHECK,
 
   // OPs for operator override.
+  // (for top level)
   OP_ADD_MAY_WITH_TYPE,
   OP_SUB_MAY_WITH_TYPE,
   OP_MUL_MAY_WITH_TYPE,

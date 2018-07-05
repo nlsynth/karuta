@@ -160,15 +160,7 @@ void InsnAnnotator::TryType(Insn *insn) {
     }
   }
   if (InsnType::IsNumCalculation(insn->op_)) {
-    if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
-	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
-      if (!insn->dst_regs_[0]->GetIsDeclaredType()) {
-	insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-	PropagateRegWidth(insn->src_regs_[0], insn->src_regs_[1],
-			  insn->dst_regs_[0]);
-      }
-      return;
-    }
+    AnnotateNumCalculationOp(insn);
   }
   if (insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT) {
     if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
@@ -268,6 +260,17 @@ void InsnAnnotator::AnnotateConcatInsn(Insn *insn) {
     int w = insn->src_regs_[0]->type_.width_.GetWidth() +
       insn->src_regs_[1]->type_.width_.GetWidth();
     insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
+  }
+}
+
+void InsnAnnotator::AnnotateNumCalculationOp(Insn *insn) {
+  if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
+      insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
+    if (!insn->dst_regs_[0]->GetIsDeclaredType()) {
+      insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+      PropagateRegWidth(insn->src_regs_[0], insn->src_regs_[1],
+			insn->dst_regs_[0]);
+    }
   }
 }
 

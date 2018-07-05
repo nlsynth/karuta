@@ -63,6 +63,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
       int dst = insn->dst_regs_[0]->id_;
       frame->reg_values_[dst].num_ = insn->src_regs_[0]->initial_num_;
       if (method->IsTopLevel()) {
+	frame->reg_values_[dst].type_ = Value::NUM;
 	frame->reg_values_[dst].num_.type_ =
 	  method->method_regs_[dst]->type_.width_;
       }
@@ -129,7 +130,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     ExecIncDec(frame, insn);
     break;
   case OP_ARRAY_READ:
-    ExecArrayRead(frame, insn);
+    ExecArrayRead(method, frame, insn);
     break;
   case OP_ARRAY_WRITE:
     ExecArrayWrite(method, frame, insn);
@@ -218,6 +219,15 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
   }
   int lhs = insn->src_regs_[0]->id_;
   int rhs = insn->src_regs_[1]->id_;
+  if (method->IsTopLevel()) {
+    if (InsnType::IsNumCalculation(insn->op_)) {
+      InsnAnnotator::AnnotateNumCalculationOp(insn);
+    }
+    if (insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT) {
+      frame->reg_values_[dst].num_.type_ =
+	frame->method_->method_regs_[lhs]->type_.width_;
+    }
+  }
   switch (insn->op_) {
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
@@ -248,8 +258,10 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
     iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
 			  &frame->reg_values_[dst].num_);
-    frame->reg_values_[dst].num_.type_ = frame->method_->method_regs_[dst]->type_.width_;
-
+    if (method->IsTopLevel()) {
+      frame->method_->method_regs_[dst]->type_ =
+	frame->method_->method_regs_[rhs]->type_;
+    }
     break;
   case OP_AND:
     iroha::Op::CalcBinOp(iroha::BINOP_AND,
@@ -317,20 +329,27 @@ void Executor::RetryBinopWithType(const Method *method, MethodFrame *frame, Insn
   ExecBinop(method, frame, insn);
 }
 
-void Executor::ExecArrayRead(MethodFrame *frame, Insn *insn) {
+void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
+			     Insn *insn) {
   int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
   CHECK(insn->obj_reg_ != nullptr);
   Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(array_obj);
   Value &lhs = frame->reg_values_[insn->dst_regs_[0]->id_];
+  auto *dst_reg = insn->dst_regs_[0];
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     lhs.num_ = array->Read(index);
-    lhs.num_.type_ = array->GetDataWidth();
+    if (method->IsTopLevel()) {
+      dst_reg->type_.value_type_ = Value::NUM;
+      dst_reg->type_.width_ = array->GetDataWidth();
+    }
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
     lhs.object_ = ArrayWrapper::Get(array_obj, index);
-    lhs.type_ = Value::OBJECT;
+    if (method->IsTopLevel()) {
+      dst_reg->type_.value_type_ = Value::OBJECT;
+    }
   }
 }
 
@@ -651,12 +670,11 @@ void Executor::ExecMemberAccess(Method *method, MethodFrame *frame,
   if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
     frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member);
     if (method->IsTopLevel()) {
-      // Copies data type to the stack and method.
+      // Copies data type to the method.
       auto *dst_reg = insn->dst_regs_[0];
       dst_reg->type_.value_type_ = member->type_;
       dst_reg->type_.width_ = member->num_.type_;
-      frame->reg_values_[dst_reg->id_].type_ = member->type_;
-      frame->reg_values_[dst_reg->id_].num_.type_ = member->num_.type_;
+      dst_reg->type_.object_name_ = member->type_object_name_;
     }
   } else {
     // OP_MEMBER_WRITE
@@ -665,11 +683,13 @@ void Executor::ExecMemberAccess(Method *method, MethodFrame *frame,
     // src: value, obj
     Value &src = frame->reg_values_[insn->src_regs_[0]->id_];
     member->CopyDataFrom(src);
-    member->type_ = method->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_;
+    member->type_ =
+      method->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_;
   }
 }
 
-void Executor::ExecBitRange(const Method *method, MethodFrame *frame, Insn *insn) {
+void Executor::ExecBitRange(const Method *method, MethodFrame *frame,
+			    Insn *insn) {
   int dst = insn->dst_regs_[0]->id_;
   if (method->method_regs_[dst]->type_.value_type_ == Value::NONE) {
     InsnAnnotator::AnnotateBitRangeInsn(insn);
@@ -903,6 +923,7 @@ void Executor::ExecArrayWriteWithCheck(Method *method,
 
       int dst_id = insn->dst_regs_[0]->id_;
       method->method_regs_[dst_id]->type_.width_ = array->GetDataWidth();
+      method->method_regs_[dst_id]->type_.value_type_ = Value::NUM;
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
       int dst_id = insn->dst_regs_[0]->id_;
@@ -962,9 +983,7 @@ bool Executor::ExecCustomOp(const Method *method, MethodFrame *frame,
 
 
 void Executor::ExecMayWithTypeDone(const Method *method,
-					   MethodFrame *frame, Insn *insn) {
-  int lhs = insn->src_regs_[0]->id_;
-  int rhs = insn->src_regs_[1]->id_;
+				   MethodFrame *frame, Insn *insn) {
   if (IsCustomOpCall(method, insn)) {
     insn->dst_regs_[0]->type_ = insn->src_regs_[0]->type_;
     Executor::ExecFuncallDone(method, frame, insn);
