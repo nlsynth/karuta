@@ -1,24 +1,24 @@
 // XORSHIFT32 random generator.
 //
 
-var M.y int
+var y int
 
 @ExtEntry()
-def M.setSeed(s #32) {
+def setSeed(s #32) {
   y = s
 }
 
 @ExtEntry()
-def M.get() (#32) {
+def get() (#32) {
   y = y ^ (y << 13)
   y = y ^ (y >> 17)
   y = y ^ (y << 15)
   return y
 }
 
-M.compile()
-M.writeHdl("xorshift32.v")
+compile()
+writeHdl("xorshift32.v")
 
-M.setSeed(1)
-print(M.get())
-print(M.get())
+setSeed(1)
+print(get())
+print(get())
