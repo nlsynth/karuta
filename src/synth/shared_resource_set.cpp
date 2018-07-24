@@ -151,7 +151,7 @@ SharedResource *SharedResourceSet::GetByObj(vm::Object *obj,
   return res;
 }
 
-  bool SharedResourceSet::HasAccessor(vm::Object *obj, ThreadSynth *thr) {
+bool SharedResourceSet::HasAccessor(vm::Object *obj, ThreadSynth *thr) {
   auto key = std::make_tuple(obj, thr);
   return (obj_resources_.find(key) != obj_resources_.end());
 }

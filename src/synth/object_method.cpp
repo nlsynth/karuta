@@ -79,6 +79,7 @@ void ObjectMethod::Scan() {
   string name = GetSynthName(obj);
   SharedResourceSet *sres = walker_->GetSharedResourceSet();
   if (name == kAxiLoad || name == kAxiStore ||
+      name == kSlaveWait ||
       name == kMailboxPut || name == kMailboxGet ||
       name == kMailboxNotify || name == kMailboxWait ||
       name == kChannelWrite || name == kChannelNoWaitWrite ||
