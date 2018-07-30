@@ -39,7 +39,7 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
     return;
   }
   IResource *slave_port = rset_->GetAxiSlavePort(array_obj);
-  if (slave_port->GetParams()->GetWidth() == 32) {
+  if (slave_port->GetParams()->GetWidth() > 0) {
     // already configured.
     return;
   }
