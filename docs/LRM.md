@@ -18,9 +18,9 @@ TODO: Consider non synthesizable methods.
 ### Methods
 
 A methods is declared as a member of an object.
-If no object name is given in the declaration, the method will belong to Kernel object.
+If no object name is given in the declaration, the method will belong to the current file object.
 
-    // This declaration is equivalent to Kernel.f()
+    // This method belong to the current file object.
     def f() {
     }
     
@@ -268,6 +268,17 @@ This assumes 32bit address/data for now.
       var x #Int32
       x = Numerics.Int32.Build(1)
       print(x + x)
+    }
+
+    // Add a method for the type.
+    func Numerics.Int32.IsZero(arg #32) (bool) {
+      return arg == 0
+    }
+
+    func g() {
+      var x #Int32
+      x = Numerics.Int32.Build(1)
+      print(x.IsZero())
     }
 
 ## RTL generation
