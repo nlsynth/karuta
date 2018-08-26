@@ -1,4 +1,4 @@
-// WIP
+// VERILOG_OUTPUT: a.v
 
 import "fp/fp16b.karuta"
 
@@ -29,3 +29,5 @@ def main() {
 }
 
 main()
+compile()
+writeHdl("a.v")

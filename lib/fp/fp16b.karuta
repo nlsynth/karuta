@@ -5,6 +5,7 @@
 var Numerics.FP16B object = new()
 
 var FP16B object = Numerics.FP16B
+var Numerics.bfloat16 object = Numerics.FP16B
 
 func FP16B.Build(s #0, e #8, f #7) (#16) {
   return s :: e :: f
@@ -14,7 +15,7 @@ func FP16B.Mul(x, y #16) (#16) {
   return mul1of2(mul0of2(x, y))
 }
 
-//@ExtCombinational(resource="fp16bmul0", verilog="fp/fp16bmul.v", module="FP16BMulS0Of2", file="copy")
+@ExtCombinational(resource="fp16bmul0", verilog="fp/fp16bmul.v", module="FP16BMulS0Of2", file="copy")
 func FP16B.mul0of2(a0, a1 #16) (#0, #8, #8, #9) {
   var ret0 #0
   var ret1, ret2 #8
@@ -40,7 +41,7 @@ func FP16B.mul0of2(a0, a1 #16) (#0, #8, #8, #9) {
   return ret0, ret1, ret2, ret3
 }
 
-//@ExtCombinational(resource="fp16bmul1", verilog="fp/fp16bmul.v", module="FP16BMulS1Of2", file="copy")
+@ExtCombinational(resource="fp16bmul1", verilog="fp/fp16bmul.v", module="FP16BMulS1Of2", file="copy")
 func FP16B.mul1of2(a0 #0, a1, a2 #8, a3 #9) (#16) {
   var ret0 #16
   var e #9
