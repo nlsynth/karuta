@@ -1,0 +1,31 @@
+// WIP
+
+import "fp/fp16b.karuta"
+
+def main() {
+  var x1 #FP16B = Numerics.FP16B.Build(0, 127, 0)
+  var y #FP16B
+  y = x1 * x1
+  assert(y == x1)
+
+  var x2 #FP16B = Numerics.FP16B.Build(0, 128, 0)
+  y = x2 * x1
+  assert(x2 == y)
+  var x4 #FP16B = Numerics.FP16B.Build(0, 129, 0)
+  y = x2 * x2
+  assert(x4 == y)
+
+  var x1_2 #FP16B = Numerics.FP16B.Build(0, 126, 0)
+  y = x1_2 * x1
+  assert(y == x1_2)
+
+  var x1_4 #FP16B = Numerics.FP16B.Build(0, 125, 0)
+  y = x1_2 * x1_2
+  assert(y == x1_4)
+
+  var x_126 #FP16B = Numerics.FP16B.Build(0, 1, 0)
+  y = x_126 * x1_2
+  assert(y == 0)
+}
+
+main()

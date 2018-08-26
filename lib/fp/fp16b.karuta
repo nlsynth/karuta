@@ -1,0 +1,71 @@
+// bfloat16
+// WIP
+//
+
+var Numerics.FP16B object = new()
+
+var FP16B object = Numerics.FP16B
+
+func FP16B.Build(s #0, e #8, f #7) (#16) {
+  return s :: e :: f
+}
+
+func FP16B.Mul(x, y #16) (#16) {
+  return mul1of2(mul0of2(x, y))
+}
+
+//@ExtCombinational(resource="fp16bmul0", verilog="fp/fp16bmul.v", module="FP16BMulS0Of2", file="copy")
+func FP16B.mul0of2(a0, a1 #16) (#0, #8, #8, #9) {
+  var ret0 #0
+  var ret1, ret2 #8
+  var ret3 #12
+  ret0 = a0[15:15] ^ a0[15:15]
+  ret1 = a0[14:7]
+  ret2 = a1[14:7]
+  var e0, e1 #1
+  if ret1 == 0 {
+    e0 = 0
+  } else {
+    e0 = 1
+  }
+  if ret2 == 0 {
+    e1 = 0
+  } else {
+    e1 = 1
+  }
+  var ff0 #8 = e0 :: a0[6:0]
+  var ff1 #8 = e1 :: a1[6:0]
+  var z #16 = ff0 * ff1
+  ret3 = z[15:7]
+  return ret0, ret1, ret2, ret3
+}
+
+//@ExtCombinational(resource="fp16bmul1", verilog="fp/fp16bmul.v", module="FP16BMulS1Of2", file="copy")
+func FP16B.mul1of2(a0 #0, a1, a2 #8, a3 #9) (#16) {
+  var ret0 #16
+  var e #9
+  e = a1 + a2
+  if a3[8:8] == 1 {
+    e = e + 1
+  }
+  var uf #0 = 0
+  if e > 127 {
+    e = e - 127
+    if e > 255 {
+       e = 255
+    }
+  } else {
+    e = 0
+    uf = 1
+  }
+  var c #7
+  if uf == 1 {
+    c = 0
+  } else if (a3[8:8] == 1) {
+    c = a3[7:1]
+  } else {
+    c = a3[6:0]
+  }
+  ret0 = a0 :: e[7:0] :: c
+  return ret0
+}

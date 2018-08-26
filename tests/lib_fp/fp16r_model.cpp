@@ -147,7 +147,6 @@ FP16 MulP1(bool sign, int xe, int ye, int m) {
 }
 
 FP16 MulP0(FP16 x, FP16 y) {
-  FP16 z;
   bool s = x.GetSign() ^ y.GetSign();
   int xe = x.GetExponent();
   int ye = y.GetExponent();
