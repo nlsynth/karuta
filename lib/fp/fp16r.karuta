@@ -78,7 +78,7 @@ func FP16R.mul1of2(a0 #0, a1, a2 #5, a3 #12) (#16) {
   return ret0
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS0Of5", file="copy")
+@ExtCombinational(resource="fp16raddsub0", verilog="fp/fp16raddsub.v", module="FP16RAddSubS0Of5", file="copy")
 func FP16R.addsub0of5(x, y #16, is_sub #0) (#16, #16, #0, #0) {
   var ys #0
   if is_sub == 1 {
@@ -108,18 +108,12 @@ func FP16R.addsub0of5(x, y #16, is_sub #0) (#16, #16, #0, #0) {
   return lhs, rhs, neg_lhs, neg_rhs
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS1Of5", file="copy")
+@ExtCombinational(resource="fp16raddsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS1Of5", file="copy")
 func FP16R.addsub1of5(x, y #16, xn, yn #0) (#0, #0, #21, #21, #5, #0, #0) {
   var xe #5 = x[14:10]
   var ye #5 = y[14:10]
   var d #6 = xe - ye
   var xr #10 = x[9:0]
-  var xs #1 = 0
-  if xe > 0 {
-    xs = 1
-  }
-  var x0 #10 = 0
-  var xx #21 = xs :: xr :: x0
   if xn == 1 {
     xr = ~xr
   }
@@ -127,7 +121,7 @@ func FP16R.addsub1of5(x, y #16, xn, yn #0) (#0, #0, #21, #21, #5, #0, #0) {
   if ye > 0 {
     ys = 1
   }
-  var yy #11 = ys :: y
+  var yy #11 = ys :: y[9:0]
   var yr #21
   if d <= 10 {
     var a #6 = 10 - d
@@ -153,7 +147,7 @@ func FP16R.addsub1of5(x, y #16, xn, yn #0) (#0, #0, #21, #21, #5, #0, #0) {
   return x[15:15], y[15:15], xr, yr, xe, xn, yn
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS2Of5", file="copy")
+@ExtCombinational(resource="fp16raddsub2", verilog="fp/fp16raddsub.v", module="FP16RAddSubS2Of5", file="copy")
 func FP16R.addsub2of5(xs, ys #0, xr, yr #21, xe #5, xn, yn #0) (#22, #0, #0, #5, #0, #0) {
   var r #22 = xr + yr
   if xn || yn {
@@ -162,7 +156,7 @@ func FP16R.addsub2of5(xs, ys #0, xr, yr #21, xe #5, xn, yn #0) (#22, #0, #0, #5,
   return r, xs, ys, xe, xn, yn
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS3Of5", file="copy")
+@ExtCombinational(resource="fp16raddsub3", verilog="fp/fp16raddsub.v", module="FP16RAddSubS3Of5", file="copy")
 func FP16R.addsub3of5(r #22, xs, ys #0, e #5, xn, yn #0) (#21, #0, #0, #5, #0, #0, #0) {
   var neg #0 = 0
   var c #1 = r[21:21]
@@ -184,7 +178,7 @@ func FP16R.addsub3of5(r #22, xs, ys #0, e #5, xn, yn #0) (#21, #0, #0, #5, #0, #
   return r, xs, ys, e, neg, xn, yn
 }
 
-@ExtCombinational(resource="fp16addsub1", verilog="fp/fp16raddsub.v", module="FP16RAddSubS4Of5", file="copy")
+@ExtCombinational(resource="fp16raddsub4", verilog="fp/fp16raddsub.v", module="FP16RAddSubS4Of5", file="copy")
 func FP16R.addsub4of5(r #21, xs, ys #0, e #5, neg, xn, yn #0) (#16) {
   var e_adjust #6 = e
   if xn || yn {
