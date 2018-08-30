@@ -79,7 +79,7 @@ func FP16B.mul1of2(a0 #0, a1, a2 #8, a3 #9) (#16) {
   return ret0
 }
 
-// @ExtCombinational(resource="fp16baddsub0", verilog="fp/fp16baddsub.v", module="FP16BAddSubS0Of5", file="copy")
+@ExtCombinational(resource="fp16baddsub0", verilog="fp/fp16baddsub.v", module="FP16BAddSubS0Of5", file="copy")
 func FP16B.addsub0of5(x, y #16, is_sub #0) (#16, #16, #0, #0) {
   var ys #0
   if is_sub == 1 {
@@ -109,7 +109,7 @@ func FP16B.addsub0of5(x, y #16, is_sub #0) (#16, #16, #0, #0) {
   return lhs, rhs, neg_lhs, neg_rhs
 }
 
-// @ExtCombinational(resource="fp16baddsub1", verilog="fp/fp16baddsub.v", module="FP16BAddSubS1Of5", file="copy")
+@ExtCombinational(resource="fp16baddsub1", verilog="fp/fp16baddsub.v", module="FP16BAddSubS1Of5", file="copy")
 func FP16B.addsub1of5(x, y #16, xn, yn #0) (#0, #0, #15, #15, #8, #0, #0) {
   var xe #8 = x[14:7]
   var ye #8 = y[14:7]
@@ -145,7 +145,7 @@ func FP16B.addsub1of5(x, y #16, xn, yn #0) (#0, #0, #15, #15, #8, #0, #0) {
   return x[15:15], y[15:15], xr, yr, xe, xn, yn
 }
 
-// @ExtCombinational(resource="fp16baddsub2", verilog="fp/fp16baddsub.v", module="FP16BAddSubS2Of5", file="copy")
+@ExtCombinational(resource="fp16baddsub2", verilog="fp/fp16baddsub.v", module="FP16BAddSubS2Of5", file="copy")
 func FP16B.addsub2of5(xs, ys #0, xr, yr #15, xe #8, xn, yn #0) (#16, #0, #0, #8, #0, #0) {
   var r #16 = xr + yr
   if xn || yn {
@@ -154,7 +154,7 @@ func FP16B.addsub2of5(xs, ys #0, xr, yr #15, xe #8, xn, yn #0) (#16, #0, #0, #8,
   return r, xs, ys, xe, xn, yn
 }
 
-// @ExtCombinational(resource="fp16baddsub3", verilog="fp/fp16baddsub.v", module="FP16BAddSubS3Of5", file="copy")
+@ExtCombinational(resource="fp16baddsub3", verilog="fp/fp16baddsub.v", module="FP16BAddSubS3Of5", file="copy")
 func FP16B.addsub3of5(r #16, xs, ys #0, e #8, xn, yn #0) (#15, #0, #0, #8, #0, #0, #0) {
   var neg #0 = 0
   var c #1 = r[15:15]
@@ -176,7 +176,7 @@ func FP16B.addsub3of5(r #16, xs, ys #0, e #8, xn, yn #0) (#15, #0, #0, #8, #0, #
   return r, xs, ys, e, neg, xn, yn
 }
 
-// @ExtCombinational(resource="fp16baddsub4", verilog="fp/fp16baddsub.v", module="FP16BAddSubS4Of5", file="copy")
+@ExtCombinational(resource="fp16baddsub4", verilog="fp/fp16baddsub.v", module="FP16BAddSubS4Of5", file="copy")
 func FP16B.addsub4of5(r #15, xs, ys #0, e #8, neg, xn, yn #0) (#16) {
   var e_adjust #8 = e
   if xn || yn {
