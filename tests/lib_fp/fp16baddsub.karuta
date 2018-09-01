@@ -1,0 +1,14 @@
+// VERILOG_OUTPUT: a.v
+
+import "fp/fp16b.karuta"
+
+def main() {
+  var x1 #FP16B = Numerics.FP16B.Build(0, 127, 0)
+  var x0 #FP16B = Numerics.FP16B.Build(0, 0, 0)
+  var y #FP16B = x1 + x0
+  assert(x1 == y)
+}
+
+main()
+compile()
+writeHdl("a.v")
