@@ -113,7 +113,12 @@ func FP16R.addsub1of5(x, y #16, xn, yn #0) (#0, #0, #21, #21, #5, #0, #0) {
   var xe #5 = x[14:10]
   var ye #5 = y[14:10]
   var d #6 = xe - ye
-  var xr #10 = x[9:0]
+  var xs #1 = 0
+  if xe > 0 {
+    xs = 1
+  }
+  var xr #21 = xs :: x[9:0]
+  xr = xr * 1024
   if xn == 1 {
     xr = ~xr
   }

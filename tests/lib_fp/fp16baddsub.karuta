@@ -7,6 +7,10 @@ def main() {
   var x0 #FP16B = Numerics.FP16B.Build(0, 0, 0)
   var y #FP16B = x1 + x0
   assert(x1 == y)
+
+  y = x1 + x1
+  var x2 #FP16B = Numerics.FP16B.Build(0, 128, 0)
+  assert(x2 == y)
 }
 
 main()
