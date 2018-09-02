@@ -23,3 +23,13 @@ def main() {
 }
 
 main()
+
+def concat() {
+  var xs #1 = 1
+  var x #7 = 127
+  var z #6 = 0
+  var y #15 = xs :: x :: z
+  assert(y == 16320)
+}
+
+concat()

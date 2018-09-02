@@ -282,9 +282,14 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			 &frame->reg_values_[dst].num_);
     break;
   case OP_CONCAT:
-    iroha::Op::Concat(frame->reg_values_[lhs].num_,
-		      frame->reg_values_[rhs].num_,
-		      &frame->reg_values_[dst].num_);
+    {
+      iroha::Numeric l = frame->reg_values_[lhs].num_;
+      iroha::Numeric r = frame->reg_values_[rhs].num_;
+      l.type_ = frame->method_->method_regs_[lhs]->type_.width_;
+      r.type_ =	frame->method_->method_regs_[rhs]->type_.width_;
+      iroha::Op::Concat(l, r,
+			&frame->reg_values_[dst].num_);
+    }
     break;
   case OP_LSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
