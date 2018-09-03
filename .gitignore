@@ -17,5 +17,6 @@ y.dot
 lib/karuta
 libtool
 karuta-bin
+a.out
 # by gyp
 src/out
