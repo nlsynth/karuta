@@ -369,7 +369,8 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   VarScope *scope = CurrentScope();
   scope->local_regs_[name] = reg;
   SetWidthByDecl(stmt->GetVarDecl(), reg);
-  if (stmt->GetVarDecl()->GetObjectName() != sym_null) {
+  sym_t obj_name = stmt->GetVarDecl()->GetObjectName();
+  if (obj_name != sym_null) {
     if (IsTopLevel()) {
       // Set type object later.
       vm::Insn *insn = new vm::Insn;
@@ -378,7 +379,11 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
       insn->insn_stmt_ = stmt;
       EmitInsn(insn);
     } else {
-      CHECK(reg->type_object_ != nullptr);
+      if (obj_name == nullptr) {
+	Status::os(Status::USER_ERROR)
+	  << "Data type: " << sym_cstr(obj_name) << " is not found";
+	return;
+      }
     }
   }
 
