@@ -1,4 +1,5 @@
-wip 0.3.5
+2018/09/03 0.3.5
+ Introduce bfloat16 (FP16B).
 2018/07/31 0.3.4
  Introduce per file default object. Fixes for AXI master.
 2018/06/27 0.3.3
