@@ -1,15 +1,14 @@
 # Karuta
-### (Karuta was renamed from Neon Light. So you might find some documents or comments referring to Neon Light or nli for a while...)
 Author: Yusuke TABATA (tabata.yusuke@gmail.com)
 
 ## What's this?
 TL;DR:
-    Experimental high level synthesis (HLS) from prototype based object oriented script language to RTL (Verilog) which might become useful for FPGA development...
+    An experimental tool to perform high level synthesis (HLS) from prototype based object oriented scripting language to RTL (Verilog). The main objective of this project is to be useful for FPGA development.
 
-This software Karuta (compiler) takes Karuta Script language as an input and outputs cirtuits in Verilog RTL.
-As of now, this software has too many bugs and unimplemented features. In addition to implementation/documentation quality, many important features are not documented and liable to change.
+This software Karuta (compiler) takes source code in Karuta Script language as an input and outputs cirtuits in Verilog HDL.
+As of now, this software is not so mature and has too many bugs. In addition to the premature implementation/documentation quality, many important features are liable to change.
 
-This software package is under development to explore efficient logic circuit design methodology.
+This software is under development to explore efficient logic circuit design methodology.
 
 See https://sites.google.com/site/karutacompiler/ for some more details.
 
