@@ -707,6 +707,8 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
   done_insn->obj_reg_ = call_insn->obj_reg_;
   done_insn->label_ = call_insn->label_;
   done_insn->dst_regs_.push_back(orig_insn->dst_regs_[0]);
+  done_insn->dst_regs_[0]->type_.object_name_ =
+    orig_insn->src_regs_[0]->type_.object_name_;
   compiler_->EmitInsn(done_insn);
   return orig_insn->dst_regs_[0];
 }
