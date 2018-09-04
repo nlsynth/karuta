@@ -62,6 +62,7 @@ static struct OperatorTableEntry op_tab[] = {
   {"+", K_ADD_SUB, BINOP_ADD},
   {"-", K_ADD_SUB, BINOP_SUB},
   {"*", '*', BINOP_MUL},
+  {"/", '/', BINOP_DIV},
   {"&", '&', 0},
   {"@", '@', 0},
   {0, 0, 0}

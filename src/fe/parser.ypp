@@ -88,7 +88,7 @@ extern void yyerror(const char *msg);
 %left K_LG_COMPARE
 %left K_SHIFT
 %left K_ADD_SUB
-%left '*'
+%left '*' '/'
 %right '!' '~' SIGN K_INC_DEC ADDRESS
 %left '.' '[' ']'
 
@@ -478,6 +478,8 @@ EXPR : SYM {
   $$ = Builder::BinopExpr($1, $3, $2);
 } | EXPR '*' EXPR {
   $$ = Builder::BinopExpr($1, $3, BINOP_MUL);
+} | EXPR '/' EXPR {
+  $$ = Builder::BinopExpr($1, $3, BINOP_DIV);
 } | EXPR K_SHIFT EXPR {
   $$ = Builder::BinopExpr($1, $3, $2);
 } | EXPR K_ASSIGN EXPR {

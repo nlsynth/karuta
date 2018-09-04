@@ -44,6 +44,7 @@ const char *NodeName(enum NodeCode node) {
     {BINOP_XOR_ASSIGN, "xor_assign"},
     {BINOP_OR_ASSIGN, "or_assign"},
     {BINOP_MUL, "mul"},
+    {BINOP_DIV, "div"},
     {BINOP_LAND, "land"},
     {BINOP_LOR, "lor"},
     {BINOP_CONCAT, "concat"},
