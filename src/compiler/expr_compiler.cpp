@@ -659,6 +659,10 @@ vm::Register *ExprCompiler::UpdateModifyOp(fe::NodeCode type,
   insn->src_regs_.push_back(lhs_reg);
   insn->src_regs_.push_back(rhs_reg);
   compiler_->EmitInsn(insn);
+  vm::Register *rewritten = MayRewriteOperator(insn);
+  if (rewritten != nullptr) {
+    return rewritten;
+  }
   MayEmitTypeDoneInsn(insn);
   return reg;
 }
