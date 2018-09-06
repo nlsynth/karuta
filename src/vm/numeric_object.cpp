@@ -1,5 +1,6 @@
 #include "vm/numeric_object.h"
 
+#include "base/status.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "vm/method.h"
@@ -30,6 +31,10 @@ bool NumericObject::IsNumericObject(VM *vm, Object *obj) {
 int NumericObject::Width(Object *obj) {
   sym_t build = sym_lookup("Build");
   Value *v = obj->LookupValue(build, false);
+  if (v == nullptr || v->type_ != Value::METHOD) {
+    Status::os(Status::USER_ERROR) << "Failed to find Build() method";
+    return 0;
+  }
   CHECK(v != nullptr && v->type_ == Value::METHOD);
   // Acquires from the parse tree, since the method might not be compiled yet.
   const fe::Method *m = v->method_->GetParseTree();
