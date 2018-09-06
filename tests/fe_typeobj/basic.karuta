@@ -1,0 +1,57 @@
+//
+// This example data type T has following operator overloads.
+//
+// Constructor: src * 10
+//  +         : max(lhs, rhs)
+//  -         : min(lhs, rhs)
+//  *         : lhs + rhs
+
+var Numerics.T object = Kernel.clone()
+var T object = Numerics.T
+
+func T.Build(a int) (#32) {
+  return a * 10
+}
+
+func T.Add(x, y #32) (#32) {
+  if (x > y) {
+    return x
+  }
+  return y
+}
+
+func T.Sub(x, y #32) (#32) {
+  if (x > y) {
+    return y
+  }
+  return x
+}
+
+func T.Mul(x, y #32) (#32) {
+  return x + y
+}
+
+def main() {
+  var x #T = T.Build(123)
+  assert(x == 1230)
+  var y #T = T.Build(456)
+  assert(y == 4560)
+
+  var a #T = x + y
+  assert(a == 4560)
+  var b #T = x - y
+  assert(b == 1230)
+  var c #T = x * y
+  assert(c == 1230 + 4560)
+
+  var p #T = T.Build(123)
+  p += y
+  assert(p == 4560)
+  p = T.Build(123)
+  p -= y
+  assert(p == 1230)
+  p *= x
+  assert(p == 2460)
+}
+
+main()
