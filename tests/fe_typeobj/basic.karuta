@@ -1,3 +1,4 @@
+// Tests for typeobject.
 //
 // This example data type T has following operator overloads.
 //
@@ -5,6 +6,11 @@
 //  +         : max(lhs, rhs)
 //  -         : min(lhs, rhs)
 //  *         : lhs + rhs
+//
+//  var x, y #T
+// Method call is rewritten to a type object method call.
+//  x.F(y) ==> T.F(x, y)
+//
 
 var Numerics.T object = Kernel.clone()
 var T object = Numerics.T
@@ -31,6 +37,10 @@ func T.Mul(x, y #32) (#32) {
   return x + y
 }
 
+func T.F(x, y #32) (#32) {
+  return x + y
+}
+
 def main() {
   var x #T = T.Build(123)
   assert(x == 1230)
@@ -52,6 +62,11 @@ def main() {
   assert(p == 1230)
   p *= x
   assert(p == 2460)
+
+  p = T.Build(123)
+  var q #T = T.Build(456)
+  p = p.F(q)
+  assert(p == 5790)
 }
 
 main()
