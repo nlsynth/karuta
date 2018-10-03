@@ -109,7 +109,7 @@ void MethodScanner::MemberAccess(vm::Insn *insn) {
     obj = member_reg_to_obj_map_[insn->src_regs_[1]];
   }
   vm::Value *value = obj->LookupValue(insn->label_, false);
-  CHECK(value);
+  CHECK(value) << sym_cstr(insn->label_);
   shared_resource_set_->AddMemberAccessor(thr_synth_, insn->label_, insn,
 					  vm::TlsWrapper::IsTlsValue(value));
 }
