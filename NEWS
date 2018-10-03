@@ -1,4 +1,5 @@
-wip 0.3.6
+2018/10/03 0.3.6
+ +=, -=, *= operator to custom type.
 2018/09/03 0.3.5
  Introduce bfloat16 (FP16B).
 2018/07/31 0.3.4
