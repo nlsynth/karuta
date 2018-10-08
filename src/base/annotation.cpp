@@ -151,6 +151,10 @@ bool Annotation::IsThreadEntry() {
   return (s == "ThreadEntry");
 }
 
+int Annotation::GetDistance() {
+  return LookupIntParam("distance", 0);
+}
+
 bool Annotation::IsSoftThreadEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
   return (s == "SoftThreadEntry");

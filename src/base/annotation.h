@@ -69,6 +69,7 @@ public:
   string GetName();
   int GetNum();
   bool IsThreadLocal();
+  int GetDistance();
 
   // resetPolarity 1 or not.
   bool ResetPolarity();
