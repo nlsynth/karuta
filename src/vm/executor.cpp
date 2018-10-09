@@ -4,6 +4,7 @@
 #include "base/dump_stream.h"
 #include "base/status.h"
 #include "compiler/compiler.h"
+#include "vm/distance_wrapper.h"
 #include "fe/fe.h"
 #include "fe/expr.h"
 #include "fe/stmt.h"
@@ -717,7 +718,7 @@ void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_init
 }
 
 void Executor::ExecVardecl(const Method *method, MethodFrame *frame,
-				   Insn *insn) {
+			   Insn *insn) {
   fe::VarDecl *decl = insn->insn_stmt_->GetVarDecl();
   Annotation *an = decl->GetAnnotation();
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
@@ -727,6 +728,9 @@ void Executor::ExecVardecl(const Method *method, MethodFrame *frame,
   InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
     iroha::Op::MakeConst(0, &value->num_);
+  }
+  if (value->type_ == Value::OBJECT && an != nullptr) {
+    DistanceWrapper::MaySetDistanceAnnotation(name, an, thr_->GetVM(), obj);
   }
   if (value->type_ == Value::INT_ARRAY) {
     value->object_ = CreateMemoryObject(decl->GetWidth(),
@@ -743,7 +747,7 @@ void Executor::ExecVardecl(const Method *method, MethodFrame *frame,
 }
 
 void Executor::ExecThreadDecl(const Method *method, MethodFrame *frame,
-				      Insn *insn) {
+			      Insn *insn) {
   Object *callee_obj;
   Method *callee_method = LookupMethod(frame, insn, &callee_obj);
   CHECK(callee_method) << "no method";

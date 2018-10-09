@@ -108,6 +108,8 @@
         'vm/channel_wrapper.cpp',
         'vm/channel_wrapper.h',
         'vm/common.h',
+	'vm/distance_wrapper.cpp',
+	'vm/distance_wrapper.h',
         'vm/executor.cpp',
         'vm/executor.h',
         'vm/gc.cpp',
