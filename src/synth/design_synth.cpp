@@ -18,7 +18,7 @@ DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj)
   : vm_(vm), root_obj_(obj) {
   i_design_.reset(new IDesign);
   shared_resources_.reset(new SharedResourceSet);
-  obj_tree_.reset(new ObjectTree(obj));
+  obj_tree_.reset(new ObjectTree(vm, obj));
 }
 
 DesignSynth::~DesignSynth() {

@@ -1,5 +1,6 @@
 #include "synth/object_tree.h"
 
+#include "vm/distance_wrapper.h"
 #include "vm/object.h"
 
 #include <list>
@@ -10,7 +11,7 @@ using std::set;
 
 namespace synth {
 
-ObjectTree::ObjectTree(vm::Object *root_obj) : root_obj_(root_obj) {
+ObjectTree::ObjectTree(vm::VM *vm, vm::Object *root_obj) : vm_(vm), root_obj_(root_obj) {
 }
 
 ObjectTree::~ObjectTree() {
@@ -29,6 +30,7 @@ void ObjectTree::Build() {
     }
     seen.insert(o);
     CheckObject(o, seen, &q);
+    PopulateDistance(o);
   }
   // Builds parent_map_.
   for (auto it : obj_children_map_) {
@@ -51,6 +53,19 @@ string ObjectTree::GetObjectName(vm::Object *o) {
   return m[o];
 }
 
+int ObjectTree::GetDistance(vm::Object *src, vm::Object *dst) {
+  auto it = latency_map_.find(src);
+  if (it == latency_map_.end()) {
+    return 0;
+  }
+  auto &m = it->second;
+  auto jt = m.find(dst);
+  if (jt == m.end()) {
+    return 0;
+  }
+  return jt->second;
+}
+
 void ObjectTree::CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
 			     std::list<vm::Object *> *q) {
   map<sym_t, vm::Object *> member_objs;
@@ -62,6 +77,20 @@ void ObjectTree::CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
     }
     m[it.second] = sym_str(it.first);
     q->push_back(it.second);
+  }
+}
+
+void ObjectTree::PopulateDistance(vm::Object *o) {
+  map<sym_t, vm::Object *> member_objs;
+  o->GetAllMemberObjs(&member_objs);
+  for (auto it : member_objs) {
+    sym_t name = it.first;
+    int dist = vm::DistanceWrapper::GetDistance(vm_, o, name);
+    if (dist == 0) {
+      continue;
+    }
+    auto &m = latency_map_[o];
+    m[it.second] = dist;
   }
 }
 
