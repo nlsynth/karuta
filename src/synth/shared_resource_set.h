@@ -29,11 +29,15 @@ public:
   set<ThreadSynth *> axi_ctrl_thrs_;
   vector<ThreadSynth *> ordered_accessors_;
   set<ThreadSynth *> accessors_;
+  // Assigned at last.
   ThreadSynth *owner_thr_;
   IResource *owner_res_;
+  // Owner object of this meber (either object or sym).
+  vm::Object *owner_obj_;
   set<IResource *> accessor_resources_;
 };
 
+// Per DesignSynth object to manage every shared resources.
 class SharedResourceSet {
 public:
   ~SharedResourceSet();
@@ -46,11 +50,11 @@ public:
 
   // Declares @thr accesses this.name/obj.
   // NUM
-  void AddMemberAccessor(ThreadSynth *thr, sym_t name, vm::Insn *insn,
+  void AddMemberAccessor(ThreadSynth *thr, vm::Object *owner_obj, sym_t name, vm::Insn *insn,
 			 bool is_tls);
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
-  void AddObjectAccessor(ThreadSynth *thr, vm::Object *obj, vm::Insn *insn,
-			 const string &synth_name, bool is_tls);
+  void AddObjectAccessor(ThreadSynth *thr, vm::Object *owner_obj, vm::Object *obj,
+			 vm::Insn *insn, const string &synth_name, bool is_tls);
   // ExtIO is not shareable, so this keeps track of the accessor thread.
   bool AddExtIOMethodAccessor(ThreadSynth *thr, vm::Method *method);
 
@@ -65,6 +69,7 @@ private:
   void DetermineOwnerThread(SharedResource *res);
   void ResolveSharedResourceAccessor(SharedResource *sres);
 
+  // ThreadSynth is nullptr for non TLS object for {obj,value}_resources_.
   map<tuple<vm::Object *, ThreadSynth *>,
       SharedResource *> obj_resources_;
   map<tuple<vm::Object *, ThreadSynth *, sym_t>,

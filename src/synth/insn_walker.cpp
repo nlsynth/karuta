@@ -38,9 +38,11 @@ void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
 	vm::Object *base_obj =
 	  vm::TlsWrapper::GetBaseObject(value->object_);
 	member_reg_to_obj_map_[insn->dst_regs_[0]] = base_obj;
+	member_to_owner_obj_map_[base_obj] = obj;
 	thread_local_objs_.insert(base_obj);
       } else if (value->IsObjectType()) {
 	member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
+	member_to_owner_obj_map_[value->object_] = obj;
       }
     }
   }
@@ -59,6 +61,7 @@ void InsnWalker::LoadObj(vm::Insn *insn) {
     vm::Object *member = value->object_;
     CHECK(member) << sym_cstr(insn->label_);
     member_reg_to_obj_map_[insn->dst_regs_[0]] = member;
+    member_to_owner_obj_map_[member] = src_obj;
   } else {
     // loading "this" obj.
     member_reg_to_obj_map_[insn->dst_regs_[0]] = obj_;
@@ -125,6 +128,10 @@ bool InsnWalker::IsExtFlowStubCall(vm::Insn *insn) {
 
 vm::Object *InsnWalker::GetObjByReg(vm::Register *reg) {
   return member_reg_to_obj_map_[reg];
+}
+
+vm::Object *InsnWalker::GetParentObjByObj(vm::Object *obj) {
+  return member_to_owner_obj_map_[obj];
 }
 
 SharedResourceSet *InsnWalker::GetSharedResourceSet() {

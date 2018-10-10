@@ -84,7 +84,8 @@ void ObjectMethod::Scan() {
       name == kMailboxNotify || name == kMailboxWait ||
       name == kChannelWrite || name == kChannelNoWaitWrite ||
       name == kChannelRead) {
-    sres->AddObjectAccessor(walker_->GetThreadSynth(), obj, insn_, name, false);
+    vm::Object *parent_obj = walker_->GetParentObjByObj(obj);
+    sres->AddObjectAccessor(walker_->GetThreadSynth(), parent_obj, obj, insn_, name, false);
   }
 }
 

@@ -18,6 +18,7 @@ namespace synth {
 class InsnWalker {
 public:
   vm::Object *GetObjByReg(vm::Register *reg);
+  vm::Object *GetParentObjByObj(vm::Object *obj);
   SharedResourceSet *GetSharedResourceSet();
   ThreadSynth *GetThreadSynth();
   vm::Object *GetObject();
@@ -38,6 +39,7 @@ protected:
   vm::Object *obj_;
   SharedResourceSet *shared_resource_set_;
   map<vm::Register *, vm::Object *> member_reg_to_obj_map_;
+  map<vm::Object *, vm::Object *> member_to_owner_obj_map_;
   // For thread local arrays.
   set<vm::Object *> thread_local_objs_;
 

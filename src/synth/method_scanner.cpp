@@ -110,16 +110,17 @@ void MethodScanner::MemberAccess(vm::Insn *insn) {
   }
   vm::Value *value = obj->LookupValue(insn->label_, false);
   CHECK(value) << sym_cstr(insn->label_);
-  shared_resource_set_->AddMemberAccessor(thr_synth_, insn->label_, insn,
+  shared_resource_set_->AddMemberAccessor(thr_synth_, obj, insn->label_, insn,
 					  vm::TlsWrapper::IsTlsValue(value));
 }
 
 void MethodScanner::ArrayAccess(vm::Insn *insn) {
   vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
+  vm::Object *owner_obj = member_to_owner_obj_map_[array_obj];
   CHECK(array_obj);
   auto it = thread_local_objs_.find(array_obj);
   bool is_tls = (it != thread_local_objs_.end());
-  shared_resource_set_->AddObjectAccessor(thr_synth_, array_obj, insn, "",
+  shared_resource_set_->AddObjectAccessor(thr_synth_, owner_obj, array_obj, insn, "",
 					  is_tls);
 }
 

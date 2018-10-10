@@ -10,7 +10,7 @@
 namespace synth {
 
 SharedResource::SharedResource()
-  : owner_thr_(nullptr), owner_res_(nullptr) {
+  : owner_thr_(nullptr), owner_res_(nullptr), owner_obj_(nullptr) {
 }
 
 SharedResource::~SharedResource() {
@@ -52,11 +52,22 @@ void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
   if (res->axi_ctrl_thrs_.size() == 1) {
     res->owner_thr_ = *(res->axi_ctrl_thrs_.begin());
   }
+  // Prefers threads belong to the same object of the resource.
+  ThreadSynth *first_thr = nullptr;
+  ThreadSynth *first_same_owner_thr = nullptr;
   for (ThreadSynth *thr : res->ordered_accessors_) {
-    if (res->owner_thr_ == nullptr) {
-      // Picks up first one.
-      res->owner_thr_ = thr;
+    if (first_thr == nullptr) {
+      first_thr = thr;
     }
+    if (first_same_owner_thr == nullptr &&
+	thr->GetObjectSynth()->GetObject() == res->owner_obj_) {
+      first_same_owner_thr = thr;
+    }
+  }
+  if (first_same_owner_thr != nullptr) {
+    res->owner_thr_ = first_same_owner_thr;
+  } else {
+    res->owner_thr_ = first_thr;
   }
 }
 
@@ -66,15 +77,14 @@ void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
   }
 }
 
-void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, sym_t name,
+void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, vm::Object *owner_obj, sym_t name,
 					  vm::Insn *insn, bool is_tls) {
   ThreadSynth *tls_thr = nullptr;
   if (is_tls) {
     tls_thr = thr;
   }
-  SharedResource *res = GetBySlotName(thr->GetObjectSynth()->GetObject(),
-				      tls_thr,
-				      name);
+  SharedResource *res = GetBySlotName(owner_obj, tls_thr, name);
+  res->owner_obj_ = owner_obj;
   res->ordered_accessors_.push_back(thr);
   res->accessors_.insert(thr);
   if (insn->op_ == vm::OP_MEMBER_READ) {
@@ -85,7 +95,8 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, sym_t name,
   }
 }
 
-void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
+void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *owner_obj,
+					  vm::Object *obj,
 					  vm::Insn *insn,
 					  const string &synth_name,
 					  bool is_tls) {
@@ -94,6 +105,7 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *obj,
     tls_thr = thr;
   }
   SharedResource *res = GetByObj(obj, tls_thr);
+  res->owner_obj_ = owner_obj;
   res->ordered_accessors_.push_back(thr);
   res->accessors_.insert(thr);
   if (insn->op_ == vm::OP_ARRAY_READ) {
