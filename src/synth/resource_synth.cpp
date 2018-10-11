@@ -89,7 +89,12 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
   } else {
     width = reg->type_.width_.GetWidth();
   }
-  return rset_->GetExtIO(name, is_output, width);
+  IResource *res = rset_->GetExtIO(name, is_output, width);
+  int d = an->GetDistance();
+  if (d > 0) {
+    res->GetParams()->SetDistance(d);
+  }
+  return res;
 }
 
 }  // namespace synth
