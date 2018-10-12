@@ -751,8 +751,9 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     SharedResource *sres =
       shared_resource_set_->GetBySlotName(obj, local_accessor, insn->label_);
     if (sres->accessors_.size() > 1) {
-      SynthMemberSharedRegAccess(insn, value, is_store);
+      SynthMemberSharedRegAccess(insn, obj, value, is_store);
     } else {
+      // TODO: Fix the case where this is a member of non obj_ object.
       SynthMemberRegAccess(insn, value, is_store);
     }
   }
@@ -786,11 +787,13 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
   sw->state_->insns_.push_back(iinsn);
 }
 
-void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn, vm::Value *value,
+void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
+					     vm::Object *owner_obj,
+					     vm::Value *value,
 					     bool is_store) {
-  // This can't be a tls, so use the default thread.
+  // This can't be a tls (because shared != tls), so use the default thread.
   SharedResource *sres =
-    shared_resource_set_->GetBySlotName(obj_, nullptr, insn->label_);
+    shared_resource_set_->GetBySlotName(owner_obj, nullptr, insn->label_);
   IResource *res;
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
