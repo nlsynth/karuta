@@ -1,7 +1,8 @@
 #include "synth/shared_resource_set.h"
 
 #include "base/stl_util.h"
-#include "iroha/i_design.h"
+#include "iroha/iroha.h"
+#include "synth/design_synth.h"
 #include "synth/object_method_names.h"
 #include "synth/object_synth.h"
 #include "synth/thread_synth.h"
@@ -20,8 +21,8 @@ void SharedResource::AddOwnerResource(IResource *res) {
   owner_res_ = res;
 }
 
-void SharedResource::AddAccessorResource(IResource *res) {
-  accessor_resources_.insert(res);
+void SharedResource::AddAccessorResource(IResource *res, vm::Object *object) {
+  accessor_resources_[res] = object;
 }
 
 SharedResourceSet::~SharedResourceSet() {
@@ -44,6 +45,27 @@ void SharedResourceSet::ResolveResourceAccessors() {
   }
   for (auto it : value_resources_) {
     ResolveSharedResourceAccessor(it.second);
+  }
+}
+
+void SharedResourceSet::ResolveAccessorDistanceAll(DesignSynth *design_synth) {
+  for (auto it : obj_resources_) {
+    ResolveAccessorDistance(design_synth, it.second);
+  }
+  for (auto it : value_resources_) {
+    ResolveAccessorDistance(design_synth, it.second);
+  }
+}
+
+void SharedResourceSet::ResolveAccessorDistance(DesignSynth *design_synth,
+						SharedResource *sres) {
+  for (auto it : sres->accessor_resources_) {
+    IResource *res = it.first;
+    int d = 0;
+    d = design_synth->GetObjectDistance(it.second, sres->owner_obj_);
+    if (d > 0) {
+      res->GetParams()->SetDistance(d);
+    }
   }
 }
 
@@ -72,7 +94,8 @@ void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
 }
 
 void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
-  for (IResource *res : sres->accessor_resources_) {
+  for (auto it : sres->accessor_resources_) {
+    IResource *res = it.first;
     res->SetParentResource(sres->owner_res_);
   }
 }

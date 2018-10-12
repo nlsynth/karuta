@@ -144,7 +144,7 @@ IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj,
     sres->AddOwnerResource(res);
   }
   res = rset->GetMailbox(mailbox_obj, false, is_put);
-  sres->AddAccessorResource(res);
+  sres->AddAccessorResource(res, synth_->GetThreadSynth()->GetObjectSynth()->GetObject());
   IInsn *iinsn = new IInsn(res);
   if (is_blocking) {
     if (is_put) {
@@ -190,7 +190,8 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   }
   IResource *accessor_res = rset->GetChannelResource(ch_obj, false, is_write,
 						     width, depth);
-  sres->AddAccessorResource(accessor_res);
+  sres->AddAccessorResource(accessor_res,
+			    synth_->GetThreadSynth()->GetObjectSynth()->GetObject());
   IInsn *iinsn = new IInsn(accessor_res);
   string name = GetSynthName(ch_obj);
   if (name == kChannelNoWaitWrite) {

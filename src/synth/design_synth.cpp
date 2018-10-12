@@ -63,6 +63,7 @@ bool DesignSynth::SynthObjects() {
     return false;
   }
   shared_resources_->ResolveResourceAccessors();
+  shared_resources_->ResolveAccessorDistanceAll(this);
   for (auto it : obj_synth_map_) {
     ObjectSynth *obj_synth = it.second;
     obj_synth->ResolveTableCallsAll();

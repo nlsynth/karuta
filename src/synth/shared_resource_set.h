@@ -22,7 +22,7 @@ public:
   ~SharedResource();
 
   void AddOwnerResource(IResource *res);
-  void AddAccessorResource(IResource *res);
+  void AddAccessorResource(IResource *res, vm::Object *object);
 
   set<ThreadSynth *> readers_;
   set<ThreadSynth *> writers_;
@@ -32,9 +32,9 @@ public:
   // Assigned at last.
   ThreadSynth *owner_thr_;
   IResource *owner_res_;
-  // Owner object of this meber (either object or sym).
+  // Owner object of this (either object or sym) member.
   vm::Object *owner_obj_;
-  set<IResource *> accessor_resources_;
+  map<IResource *, vm::Object *> accessor_resources_;
 };
 
 // Per DesignSynth object to manage every shared resources.
@@ -47,6 +47,7 @@ public:
   void DetermineOwnerThreadAll();
   // Called after pass 2. Sets the foreign resource for IResource.
   void ResolveResourceAccessors();
+  void ResolveAccessorDistanceAll(DesignSynth *design_synth);
 
   // Declares @thr accesses this.name/obj.
   // NUM
@@ -68,6 +69,7 @@ public:
 private:
   void DetermineOwnerThread(SharedResource *res);
   void ResolveSharedResourceAccessor(SharedResource *sres);
+  void ResolveAccessorDistance(DesignSynth *design_synth, SharedResource *sres);
 
   // ThreadSynth is nullptr for non TLS object for {obj,value}_resources_.
   map<tuple<vm::Object *, ThreadSynth *>,
