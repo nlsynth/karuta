@@ -249,7 +249,7 @@ const string &ThreadSynth::GetEntryMethodName() {
   return entry_method_name_;
 }
 
-void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
+IInsn *ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 				      ITable *callee_tab) {
   ITable *caller_tab = st->GetTable();
   IResource *call_res = Tool::FindOrCreateTaskCallResource(caller_tab,
@@ -262,7 +262,7 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   }
   // Return values.
   if (pseudo_call_insn->outputs_.size() == 0) {
-    return;
+    return iinsn;
   }
   // State allocated for funcall_done to inject return.
   IState *next_st = Tool::GetNextState(st);
@@ -273,7 +273,7 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
     // TODO: This shouldn't happen. Put CHECK(false) here.
     // outputs_.size() == 1 in case of void return due to the default
     // return reg.
-    return;
+    return iinsn;
   }
   IInsn *ret_insn = new IInsn(ret);
   ret_insn->depending_insns_.push_back(iinsn);
@@ -282,11 +282,12 @@ void ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   for (IRegister *reg : pseudo_call_insn->outputs_) {
     ret_insn->outputs_.push_back(reg);
   }
+  return ret_insn;
 }
 
-void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
-				     IState *st, IInsn *pseudo_call_insn,
-				     ITable *callee_tab, bool no_wait) {
+IInsn *ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
+				       IState *st, IInsn *pseudo_call_insn,
+				       ITable *callee_tab, bool no_wait) {
   vector<IResource *> df;
   DesignUtil::FindResourceByClassName(callee_tab, resource::kDataFlowIn,
 				      &df);
@@ -312,10 +313,11 @@ void ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
   if (no_wait) {
     iinsn->SetOperand(iroha::operand::kNoWait);
   }
+  return iinsn;
 }
 
-void ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
-				    const string &name, bool is_flow) {
+IInsn *ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
+				      const string &name, bool is_flow) {
   // ext-task-call or ext-flow-call
   ITable *caller_tab = st->GetTable();
   IResource *call = Tool::FindOrCreateExtStubCallResource(caller_tab, name,
@@ -345,6 +347,7 @@ void ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
       wait->output_types_.push_back(reg->value_type_);
     }
   }
+  return wait_insn;
 }
 
 }  // namespace synth

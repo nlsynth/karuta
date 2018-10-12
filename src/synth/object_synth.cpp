@@ -4,7 +4,7 @@
 #include "base/status.h"
 #include "base/stl_util.h"
 #include "fe/method.h"
-#include "iroha/i_design.h"
+#include "iroha/iroha.h"
 #include "synth/design_synth.h"
 #include "synth/thread_synth.h"
 #include "vm/method.h"
@@ -127,22 +127,32 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
   if (callee_thr != nullptr) {
     callee_table = callee_thr->GetITable();
   }
+  IInsn *insn = nullptr;
   if (call.is_sub_obj_call) {
-    ThreadSynth::InjectSubModuleCall(call.call_state, call.call_insn,
-				     callee_table);
+    insn = ThreadSynth::InjectSubModuleCall(call.call_state, call.call_insn,
+					    callee_table);
   } else if (call.is_data_flow_call) {
     bool no_wait = call.callee_method->GetAnnotation()->IsNoWait();
-    ThreadSynth::InjectDataFlowCall(call.caller_thread,
-				    call.call_state, call.call_insn,
-				    callee_table, no_wait);
+    insn = ThreadSynth::InjectDataFlowCall(call.caller_thread,
+					   call.call_state, call.call_insn,
+					   callee_table, no_wait);
   } else {
     CHECK(call.is_ext_stub_call);
     string name = call.callee_method->GetAnnotation()->GetName();
     if (name.empty()) {
       name = call.callee_func;
     }
-    ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn,
-				   name, call.is_ext_flow_stub_call);
+    insn = ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn,
+					  name, call.is_ext_flow_stub_call);
+  }
+  int d = design_synth_->GetObjectDistance(obj_, call.callee_obj);
+  if (d > 0) {
+    IResource *res = insn->GetResource();
+    res->GetParams()->SetDistance(d);
+    IResource *parent_res = res->GetParentResource();
+    if (parent_res != nullptr) {
+      parent_res->GetParams()->SetDistance(d);
+    }
   }
 }
 

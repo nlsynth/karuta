@@ -21,6 +21,7 @@ public:
   ObjectSynth *GetObjectSynth(vm::Object *obj);
   SharedResourceSet *GetSharedResourceSet();
   string GetObjectName(vm::Object *obj);
+  int GetObjectDistance(vm::Object *src, vm::Object *dst);
 
 private:
   bool SynthObjects();

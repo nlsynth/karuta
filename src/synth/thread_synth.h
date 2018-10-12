@@ -41,12 +41,12 @@ public:
   vm::Object *GetThreadObject();
   vector<TableCall> &GetTableCalls();
   const string &GetEntryMethodName();
-  static void InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
+  static IInsn *InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 				  ITable *callee_tab);
-  static void InjectDataFlowCall(ThreadSynth *thr,
+  static IInsn *InjectDataFlowCall(ThreadSynth *thr,
 				 IState *st, IInsn *pseudo_call_insn,
 				 ITable *callee_tab, bool no_wait);
-  static void InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
+  static IInsn *InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
 				const string &name, bool is_flow);
 
 private:

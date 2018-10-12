@@ -64,7 +64,8 @@ bool DesignSynth::SynthObjects() {
   }
   shared_resources_->ResolveResourceAccessors();
   for (auto it : obj_synth_map_) {
-    it.second->ResolveTableCallsAll();
+    ObjectSynth *obj_synth = it.second;
+    obj_synth->ResolveTableCallsAll();
   }
   return true;
 }
@@ -98,6 +99,10 @@ SharedResourceSet *DesignSynth::GetSharedResourceSet() {
 
 string DesignSynth::GetObjectName(vm::Object *obj) {
   return obj_tree_->GetObjectName(obj);
+}
+
+int DesignSynth::GetObjectDistance(vm::Object *src, vm::Object *dst) {
+  return obj_tree_->GetDistance(src, dst);
 }
 
 bool DesignSynth::ScanObjs() {
