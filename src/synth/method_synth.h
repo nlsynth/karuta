@@ -5,8 +5,10 @@
 #include "synth/insn_walker.h"
 
 #include <map>
+#include <tuple>
 
 using std::map;
+using std::tuple;
 
 namespace synth {
 
@@ -53,7 +55,8 @@ private:
   void SynthIf(vm::Insn *insn);
   void SynthGoto(vm::Insn *insn);
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
-  void SynthMemberRegAccess(vm::Insn *insn, vm::Value *value, bool is_store);
+  void SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
+			    vm::Value *value, bool is_store);
   void SynthMemberSharedRegAccess(vm::Insn *insn, vm::Object *owner_obj,
 				  vm::Value *value, bool is_store);
   void SynthArrayAccess(vm::Insn *insn, bool is_write);
@@ -93,7 +96,7 @@ private:
 
   // VM -> Iroha mapping.
   map<vm::Register *, IRegister *> local_reg_map_;
-  map<string, IRegister *> member_name_reg_map_;
+  map<tuple<vm::Object *, string>, IRegister *> member_name_reg_map_;
 
   map<int, StateWrapper *> vm_insn_state_map_;
 

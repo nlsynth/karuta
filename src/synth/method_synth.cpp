@@ -753,15 +753,14 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     if (sres->accessors_.size() > 1) {
       SynthMemberSharedRegAccess(insn, obj, value, is_store);
     } else {
-      // TODO: Fix the case where this is a member of non obj_ object.
-      SynthMemberRegAccess(insn, value, is_store);
+      SynthMemberRegAccess(insn, obj, value, is_store);
     }
   }
 }
 
-void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
-				       bool is_store) {
-  IRegister *reg = member_name_reg_map_[sym_cstr(insn->label_)];
+void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
+				       vm::Value *value, bool is_store) {
+  IRegister *reg = member_name_reg_map_[std::make_tuple(owner_obj,  sym_cstr(insn->label_))];
   if (!reg) {
     string name = sym_cstr(insn->label_);
     name = "m_" + name;
@@ -772,7 +771,7 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Value *value,
       w = value->num_.type_.GetWidth();
     }
     reg->value_type_.SetWidth(w);
-    member_name_reg_map_[sym_cstr(insn->label_)] = reg;
+    member_name_reg_map_[std::make_tuple(owner_obj, sym_cstr(insn->label_))] = reg;
   }
   IResource *assign = res_set_->AssignResource();
   IInsn *iinsn = new IInsn(assign);
