@@ -43,7 +43,7 @@ ThreadSynth::~ThreadSynth() {
   }
 }
 
-bool ThreadSynth::HasResource(vm::Object *obj) {
+bool ThreadSynth::HasExtVisibleResource(vm::Object *obj) {
   map<sym_t, vm::Object *> member_objs;
   obj->GetAllMemberObjs(&member_objs);
   for (auto it : member_objs) {

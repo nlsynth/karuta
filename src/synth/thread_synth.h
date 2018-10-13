@@ -21,7 +21,7 @@ public:
 	      int index);
   virtual ~ThreadSynth();
 
-  static bool HasResource(vm::Object *obj);
+  static bool HasExtVisibleResource(vm::Object *obj);
 
   bool Synth();
   bool Scan();

@@ -128,7 +128,7 @@ bool DesignSynth::ScanObjs() {
 
 void DesignSynth::CollectScanRootObjRec(vm::Object *obj) {
   if (obj_synth_map_.find(obj) == obj_synth_map_.end()) {
-    if (ObjectSynth::HasResource(obj)) {
+    if (ObjectSynth::HasSynthesizable(obj)) {
       (void) GetObjectSynth(obj);
     }
   }

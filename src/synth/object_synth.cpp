@@ -29,8 +29,14 @@ ObjectSynth::~ObjectSynth() {
 }
 
 
-bool ObjectSynth::HasResource(vm::Object *obj) {
-  return ThreadSynth::HasResource(obj);
+bool ObjectSynth::HasSynthesizable(vm::Object *obj) {
+  // Either runnable threads or visible resource.
+  vector<vm::ThreadWrapper::ThreadEntry> thread_entries;
+  vm::ThreadWrapper::GetThreadEntryMethods(obj, &thread_entries, false);
+  if (thread_entries.size() > 0) {
+    return true;
+  }
+  return ThreadSynth::HasExtVisibleResource(obj);
 }
 
 void ObjectSynth::AddTaskEntryName(const string &task_entry) {
