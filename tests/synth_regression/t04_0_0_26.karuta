@@ -13,7 +13,7 @@ def Kernel.main() {
   assert(Memory.read(m1) == 0xffffffff)
 }
 
-main()
+Kernel.main()
 
-compile()
-writeHdl("a.v")
+Kernel.compile()
+Kernel.writeHdl("a.v")

@@ -16,5 +16,5 @@ func S.f() {
   p.g()
 }
 
-compile()
-writeHdl("a.v")
+Kernel.compile()
+Kernel.writeHdl("a.v")
