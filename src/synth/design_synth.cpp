@@ -26,11 +26,11 @@ DesignSynth::~DesignSynth() {
 }
 
 bool DesignSynth::Synth() {
-  iroha::ResourceParams *params = i_design_->GetParams();
-  params->SetResetPolarity(GetResetPolarity());
+  SetSynthParams();
 
   const string &prefix = Env::GetModulePrefix();
   if (!prefix.empty()) {
+    iroha::ResourceParams *params = i_design_->GetParams();
     params->SetModuleNamePrefix(prefix + "_");
   }
 
@@ -144,15 +144,31 @@ void DesignSynth::DeterminePrimaryThread() {
   }
 }
 
-bool DesignSynth::GetResetPolarity() {
+bool DesignSynth::GetResetPolarity(Annotation *an) {
   // Use positive reset as the default, since libraries of Karuta
   // assumes positive reset.
-  sym_t synth_params = sym_lookup("$synth_params");
-  vm::Value *value = root_obj_->LookupValue(synth_params, false);
-  if (value == nullptr || value->type_ != vm::Value::ANNOTATION) {
+  if (an == nullptr) {
     return true;
   }
-  return value->annotation_->ResetPolarity();
+  return an->ResetPolarity();
+}
+
+void DesignSynth::SetSynthParams() {
+  iroha::ResourceParams *params = i_design_->GetParams();
+
+  sym_t synth_params = sym_lookup("$synth_params");
+  Annotation *an = nullptr;
+  vm::Value *value = root_obj_->LookupValue(synth_params, false);
+  if (value != nullptr && value->type_ == vm::Value::ANNOTATION) {
+    an = value->annotation_;
+  }
+  params->SetResetPolarity(GetResetPolarity(an));
+  if (an != nullptr) {
+    int d = an->MaxDelayPs();
+    if (d >= 0) {
+      params->SetMaxDelayPs(d);
+    }
+  }
 }
 
 bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {

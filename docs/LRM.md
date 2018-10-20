@@ -285,6 +285,10 @@ This assumes 32bit address/data for now.
 
 When compilation is requested by calling compile() method, the synthesizer takes a snapshot of the object and generates IR from the structure and computation.
 
+    setSynthParam("resetPolarity", 0) // set negative reset (e.g. rst_n).
+    setSynthParam("maxDelayPs", 10000) // 10ns
+    compile()
+
 ## Format this document
 
  markdown LRM > LRM.html

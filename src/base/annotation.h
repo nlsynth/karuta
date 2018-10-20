@@ -74,6 +74,8 @@ public:
   // resetPolarity 1 or not.
   bool ResetPolarity();
 
+  int MaxDelayPs();
+
   // For AXI port.
   bool IsAxiMaster();
   bool IsAxiSlave();

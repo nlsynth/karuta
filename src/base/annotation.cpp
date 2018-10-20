@@ -115,6 +115,10 @@ bool Annotation::ResetPolarity() {
   }
 }
 
+int Annotation::MaxDelayPs() {
+  return LookupIntParam("maxDelayPs", -1);
+}
+
 bool Annotation::IsAxiMaster() {
   return LookupStrParam(annotation::kAnnotationKey, "") == "AxiMaster";
 }
