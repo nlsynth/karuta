@@ -14,7 +14,7 @@ def Kernel.new() (object) {
 
 def Kernel.compile() {
   __compile("")
-  __compile("clean,array_to_mem,wire_insn,clean")
+  __compile("clean,array_to_mem,alloc_resource,clean")
 }
 
 @embed(resource = "wait_cycles",
