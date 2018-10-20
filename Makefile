@@ -34,3 +34,4 @@ install:
 	install -D lib/fp/fp16r.karuta $(prefix)/share/karuta/fp/fp16r.karuta
 	install -D lib/fp/fp16rmul.v $(prefix)/share/karuta/fp/fp16rmul.v
 	install -D lib/fp/fp16raddsub.v $(prefix)/share/karuta/fp/fp16raddsub.v
+	make -C iroha install-data
