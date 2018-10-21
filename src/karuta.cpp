@@ -35,6 +35,10 @@ const char *Env::GetKarutaDir() {
   return karuta_dir_;
 }
 
+const char *Env::GetIrohaDataDir() {
+  return getenv("IROHA_DATA_DIR");
+}
+
 void Env::SearchPathList(const char *fn,
 			 vector<string> *paths) {
   if (fn[0] != '/' && fn[0] != '.') {
@@ -49,6 +53,10 @@ void Env::SearchPathList(const char *fn,
 vector<string> Env::SearchDirList() {
   vector<string> dirs = source_dirs_;
   dirs.push_back(Env::GetKarutaDir() + string("/"));
+  const char *iroha_data = GetIrohaDataDir();
+  if (iroha_data != nullptr) {
+    dirs.push_back(iroha_data + string("/"));
+  }
   return dirs;
 }
 

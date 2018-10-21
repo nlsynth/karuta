@@ -6,8 +6,10 @@
 
 KARUTA_BASE_DIR=`dirname $0`
 KARUTA_DIR=${KARUTA_BASE_DIR}/lib
+IROHA_DATA_DIR=${KARUTA_BASE_DIR}/iroha/lib
 
 export KARUTA_DIR
+export IROHA_DATA_DIR
 
 if test "${GDB+set}" = set; then
   WRAPPER="$GDB --args"

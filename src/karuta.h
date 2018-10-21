@@ -21,6 +21,7 @@ class Env {
 public:
   static const string &GetVersion();
   static const char *GetKarutaDir();
+  static const char *GetIrohaDataDir();
   static bool GetOutputPath(const char *fn, string *path);
   static const string &GetOutputMarker();
   static void SearchPathList(const char *fn,
