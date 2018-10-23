@@ -71,6 +71,10 @@ int Synth::RunIroha(vm::Object *obj, const string &args) {
   for (auto &d : dirs) {
     iopt += " -I " + d;
   }
+  string d = GetDumpPath(obj);
+  if (!d.empty()) {
+    iopt += " -d " + d;
+  }
   string e = cmd + " " + iopt + " " +
     path + " " + args;
   cout << "command=" << e << "\n";
@@ -79,7 +83,7 @@ int Synth::RunIroha(vm::Object *obj, const string &args) {
   LOG(INFO) << "Done";
   return r;
 }
-
+  
 void Synth::WriteHdl(const string &fn, vm::Object *obj) {
   string lang = "-v";
   if (::Util::IsHtmlFileName(fn)) {
@@ -108,6 +112,14 @@ int Synth::RunIrohaOpt(const string &pass, vm::Object *obj) {
     return res;
   }
   return rename(tmp.c_str(), IrPath(obj).c_str());
+}
+
+string Synth::GetDumpPath(vm::Object *obj) {
+  vm::Value *dump = obj->LookupValue(sym_lookup("$dump_file_name"), false);
+  if (dump != nullptr && dump->type_ == vm::Value::OBJECT) {
+    return dump->object_->ToString();
+  }
+  return string();
 }
 
 }  // namespace synth

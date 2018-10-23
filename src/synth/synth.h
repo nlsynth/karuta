@@ -19,6 +19,9 @@ public:
   static int RunIrohaOpt(const string &pass, vm::Object *obj);
   static string IrPath(vm::Object *obj);
   static string GetIrohaCommand(vm::Object *obj);
+
+private:
+  static string GetDumpPath(vm::Object *obj);
 };
 
 }  // namespace synth
