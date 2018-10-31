@@ -26,6 +26,7 @@ public:
 
   Method *NewMethod(bool is_toplevel);
   Object *NewObject();
+  Profile *GetProfile() const;
 
   // root of the objects.
   Object *root_object_;
@@ -41,6 +42,7 @@ private:
   set<Thread*> yielded_threads_;
 
   std::unique_ptr<Pool<Method> > methods_;
+  std::unique_ptr<Profile> profile_;
   set<Object*> objects_;
 
   void InstallBoolType();

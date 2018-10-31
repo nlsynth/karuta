@@ -9,6 +9,7 @@
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/profile.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -51,7 +52,12 @@ void Thread::RunMethod() {
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
   Executor *executor = executor_.get();
+  Profile *profile = vm_->GetProfile();
+  bool profile_enabled = profile->IsEnabled();
   while (frame->pc_ < method->insns_.size()) {
+    if (profile_enabled) {
+      profile->Mark(method, frame->pc_);
+    }
     Insn *insn = method->insns_[frame->pc_];
     bool need_suspend = executor->ExecInsn(method, frame, insn);
     if (need_suspend) {

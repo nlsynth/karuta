@@ -30,6 +30,7 @@ class IntArray;
 class Method;
 class MethodFrame;
 class Object;
+class Profile;
 class Register;
 class Thread;
 class Value;

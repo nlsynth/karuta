@@ -9,6 +9,7 @@
 #include "vm/gc.h"
 #include "vm/int_array.h"
 #include "vm/method.h"
+#include "vm/profile.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
 #include "vm/thread.h"
@@ -17,6 +18,7 @@ namespace vm {
 
 VM::VM() {
   methods_.reset(new Pool<Method>());
+  profile_.reset(new Profile());
 
   root_object_ = NewObject();
   InstallBoolType();
@@ -153,6 +155,10 @@ Object *VM::NewObject() {
   Object *object = new Object;
   objects_.insert(object);
   return object;
+}
+
+Profile *VM::GetProfile() const {
+  return profile_.get();
 }
 
 }  // namespace vm

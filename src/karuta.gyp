@@ -132,6 +132,8 @@
         'vm/object.h',
         'vm/opcode.cpp',
         'vm/opcode.h',
+        'vm/profile.cpp',
+        'vm/profile.h',
         'vm/register.cpp',
         'vm/register.h',
         'vm/enum_type_wrapper.cpp',
