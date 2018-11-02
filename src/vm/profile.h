@@ -6,6 +6,8 @@
 
 namespace vm {
 
+class ProfileData;
+
 class Profile {
 public:
   Profile();
@@ -21,6 +23,7 @@ public:
 private:
   bool enabled_;
   bool has_info_;
+  std::unique_ptr<ProfileData> data_;
 };
 
 }  // namespace vm
