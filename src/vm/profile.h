@@ -12,12 +12,15 @@ public:
   ~Profile();
 
   void Mark(Method *method, int pc);
+  int GetCount(Method *method, int pc);
   bool IsEnabled() const;
   void SetEnable(bool enable);
   void Clear();
+  bool HasInfo();
 
 private:
   bool enabled_;
+  bool has_info_;
 };
 
 }  // namespace vm

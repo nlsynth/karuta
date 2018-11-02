@@ -11,6 +11,7 @@
 #include "synth/object_method_names.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/profile.h"
 #include "vm/string_wrapper.h"
 #include "vm/thread.h"
 #include "vm/thread_wrapper.h"
@@ -257,6 +258,21 @@ void NativeMethods::GC(Thread *thr, Object *obj,
   thr->GetVM()->GC();
 }
 
+void NativeMethods::ClearProfile(Thread *thr, Object *obj,
+				 const vector<Value> &args) {
+  thr->GetVM()->GetProfile()->Clear();
+}
+
+void NativeMethods::EnableProfile(Thread *thr, Object *obj,
+				  const vector<Value> &args) {
+  thr->GetVM()->GetProfile()->SetEnable(true);
+}
+
+void NativeMethods::DisableProfile(Thread *thr, Object *obj,
+				   const vector<Value> &args) {
+  thr->GetVM()->GetProfile()->SetEnable(false);
+}
+
 void NativeMethods::SetReturnValue(Thread *thr, const Value &value) {
   thr->SetReturnValueFromNativeMethod(value);
 }
@@ -322,6 +338,9 @@ Method *Method::InstallNativeMethod(VM *vm, Object *obj, const char *name,
 void Method::InstallEnvNativeMethods(VM *vm, Object *env) {
   vector<RegisterType> rets;
   InstallNativeMethod(vm, env, "gc", &NativeMethods::GC, rets);
+  InstallNativeMethod(vm, env, "clearProfile", &NativeMethods::ClearProfile, rets);
+  InstallNativeMethod(vm, env, "enableProfile", &NativeMethods::EnableProfile, rets);
+  InstallNativeMethod(vm, env, "disableProfile", &NativeMethods::DisableProfile, rets);
   rets.push_back(BoolType(vm));
   InstallNativeMethod(vm, env, "isMain", &NativeMethods::IsMain, rets);
 }

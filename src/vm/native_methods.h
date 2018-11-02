@@ -38,6 +38,9 @@ public:
   // Env.
   static void IsMain(Thread *thr, Object *obj, const vector<Value> &args);
   static void GC(Thread *thr, Object *obj, const vector<Value> &args);
+  static void ClearProfile(Thread *thr, Object *obj, const vector<Value> &args);
+  static void EnableProfile(Thread *thr, Object *obj, const vector<Value> &args);
+  static void DisableProfile(Thread *thr, Object *obj, const vector<Value> &args);
 
   static void SetReturnValue(Thread *thr, const Value &value);
   static void SetMemberString(Thread *thr, const char *name,

@@ -2,7 +2,7 @@
 
 namespace vm {
 
-Profile::Profile() : enabled_(false) {
+Profile::Profile() : enabled_(false), has_info_(false) {
 }
 
 Profile::~Profile() {
@@ -17,9 +17,19 @@ void Profile::SetEnable(bool enable) {
 }
 
 void Profile::Clear() {
+  has_info_ = false;
 }
 
 void Profile::Mark(Method *method, int pc) {
+  has_info_ = true;
+}
+
+int Profile::GetCount(Method *method, int pc) {
+  return 0;
+}
+
+bool Profile::HasInfo() {
+  return has_info_;
 }
 
 }  // namespace vm
