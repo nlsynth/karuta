@@ -1,18 +1,21 @@
 // VERILOG_OUTPUT: a.v
-var Kernel.X object = Kernel.clone();
+var Kernel.X object = Kernel.clone()
 
-def Kernel.X.f() {
-  print(1);
+def Kernel.X.f(a, b int) {
+  assert(a == 1)
+  assert(b == 3)
+  print(1)
 }
 
-def Kernel.X.g() {
-  print(2);
+def Kernel.X.g() (int) {
+  print(2)
+  return 2
 }
 
 def Kernel.main() {
-  X.f();
-  X.g();
+  X.f(1, 3)
+  assert(X.g() == 2)
 }
 
-Kernel.compile();
-Kernel.writeHdl("a.v");
+Kernel.compile()
+Kernel.writeHdl("a.v")
