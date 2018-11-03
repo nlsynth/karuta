@@ -1,4 +1,5 @@
-0.3.7 WIP
+2018/11/03 0.3.7
+ Prepare PGO, delay model and object distance.
 2018/10/03 0.3.6
  +=, -=, *= operator to custom type.
 2018/09/03 0.3.5
