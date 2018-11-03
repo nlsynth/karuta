@@ -82,6 +82,7 @@ private:
   // Ext-task and flow also requires exactly same width.
   // TODO: Fix this in compiler side.
   void AdjustArgWidth(vm::Insn *insn, vector<IRegister *> *args);
+  void MayAnnotateProfile(int pc, StateWrapper *prev_last);
 
   ThreadSynth *thr_synth_;
   const string method_name_;

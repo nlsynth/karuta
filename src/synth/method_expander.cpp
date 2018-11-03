@@ -152,6 +152,8 @@ void MethodExpander::CopyState(IState *ost, map<IState *, IState *> &st_map,
     insn_map[insn] = new_insn;
     nst->insns_.push_back(new_insn);
   }
+  nst->GetMutableProfile()->valid_ = ost->GetProfile().valid_;
+  nst->GetMutableProfile()->raw_count_ = ost->GetProfile().raw_count_;
 }
 
 IInsn *MethodExpander::CopyInsn(IInsn *oinsn,

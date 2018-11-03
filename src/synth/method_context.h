@@ -10,6 +10,7 @@ class StateWrapper {
 public:
   StateWrapper();
 
+  int index_;
   IState *state_;
   string callee_func_name_;
   vm::Insn *vm_insn_;

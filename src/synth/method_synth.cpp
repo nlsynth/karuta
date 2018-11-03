@@ -21,9 +21,11 @@
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/profile.h"
 #include "vm/register.h"
 #include "vm/tls_wrapper.h"
 #include "vm/value.h"
+#include "vm/vm.h"
 
 namespace synth {
 
@@ -69,22 +71,24 @@ bool MethodSynth::Synth() {
 bool MethodSynth::SynthFromInsns() {
   EmitSignatureInsn(method_);
   // Initial insn. (ext) task entry may be allocated to here.
-  StateWrapper *last = AllocState();
+  StateWrapper *prev_last = AllocState();
   // mapping from vm::insn index to state index.
   map<int, int> state_index;
   state_index[0] = context_->states_.size();
   for (size_t i = 0; i < method_->insns_.size(); ++i) {
-    SynthInsn(method_->insns_[i]);
+    vm::Insn *insn = method_->insns_[i];
+    SynthInsn(insn);
     if (Status::CheckAllErrors(false)) {
       return false;
     }
+    MayAnnotateProfile(i, prev_last);
     StateWrapper *lw = context_->LastState();
-    if (last == lw) {
+    if (prev_last == lw) {
       // Dummy state, since this insn didn't emit a state.
       AllocState();
     }
     state_index[i + 1] = context_->states_.size();
-    last = context_->LastState();
+    prev_last = context_->LastState();
   }
   for (size_t i = 0; i < method_->insns_.size(); ++i) {
     vm_insn_state_map_[i] = context_->states_[state_index[i]];
@@ -648,11 +652,12 @@ void MethodSynth::ResolveJumps() {
 }
 
 StateWrapper *MethodSynth::AllocState() {
-  StateWrapper *w = new StateWrapper();
+  StateWrapper *sw = new StateWrapper();
   IState *st = new IState(tab_);
-  w->state_ = st;
-  context_->states_.push_back(w);
-  return w;
+  sw->state_ = st;
+  sw->index_ = context_->states_.size();
+  context_->states_.push_back(sw);
+  return sw;
 }
 
 void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
@@ -947,6 +952,24 @@ void MethodSynth::InsnToCalcValueType(vm::Insn *insn, IValueType *vt) {
     vt->SetWidth(reg->type_.width_.GetWidth());
   } else if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     vt->SetWidth(reg->type_.width_.GetWidth());
+  }
+}
+
+void MethodSynth::MayAnnotateProfile(int pc, StateWrapper *prev_last) {
+  vm::VM *vm = thr_synth_->GetObjectSynth()->GetVM();
+  vm::Profile *profile = vm->GetProfile();
+  if (!profile->HasInfo()) {
+    return;
+  }
+  int c = profile->GetCount(method_, pc);
+  if (c == 0) {
+    return;
+  }
+  for (int i = prev_last->index_ + 1; i < context_->states_.size(); ++i) {
+    IState *st = context_->states_[i]->state_;
+    IProfile *profile = st->GetMutableProfile();
+    profile->valid_ = true;
+    profile->raw_count_ = c;
   }
 }
 
