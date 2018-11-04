@@ -250,7 +250,7 @@ const string &ThreadSynth::GetEntryMethodName() {
 }
 
 IInsn *ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
-				      ITable *callee_tab) {
+					ITable *callee_tab) {
   ITable *caller_tab = st->GetTable();
   IResource *call_res = Tool::FindOrCreateTaskCallResource(caller_tab,
 							   callee_tab);

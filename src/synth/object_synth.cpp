@@ -153,11 +153,15 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
   }
   int d = design_synth_->GetObjectDistance(obj_, call.callee_obj);
   if (d > 0) {
+    // Sets distance to every related resources.
     IResource *res = insn->GetResource();
     res->GetParams()->SetDistance(d);
     IResource *parent_res = res->GetParentResource();
     if (parent_res != nullptr) {
       parent_res->GetParams()->SetDistance(d);
+    }
+    for (IInsn *dinsn : insn->depending_insns_) {
+      dinsn->GetResource()->GetParams()->SetDistance(d);
     }
   }
 }
