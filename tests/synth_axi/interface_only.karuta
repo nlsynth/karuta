@@ -1,0 +1,14 @@
+// VERILOG_OUTPUT: a.v
+// VERILOG_TB: axi_ms_tb.v
+
+@AxiMaster()
+var a int[16]
+
+@AxiSlave()
+var b int[16]
+
+def main() {
+}
+
+compile()
+writeHdl("a.v")
