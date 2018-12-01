@@ -3,12 +3,11 @@ Author: Yusuke TABATA (tabata.yusuke@gmail.com)
 
 ## What's this?
 TL;DR:
-    An experimental tool to perform high level synthesis (HLS) from prototype based object oriented scripting language to RTL (Verilog). The main objective of this project is to be useful for FPGA development.
+    High level synthesis (HLS) from prototype based object oriented scripting language to RTL (Verilog).
+    The main objective of this project is to be useful for FPGA development.
 
 This software Karuta (compiler) takes source code in Karuta Script language as an input and outputs cirtuits in Verilog HDL.
-As of now, this software is not so mature and has too many bugs. In addition to the premature implementation/documentation quality, many important features are liable to change.
-
-This software is under development to explore efficient logic circuit design methodology.
+As of now, this software is not so mature and has many many bugs.
 
 See https://sites.google.com/site/karutacompiler/ for some more details.
 
@@ -74,12 +73,10 @@ Now some computation is defined within object 'Kernel', so Karuta compiler can t
 * Threads
 * Channels
 * Verilog embedding
-* C++, HTML output (in addition to Verilog)
-* SSA based optimizers
+* HTML output (in addition to Verilog)
+* (WIP: SSA based optimizers, scheduling and allocation)
 
-## Other information
-
--- Command line options
+## Command line options
 
 * Debug options
     * -db debug byte code compiler
@@ -110,7 +107,7 @@ Now some computation is defined within object 'Kernel', so Karuta compiler can t
 * --version
     * Print version number.
 
--- Source tree
+## Source tree
 
 * src/
     * Command and common utilities.
@@ -127,7 +124,7 @@ Now some computation is defined within object 'Kernel', so Karuta compiler can t
 * iroha/
     * Iroha backend.
 
--- COPYING
+## COPYING
 
 See COPYING file. Feel free to ask me to change to other licenses, if it is inconvenient for you.
 

@@ -17,7 +17,7 @@ TODO: Consider non synthesizable methods.
 
 ### Methods
 
-A methods is declared as a member of an object.
+A method is declared as a member of an object.
 If no object name is given in the declaration, the method will belong to the current file object.
 
     // This method belong to the current file object.
@@ -54,16 +54,13 @@ or
 
 ### Data flow
 
+A method can be an entry of a data flow instead of FSM.
+
     @DataFlowEntry()
     def f(x int) {
     }
 
-### Object hierarchy
-
-    var O.m1 = SubObj
-    def O.f() {
-      m1.h()
-    }
+NOTE: WIP.
 
 ## Types
 
@@ -109,6 +106,47 @@ prefix '__' is reserved for implementation
  * shift amount should be constant.
 * :: bit concat
 * [l:r] range should be constant.
+
+## Object
+
+### Object hierarchy
+
+An object can have member objects.
+
+    var O.m1 object = SubObj
+    def O.f() {
+      m1.h()
+    }
+
+### Type object
+
+    var Numerics.Int32 object = Object.clone()
+    func Numerics.Int32.Build(arg #32) (#32) {
+      return arg
+    }
+
+    func Numerics.Int32.Add(lhs, rhs #32) (#32) {
+      return lhs + rhs
+    }
+
+    // Type class can't be accessed from top level environment.
+    func f() {
+      var x #Int32
+      x = Numerics.Int32.Build(1)
+      print(x + x)
+    }
+
+    // Add a method for the type.
+    func Numerics.Int32.IsZero(arg #32) (bool) {
+      return arg == 0
+    }
+
+    func g() {
+      var x #Int32
+      x = Numerics.Int32.Build(1)
+      print(x.IsZero())
+      x + x
+    }
 
 ## Statements
 
@@ -235,6 +273,10 @@ This assumes 32bit address/data for now.
 * runIroha(opts string)
     * e.g. runIroha("-v -S -o x.v")
 
+#### Object distance.
+
+WIP.
+
 ### Mailbox
 
     mailbox M.m1 int
@@ -252,35 +294,6 @@ This assumes 32bit address/data for now.
     @ThreadLocal()
     var M.x int
 
-### Type class
-
-    var Numerics.Int32 object = Object.clone()
-    func Numerics.Int32.Build(arg #32) (#32) {
-      return arg
-    }
-
-    func Numerics.Int32.Add(lhs, rhs #32) (#32) {
-      return lhs + rhs
-    }
-
-    // Type class can't be accessed from top level environment.
-    func f() {
-      var x #Int32
-      x = Numerics.Int32.Build(1)
-      print(x + x)
-    }
-
-    // Add a method for the type.
-    func Numerics.Int32.IsZero(arg #32) (bool) {
-      return arg == 0
-    }
-
-    func g() {
-      var x #Int32
-      x = Numerics.Int32.Build(1)
-      print(x.IsZero())
-    }
-
 ## RTL generation
 
 When compilation is requested by calling compile() method, the synthesizer takes a snapshot of the object and generates IR from the structure and computation.
@@ -288,6 +301,15 @@ When compilation is requested by calling compile() method, the synthesizer takes
     setSynthParam("resetPolarity", 0) // set negative reset (e.g. rst_n).
     setSynthParam("maxDelayPs", 10000) // 10ns
     compile()
+
+### Profile Guided Optimization (PGO)
+
+    Env.clearProfile()
+    Env.enableProfile()
+    // Run actual code.
+    Env.disableProfile()
+
+NOTE: In development.
 
 ## Format this document
 
