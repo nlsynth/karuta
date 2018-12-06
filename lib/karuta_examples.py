@@ -11,7 +11,7 @@ EXAMPLES = {
            's' : 'print("Hello World!")'},
     'h1': {'i' : 1,
            'n' : '01 - Function',
-           's' : '''def Kernel.main() {
+           's' : '''def main() {
   print("Hello World!")
 }
 
@@ -54,18 +54,15 @@ Kernel.writeHdl("sum.v")
 
 '''},
     'h4': {'i' : 4,
-           'n' : '04 - Channel',
-           's' : '''channel Kernel.in #64
-channel Kernel.out = #64
-
-def Kernel.main() {
-  var arg #64 = in.read()
+           'n' : '04 - Ext entry',
+           's' : '''@ExtEntry()
+def Kernel.fn(in #32) (#32) {
   var i int
-  var t #64 = 0
-  for (i = 0; i < arg; i++) {
+  var t #32 = 0
+  for (i = 0; i < in; i++) {
     t += i
   }
-  out.write(t)
+  return t
 }
 
 Kernel.compile()
