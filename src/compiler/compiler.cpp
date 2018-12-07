@@ -394,19 +394,16 @@ void Compiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
 void Compiler::CompileThreadDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr()->GetLhs();
-  CHECK(var_expr->GetType() == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_THREAD_DECL, nullptr);
 }
 
 void Compiler::CompileChannelDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr();
-  CHECK(var_expr->GetType() == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_CHANNEL_DECL, nullptr);
 }
                   
 void Compiler::CompileMailboxDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr();
-  CHECK(var_expr->GetType() == fe::EXPR_ELM_SYM_REF);
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_MAILBOX_DECL, nullptr);
 }
 
