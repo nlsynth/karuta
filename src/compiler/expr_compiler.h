@@ -34,7 +34,7 @@ private:
   vm::Register *CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
 				   vm::Register *rhs_reg);
   RegisterTuple CompileComma(fe::Expr *expr);
-  vm::Register *CompileElmRef(fe::Expr *expr);
+  RegisterTuple CompileElmRef(fe::Expr *expr);
   RegisterTuple CompileFuncallExpr(vm::Register *obj, fe::Expr *expr);
   RegisterTuple CompileMultiValueFuncall(vm::Register *obj_reg,
 					 fe::Expr *funcall,

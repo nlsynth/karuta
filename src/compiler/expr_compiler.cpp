@@ -76,7 +76,7 @@ RegisterTuple ExprCompiler::CompileExpr(fe::Expr *expr) {
     return CompileComma(expr);
   }
   if (type == fe::BINOP_ELM_REF) {
-    return RegisterTuple(CompileElmRef(expr));
+    return CompileElmRef(expr);
   }
   if (type == fe::EXPR_TRI_TERM) {
     return RegisterTuple(CompileTriTerm(expr));
@@ -312,7 +312,7 @@ RegisterTuple ExprCompiler::CompileComma(fe::Expr *expr) {
   return rt;
 }
 
-vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
+RegisterTuple ExprCompiler::CompileElmRef(fe::Expr *expr) {
   vm::Register *obj_reg = CompileExprToOneReg(expr->GetLhs());
   fe::Expr *rhs = expr->GetRhs();
   if (rhs->GetType() == fe::EXPR_SYM) {
@@ -320,13 +320,12 @@ vm::Register *ExprCompiler::CompileElmRef(fe::Expr *expr) {
     sym_t elm_name = expr->GetRhs()->GetSym();
     res_reg = compiler_->EmitMemberLoad(obj_reg, elm_name);
     res_reg->orig_name_ = elm_name;
-    return res_reg;
+    return RegisterTuple(res_reg);
   } else if (rhs->GetType() == fe::EXPR_FUNCALL) {
-    RegisterTuple tp = CompileFuncallExpr(obj_reg, rhs);
-    return tp.GetOne();
+    return CompileFuncallExpr(obj_reg, rhs);
   }
   CHECK(false);
-  return nullptr;
+  return RegisterTuple(nullptr);
 }
 
 RegisterTuple ExprCompiler::CompileFuncallExpr(vm::Register *obj_reg,
@@ -513,6 +512,8 @@ RegisterTuple ExprCompiler::CompileMultiAssign(fe::Expr *lhs_expr,
   RegisterTuple rhs;
   if (rhs_expr->GetType() == fe::EXPR_FUNCALL) {
     rhs = CompileMultiValueFuncall(nullptr, rhs_expr, values.size());
+  } else if (rhs_expr->GetType() == fe::BINOP_ELM_REF) {
+    rhs = CompileExpr(rhs_expr);
   } else if (rhs_expr->GetType() == fe::BINOP_COMMA) {
     // Assigns to temporary registers to avoid unnecesary dependency.
     // e.g. (x, y) = (y, x) => x = y, y = x => (x,y) == (y,y)!
@@ -580,7 +581,8 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 	compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),
 				  array_expr->GetSym());
     } else {
-      insn->obj_reg_ = CompileElmRef(array_expr);
+      RegisterTuple rt = CompileElmRef(array_expr);
+      insn->obj_reg_ = rt.GetOne();
     }
   }
   insn->dst_regs_.push_back(insn->src_regs_[1]);
