@@ -12,29 +12,32 @@ args = sys.argv[1:]
 
 kfile = ""
 vfile = "/tmp/a.v"
-ccfile = ""
-aout = "/tmp/a.out"
+iroha_binary = ""
 tbfile = "tests/test_tb.v"
 voptions = ["-Ilib/"]
 karuta_cmd = "./karuta"
 iverilog_cmd = "iverilog"
 
-for arg in sys.argv:
+args = sys.argv
+
+while len(args) > 0:
+  arg = args[0]
+  args = args[1:]
   if re.search("\.karuta$", arg):
     print "kfile=" + arg
     kfile = arg
   if re.search("\.v$", arg):
     print "vfile=" + arg
     vfile = arg
-  if re.search("\.cc$", arg) or re.search("\.cpp$", arg):
-    print "ccfile=" + arg
-    ccfile = arg
   if arg == "-m":
     voptions.append("-DKARUTA_RAM")
   if arg == "-l":
     voptions.append("-DLONG_SIM")
   if arg == "-d":
     voptions.append("-DKARUTA_DEBUG")
+  if arg == "--iroha_binary":
+    iroha_binary = args[0]
+    args = args[1:]
 
 def run_command(args):
   cmd = " ".join(args)
@@ -47,17 +50,12 @@ def run_command(args):
 # run karuta
 if kfile:
   cmd = [karuta_cmd, kfile, "--module_prefix=mod"]
+  if iroha_binary:
+    cmd.append("--iroha_bin")
+    cmd.append(iroha_binary)
   run_command(cmd)
 else:
   print "skipping karuta"
-
-# run c output
-if ccfile:
-  cmd = ["g++", ccfile, "-I.", "-o", aout]
-  run_command(cmd)
-  cmd = [aout]
-  run_command(cmd)
-  exit()
 
 # run iverilog
 voption = " ".join(voptions)
