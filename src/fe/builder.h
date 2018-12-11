@@ -45,7 +45,7 @@ class Builder {
   static VarDeclSet *ArgDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDeclSet *ReturnDeclList(VarDeclSet *decls, VarDecl *decl);
   static VarDecl *ReturnType(bool is_primitive, sym_t type_name, const iroha::NumericWidth *w);
-  static void SetArrayLength(VarDecl *decl, int length);
+  static void SetArrayShape(VarDecl *decl, ArrayShape *shape);
   static Expr *ArrayRefExpr(Expr *array, Expr *index);
   static Expr *BitRangeRefExpr(Expr *val, Expr *msb, Expr *lsb);
   static void SetArrayInitializer(VarDecl *decl, ArrayInitializer *initializer);

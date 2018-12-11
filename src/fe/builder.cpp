@@ -235,15 +235,16 @@ VarDecl *Builder::ReturnType(bool is_primitive, sym_t type,
   return v;
 }
 
-void Builder::SetArrayLength(VarDecl *decl, int length) {
-  decl->SetArrayLength(length);
+void Builder::SetArrayShape(VarDecl *decl, ArrayShape *shape) {
+  decl->SetArrayShape(shape);
 }
 
 void Builder::SetArrayInitializer(VarDecl *decl,
 				  ArrayInitializer *initializer) {
   decl->SetArrayInitializer(initializer);
   if (decl->GetArrayLength() == 0) {
-    decl->SetArrayLength(initializer->num_.size());
+    ArrayShape *shape = new ArrayShape(initializer->num_.size());
+    decl->SetArrayShape(shape);
   }
 }
 

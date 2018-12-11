@@ -13,9 +13,18 @@ public:
   void Dump(DumpStream &ds) const;
 };
 
+class ArrayShape {
+public:
+  explicit ArrayShape(int l);
+
+  // 1 dimension for now.
+  vector<int> length;
+};
+
 class VarDecl {
 public:
   VarDecl();
+
   void Dump();
   void Dump(DumpStream &os);
 
@@ -30,9 +39,10 @@ public:
   Expr *GetInitialVal() const;
   void SetInitialVal(Expr *initial_val);
   int GetArrayLength();
-  void SetArrayLength(int array_length);
   ArrayInitializer *GetArrayInitializer() const;
   void SetArrayInitializer(ArrayInitializer *array);
+  ArrayShape *GetArrayShape() const;
+  void SetArrayShape(ArrayShape *shape);
   Annotation *GetAnnotation() const;
   void SetAnnotation(Annotation *an);
 
@@ -46,7 +56,8 @@ private:
   sym_t object_name_;
   Expr *initial_val_;
   int array_length_;
-  ArrayInitializer *array_initializer_;
+  std::unique_ptr<ArrayInitializer> array_initializer_;
+  std::unique_ptr<ArrayShape> array_shape_;
   Annotation *annotation_;
 };
 

@@ -112,19 +112,27 @@ void VarDecl::SetInitialVal(Expr *initial_val) {
 }
 
 int VarDecl::GetArrayLength() {
-  return array_length_;
-}
-
-void VarDecl::SetArrayLength(int array_length) {
-  array_length_ = array_length;
+  ArrayShape *shape = array_shape_.get();
+  if (shape == nullptr) {
+    return -1;
+  }
+  return shape->length[0];
 }
 
 ArrayInitializer *VarDecl::GetArrayInitializer() const {
-  return array_initializer_;
+  return array_initializer_.get();
 }
 
 void VarDecl::SetArrayInitializer(ArrayInitializer *array) {
-  array_initializer_ = array;
+  array_initializer_.reset(array);
+}
+
+ArrayShape *VarDecl::GetArrayShape() const {
+  return array_shape_.get();
+}
+
+void VarDecl::SetArrayShape(ArrayShape *shape) {
+  array_shape_.reset(shape);
 }
 
 Annotation *VarDecl::GetAnnotation() const{
@@ -145,6 +153,10 @@ void ArrayInitializer::Dump(DumpStream &ds) const {
     ds.os << num_[i];
   }
   ds.os << "]\n";
+}
+
+ArrayShape::ArrayShape(int l) {
+  length.push_back(l);
 }
 
 }  // namespace fe

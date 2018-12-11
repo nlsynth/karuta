@@ -135,6 +135,7 @@ union YYSTYPE
 #line 19 "src/fe/parser.ypp" /* yacc.c:1909  */
 
   class ArrayInitializer *array;
+  class ArrayShape *shape;
   class Expr *expr;
   class ExprSet *expr_set;
   class EnumDecl *enum_decl;
@@ -151,7 +152,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 155 "src/fe/parser.h" /* yacc.c:1909  */
+#line 156 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -22,6 +22,7 @@ class VM;
 namespace fe {
 
 class ArrayInitializer;
+class ArrayShape;
 class EnumDecl;
 class Expr;
 class ExprSet;

@@ -18,6 +18,7 @@ extern void yyerror(const char *msg);
 %}
 %union {
   class ArrayInitializer *array;
+  class ArrayShape *shape;
   class Expr *expr;
   class ExprSet *expr_set;
   class EnumDecl *enum_decl;
@@ -37,7 +38,7 @@ extern void yyerror(const char *msg);
 
 %type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
 %type <expr_set> VAR_LIST
-%type <num> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
+%type <shape> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
 %type <var_decl_set> VAR_DECL_STMT VAR_DECL VAR_DECL_TAIL
 %type <array> ARRAY_INITIALIZER ARRAY_ELM_LIST
 %type <block> BLOCK IF_STMT FOR_STMT
@@ -170,7 +171,7 @@ VAR_DECL_TAIL : VAR_LIST WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
     VarDecl *vd = Builder::BuildVarDecl(var,
 					$2.is_primitive, $2.name,
 					$2.width);
-    Builder::SetArrayLength(vd, $3.value);
+    Builder::SetArrayShape(vd, $3);
     vds = Builder::VarDeclList(vds, vd);
   }
   $$ = vds;
@@ -219,13 +220,16 @@ ARG_DECL_LIST : VAR_DECL_TAIL {
 }
 
 ARRAY_SPEC : '[' ']' {
-  $$.value = 0;
+  // length will be determined by the value initializer.
+  ArrayShape *shape = new ArrayShape(0);
+  $$ = shape;
 } | '[' NUM ']' {
-  $$ = $2;
+  ArrayShape *shape = new ArrayShape($2.value);
+  $$ = shape;
 }
 
 EMPTY_OR_ARRAY_SPEC : {
-  $$.value = -1;
+  $$ = nullptr;
 } | ARRAY_SPEC {
   $$ = $1;
 }
