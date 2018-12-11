@@ -8,8 +8,11 @@ import tempfile
 
 # -y yacc mode
 # -d produces header file
-r = os.system("bison -y -d src/fe/parser.ypp")
+cmd = "bison -y -d src/fe/parser.ypp"
+print("running: " + cmd)
+r = os.system(cmd)
 if r != 0:
+    print("...failed.")
     exit(r)
 
 def Copy(sfn, ofn, skipCopy):
@@ -23,12 +26,12 @@ def Copy(sfn, ofn, skipCopy):
         # kludge not to replace an occurence in the comment.
         if not line.startswith(' '):
             line = line.replace("y.tab.h", "src/fe/parser.h")
-        os.write(tf[0], line)
+        os.write(tf[0], line.encode('utf-8'))
     os.close(tfd)
     if not skipCopy or not os.path.exists(ofn) or not filecmp.cmp(tfn, ofn):
         shutil.copy(tfn, ofn)
     else:
-        print "skipping copy to " + ofn
+        print("skipping copy to " + ofn)
     os.unlink(sfn)
 
         
