@@ -9,7 +9,7 @@ namespace fe {
 VarDecl::VarDecl() : name_expr_(nullptr), type_(nullptr),
 		     object_name_(sym_null),
 		     initial_val_(nullptr),
-		     array_length_(-1), array_initializer_(nullptr),
+		     array_initializer_(nullptr),
 		     annotation_(nullptr) {
 }
 
@@ -44,9 +44,9 @@ void VarDecl::Dump(DumpStream &ds) {
     ds.indent();
     ds.os << "#" << sym_cstr(object_name_) << "\n";
   }
-  if (array_length_ >= 0) {
+  if (array_shape_.get() != nullptr) {
     ds.indent();
-    ds.os << "[" << array_length_ << "]\n";
+    array_shape_->Dump(ds);
   }
   if (array_initializer_) {
     array_initializer_->Dump(ds);
@@ -157,6 +157,13 @@ void ArrayInitializer::Dump(DumpStream &ds) const {
 
 ArrayShape::ArrayShape(int l) {
   length.push_back(l);
+}
+
+void ArrayShape::Dump(DumpStream &ds) const {
+  for (int i = length.size() - 1; i >= 0; --i) {
+    ds.os << "[" << length[i] << "]";
+  }
+  ds.os << "\n";
 }
 
 }  // namespace fe

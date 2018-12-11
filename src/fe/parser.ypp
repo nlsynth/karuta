@@ -219,19 +219,22 @@ ARG_DECL_LIST : VAR_DECL_TAIL {
   $$ = vds;
 }
 
-ARRAY_SPEC : '[' ']' {
-  // length will be determined by the value initializer.
-  ArrayShape *shape = new ArrayShape(0);
-  $$ = shape;
-} | '[' NUM ']' {
+ARRAY_SPEC : '[' NUM ']' {
   ArrayShape *shape = new ArrayShape($2.value);
   $$ = shape;
+} | '[' NUM ']' ARRAY_SPEC {
+  $4->length.push_back($2.value);
+  $$ = $4;
 }
 
 EMPTY_OR_ARRAY_SPEC : {
   $$ = nullptr;
 } | ARRAY_SPEC {
   $$ = $1;
+} | '[' ']' {
+  // length will be determined by the value initializer.
+  ArrayShape *shape = new ArrayShape(0);
+  $$ = shape;
 }
 
 ARRAY_ELM : NUM {

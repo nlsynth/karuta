@@ -19,6 +19,7 @@ public:
 
   // 1 dimension for now.
   vector<int> length;
+  void Dump(DumpStream &ds) const;
 };
 
 class VarDecl {
@@ -55,7 +56,6 @@ private:
   // for numeric object.
   sym_t object_name_;
   Expr *initial_val_;
-  int array_length_;
   std::unique_ptr<ArrayInitializer> array_initializer_;
   std::unique_ptr<ArrayShape> array_shape_;
   Annotation *annotation_;
