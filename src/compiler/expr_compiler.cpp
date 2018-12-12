@@ -549,10 +549,9 @@ vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
 
 vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 						 vm::Register *rhs_reg) {
-  // SRC: INDEX RHS_REG {LOCAL_ARRAY}
-  // DST: RHS_REG
+  // SRC: INDEX RHS_REG
+  // DST: LHS_REG
   // OBJ: ARRAY
-  vm::Register *local_array = nullptr;
   if (compiler_->IsTopLevel()) {
     insn->op_ = vm::OP_ARRAY_WRITE_WITH_CHECK;
   } else {
@@ -566,24 +565,19 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   if (array_expr->GetType() == fe::EXPR_SYM) {
     vm::Value *value =
       compiler_->GetObj()->LookupValue(array_expr->GetSym(), false);
-    if (!value) {
-      local_array = compiler_->LookupLocalVar(array_expr->GetSym());
-      CHECK(local_array || compiler_->IsTopLevel()) << "undeclared local array";
-    }
+    CHECK(value != nullptr) << "undeclared array";
+  } else {
+    CHECK(compiler_->IsTopLevel());
   }
   insn->src_regs_.push_back(index_reg);
   insn->src_regs_.push_back(rhs_reg);
-  if (local_array) {
-    insn->src_regs_.push_back(local_array);
+  if (array_expr->GetType() == fe::EXPR_SYM) {
+    insn->obj_reg_ =
+      compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),
+				array_expr->GetSym());
   } else {
-    if (array_expr->GetType() == fe::EXPR_SYM) {
-      insn->obj_reg_ =
-	compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),
-				  array_expr->GetSym());
-    } else {
-      RegisterTuple rt = CompileElmRef(array_expr);
-      insn->obj_reg_ = rt.GetOne();
-    }
+    RegisterTuple rt = CompileElmRef(array_expr);
+    insn->obj_reg_ = rt.GetOne();
   }
   insn->dst_regs_.push_back(insn->src_regs_[1]);
   compiler_->EmitInsn(insn);

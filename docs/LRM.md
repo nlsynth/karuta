@@ -62,9 +62,9 @@ A method can be an entry of a data flow instead of FSM.
 
 NOTE: WIP.
 
-## Types
+## Value types
 
-### Width spec
+### Integer with width spec
 
     var x #32
     var x int  // Same as #32
@@ -82,7 +82,9 @@ NOTE: WIP.
 
 ### Arrays
 
-    var M.x int[32]
+Arrays can be declared only in the top level.
+
+    var a int[32]
     var M.y #16[4] = {1,2,3,4}
 
 ## Expressions
