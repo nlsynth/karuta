@@ -565,7 +565,8 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   if (array_expr->GetType() == fe::EXPR_SYM) {
     vm::Value *value =
       compiler_->GetObj()->LookupValue(array_expr->GetSym(), false);
-    CHECK(value != nullptr) << "undeclared array";
+    CHECK(value != nullptr || compiler_->IsTopLevel())
+      << "undeclared array: " << sym_cstr(array_expr->GetSym());
   } else {
     CHECK(compiler_->IsTopLevel());
   }
