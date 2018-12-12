@@ -15,6 +15,7 @@ public:
 			  const char *content);
   // 0,1,2,3,4 -> 0,0,1,2,2
   static int Log2(int x);
+  static uint64_t RoundUp2(uint64_t x);
 };
 
 #endif  // _base_util_h_

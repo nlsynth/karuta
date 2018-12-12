@@ -119,3 +119,13 @@ int Util::Log2(int x) {
   }
   return n;
 }
+
+uint64_t Util::RoundUp2(uint64_t x) {
+  for (int i = 0; i < 32; ++i) {
+    int s = (1 << i);
+    if (s >= x) {
+      return s;
+    }
+  }
+  return 0;
+}

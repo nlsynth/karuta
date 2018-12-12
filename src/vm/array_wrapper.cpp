@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "base/annotation.h"
+#include "base/util.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
@@ -18,9 +19,15 @@ static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
 public:
-  ArrayWrapperData(VM *vm, uint64_t size, bool is_int,
+  ArrayWrapperData(VM *vm, vector<uint64_t> &shape, bool is_int,
 		   const iroha::NumericWidth &width,
 		   Annotation *an) {
+    uint64_t size = 1;
+    for (uint64_t s : shape) {
+      uint64_t r = Util::RoundUp2(s);
+      shape_.push_back(r);
+      size *= r;
+    }
     if (is_int) {
       int_array_.reset(IntArray::Create(width, size));
     } else {
@@ -34,13 +41,15 @@ public:
     an_ = an;
   }
 
-  ArrayWrapperData(ArrayWrapperData *src) {
+  explicit ArrayWrapperData(ArrayWrapperData *src) {
     objs_ = src->objs_;
     if (src->int_array_.get() != nullptr) {
       int_array_.reset(IntArray::Copy(src->int_array_.get()));
     } else {
       int_array_ = nullptr;
     }
+    an_ = src->an_;
+    shape_ = src->shape_;
   }
 
   vector<Object *> objs_;
@@ -48,6 +57,7 @@ public:
   Annotation *an_;
   set<Thread *> waiters_;
   set<Thread *> notified_threads_;
+  vector<uint64_t> shape_;
 
   virtual const char *ObjectTypeKey() {
     if (int_array_) {
@@ -90,10 +100,12 @@ string ArrayWrapper::ToString(Object *obj) {
 }
 
 Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
+  vector<uint64_t> shape;
+  shape.push_back(size);
   Object *array_obj = vm->array_object_->Clone(vm);
   InstallMethods(vm, array_obj);
   iroha::NumericWidth dw;
-  ArrayWrapperData *data = new ArrayWrapperData(vm, size, false, dw, nullptr);
+  ArrayWrapperData *data = new ArrayWrapperData(vm, shape, false, dw, nullptr);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }
@@ -103,7 +115,7 @@ Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, vector<uint64_t> &shape,
 					 Annotation *an) {
   Object *array_obj = vm->array_object_->Clone(vm);
   InstallMethods(vm, array_obj);
-  ArrayWrapperData *data = new ArrayWrapperData(vm, shape[0], true, width, an);
+  ArrayWrapperData *data = new ArrayWrapperData(vm, shape, true, width, an);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }
