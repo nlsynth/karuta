@@ -549,7 +549,7 @@ vm::Register *ExprCompiler::CompileAssignToLhs(vm::Insn *insn, fe::Expr *lhs,
 
 vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 						 vm::Register *rhs_reg) {
-  // SRC: INDEX RHS_REG
+  // SRC: RHS_REG INDEX
   // DST: LHS_REG
   // OBJ: ARRAY
   if (compiler_->IsTopLevel()) {
@@ -569,8 +569,8 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   } else {
     CHECK(compiler_->IsTopLevel());
   }
-  insn->src_regs_.push_back(index_reg);
   insn->src_regs_.push_back(rhs_reg);
+  insn->src_regs_.push_back(index_reg);
   if (array_expr->GetType() == fe::EXPR_SYM) {
     insn->obj_reg_ =
       compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),

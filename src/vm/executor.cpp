@@ -360,20 +360,20 @@ void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
 }
 
 void Executor::ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn) {
-  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
+  int index = frame->reg_values_[insn->src_regs_[1]->id_].num_.GetValue0();
   CHECK(insn->obj_reg_ != nullptr);
   Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(array_obj);
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     array->Write(index,
-		 frame->reg_values_[insn->src_regs_[1]->id_].num_);
+		 frame->reg_values_[insn->src_regs_[0]->id_].num_);
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
-    CHECK(method->method_regs_[insn->src_regs_[1]->id_]->type_.value_type_
+    CHECK(method->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_
 	  == Value::OBJECT);
     ArrayWrapper::Set(array_obj, index,
-		      frame->reg_values_[insn->src_regs_[1]->id_].object_);
+		      frame->reg_values_[insn->src_regs_[0]->id_].object_);
   }
 }
 

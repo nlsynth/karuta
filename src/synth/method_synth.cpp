@@ -836,12 +836,12 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {
   }
   res = res_set_->GetInternalArrayResource(array_obj);
   IInsn *iinsn = new IInsn(res);
-  // index
-  iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
-  // value
   if (is_write) {
+    // index, value
     iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
+    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
   } else {
+    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
     iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
   }
   StateWrapper *w = AllocState();
