@@ -1917,7 +1917,7 @@ yyreduce:
   for (VarDecl *vd : (yyvsp[0].var_decl_set)->decls) {
     vds = Builder::ArgDeclList(vds, vd);
   }
-  if ((yyvsp[0].var_decl_set)->decls[0]->GetArrayLength() >= 0) {
+  if ((yyvsp[0].var_decl_set)->decls[0]->GetArrayShape() != nullptr) {
     yyerror("Array can't be passed to a method");
     YYABORT;
   }
@@ -2060,7 +2060,7 @@ yyreduce:
     yyerror("More than 1 LHS to initialize");
     YYABORT;
   }
-  if ((yyvsp[-2].var_decl_set)->decls[0]->GetArrayLength() < 0) {
+  if ((yyvsp[-2].var_decl_set)->decls[0]->GetArrayShape() == nullptr) {
     yyerror("Array initializer to non array");
     YYABORT;
   }

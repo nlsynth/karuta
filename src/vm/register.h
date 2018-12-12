@@ -39,10 +39,6 @@ public:
 
   void SetIsDeclaredType(bool is_declared_type);
   bool GetIsDeclaredType() const;
-  void SetArrayLength(int array_length);
-  int GetArrayLength() const;
-  void SetArrayInitializer(fe::ArrayInitializer *initializer);
-  fe::ArrayInitializer *GetArrayInitializer() const;
 
   int id_;
   RegisterType type_;
@@ -51,10 +47,6 @@ public:
   Object *type_object_;
 
 private:
-  // local array.
-  int array_length_;
-  fe::ArrayInitializer *array_initializer_;
-
   bool is_declared_type_;
 };
 

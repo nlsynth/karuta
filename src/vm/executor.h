@@ -72,10 +72,10 @@ private:
   void ClearThreadEntry(MethodFrame *frame, Insn *insn);
   bool IsCustomOpCall(const Method *method, Insn *insn);
   Object *CreateMemoryObject(const iroha::NumericWidth &width,
-			     int array_length,
+			     fe::ArrayShape *shape,
 			     fe::ArrayInitializer *array_initializer,
 			     Annotation *an);
-  Object *CreateObjectArray(int array_length);
+  Object *CreateObjectArray(fe::ArrayShape *shape);
   IntArray *CreateIntArray(const iroha::NumericWidth &width,
 			   int array_length,
 			   fe::ArrayInitializer *array_initializer);

@@ -37,7 +37,6 @@ void RegisterType::Dump(DumpStream &ds) {
 Register::Register() : type_(Value::NONE, nullptr,
 			     iroha::NumericWidth(false, 32), sym_null, false),
 		       orig_name_(nullptr), type_object_(nullptr),
-		       array_length_(-1), array_initializer_(nullptr),
 		       is_declared_type_(false) {
 }
 
@@ -61,31 +60,9 @@ void Register::Dump(DumpStream &ds) {
   } else {
     ds.os << "*";
   }
-  if (array_length_ > -1) {
-    ds.os << " [" << array_length_ << "]";
-    if (array_initializer_) {
-      ds.os << "={...}";
-    }
-  }
   if (is_declared_type_) {
     ds.os << "!";
   }
-}
-
-void Register::SetArrayLength(int array_length) {
-  array_length_ = array_length;
-}
-
-int Register::GetArrayLength() const {
-  return array_length_;
-}
-
-void Register::SetArrayInitializer(fe::ArrayInitializer *initializer) {
-  array_initializer_ = initializer;
-}
-
-fe::ArrayInitializer *Register::GetArrayInitializer() const {
-  return array_initializer_;
 }
 
 void Register::SetIsDeclaredType(bool is_declared_type) {

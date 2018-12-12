@@ -9,6 +9,7 @@ class DumpStream;
 
 namespace fe {
 class ArrayInitializer;
+class ArrayShape;
 class Expr;
 class Method;
 class VarDecl;

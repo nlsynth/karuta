@@ -355,15 +355,8 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
 void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 				   Register *reg) {
   reg->SetIsDeclaredType(true);
-  if (decl->GetArrayLength() >= 0) {
-    CHECK(decl->GetType() == sym_int);
-    reg->type_.value_type_ = Value::INT_ARRAY;
-    reg->SetArrayLength(decl->GetArrayLength());
-    if (reg->GetArrayLength() == 0 &&
-	decl->GetArrayInitializer() != nullptr) {
-      reg->SetArrayLength(decl->GetArrayInitializer()->num_.size());
-    }
-    reg->SetArrayInitializer(decl->GetArrayInitializer());
+  if (decl->GetArrayShape() != nullptr) {
+    CHECK(false);
   } else {
     reg->type_.value_type_ = SymToType(decl->GetType());
     if (decl->GetType() == sym_bool) {
@@ -399,7 +392,7 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
 
 void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
   value->type_ = SymToType(decl->GetType());
-  if (decl->GetArrayLength() > -1) {
+  if (decl->GetArrayShape() != nullptr) {
     if (value->type_ == Value::OBJECT) {
       value->type_ = Value::OBJECT_ARRAY;
     } else {

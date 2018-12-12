@@ -206,7 +206,7 @@ ARG_DECL_LIST : VAR_DECL_TAIL {
   for (VarDecl *vd : $1->decls) {
     vds = Builder::ArgDeclList(vds, vd);
   }
-  if ($1->decls[0]->GetArrayLength() >= 0) {
+  if ($1->decls[0]->GetArrayShape() != nullptr) {
     yyerror("Array can't be passed to a method");
     YYABORT;
   }
@@ -271,7 +271,7 @@ VAR_DECL_STMT : VAR_DECL {
     yyerror("More than 1 LHS to initialize");
     YYABORT;
   }
-  if ($1->decls[0]->GetArrayLength() < 0) {
+  if ($1->decls[0]->GetArrayShape() == nullptr) {
     yyerror("Array initializer to non array");
     YYABORT;
   }

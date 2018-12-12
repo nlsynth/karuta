@@ -129,8 +129,10 @@ void VM::InstallObjects() {
   kernel_object_->InstallValue(sym_lookup("Env"), object_value);
   Method::InstallEnvNativeMethods(this, env);
 
+  vector<uint64_t> s;
+  s.push_back(0);
   default_mem_ =
-    ArrayWrapper::NewIntArrayWrapper(this, 0, iroha::NumericWidth(false, 32),
+    ArrayWrapper::NewIntArrayWrapper(this, s, iroha::NumericWidth(false, 32),
 				     nullptr);
   ArrayWrapper::InstallSramIfMethods(this, default_mem_);
   object_value.object_ = default_mem_;

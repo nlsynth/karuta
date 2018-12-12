@@ -98,12 +98,12 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
   return array_obj;
 }
 
-Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, uint64_t size,
+Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, vector<uint64_t> &shape,
 					 const iroha::NumericWidth &width,
 					 Annotation *an) {
   Object *array_obj = vm->array_object_->Clone(vm);
   InstallMethods(vm, array_obj);
-  ArrayWrapperData *data = new ArrayWrapperData(vm, size, true, width, an);
+  ArrayWrapperData *data = new ArrayWrapperData(vm, shape[0], true, width, an);
   array_obj->object_specific_.reset(data);
   return array_obj;
 }

@@ -39,7 +39,6 @@ public:
   void SetObjectName(sym_t object_name);
   Expr *GetInitialVal() const;
   void SetInitialVal(Expr *initial_val);
-  int GetArrayLength();
   ArrayInitializer *GetArrayInitializer() const;
   void SetArrayInitializer(ArrayInitializer *array);
   ArrayShape *GetArrayShape() const;

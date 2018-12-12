@@ -111,14 +111,6 @@ void VarDecl::SetInitialVal(Expr *initial_val) {
   initial_val_ = initial_val;
 }
 
-int VarDecl::GetArrayLength() {
-  ArrayShape *shape = array_shape_.get();
-  if (shape == nullptr) {
-    return -1;
-  }
-  return shape->length[0];
-}
-
 ArrayInitializer *VarDecl::GetArrayInitializer() const {
   return array_initializer_.get();
 }

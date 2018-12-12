@@ -128,7 +128,8 @@ void Emitter::EmitImportStmt(const char *str) {
 void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
   for (size_t i = 0; i < vds->decls.size(); ++i) {
     VarDecl *vd = vds->decls[i];
-    if (vd->GetArrayLength() > 0) {
+    ArrayShape *shape = vd->GetArrayShape();
+    if (shape != nullptr) {
       if (method_stack_.size() > 1) {
 	Status::os(Status::USER_ERROR)
 	  << "Array declaration is allowed only in the top level.";

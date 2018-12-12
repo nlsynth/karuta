@@ -13,7 +13,7 @@ public:
   static string ToString(Object *obj);
 
   static Object *NewObjectArrayWrapper(VM *vm, int size);
-  static Object *NewIntArrayWrapper(VM *vm, uint64_t size,
+  static Object *NewIntArrayWrapper(VM *vm, vector<uint64_t> &shape,
 				    const iroha::NumericWidth &width,
 				    Annotation *an);
   static Object *Copy(VM *vm, Object *obj);

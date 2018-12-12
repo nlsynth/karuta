@@ -33,19 +33,22 @@ Executor::Executor(Thread *thread) : thr_(thread) {
 }
 
 Object *Executor::CreateMemoryObject(const iroha::NumericWidth &width,
-				     int array_length,
+				     fe::ArrayShape *shape,
 				     fe::ArrayInitializer *array_initializer,
 				     Annotation *an) {
+  vector<uint64_t> s;
+  for (auto i : shape->length) {
+    s.push_back(i);
+  }
   Object *obj = ArrayWrapper::NewIntArrayWrapper(thr_->GetVM(),
-						 array_length, width,
-						 an);
+						 s, width, an);
   IntArray *memory = ArrayWrapper::GetIntArray(obj);
   InitializeArray(memory, array_initializer);
   return obj;
 }
 
-Object *Executor::CreateObjectArray(int array_length) {
-  return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), array_length);
+Object *Executor::CreateObjectArray(fe::ArrayShape *shape) {
+  return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), shape->length[0]);
 }
 
 IntArray *Executor::CreateIntArray(const iroha::NumericWidth &width,
@@ -734,12 +737,12 @@ void Executor::ExecVardecl(const Method *method, MethodFrame *frame,
   }
   if (value->type_ == Value::INT_ARRAY) {
     value->object_ = CreateMemoryObject(decl->GetWidth(),
-					decl->GetArrayLength(),
+					decl->GetArrayShape(),
 					decl->GetArrayInitializer(),
 					decl->GetAnnotation());
   }
   if (value->type_ == Value::OBJECT_ARRAY) {
-    value->object_ = CreateObjectArray(decl->GetArrayLength());
+    value->object_ = CreateObjectArray(decl->GetArrayShape());
   }
   if (an != nullptr && an->IsThreadLocal()) {
     TlsWrapper::InjectTlsWrapper(thr_->GetVM(), value);

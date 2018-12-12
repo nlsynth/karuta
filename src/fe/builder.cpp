@@ -242,7 +242,8 @@ void Builder::SetArrayShape(VarDecl *decl, ArrayShape *shape) {
 void Builder::SetArrayInitializer(VarDecl *decl,
 				  ArrayInitializer *initializer) {
   decl->SetArrayInitializer(initializer);
-  if (decl->GetArrayLength() == 0) {
+  ArrayShape *shape = decl->GetArrayShape();
+  if (shape != nullptr && shape->length[0] == 0) {
     ArrayShape *shape = new ArrayShape(initializer->num_.size());
     decl->SetArrayShape(shape);
   }
