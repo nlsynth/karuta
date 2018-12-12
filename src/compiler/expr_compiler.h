@@ -25,6 +25,7 @@ private:
   RegisterTuple CompileMultiAssign(fe::Expr *lhs_expr, fe::Expr *rhs_expr);
   vm::Register *CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 				     vm::Register *rhs_reg);
+  fe::Expr *ResolveArray(fe::Expr *access_expr, vector<vm::Register *> *indexes);
   vm::Register *CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
 				      vm::Register *rhs_reg);
   vm::Register *CompileAssignToSym(vm::Insn *insn, fe::Expr *lhs,

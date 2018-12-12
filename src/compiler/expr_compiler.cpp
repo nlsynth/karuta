@@ -189,20 +189,14 @@ vm::Value::ValueType ExprCompiler::GetVariableType(sym_t name) {
 }
 
 vm::Register *ExprCompiler::CompileArrayRef(fe::Expr *expr) {
-  vm::Register *index = CompileExprToOneReg(expr->GetRhs());
+  vector<vm::Register *> indexes;
+  fe::Expr *array_expr = ResolveArray(expr, &indexes);
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_ARRAY_READ;
-  insn->src_regs_.push_back(index);
-  insn->insn_expr_ = expr->GetLhs();
+  insn->src_regs_ = indexes;
+  insn->insn_expr_ = array_expr;
   insn->dst_regs_.push_back(compiler_->AllocRegister());
-
-  vm::Register *array_reg = compiler_->LookupLocalVar(expr->GetLhs()->GetSym());
-  if (array_reg) {
-    // Local array
-    insn->src_regs_.push_back(array_reg);
-  } else {
-    insn->obj_reg_ = CompileExprToOneReg(expr->GetLhs());
-  }
+  insn->obj_reg_ = CompileExprToOneReg(array_expr);
 
   compiler_->EmitInsn(insn);
   return insn->dst_regs_[0];
@@ -558,8 +552,9 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
     insn->op_ = vm::OP_ARRAY_WRITE;
   }
   // index
-  vm::Register *index_reg = CompileExprToOneReg(lhs->GetRhs());
-  fe::Expr *array_expr = lhs->GetLhs();
+  vector<vm::Register *> indexes;
+  fe::Expr *array_expr = ResolveArray(lhs, &indexes);
+  vm::Register *index_reg = indexes[0];
   insn->insn_expr_ = array_expr;
 
   if (array_expr->GetType() == fe::EXPR_SYM) {
@@ -571,18 +566,33 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
     CHECK(compiler_->IsTopLevel());
   }
   insn->src_regs_.push_back(rhs_reg);
-  insn->src_regs_.push_back(index_reg);
+  for (vm::Register *reg : indexes) {
+    insn->src_regs_.push_back(reg);
+  }
   if (array_expr->GetType() == fe::EXPR_SYM) {
     insn->obj_reg_ =
       compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),
 				array_expr->GetSym());
   } else {
+    CHECK(array_expr->GetType() == fe::BINOP_ELM_REF);
     RegisterTuple rt = CompileElmRef(array_expr);
     insn->obj_reg_ = rt.GetOne();
   }
   insn->dst_regs_.push_back(insn->src_regs_[1]);
   compiler_->EmitInsn(insn);
   return insn->dst_regs_[0];
+}
+
+fe::Expr *ExprCompiler::ResolveArray(fe::Expr *access_expr, vector<vm::Register *> *indexes) {
+  if (access_expr->GetType() == fe::BINOP_ARRAY_REF) {
+    indexes->push_back(CompileExprToOneReg(access_expr->GetRhs()));
+  }
+  fe::Expr *lhs = access_expr->GetLhs();
+  if (lhs->GetType() == fe::EXPR_SYM || lhs->GetType() == fe::BINOP_ELM_REF) {
+    return access_expr->GetLhs();
+  } else {
+    return ResolveArray(lhs, indexes);
+  }
 }
 
 vm::Register *ExprCompiler::CompileAssignToElmRef(vm::Insn *insn,
