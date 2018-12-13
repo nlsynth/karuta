@@ -76,9 +76,6 @@ private:
 			     fe::ArrayInitializer *array_initializer,
 			     Annotation *an);
   Object *CreateObjectArray(fe::ArrayShape *shape);
-  IntArray *CreateIntArray(const iroha::NumericWidth &width,
-			   int array_length,
-			   fe::ArrayInitializer *array_initializer);
   void InitializeArray(IntArray *array,
 		       fe::ArrayInitializer *array_initializer);
 

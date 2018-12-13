@@ -34,12 +34,12 @@ IntArray::~IntArray() {
 
 class IntArrayImpl : public IntArray {
 public:
-  IntArrayImpl(const iroha::NumericWidth &width, uint64_t size);
+  IntArrayImpl(const iroha::NumericWidth &width, const vector<uint64_t> &shape);
   IntArrayImpl(const IntArrayImpl *src);
-  virtual void Write(uint64_t addr, const iroha::Numeric &data);
-  virtual void WriteWide(uint64_t addr, const iroha::Numeric &data);
-  virtual iroha::Numeric Read(uint64_t addr);
+  virtual iroha::Numeric ReadSingle(uint64_t addr);
+  virtual void WriteSingle(uint64_t addr, const iroha::Numeric &data);
   virtual iroha::Numeric ReadWide(uint64_t addr, int width);
+  virtual void WriteWide(uint64_t addr, const iroha::Numeric &data);
   virtual uint64_t GetLength() const;
   virtual int GetAddressWidth() const;
   virtual const iroha::NumericWidth &GetDataWidth() const;
@@ -47,14 +47,15 @@ public:
 private:
   ArrayPage *FindPage(uint64_t addr);
 
+  const vector<uint64_t> shape_;
   uint64_t size_;
   iroha::NumericWidth data_width_;
   map<uint64_t, ArrayPage *> pages_;
 };
 
 IntArray *IntArray::Create(const iroha::NumericWidth &data_width,
-			   uint64_t length) {
-  return new IntArrayImpl(data_width, length);
+			   const vector<uint64_t> &shape) {
+  return new IntArrayImpl(data_width, shape);
 }
 
 IntArray *IntArray::Copy(const IntArray *src) {
@@ -63,8 +64,12 @@ IntArray *IntArray::Copy(const IntArray *src) {
 }
 
 IntArrayImpl::IntArrayImpl(const iroha::NumericWidth &width,
-			   uint64_t size)
-  : size_(size), data_width_(width) {
+			   const vector<uint64_t> &shape)
+  : shape_(shape), data_width_(width) {
+  size_ = 1;
+  for (uint64_t s : shape_) {
+    size_ *= s;
+  }
 }
 
 IntArrayImpl::IntArrayImpl(const IntArrayImpl *src) {
@@ -77,7 +82,7 @@ IntArrayImpl::IntArrayImpl(const IntArrayImpl *src) {
   }
 }
 
-void IntArrayImpl::Write(uint64_t addr, const iroha::Numeric &data) {
+void IntArrayImpl::WriteSingle(uint64_t addr, const iroha::Numeric &data) {
   ArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
   p->data[offset] = data;
@@ -91,11 +96,11 @@ void IntArrayImpl::WriteWide(uint64_t addr, const iroha::Numeric &data) {
     int l = mw * i;
     iroha::Numeric d;
     iroha::Op::SelectBits(data, l + mw - 1, l, &d);
-    Write(addr + i, d);
+    WriteSingle(addr + i, d);
   }
 }
 
-iroha::Numeric IntArrayImpl::Read(uint64_t addr) {
+iroha::Numeric IntArrayImpl::ReadSingle(uint64_t addr) {
   ArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
   return p->data[offset];
@@ -109,7 +114,7 @@ iroha::Numeric IntArrayImpl::ReadWide(uint64_t addr, int width) {
   int c = width / mw;
   for (int i = 0; i < c; ++i) {
     iroha::Numeric d;
-    d = Read(addr + i);
+    d = ReadSingle(addr + i);
     iroha::Numeric t;
     iroha::Op::Concat(d, n, &t);
     n = t;

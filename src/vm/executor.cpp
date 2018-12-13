@@ -51,14 +51,6 @@ Object *Executor::CreateObjectArray(fe::ArrayShape *shape) {
   return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), shape->length[0]);
 }
 
-IntArray *Executor::CreateIntArray(const iroha::NumericWidth &width,
-				   int array_length,
-				   fe::ArrayInitializer *array_initializer) {
-  IntArray *array = IntArray::Create(width, array_length);
-  InitializeArray(array, array_initializer);
-  return array;
-}
-
 bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   bool need_suspend = false;
   switch (insn->op_) {
@@ -348,7 +340,7 @@ void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
   auto *dst_reg = insn->dst_regs_[0];
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-    lhs.num_ = array->Read(index);
+    lhs.num_ = array->ReadSingle(index);
     if (method->IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::NUM;
       dst_reg->type_.width_ = array->GetDataWidth();
@@ -369,8 +361,8 @@ void Executor::ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn) {
   CHECK(array_obj);
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-    array->Write(index,
-		 frame->reg_values_[insn->src_regs_[0]->id_].num_);
+    array->WriteSingle(index,
+		       frame->reg_values_[insn->src_regs_[0]->id_].num_);
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
     CHECK(method->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_
@@ -715,7 +707,7 @@ void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_init
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       iroha::Numeric num;
       iroha::Op::MakeConst(array_initializer->num_[i], &num);
-      array->Write(i, num);
+      array->WriteSingle(i, num);
     }
   }
 }
