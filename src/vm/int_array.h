@@ -5,7 +5,11 @@
 #include "numeric/numeric_type.h"  // from iroha
 #include "vm/common.h"
 
+#include <map>
+
 namespace vm {
+
+class IntArrayPage;
 
 class IntArray {
 public:
@@ -13,17 +17,28 @@ public:
 			  const vector<uint64_t> &shape);
   static IntArray *Copy(const IntArray *mem);
 
+  IntArray(const iroha::NumericWidth &width,
+	   const vector<uint64_t> &shape);
+  IntArray(const IntArray *src);
   virtual ~IntArray();
-  virtual iroha::Numeric ReadSingle(uint64_t addr) = 0;
-  virtual void WriteSingle(uint64_t addr, const iroha::Numeric &data) = 0;
+  iroha::Numeric ReadSingle(uint64_t addr);
+  void WriteSingle(uint64_t addr, const iroha::Numeric &data);
   // Assumes the width of data is equal or wider than or the width of this array.
-  virtual iroha::Numeric ReadWide(uint64_t addr, int width) = 0;
-  virtual void WriteWide(uint64_t addr, const iroha::Numeric &data) = 0;
+  iroha::Numeric ReadWide(uint64_t addr, int width);
+  void WriteWide(uint64_t addr, const iroha::Numeric &data);
 
   // 0 means unlimited (is actually 2^64). typically for main memory space.
-  virtual uint64_t GetLength() const = 0;
-  virtual int GetAddressWidth() const = 0;
-  virtual const iroha::NumericWidth &GetDataWidth() const = 0;
+  uint64_t GetLength() const;
+  int GetAddressWidth() const;
+  const iroha::NumericWidth &GetDataWidth() const;
+
+private:
+  IntArrayPage *FindPage(uint64_t addr);
+
+  const vector<uint64_t> shape_;
+  uint64_t size_;
+  iroha::NumericWidth data_width_;
+  std::map<uint64_t, IntArrayPage *> pages_;
 };
 
 }  // namespace vm

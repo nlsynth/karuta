@@ -3,20 +3,16 @@
 
 #include "numeric/numeric_op.h"  // from iroha
 
-#include <map>
-
-using std::map;
-
-namespace {
+namespace vm {
 
 static const int PAGE_SIZE = 1024;
 
-struct ArrayPage {
-  ArrayPage(const iroha::NumericWidth &w);
+struct IntArrayPage {
+  IntArrayPage(const iroha::NumericWidth &w);
   iroha::Numeric data[PAGE_SIZE];
 };
 
-ArrayPage::ArrayPage(const iroha::NumericWidth &width) {
+IntArrayPage::IntArrayPage(const iroha::NumericWidth &width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
     data[i].SetValue0(0);
@@ -24,47 +20,22 @@ ArrayPage::ArrayPage(const iroha::NumericWidth &width) {
   }
 }
 
-}  // namespace
-
-namespace vm {
-
 IntArray::~IntArray() {
   // do nothing
 }
 
-class IntArrayImpl : public IntArray {
-public:
-  IntArrayImpl(const iroha::NumericWidth &width, const vector<uint64_t> &shape);
-  IntArrayImpl(const IntArrayImpl *src);
-  virtual iroha::Numeric ReadSingle(uint64_t addr);
-  virtual void WriteSingle(uint64_t addr, const iroha::Numeric &data);
-  virtual iroha::Numeric ReadWide(uint64_t addr, int width);
-  virtual void WriteWide(uint64_t addr, const iroha::Numeric &data);
-  virtual uint64_t GetLength() const;
-  virtual int GetAddressWidth() const;
-  virtual const iroha::NumericWidth &GetDataWidth() const;
-
-private:
-  ArrayPage *FindPage(uint64_t addr);
-
-  const vector<uint64_t> shape_;
-  uint64_t size_;
-  iroha::NumericWidth data_width_;
-  map<uint64_t, ArrayPage *> pages_;
-};
-
 IntArray *IntArray::Create(const iroha::NumericWidth &data_width,
 			   const vector<uint64_t> &shape) {
-  return new IntArrayImpl(data_width, shape);
+  return new IntArray(data_width, shape);
 }
 
 IntArray *IntArray::Copy(const IntArray *src) {
-  const IntArrayImpl *si = (const IntArrayImpl *)src;
-  return new IntArrayImpl(si);
+  const IntArray *si = (const IntArray *)src;
+  return new IntArray(si);
 }
 
-IntArrayImpl::IntArrayImpl(const iroha::NumericWidth &width,
-			   const vector<uint64_t> &shape)
+IntArray::IntArray(const iroha::NumericWidth &width,
+		   const vector<uint64_t> &shape)
   : shape_(shape), data_width_(width) {
   size_ = 1;
   for (uint64_t s : shape_) {
@@ -72,23 +43,23 @@ IntArrayImpl::IntArrayImpl(const iroha::NumericWidth &width,
   }
 }
 
-IntArrayImpl::IntArrayImpl(const IntArrayImpl *src) {
+IntArray::IntArray(const IntArray *src) {
   data_width_ = src->GetDataWidth();
   size_ = src->GetLength();
   for (const auto it : src->pages_) {
-    ArrayPage *p = new ArrayPage(data_width_);
+    IntArrayPage *p = new IntArrayPage(data_width_);
     *p = *(it.second);
     pages_[it.first] = p;
   }
 }
 
-void IntArrayImpl::WriteSingle(uint64_t addr, const iroha::Numeric &data) {
-  ArrayPage *p = FindPage(addr);
+void IntArray::WriteSingle(uint64_t addr, const iroha::Numeric &data) {
+  IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
   p->data[offset] = data;
 }
 
-void IntArrayImpl::WriteWide(uint64_t addr, const iroha::Numeric &data) {
+void IntArray::WriteWide(uint64_t addr, const iroha::Numeric &data) {
   int mw = data_width_.GetWidth();
   addr /= (mw / 8);
   int c = data.type_.GetWidth() / mw;
@@ -100,13 +71,13 @@ void IntArrayImpl::WriteWide(uint64_t addr, const iroha::Numeric &data) {
   }
 }
 
-iroha::Numeric IntArrayImpl::ReadSingle(uint64_t addr) {
-  ArrayPage *p = FindPage(addr);
+iroha::Numeric IntArray::ReadSingle(uint64_t addr) {
+  IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
   return p->data[offset];
 }
 
-iroha::Numeric IntArrayImpl::ReadWide(uint64_t addr, int width) {
+iroha::Numeric IntArray::ReadWide(uint64_t addr, int width) {
   int mw = data_width_.GetWidth();
   addr /= (mw / 8);
   iroha::Numeric n;
@@ -122,15 +93,15 @@ iroha::Numeric IntArrayImpl::ReadWide(uint64_t addr, int width) {
   return n;
 }
 
-uint64_t IntArrayImpl::GetLength() const {
+uint64_t IntArray::GetLength() const {
   return size_;
 }
 
-const iroha::NumericWidth &IntArrayImpl::GetDataWidth() const {
+const iroha::NumericWidth &IntArray::GetDataWidth() const {
   return data_width_;
 }
 
-int IntArrayImpl::GetAddressWidth() const {
+int IntArray::GetAddressWidth() const {
   int address_bits;
   uint64_t s = size_ - 1;
   for (address_bits = 0; s > 0; ++address_bits) {
@@ -139,11 +110,11 @@ int IntArrayImpl::GetAddressWidth() const {
   return address_bits;
 }
 
-ArrayPage *IntArrayImpl::FindPage(uint64_t addr) {
+IntArrayPage *IntArray::FindPage(uint64_t addr) {
   uint64_t page_idx = addr / PAGE_SIZE;
-  ArrayPage *p = pages_[page_idx];
+  IntArrayPage *p = pages_[page_idx];
   if (!p) {
-    p = new ArrayPage(data_width_);
+    p = new IntArrayPage(data_width_);
     pages_[page_idx] = p;
   }
   return p;
