@@ -13,15 +13,18 @@ class IntArrayPage;
 
 class IntArray {
 public:
-  static IntArray *Create(const iroha::NumericWidth &data_width,
-			  const vector<uint64_t> &shape);
-  static IntArray *Copy(const IntArray *mem);
-
   IntArray(const iroha::NumericWidth &width,
 	   const vector<uint64_t> &shape);
   IntArray(const IntArray *src);
   virtual ~IntArray();
+
+  static IntArray *Create(const iroha::NumericWidth &data_width,
+			  const vector<uint64_t> &shape);
+  static IntArray *Copy(const IntArray *mem);
+
+  iroha::Numeric Read(const vector<uint64_t> &indexes);
   iroha::Numeric ReadSingle(uint64_t addr);
+  void Write(const vector<uint64_t> &indexes, const iroha::Numeric &data);
   void WriteSingle(uint64_t addr, const iroha::Numeric &data);
   // Assumes the width of data is equal or wider than or the width of this array.
   iroha::Numeric ReadWide(uint64_t addr, int width);
@@ -34,6 +37,7 @@ public:
 
 private:
   IntArrayPage *FindPage(uint64_t addr);
+  uint64_t GetIndex(const vector<uint64_t> &indexes);
 
   const vector<uint64_t> shape_;
   uint64_t size_;

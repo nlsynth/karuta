@@ -45,9 +45,6 @@ private:
   void ExecGoto(MethodFrame *frame, Insn *insn);
   void ExecBitRange(const Method *method, MethodFrame *frame, Insn *insn);
 
-  void MemoryRead(int addr, int data_width, iroha::Numeric *res);
-  void MemoryWrite(uint64_t addr, int data_width, const iroha::Numeric &data);
-
   // for toplevel
   void ExecVardecl(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecThreadDecl(const Method *method, MethodFrame *frame, Insn *insn);
@@ -78,6 +75,8 @@ private:
   Object *CreateObjectArray(fe::ArrayShape *shape);
   void InitializeArray(IntArray *array,
 		       fe::ArrayInitializer *array_initializer);
+  void PopulateArrayIndexes(MethodFrame *frame, Insn *insn, int start,
+			    vector<uint64_t> *indexes);
 
 
   Thread *thr_;

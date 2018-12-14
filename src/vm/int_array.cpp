@@ -53,6 +53,10 @@ IntArray::IntArray(const IntArray *src) {
   }
 }
 
+void IntArray::Write(const vector<uint64_t> &indexes, const iroha::Numeric &data) {
+  WriteSingle(GetIndex(indexes), data);
+}
+
 void IntArray::WriteSingle(uint64_t addr, const iroha::Numeric &data) {
   IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
@@ -69,6 +73,10 @@ void IntArray::WriteWide(uint64_t addr, const iroha::Numeric &data) {
     iroha::Op::SelectBits(data, l + mw - 1, l, &d);
     WriteSingle(addr + i, d);
   }
+}
+
+iroha::Numeric IntArray::Read(const vector<uint64_t> &indexes) {
+  return ReadSingle(GetIndex(indexes));
 }
 
 iroha::Numeric IntArray::ReadSingle(uint64_t addr) {
@@ -118,6 +126,16 @@ IntArrayPage *IntArray::FindPage(uint64_t addr) {
     pages_[page_idx] = p;
   }
   return p;
+}
+
+uint64_t IntArray::GetIndex(const vector<uint64_t> &indexes) {
+  uint64_t idx = 0;
+  uint64_t s = 1;
+  for (int i = 0; i < indexes.size() && i < shape_.size(); ++i) {
+    idx += s * (indexes[i] % shape_[i]);
+    s *= shape_[i];
+  }
+  return idx;
 }
 
 }  // namespace vm

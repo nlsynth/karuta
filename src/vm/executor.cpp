@@ -332,7 +332,6 @@ void Executor::RetryBinopWithType(const Method *method, MethodFrame *frame, Insn
 
 void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
 			     Insn *insn) {
-  int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
   CHECK(insn->obj_reg_ != nullptr);
   Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(array_obj);
@@ -340,13 +339,16 @@ void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
   auto *dst_reg = insn->dst_regs_[0];
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-    lhs.num_ = array->ReadSingle(index);
+    vector<uint64_t> indexes;
+    PopulateArrayIndexes(frame, insn, 0, &indexes);
+    lhs.num_ = array->Read(indexes);
     if (method->IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::NUM;
       dst_reg->type_.width_ = array->GetDataWidth();
     }
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
+    int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
     lhs.object_ = ArrayWrapper::Get(array_obj, index);
     if (method->IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::OBJECT;
@@ -355,20 +357,30 @@ void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
 }
 
 void Executor::ExecArrayWrite(Method *method, MethodFrame *frame, Insn *insn) {
-  int index = frame->reg_values_[insn->src_regs_[1]->id_].num_.GetValue0();
   CHECK(insn->obj_reg_ != nullptr);
   Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(array_obj);
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
-    array->WriteSingle(index,
-		       frame->reg_values_[insn->src_regs_[0]->id_].num_);
+    vector<uint64_t> indexes;
+    PopulateArrayIndexes(frame, insn, 1, &indexes);
+    array->Write(indexes,
+		 frame->reg_values_[insn->src_regs_[0]->id_].num_);
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
     CHECK(method->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_
 	  == Value::OBJECT);
+    int index = frame->reg_values_[insn->src_regs_[1]->id_].num_.GetValue0();
     ArrayWrapper::Set(array_obj, index,
 		      frame->reg_values_[insn->src_regs_[0]->id_].object_);
+  }
+}
+
+void Executor::PopulateArrayIndexes(MethodFrame *frame, Insn *insn, int start,
+				    vector<uint64_t> *indexes) {
+  for (int i = start; i < insn->src_regs_.size(); ++i) {
+    uint64_t v = frame->reg_values_[insn->src_regs_[i]->id_].num_.GetValue0();
+    indexes->push_back(v);
   }
 }
 
@@ -635,19 +647,6 @@ void Executor::SetupCalleeFrame(Object *obj, Method *callee_method,
     const iroha::NumericWidth &width = callee_method->GetNthArgWidth(i);
     frame->reg_values_[i].num_.type_ = width;
   }
-}
-
-void Executor::MemoryWrite(uint64_t addr, int data_width,
-			   const iroha::Numeric &data) {
-  iroha::Numeric d = data;
-  d.type_.SetWidth(data_width);
-  IntArray *mem = thr_->GetVM()->GetDefaultMemory();
-  mem->WriteWide(addr, d);
-}
-
-void Executor::MemoryRead(int addr, int data_width, iroha::Numeric *res) {
-  IntArray *mem = thr_->GetVM()->GetDefaultMemory();
-  *res = mem->ReadWide(addr, data_width);
 }
 
 void Executor::ExecMemberAccess(Method *method, MethodFrame *frame,
