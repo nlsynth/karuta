@@ -19,6 +19,7 @@
 #include "vm/array_wrapper.h"
 #include "vm/channel_wrapper.h"
 #include "vm/insn.h"
+#include "vm/int_array.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/profile.h"
@@ -838,10 +839,10 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {
   IInsn *iinsn = new IInsn(res);
   if (is_write) {
     // index, value
-    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
+    iinsn->inputs_.push_back(GetArrayIndex(array_obj, insn, 1));
     iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
   } else {
-    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+    iinsn->inputs_.push_back(GetArrayIndex(array_obj, insn, 0));
     iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
   }
   StateWrapper *w = AllocState();
@@ -883,14 +884,53 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   IInsn *iinsn = new IInsn(res);
   if (is_write) {
     // index, value
-    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[1]));
+    iinsn->inputs_.push_back(GetArrayIndex(array_obj, insn, 1));
     iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
   } else {
-    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+    iinsn->inputs_.push_back(GetArrayIndex(array_obj, insn, 0));
     iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
   }
   StateWrapper *sw = AllocState();
   sw->state_->insns_.push_back(iinsn);
+}
+
+IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn, int start) {
+  vector<IRegister *> indexes;
+  for (int i = start; i < insn->src_regs_.size(); i++) {
+    indexes.push_back(FindLocalVarRegister(insn->src_regs_[i]));
+  }
+  if (indexes.size() == 1) {
+    return indexes[0];
+  }
+  vm::IntArray *array = vm::ArrayWrapper::GetIntArray(array_obj);
+  IRegister *reg = thr_synth_->AllocRegister("t_");
+  IValueType vt;
+  IResource *concat = res_set_->GetOpResource(vm::OP_CONCAT, vt);
+  IInsn *iinsn = new IInsn(concat);
+  iinsn->outputs_.push_back(reg);
+  reg->value_type_.SetWidth(array->GetAddressWidth());
+  const vector<uint64_t> &shape = array->GetShape();
+  // Shape and indexes are low to high, on the other hand
+  // concat insn takes input from high to low.
+  for (int i = indexes.size() - 1; i >= 0; --i) {
+    int w = Util::Log2(shape[i]);
+    IRegister *idx_reg = indexes[i];
+    if (idx_reg->value_type_.GetWidth() != w) {
+      IRegister *tmp_reg = thr_synth_->AllocRegister("t_");
+      tmp_reg->value_type_.SetWidth(w);
+      IResource *assign = res_set_->AssignResource();
+      IInsn *assign_insn = new IInsn(assign);
+      assign_insn->inputs_.push_back(idx_reg);
+      assign_insn->outputs_.push_back(tmp_reg);
+      idx_reg = tmp_reg;
+      StateWrapper *sw = AllocState();
+      sw->state_->insns_.push_back(assign_insn);
+    }
+    iinsn->inputs_.push_back(idx_reg);
+  }
+  StateWrapper *sw = AllocState();
+  sw->state_->insns_.push_back(iinsn);
+  return reg;
 }
 
 void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {

@@ -34,6 +34,7 @@ public:
   uint64_t GetLength() const;
   int GetAddressWidth() const;
   const iroha::NumericWidth &GetDataWidth() const;
+  const vector<uint64_t> &GetShape() const;
 
 private:
   IntArrayPage *FindPage(uint64_t addr);

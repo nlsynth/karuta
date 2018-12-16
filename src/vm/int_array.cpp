@@ -109,6 +109,10 @@ const iroha::NumericWidth &IntArray::GetDataWidth() const {
   return data_width_;
 }
 
+const vector<uint64_t> &IntArray::GetShape() const {
+  return shape_;
+}
+
 int IntArray::GetAddressWidth() const {
   int address_bits;
   uint64_t s = size_ - 1;
