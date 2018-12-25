@@ -786,7 +786,7 @@ void Executor::ExecMailboxDecl(const Method *method,
 void Executor::ExecImport(Insn *insn) {
   const string &fn = insn->insn_stmt_->GetString();
   VM *vm = thr_->GetVM();
-  vm::Object *thr_obj = vm->kernel_object_->Clone(vm);
+  vm::Object *thr_obj = vm->kernel_object_->Clone();
   Method *method = fe::FE::CompileFile(fn, false, vm, thr_obj);
   if (!method) {
     Status::os(Status::USER_ERROR) << "Failed to import: " << fn;

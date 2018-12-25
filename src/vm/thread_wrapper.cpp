@@ -18,7 +18,7 @@ public:
 
 Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name,
 					bool is_soft, int index) {
-  Object *thr = vm->root_object_->Clone(vm);
+  Object *thr = vm->root_object_->Clone();
   ThreadWrapperData *data = new ThreadWrapperData;
   data->entry.method_name = sym_str(method_name);
   data->entry.thread_obj = thr;

@@ -21,20 +21,21 @@ public:
 
 class Object {
 public:
-  Object();
+  Object(VM *vm);
 
   void Dump();
   void Dump(DumpStream &ds);
 
   const char *ObjectTypeKey();
 
+  VM *GetVM();
   void InstallValue(sym_t name, const Value &value);
   Value *LookupValue(sym_t name, bool cr);
   // Finds synonyms of specified member object.
   void LookupMemberNames(Object *obj, vector<sym_t> *slots);
   void GetAllMemberObjs(map<sym_t, Object *> *member_objs);
   void GetAllMemberMethods(map<sym_t, Method *> *member_objs);
-  Object *Clone(VM *vm);
+  Object *Clone();
   const string &ToString();
   bool Compare(Object *obj);
   // Object type specific GC hook.
@@ -43,6 +44,9 @@ public:
   map<sym_t, Value> members_;
 
   std::unique_ptr<ObjectSpecificData> object_specific_;
+
+private:
+  VM *vm_;
 };
 
 }  // namespace vm

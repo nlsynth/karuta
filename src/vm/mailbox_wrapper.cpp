@@ -32,7 +32,7 @@ public:
 };
 
 Object *MailboxWrapper::NewMailbox(VM *vm, int width, sym_t name) {
-  Object *mailbox_obj = vm->root_object_->Clone(vm);
+  Object *mailbox_obj = vm->root_object_->Clone();
   mailbox_obj->object_specific_.reset(new MailboxData(width, name));
   InstallMethods(vm, mailbox_obj, width);
   return mailbox_obj;

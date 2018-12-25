@@ -22,7 +22,7 @@ bool EnumTypeWrapper::IsEnumType(Object *obj) {
 }
 
 Object *EnumTypeWrapper::NewEnumTypeWrapper(VM *vm, sym_t name) {
-  Object *et = vm->root_object_->Clone(vm);
+  Object *et = vm->root_object_->Clone();
   EnumTypeWrapperData *d = new EnumTypeWrapperData();
   d->name_ = name;
   et->object_specific_.reset(d);

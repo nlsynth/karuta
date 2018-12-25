@@ -208,7 +208,7 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
 
 bool FE::RunFile(const string &file, vm::VM *vm) {
   Env::SetCurrentFile(file);
-  vm::Object *thr_obj = vm->kernel_object_->Clone(vm);
+  vm::Object *thr_obj = vm->kernel_object_->Clone();
   vm::Method *method = CompileFile(file, dbg_parser_, vm, thr_obj);
   if (method == nullptr || method->IsCompileFailure()) {
     return false;

@@ -77,7 +77,7 @@ bool ArrayWrapper::IsIntArray(Object *obj) {
 }
 
 Object *ArrayWrapper::Copy(VM *vm, Object *src_obj) {
-  Object *array_obj = vm->array_object_->Clone(vm);
+  Object *array_obj = vm->array_object_->Clone();
   InstallMethods(vm, array_obj);
   ArrayWrapperData *src_data =
     (ArrayWrapperData *)src_obj->object_specific_.get();
@@ -102,7 +102,7 @@ string ArrayWrapper::ToString(Object *obj) {
 Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
   vector<uint64_t> shape;
   shape.push_back(size);
-  Object *array_obj = vm->array_object_->Clone(vm);
+  Object *array_obj = vm->array_object_->Clone();
   InstallMethods(vm, array_obj);
   iroha::NumericWidth dw;
   ArrayWrapperData *data = new ArrayWrapperData(vm, shape, false, dw, nullptr);
@@ -113,7 +113,7 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, vector<uint64_t> &shape,
 					 const iroha::NumericWidth &width,
 					 Annotation *an) {
-  Object *array_obj = vm->array_object_->Clone(vm);
+  Object *array_obj = vm->array_object_->Clone();
   InstallMethods(vm, array_obj);
   ArrayWrapperData *data = new ArrayWrapperData(vm, shape, true, width, an);
   array_obj->object_specific_.reset(data);

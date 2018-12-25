@@ -26,7 +26,7 @@ void Object::Dump() {
   Dump(ds);
 }
 
-Object::Object() {
+Object::Object(VM *vm) : vm_(vm) {
 }
 
 const char *Object::ObjectTypeKey() {
@@ -48,6 +48,10 @@ void Object::Dump(DumpStream &ds) {
     ds.os << "\n";
   }
   ds.pop_indent();
+}
+
+VM *Object::GetVM() {
+  return vm_;
 }
 
 void Object::InstallValue(sym_t name, const Value &value) {
@@ -93,17 +97,17 @@ void Object::GetAllMemberMethods(map<sym_t, Method *> *member_objs) {
   }
 }
 
-Object *Object::Clone(VM *vm) {
-  Object *new_obj = vm->NewObject();
+Object *Object::Clone() {
+  Object *new_obj = vm_->NewObject();
   // This does shallow copy for most of data types.
   new_obj->members_ = members_;
   for (auto it : new_obj->members_) {
     Value &value = it.second;
     if (value.type_ == Value::INT_ARRAY) {
-      value.object_ = ArrayWrapper::Copy(vm, value.object_);
+      value.object_ = ArrayWrapper::Copy(vm_, value.object_);
     }
     if (TlsWrapper::IsTlsValue(&value)) {
-      value.object_ = TlsWrapper::Copy(vm, value.object_);
+      value.object_ = TlsWrapper::Copy(vm_, value.object_);
     }
     if (value.type_ == Value::ANNOTATION) {
       value.annotation_ =

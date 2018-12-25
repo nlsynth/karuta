@@ -38,7 +38,7 @@ public:
 
 Object *ChannelWrapper::NewChannel(VM *vm, int width, sym_t name,
 				   Annotation *an) {
-  Object *pipe = vm->root_object_->Clone(vm);
+  Object *pipe = vm->root_object_->Clone();
   vector<RegisterType> rets;
   Method *m = Method::InstallNativeMethod(vm, pipe, "write",
 					  &ChannelWrapper::WriteMethod, rets);

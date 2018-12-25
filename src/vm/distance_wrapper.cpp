@@ -31,7 +31,7 @@ Object *DistanceWrapper::GetAttachedDistanceObject(VM *vm, Object *owner_obj, bo
   if (!create) {
     return nullptr;
   }
-  Object *obj = vm->root_object_->Clone(vm);
+  Object *obj = vm->root_object_->Clone();
   obj->object_specific_.reset(new DistanceWrapperData);
   value->type_ = Value::OBJECT;
   value->object_ = obj;

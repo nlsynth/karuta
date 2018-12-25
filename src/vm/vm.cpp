@@ -107,24 +107,24 @@ void VM::InstallObjects() {
   object_value.object_ = root_object_;
   root_object_->InstallValue(sym_lookup("Object"), object_value);
 
-  kernel_object_ = root_object_->Clone(this);
+  kernel_object_ = root_object_->Clone();
   object_value.object_ = kernel_object_;
   kernel_object_->InstallValue(sym_lookup("Kernel"), object_value);
   Method::InstallNativeKernelObjectMethods(this, kernel_object_);
 
-  Object *global = root_object_->Clone(this);
+  Object *global = root_object_->Clone();
   object_value.object_ = global;
   kernel_object_->InstallValue(sym_lookup("Global"), object_value);
 
-  numerics_object_ = root_object_->Clone(this);
+  numerics_object_ = root_object_->Clone();
   object_value.object_ = numerics_object_;
   kernel_object_->InstallValue(sym_lookup("Numerics"), object_value);
 
-  array_object_ = root_object_->Clone(this);
+  array_object_ = root_object_->Clone();
   object_value.object_ = array_object_;
   kernel_object_->InstallValue(sym_lookup("Array"), object_value);
 
-  Object *env = root_object_->Clone(this);
+  Object *env = root_object_->Clone();
   object_value.object_ = env;
   kernel_object_->InstallValue(sym_lookup("Env"), object_value);
   Method::InstallEnvNativeMethods(this, env);
@@ -150,7 +150,7 @@ Method *VM::NewMethod(bool is_toplevel) {
 }
 
 Object *VM::NewObject() {
-  Object *object = new Object;
+  Object *object = new Object(this);
   objects_.insert(object);
   return object;
 }

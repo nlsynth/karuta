@@ -37,7 +37,7 @@ void NativeMethods::Clone(Thread *thr, Object *obj,
 			  const vector<Value> &args) {
   Value value;
   value.type_ = Value::OBJECT;
-  value.object_ = obj->Clone(thr->GetVM());
+  value.object_ = obj->Clone();
   SetReturnValue(thr, value);
 }
 

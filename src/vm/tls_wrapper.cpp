@@ -51,7 +51,7 @@ void TlsWrapper::InjectTlsWrapper(VM *vm, Value *value) {
       << "Can't attach @ThreadLocal() to object(s).";
     return;
   }
-  Object *tls_obj = vm->root_object_->Clone(vm);
+  Object *tls_obj = vm->root_object_->Clone();
   TlsWrapperData *data = new TlsWrapperData();
   tls_obj->object_specific_.reset(data);
   data->baseValue = *value;
@@ -60,7 +60,7 @@ void TlsWrapper::InjectTlsWrapper(VM *vm, Value *value) {
 }
 
 Object *TlsWrapper::Copy(VM *vm, Object *tls_obj) {
-  Object *new_obj = vm->root_object_->Clone(vm);
+  Object *new_obj = vm->root_object_->Clone();
   TlsWrapperData *new_data = new TlsWrapperData();
   new_obj->object_specific_.reset(new_data);
   TlsWrapperData *data = (TlsWrapperData *)tls_obj->object_specific_.get();
