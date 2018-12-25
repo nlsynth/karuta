@@ -4,6 +4,7 @@
 #include "base/dump_stream.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
+#include "vm/object_util.h"
 #include "vm/string_wrapper.h"
 #include "vm/tls_wrapper.h"
 #include "vm/vm.h"
@@ -26,7 +27,6 @@ void Object::Dump() {
 }
 
 Object::Object() {
-  address_width_ = 32;
 }
 
 const char *Object::ObjectTypeKey() {

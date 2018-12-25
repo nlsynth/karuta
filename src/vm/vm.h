@@ -22,7 +22,6 @@ public:
   void Yield(Thread *thr);
   void GC();
   IntArray *GetDefaultMemory();
-  int GetAddressSpaceWidth(Object *obj);
 
   Method *NewMethod(bool is_toplevel);
   Object *NewObject();

@@ -11,6 +11,7 @@
 #include "synth/object_method_names.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/object_util.h"
 #include "vm/profile.h"
 #include "vm/string_wrapper.h"
 #include "vm/thread.h"
@@ -79,7 +80,7 @@ void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
   }
   int w = args[0].num_.GetValue0();
   if (w == 32 || w == 64) {
-    obj->address_width_ = w;
+    ObjectUtil::SetAddressWidth(obj, w);
   } else {
     Status::os(Status::USER_ERROR) << w << " is invalid address width.";
     thr->UserError();

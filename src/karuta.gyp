@@ -130,6 +130,8 @@
         'vm/numeric_object.h',
         'vm/object.cpp',
         'vm/object.h',
+        'vm/object_util.cpp',
+        'vm/object_util.h',
         'vm/opcode.cpp',
         'vm/opcode.h',
         'vm/profile.cpp',

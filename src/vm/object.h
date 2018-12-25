@@ -43,7 +43,6 @@ public:
   map<sym_t, Value> members_;
 
   std::unique_ptr<ObjectSpecificData> object_specific_;
-  int address_width_;
 };
 
 }  // namespace vm

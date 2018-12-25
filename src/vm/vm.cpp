@@ -143,10 +143,6 @@ IntArray *VM::GetDefaultMemory() {
   return ArrayWrapper::GetIntArray(default_mem_);
 }
 
-int VM::GetAddressSpaceWidth(Object *obj) {
-  return obj->address_width_;
-}
-
 Method *VM::NewMethod(bool is_toplevel) {
   Method *method = new Method(is_toplevel);
   methods_->Add(method);
