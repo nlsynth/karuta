@@ -14,6 +14,7 @@
 #include "base/util.h"
 #include "iroha/iroha.h"
 #include "synth/design_synth.h"
+#include "synth/object_attr_names.h"
 #include "vm/object.h"
 #include "vm/object_util.h"
 #include "vm/string_wrapper.h"
@@ -35,7 +36,7 @@ bool Synth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
 }
 
 string Synth::IrPath(vm::Object *obj) {
-  string fn = vm::ObjectUtil::GetStringMember(obj, "$ir_file_name");
+  string fn = vm::ObjectUtil::GetStringMember(obj, kIrFileName);
   if (!fn.empty()) {
     string path;
     if (Env::GetOutputPath(fn.c_str(), &path)) {
@@ -48,7 +49,7 @@ string Synth::IrPath(vm::Object *obj) {
 }
 
 string Synth::GetIrohaCommand(vm::Object *obj) {
-  string cmd = vm::ObjectUtil::GetStringMember(obj, "$iroha_path");
+  string cmd = vm::ObjectUtil::GetStringMember(obj, kIrohaPath);
   if (cmd.empty()) {
     const string &bin = Env::GetIrohaBinPath();
     if (!bin.empty()) {
@@ -114,7 +115,7 @@ int Synth::RunIrohaOpt(const string &pass, vm::Object *obj) {
 }
 
 string Synth::GetDumpPath(vm::Object *obj) {
-  return vm::ObjectUtil::GetStringMember(obj, "$dump_file_name");
+  return vm::ObjectUtil::GetStringMember(obj, kDumpFileName);
 }
 
 }  // namespace synth

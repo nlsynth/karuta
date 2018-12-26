@@ -8,6 +8,7 @@
 #include "base/status.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/synth.h"
+#include "synth/object_attr_names.h"
 #include "synth/object_method_names.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -89,12 +90,12 @@ void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
 
 void NativeMethods::SetDump(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
-  SetMemberString(thr, "$dump_file_name", obj, args);
+  SetMemberString(thr, synth::kDumpFileName, obj, args);
 }
 
 void NativeMethods::SetIROutput(Thread *thr, Object *obj,
 				const vector<Value> &args) {
-  SetMemberString(thr, "$ir_file_name", obj, args);
+  SetMemberString(thr, synth::kIrFileName, obj, args);
 }
 
 void NativeMethods::SetIrohaPath(Thread *thr, Object *obj,
@@ -105,7 +106,7 @@ void NativeMethods::SetIrohaPath(Thread *thr, Object *obj,
     thr->UserError();
     return;
   }
-  SetMemberString(thr, "$iroha_path", obj, args);
+  SetMemberString(thr, synth::kIrohaPath, obj, args);
 }
 
 void NativeMethods::RunIroha(Thread *thr, Object *obj,
@@ -189,7 +190,7 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
     thr->UserError();
     return;
   }
-  sym_t synth_params = sym_lookup("$synth_params");
+  sym_t synth_params = sym_lookup(synth::kSynthParams);
   Value *value = obj->LookupValue(synth_params, true);
   if (value->type_ == Value::NONE) {
     value->type_ = Value::ANNOTATION;

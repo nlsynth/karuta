@@ -84,6 +84,7 @@
         'synth/method_scanner.h',
         'synth/method_synth.cpp',
         'synth/method_synth.h',
+        'synth/object_attr_names.h',
         'synth/object_method.cpp',
         'synth/object_method.h',
         'synth/object_method_names.h',

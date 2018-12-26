@@ -8,6 +8,7 @@
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "synth/shared_resource_set.h"
+#include "synth/object_attr_names.h"
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
 #include "vm/object.h"
@@ -156,7 +157,7 @@ bool DesignSynth::GetResetPolarity(Annotation *an) {
 void DesignSynth::SetSynthParams() {
   iroha::ResourceParams *params = i_design_->GetParams();
 
-  sym_t synth_params = sym_lookup("$synth_params");
+  sym_t synth_params = sym_lookup(kSynthParams);
   Annotation *an = nullptr;
   vm::Value *value = root_obj_->LookupValue(synth_params, false);
   if (value != nullptr && value->type_ == vm::Value::ANNOTATION) {
