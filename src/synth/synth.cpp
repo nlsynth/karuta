@@ -15,6 +15,7 @@
 #include "iroha/iroha.h"
 #include "synth/design_synth.h"
 #include "vm/object.h"
+#include "vm/object_util.h"
 #include "vm/string_wrapper.h"
 
 namespace synth {
@@ -34,9 +35,8 @@ bool Synth::Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn) {
 }
 
 string Synth::IrPath(vm::Object *obj) {
-  vm::Value *value = obj->LookupValue(sym_lookup("$ir_file_name"), false);
-  if (value && value->type_ == vm::Value::OBJECT) {
-    const string &fn = value->object_->ToString();
+  string fn = vm::ObjectUtil::GetStringMember(obj, "$ir_file_name");
+  if (!fn.empty()) {
     string path;
     if (Env::GetOutputPath(fn.c_str(), &path)) {
       return path;
@@ -48,16 +48,15 @@ string Synth::IrPath(vm::Object *obj) {
 }
 
 string Synth::GetIrohaCommand(vm::Object *obj) {
-  vm::Value *cmd = obj->LookupValue(sym_lookup("$iroha_path"), false);
-  if (!cmd || cmd->type_ != vm::Value::OBJECT ||
-      !vm::StringWrapper::IsString(cmd->object_)) {
+  string cmd = vm::ObjectUtil::GetStringMember(obj, "$iroha_path");
+  if (cmd.empty()) {
     const string &bin = Env::GetIrohaBinPath();
     if (!bin.empty()) {
       return bin;
     }
     return Env::GetArgv0();
   }
-  return vm::StringWrapper::String(cmd->object_);
+  return cmd;
 }
 
 int Synth::RunIroha(vm::Object *obj, const string &args) {
@@ -115,11 +114,7 @@ int Synth::RunIrohaOpt(const string &pass, vm::Object *obj) {
 }
 
 string Synth::GetDumpPath(vm::Object *obj) {
-  vm::Value *dump = obj->LookupValue(sym_lookup("$dump_file_name"), false);
-  if (dump != nullptr && dump->type_ == vm::Value::OBJECT) {
-    return dump->object_->ToString();
-  }
-  return string();
+  return vm::ObjectUtil::GetStringMember(obj, "$dump_file_name");
 }
 
 }  // namespace synth

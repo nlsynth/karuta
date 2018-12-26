@@ -144,11 +144,8 @@ void NativeMethods::SetMemberString(Thread *thr, const char *name,
 				    const vector<Value> &args) {
   if (args.size() == 1 && args[0].type_ == Value::OBJECT &&
       StringWrapper::IsString(args[0].object_)) {
-    const string &fn = StringWrapper::String(args[0].object_);
-    Value value;
-    value.object_ = StringWrapper::NewStringWrapper(thr->GetVM(), fn);
-    value.type_ = Value::OBJECT;
-    obj->InstallValue(sym_lookup(name), value);
+    const string &str = StringWrapper::String(args[0].object_);
+    ObjectUtil::SetStringMember(obj, name, str);
   }
 }
 
