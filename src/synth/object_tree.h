@@ -10,7 +10,8 @@
 
 namespace synth {
 
-// Builds a DAG which covers all of the objects in the given graph.
+// Builds a DAG which covers all of the objects in the given graph and
+// assigns an unique name to each object.
 // This also holds distances between objects (specified by annotations).
 class ObjectTree {
 public:
@@ -27,13 +28,19 @@ private:
   void CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
 		   std::list<vm::Object *> *q);
   void PopulateDistance(vm::Object *o);
+  string GetSpecifiedName(vm::Object *o);
+  void AssignNames(std::vector<vm::Object *> &objs);
+  string GenerateUniqueName(const string &name);
 
   vm::VM *vm_;
   vm::Object *root_obj_;
   // DAG of objects.
   std::map<vm::Object *, std::map<vm::Object *, string> > obj_children_map_;
   std::map<vm::Object *, vm::Object *> parent_map_;
-  std::map<vm::Object *, std::map<vm::Object *, int> > latency_map_;
+  std::map<vm::Object *, std::map<vm::Object *, int> > distance_map_;
+  // Name assignment.
+  std::map<vm::Object *, string> obj_to_name_;
+  std::set<string> names_;
 };
 
 }  // namespace synth

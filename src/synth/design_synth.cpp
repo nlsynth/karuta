@@ -87,9 +87,7 @@ ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
   }
   bool is_root = (obj == root_obj_);
   string name = obj_tree_->GetObjectName(obj);
-  if (name.empty()) {
-    name = "main";
-  }
+  CHECK(!name.empty());
   ObjectSynth *osynth = new ObjectSynth(obj, this, is_root, name);
   obj_synth_map_[obj] = osynth;
   return osynth;

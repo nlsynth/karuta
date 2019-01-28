@@ -1,15 +1,14 @@
-// Wrapper methods.
-// Adding __ prefix so that users can overwrite the original one.
+// Additional member definitions.
+// This file is loaded before the user's files, so the modifications to Kernel
+// are cloned to file objects and visible in them.
+// Some members have __ prefix so that users can overwrite the original one.
 print("default-isynth.karuta loaded")
 
 // Alias for convenience
 var Kernel.M object = Kernel
 
-// Utility to create a vanilla object.
-var Kernel.Kernel_ object = Kernel.clone()
-
-def Kernel.new() (object) {
-  return Kernel_.clone()
+def Kernel.setName(s object) {
+  setSynthParam("name", s)
 }
 
 def Kernel.compile() {
@@ -29,6 +28,13 @@ def Kernel.__wait(cycles int) {
  file = "copy",
  module = "karuta_exit")
 def Kernel.__exit() {
+}
+
+// Utility to create a vanilla object.
+var Kernel.Kernel_ object = Kernel.clone()
+
+def Kernel.new() (object) {
+  return Kernel_.clone()
 }
 
 def Array.load(maddr #64, len #32, aaddr #32) {
