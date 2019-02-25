@@ -277,7 +277,13 @@ This assumes 32bit address/data for now.
 
 #### Object distance.
 
-WIP.
+    @_(distance=10)
+    var m object = new()
+    
+    def f() {
+      f.x()
+    }
+
 
 ### Mailbox
 
