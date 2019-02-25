@@ -557,24 +557,24 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   vm::Register *index_reg = indexes[0];
   insn->insn_expr_ = array_expr;
 
+  // rhs
+  insn->src_regs_.push_back(rhs_reg);
+  // indexes.
+  for (vm::Register *reg : indexes) {
+    insn->src_regs_.push_back(reg);
+  }
+  // array
   if (array_expr->GetType() == fe::EXPR_SYM) {
     vm::Value *value =
       compiler_->GetObj()->LookupValue(array_expr->GetSym(), false);
     CHECK(value != nullptr || compiler_->IsTopLevel())
       << "undeclared array: " << sym_cstr(array_expr->GetSym());
-  } else {
-    CHECK(compiler_->IsTopLevel());
-  }
-  insn->src_regs_.push_back(rhs_reg);
-  for (vm::Register *reg : indexes) {
-    insn->src_regs_.push_back(reg);
-  }
-  if (array_expr->GetType() == fe::EXPR_SYM) {
     insn->obj_reg_ =
       compiler_->EmitMemberLoad(compiler_->EmitLoadObj(nullptr),
 				array_expr->GetSym());
   } else {
     CHECK(array_expr->GetType() == fe::BINOP_ELM_REF);
+    // TODO: Checks if objects exist.
     RegisterTuple rt = CompileElmRef(array_expr);
     insn->obj_reg_ = rt.GetOne();
   }
@@ -583,7 +583,8 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   return insn->dst_regs_[0];
 }
 
-fe::Expr *ExprCompiler::ResolveArray(fe::Expr *access_expr, vector<vm::Register *> *indexes) {
+fe::Expr *ExprCompiler::ResolveArray(fe::Expr *access_expr,
+				     vector<vm::Register *> *indexes) {
   if (access_expr->GetType() == fe::BINOP_ARRAY_REF) {
     indexes->push_back(CompileExprToOneReg(access_expr->GetRhs()));
   }
