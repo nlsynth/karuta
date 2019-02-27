@@ -12,7 +12,7 @@ namespace compiler {
 
 class ExprCompiler {
 public:
-  ExprCompiler(Compiler *compiler);
+  ExprCompiler(MethodCompiler *compiler);
 
   RegisterTuple CompileExpr(fe::Expr *expr);
   vm::Register *CompileSymExpr(fe::Expr *expr);
@@ -60,7 +60,7 @@ private:
   vm::Method *GetCalleeMethod(vm::Insn *call_insn);
   vm::Register *LoadNumericTypeRegister(sym_t obj_name);
 
-  Compiler *compiler_;
+  MethodCompiler *compiler_;
 };
 
 }  // namespace compiler

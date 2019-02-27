@@ -25,6 +25,7 @@ class Value;
 namespace compiler {
 class Compiler;
 class ExprCompiler;
+class MethodCompiler;
 
 class RegisterTuple {
 public:

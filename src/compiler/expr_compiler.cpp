@@ -1,7 +1,7 @@
 #include "compiler/expr_compiler.h"
 
 #include "base/status.h"
-#include "compiler/compiler.h"
+#include "compiler/method_compiler.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
@@ -15,7 +15,7 @@
 
 namespace compiler {
 
-ExprCompiler::ExprCompiler(Compiler *compiler) : compiler_(compiler) {
+ExprCompiler::ExprCompiler(MethodCompiler *compiler) : compiler_(compiler) {
 }
 
 void ExprCompiler::FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas) {
