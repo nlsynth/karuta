@@ -9,6 +9,7 @@
 #include "vm/gc.h"
 #include "vm/int_array.h"
 #include "vm/method.h"
+#include "vm/native_objects.h"
 #include "vm/profile.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
@@ -22,7 +23,7 @@ VM::VM() {
 
   root_object_ = NewObject();
   InstallBoolType();
-  Method::InstallNativeRootObjectMethods(this, root_object_);
+  NativeObjects::InstallNativeRootObjectMethods(this, root_object_);
   InstallObjects();
 }
 
@@ -110,7 +111,7 @@ void VM::InstallObjects() {
   kernel_object_ = root_object_->Clone();
   object_value.object_ = kernel_object_;
   kernel_object_->InstallValue(sym_lookup("Kernel"), object_value);
-  Method::InstallNativeKernelObjectMethods(this, kernel_object_);
+  NativeObjects::InstallNativeKernelObjectMethods(this, kernel_object_);
 
   Object *global = root_object_->Clone();
   object_value.object_ = global;
@@ -127,7 +128,7 @@ void VM::InstallObjects() {
   Object *env = root_object_->Clone();
   object_value.object_ = env;
   kernel_object_->InstallValue(sym_lookup("Env"), object_value);
-  Method::InstallEnvNativeMethods(this, env);
+  NativeObjects::InstallEnvNativeMethods(this, env);
 
   vector<uint64_t> s;
   s.push_back(0);

@@ -13,11 +13,11 @@ public:
   Method(bool is_toplevel);
   ~Method();
 
-  void Dump() const;
-  void Dump(DumpStream &os) const;
-
   typedef void (*method_func)(Thread *thr, Object *obj,
 			      const vector<Value> &args);
+
+  void Dump() const;
+  void Dump(DumpStream &os) const;
 
   method_func GetMethodFunc() const;
   void SetMethodFunc(method_func func);
@@ -40,19 +40,11 @@ public:
   vector<Register*> method_regs_;
   vector<RegisterType> return_types_;
 
-  // method_native.cpp
-  static void InstallNativeRootObjectMethods(VM *vm, Object *obj);
-  static void InstallNativeKernelObjectMethods(VM *vm, Object *obj);
   static Method *InstallNativeMethod(VM *vm, Object *obj, const char *name,
 				     method_func func,
 				     const vector<RegisterType> &ret_types);
-  static Method *InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
-						const char *name,
-						method_func func,
-						const vector<RegisterType> &ret_types,
-						const char *alt);
-  static void InstallEnvNativeMethods(VM *vm, Object *obj);
 
+  // object.cpp
   static RegisterType ObjectType();
   static RegisterType BoolType(VM *vm);
   static RegisterType IntType(int w);

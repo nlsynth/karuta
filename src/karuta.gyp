@@ -129,6 +129,8 @@
         'vm/method.h',
         'vm/native_methods.cpp',
         'vm/native_methods.h',
+        'vm/native_objects.cpp',
+        'vm/native_objects.h',
         'vm/numeric_object.cpp',
         'vm/numeric_object.h',
         'vm/object.cpp',
