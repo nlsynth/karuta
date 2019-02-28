@@ -40,10 +40,6 @@ public:
   vector<Register*> method_regs_;
   vector<RegisterType> return_types_;
 
-  static Method *InstallNativeMethod(VM *vm, Object *obj, const char *name,
-				     method_func func,
-				     const vector<RegisterType> &ret_types);
-
   // object.cpp
   static RegisterType ObjectType();
   static RegisterType BoolType(VM *vm);

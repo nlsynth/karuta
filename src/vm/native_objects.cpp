@@ -66,14 +66,6 @@ Method *NativeObjects::InstallNativeMethod(VM *vm, Object *obj, const char *name
 					nullptr);
 }
 
-Method *Method::InstallNativeMethod(VM *vm, Object *obj, const char *name,
-				    method_func func,
-				    const vector<RegisterType> &ret_types) {
-  // WIP. To be removed.
-  return NativeObjects::InstallNativeMethodWithAltImpl(vm, obj, name, func, ret_types,
-						      nullptr);
-}
-
 void NativeObjects::InstallEnvNativeMethods(VM *vm, Object *env) {
   vector<RegisterType> rets;
   InstallNativeMethod(vm, env, "gc", &NativeMethods::GC, rets);

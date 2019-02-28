@@ -7,6 +7,7 @@
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
+#include "vm/native_objects.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/thread.h"
@@ -247,28 +248,31 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m;
-  m = Method::InstallNativeMethod(vm, obj, "axiLoad",
-				  &ArrayWrapper::AxiLoad, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "axiLoad",
+					 &ArrayWrapper::AxiLoad, rets);
   m->SetSynthName(synth::kAxiLoad);
-  m = Method::InstallNativeMethod(vm, obj, "axiStore",
-				  &ArrayWrapper::AxiStore, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "axiStore",
+					 &ArrayWrapper::AxiStore, rets);
   m->SetSynthName(synth::kAxiStore);
-  m = Method::InstallNativeMethod(vm, obj, "waitAccess", &ArrayWrapper::Wait,
-				  rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "waitAccess",
+					 &ArrayWrapper::Wait,
+					 rets);
   m->SetSynthName(synth::kSlaveWait);
-  m = Method::InstallNativeMethod(vm, obj, "notifyAccess",
-				  &ArrayWrapper::Notify,
-				  rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "notifyAccess",
+					 &ArrayWrapper::Notify,
+					 rets);
 }
 
 void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {
   vector<RegisterType> rets;
   rets.push_back(Method::IntType(32));
   Method *m =
-    Method::InstallNativeMethod(vm, obj, "read", &ArrayWrapper::Read, rets);
+    NativeObjects::InstallNativeMethod(vm, obj, "read",
+				       &ArrayWrapper::Read, rets);
   m->SetSynthName(synth::kSramRead);
   rets.clear();
-  m = Method::InstallNativeMethod(vm, obj, "write", &ArrayWrapper::Write, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "write",
+					 &ArrayWrapper::Write, rets);
   m->SetSynthName(synth::kSramWrite);
 }
 

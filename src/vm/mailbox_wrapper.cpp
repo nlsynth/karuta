@@ -2,6 +2,7 @@
 
 #include "synth/object_method_names.h"
 #include "vm/method.h"
+#include "vm/native_objects.h"
 #include "vm/object.h"
 #include "vm/thread.h"
 #include "vm/vm.h"
@@ -53,21 +54,25 @@ void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
   rets.push_back(Method::IntType(32));
   // width
   Method *m =
-    Method::InstallNativeMethod(vm, obj, "width", &MailboxWrapper::Width, rets);
+    NativeObjects::InstallNativeMethod(vm, obj, "width",
+				       &MailboxWrapper::Width, rets);
   m->SetSynthName(synth::kMailboxWidth);
   // put
-  m = Method::InstallNativeMethod(vm, obj, "put", &MailboxWrapper::Put, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "put",
+					 &MailboxWrapper::Put, rets);
   m->SetSynthName(synth::kMailboxPut);
   // notify
-  m = Method::InstallNativeMethod(vm, obj, "notify",
-				  &MailboxWrapper::Notify, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "notify",
+					 &MailboxWrapper::Notify, rets);
   m->SetSynthName(synth::kMailboxNotify);
   // get
   rets[0] = Method::IntType(width);
-  m = Method::InstallNativeMethod(vm, obj, "get", &MailboxWrapper::Get, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "get",
+					 &MailboxWrapper::Get, rets);
   m->SetSynthName(synth::kMailboxGet);
   // wait
-  m = Method::InstallNativeMethod(vm, obj, "wait", &MailboxWrapper::Wait, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "wait",
+					 &MailboxWrapper::Wait, rets);
   m->SetSynthName(synth::kMailboxWait);
 }
 

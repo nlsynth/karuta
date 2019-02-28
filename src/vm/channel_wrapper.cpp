@@ -8,6 +8,7 @@
 #include "vm/thread.h"
 #include "vm/method.h"
 #include "vm/native_methods.h"
+#include "vm/native_objects.h"
 #include "vm/vm.h"
 
 #include <list>
@@ -40,15 +41,16 @@ Object *ChannelWrapper::NewChannel(VM *vm, int width, sym_t name,
 				   Annotation *an) {
   Object *pipe = vm->root_object_->Clone();
   vector<RegisterType> rets;
-  Method *m = Method::InstallNativeMethod(vm, pipe, "write",
-					  &ChannelWrapper::WriteMethod, rets);
+  Method *m = NativeObjects::InstallNativeMethod(vm, pipe, "write",
+						 &ChannelWrapper::WriteMethod,
+						 rets);
   m->SetSynthName(synth::kChannelWrite);
-  m = Method::InstallNativeMethod(vm, pipe, "writeFast",
-				  &ChannelWrapper::WriteMethod, rets);
+  m = NativeObjects::InstallNativeMethod(vm, pipe, "writeFast",
+					 &ChannelWrapper::WriteMethod, rets);
   m->SetSynthName(synth::kChannelNoWaitWrite);
   rets.push_back(Method::IntType(width));
-  m = Method::InstallNativeMethod(vm, pipe, "read",
-				  &ChannelWrapper::ReadMethod, rets);
+  m = NativeObjects::InstallNativeMethod(vm, pipe, "read",
+					 &ChannelWrapper::ReadMethod, rets);
   m->SetSynthName(synth::kChannelRead);
 
   pipe->object_specific_.reset(new ChannelData(width, name, an));
