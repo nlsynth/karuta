@@ -51,7 +51,7 @@ int MailboxWrapper::GetWidth(Object *obj) {
 
 void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
   vector<RegisterType> rets;
-  rets.push_back(Method::IntType(32));
+  rets.push_back(NativeObjects::IntType(32));
   // width
   Method *m =
     NativeObjects::InstallNativeMethod(vm, obj, "width",
@@ -66,7 +66,7 @@ void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
 					 &MailboxWrapper::Notify, rets);
   m->SetSynthName(synth::kMailboxNotify);
   // get
-  rets[0] = Method::IntType(width);
+  rets[0] = NativeObjects::IntType(width);
   m = NativeObjects::InstallNativeMethod(vm, obj, "get",
 					 &MailboxWrapper::Get, rets);
   m->SetSynthName(synth::kMailboxGet);

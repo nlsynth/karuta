@@ -265,7 +265,7 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
 
 void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {
   vector<RegisterType> rets;
-  rets.push_back(Method::IntType(32));
+  rets.push_back(NativeObjects::IntType(32));
   Method *m =
     NativeObjects::InstallNativeMethod(vm, obj, "read",
 				       &ArrayWrapper::Read, rets);

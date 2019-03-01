@@ -276,21 +276,4 @@ void NativeMethods::SetReturnValue(Thread *thr, const Value &value) {
   thr->SetReturnValueFromNativeMethod(value);
 }
 
-RegisterType Method::ObjectType() {
-  iroha::NumericWidth dw;
-  return RegisterType(Value::OBJECT, nullptr, dw, sym_null, false);
-}
-
-RegisterType Method::BoolType(VM *vm) {
-  iroha::NumericWidth dw;
-  return RegisterType(Value::ENUM_ITEM, vm->bool_type_, dw,
-		      sym_null, false);
-}
-
-RegisterType Method::IntType(int w) {
-  return RegisterType(Value::NUM, nullptr,
-		      iroha::NumericWidth(false, w), sym_null,
-		      false);
-}
-
 }  // namespace vm

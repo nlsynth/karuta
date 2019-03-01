@@ -21,6 +21,10 @@ public:
 						const vector<RegisterType> &ret_types,
 						const char *alt);
   static void InstallEnvNativeMethods(VM *vm, Object *obj);
+
+  static RegisterType ObjectType();
+  static RegisterType BoolType(VM *vm);
+  static RegisterType IntType(int w);
 };
 
 }  // namespace vm

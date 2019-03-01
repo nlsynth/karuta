@@ -10,7 +10,7 @@ namespace vm {
 
 void NativeObjects::InstallNativeRootObjectMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
-  rets.push_back(Method::ObjectType());
+  rets.push_back(ObjectType());
   InstallNativeMethod(vm, obj, "clone", &NativeMethods::Clone, rets);
   rets.clear();
   InstallNativeMethod(vm, obj, "dump", &NativeMethods::Dump, rets);
@@ -19,7 +19,8 @@ void NativeObjects::InstallNativeRootObjectMethods(VM *vm, Object *obj) {
 
 void NativeObjects::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
-  InstallNativeMethodWithAltImpl(vm, obj, "wait", &NativeMethods::Wait, rets, "__wait");
+  InstallNativeMethodWithAltImpl(vm, obj, "wait",
+				 &NativeMethods::Wait, rets, "__wait");
   Method *m;
   m = InstallNativeMethod(vm, obj, "print", &NativeMethods::Print, rets);
   m->SetSynthName(synth::kPrint);
@@ -27,13 +28,17 @@ void NativeObjects::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   m->SetSynthName(synth::kAssert);
   InstallNativeMethod(vm, obj, "compile", &NativeMethods::Compile, rets);
   InstallNativeMethod(vm, obj, "__compile", &NativeMethods::Compile, rets);
-  InstallNativeMethodWithAltImpl(vm, obj, "exit", &NativeMethods::Exit, rets, "__exit");
+  InstallNativeMethodWithAltImpl(vm, obj, "exit",
+				 &NativeMethods::Exit, rets, "__exit");
   m = InstallNativeMethod(vm, obj, "main", &NativeMethods::Main, rets);
   m->SetSynthName(synth::kMain);
-  InstallNativeMethod(vm, obj, "setAddressWidth", &NativeMethods::SetAddressWidth, rets);
+  InstallNativeMethod(vm, obj, "setAddressWidth",
+		      &NativeMethods::SetAddressWidth, rets);
   InstallNativeMethod(vm, obj, "setDump", &NativeMethods::SetDump, rets);
-  InstallNativeMethod(vm, obj, "setIROutput", &NativeMethods::SetIROutput, rets);
-  InstallNativeMethod(vm, obj, "setIrohaPath", &NativeMethods::SetIrohaPath, rets);
+  InstallNativeMethod(vm, obj, "setIROutput",
+		      &NativeMethods::SetIROutput, rets);
+  InstallNativeMethod(vm, obj, "setIrohaPath",
+		      &NativeMethods::SetIrohaPath, rets);
   InstallNativeMethod(vm, obj, "runIroha", &NativeMethods::RunIroha, rets);
   InstallNativeMethod(vm, obj, "synth", &NativeMethods::Synth, rets);
   InstallNativeMethod(vm, obj, "setSynthParam",
@@ -59,7 +64,8 @@ Method *NativeObjects::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
   return method;
 }
 
-Method *NativeObjects::InstallNativeMethod(VM *vm, Object *obj, const char *name,
+Method *NativeObjects::InstallNativeMethod(VM *vm, Object *obj,
+					   const char *name,
 					   Method::method_func func,
 					   const vector<RegisterType> &ret_types) {
   return InstallNativeMethodWithAltImpl(vm, obj, name, func, ret_types,
@@ -69,11 +75,31 @@ Method *NativeObjects::InstallNativeMethod(VM *vm, Object *obj, const char *name
 void NativeObjects::InstallEnvNativeMethods(VM *vm, Object *env) {
   vector<RegisterType> rets;
   InstallNativeMethod(vm, env, "gc", &NativeMethods::GC, rets);
-  InstallNativeMethod(vm, env, "clearProfile", &NativeMethods::ClearProfile, rets);
-  InstallNativeMethod(vm, env, "enableProfile", &NativeMethods::EnableProfile, rets);
-  InstallNativeMethod(vm, env, "disableProfile", &NativeMethods::DisableProfile, rets);
-  rets.push_back(Method::BoolType(vm));
+  InstallNativeMethod(vm, env, "clearProfile",
+		      &NativeMethods::ClearProfile, rets);
+  InstallNativeMethod(vm, env, "enableProfile",
+		      &NativeMethods::EnableProfile, rets);
+  InstallNativeMethod(vm, env, "disableProfile",
+		      &NativeMethods::DisableProfile, rets);
+  rets.push_back(BoolType(vm));
   InstallNativeMethod(vm, env, "isMain", &NativeMethods::IsMain, rets);
+}
+
+RegisterType NativeObjects::ObjectType() {
+  iroha::NumericWidth dw;
+  return RegisterType(Value::OBJECT, nullptr, dw, sym_null, false);
+}
+
+RegisterType NativeObjects::BoolType(VM *vm) {
+  iroha::NumericWidth dw;
+  return RegisterType(Value::ENUM_ITEM, vm->bool_type_, dw,
+		      sym_null, false);
+}
+
+RegisterType NativeObjects::IntType(int w) {
+  return RegisterType(Value::NUM, nullptr,
+		      iroha::NumericWidth(false, w), sym_null,
+		      false);
 }
 
 }  // namespace vm

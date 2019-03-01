@@ -40,11 +40,6 @@ public:
   vector<Register*> method_regs_;
   vector<RegisterType> return_types_;
 
-  // object.cpp
-  static RegisterType ObjectType();
-  static RegisterType BoolType(VM *vm);
-  static RegisterType IntType(int w);
-
 private:
   bool is_toplevel_;
   // native
