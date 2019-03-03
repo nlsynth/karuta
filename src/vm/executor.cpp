@@ -13,6 +13,7 @@
 #include "numeric/numeric_op.h"  // from iroha
 #include "vm/array_wrapper.h"
 #include "vm/channel_wrapper.h"
+#include "vm/decl_annotator.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/int_array.h"
@@ -719,7 +720,7 @@ void Executor::ExecVardecl(const Method *method, MethodFrame *frame,
   CHECK(obj);
   sym_t name = decl->GetNameExpr()->GetSym();
   Value *value = obj->LookupValue(name, true);
-  InsnAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
+  DeclAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
     iroha::Op::MakeConst(0, &value->num_);
   }

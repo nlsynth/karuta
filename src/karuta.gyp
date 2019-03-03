@@ -111,6 +111,8 @@
         'vm/channel_wrapper.cpp',
         'vm/channel_wrapper.h',
         'vm/common.h',
+        'vm/decl_annotator.cpp',
+        'vm/decl_annotator.h',
 	'vm/distance_wrapper.cpp',
 	'vm/distance_wrapper.h',
         'vm/executor.cpp',

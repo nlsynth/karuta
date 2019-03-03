@@ -352,30 +352,6 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
   dst->type_.width_ = iroha::NumericWidth::CommonWidth(dst->type_.width_, width);
 }
 
-void InsnAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
-				   Register *reg) {
-  reg->SetIsDeclaredType(true);
-  if (decl->GetArrayShape() != nullptr) {
-    CHECK(false);
-  } else {
-    reg->type_.value_type_ = SymToType(decl->GetType());
-    if (decl->GetType() == sym_bool) {
-      reg->type_.enum_type_ = vm->bool_type_;
-    }
-  }
-  reg->type_.width_ = decl->GetWidth();
-  reg->type_.object_name_ = decl->GetObjectName();
-  if (reg->type_.object_name_ != sym_null) {
-    reg->type_object_ = NumericObject::Get(vm, reg->type_.object_name_);
-    // type_object_ can be null for top level decl.
-    if (reg->type_object_ != nullptr) {
-      int w = NumericObject::Width(reg->type_object_);
-      reg->type_.width_ = iroha::NumericWidth(false, w);
-    }
-  }
-  CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->GetType());
-}
-
 Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
   if (sym == sym_int || sym == sym_null) {
     // Assumes width is specified instead for sym_null.
@@ -388,33 +364,6 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
     return Value::OBJECT;
   }
   return Value::NONE;
-}
-
-void InsnAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
-  value->type_ = SymToType(decl->GetType());
-  if (decl->GetArrayShape() != nullptr) {
-    if (value->type_ == Value::OBJECT) {
-      value->type_ = Value::OBJECT_ARRAY;
-    } else {
-      CHECK(value->type_ == Value::NUM);
-      value->type_ = Value::INT_ARRAY;
-    }
-  }
-  value->num_.type_ = decl->GetWidth();
-  sym_t object_name = decl->GetObjectName();
-  if (object_name != sym_null) {
-    CHECK(!value->IsObjectType());
-    value->type_object_name_ = object_name;
-    value->object_ = NumericObject::Get(vm, value->type_object_name_);
-  }
-}
-
-void InsnAnnotator::AnnotateByValue(Value *value, Register *reg) {
-  reg->type_.value_type_ = value->type_;
-  if (value->type_ == Value::NUM) {
-    reg->type_.width_ = value->num_.type_;
-  }
-  reg->type_.object_name_ = value->type_object_name_;
 }
 
 void InsnAnnotator::SetDstRegType(Value::ValueType vtype, Insn *insn, int idx) {

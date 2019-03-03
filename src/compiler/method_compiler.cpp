@@ -8,6 +8,7 @@
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "vm/insn.h"
+#include "vm/decl_annotator.h"
 #include "vm/insn_annotator.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -184,7 +185,7 @@ void MethodCompiler::SetupDeclSetRegisters(fe::VarDeclSet &vds,
 }
 
 void MethodCompiler::SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg) {
-  vm::InsnAnnotator::AnnotateByDecl(vm_, decl, reg);
+  vm::DeclAnnotator::AnnotateByDecl(vm_, decl, reg);
 }
 
 vm::Register *MethodCompiler::GetNthReturnRegister(int nth) {
