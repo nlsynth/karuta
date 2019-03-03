@@ -126,6 +126,8 @@ void Expr::Dump(DumpStream &ds) {
     }
     break;
   case EXPR_ELM_SYM_REF:
+    ds.indent();
+    ds.os << "elm_ref args:\n";
     ds.push_indent();
     args_->Dump(ds);
     ds.indent();
