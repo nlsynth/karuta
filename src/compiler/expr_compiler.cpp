@@ -6,6 +6,7 @@
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "numeric/numeric_op.h"  // from iroha
+#include "vm/decl_annotator.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/method.h"
@@ -219,7 +220,7 @@ vm::Register *ExprCompiler::CompileMemberSym(fe::Expr *expr) {
 
   vm::Value *value = compiler_->GetObj()->LookupValue(expr->GetSym(), false);
   if (value) {
-    vm::InsnAnnotator::AnnotateByValue(value, reg);
+    vm::DeclAnnotator::AnnotateByValue(value, reg);
   }
 
   return reg;
@@ -574,7 +575,6 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
 				array_expr->GetSym());
   } else {
     CHECK(array_expr->GetType() == fe::BINOP_ELM_REF);
-    // TODO: Checks if objects exist.
     RegisterTuple rt = CompileElmRef(array_expr);
     insn->obj_reg_ = rt.GetOne();
   }

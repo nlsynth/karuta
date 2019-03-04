@@ -19,18 +19,12 @@ public:
   // Called from AnnotateMethod()
   void DoAnnotate();
 
-  // Add declared type by the compiler.
-  static void AnnotateByDecl(VM *vm, fe::VarDecl *decl,
-			     Register *reg);
-  // Sets the type of the result from OP_MEMBER_READ.
-  static void AnnotateByValue(Value *value, Register *reg);
-  // top level executor to set type of declared member dynamically
-  static void AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value);
-
   // Annotate for top level execution.
   static void AnnotateBitRangeInsn(Insn *insn);
   static void AnnotateConcatInsn(Insn *insn);
   static void AnnotateNumCalculationOp(Insn *insn);
+
+  static Value::ValueType SymToType(sym_t sym);
 
 private:
   void ClearType();
@@ -45,7 +39,6 @@ private:
   void SetDstRegType(Value::ValueType vtype, Insn *insn, int idx);
 
   static void PropagateRegWidth(Register *src1, Register *src2, Register *dst);
-  static Value::ValueType SymToType(sym_t sym);
 
   VM *vm_;
   Object *obj_;
