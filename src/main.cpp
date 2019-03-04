@@ -38,13 +38,12 @@ private:
   void RunFiles(vector<string> &files);
   void PrintUsage();
 
-  // common
-  bool dbg_scanner;
-  bool dbg_parser;
-  int timeout;
-  bool print_exit_status;
-  bool vanilla;
-  bool dbg_bytecode;
+  bool dbg_scanner_;
+  bool dbg_parser_;
+  bool dbg_bytecode_;
+  int timeout_;
+  bool print_exit_status_;
+  bool vanilla_;
 };
 
 void Main::PrintUsage() {
@@ -64,22 +63,22 @@ void Main::PrintUsage() {
 }
 
 void Main::RunFiles(vector<string> &files) {
-  fe::FE fe(dbg_parser, dbg_scanner, dbg_bytecode);
+  fe::FE fe(dbg_parser_, dbg_scanner_, dbg_bytecode_);
 
-  fe.Run(vanilla, files);
+  fe.Run(vanilla_, files);
 }
 
 void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
   for (char *flag : dbg_flags) {
     switch (*flag) {
     case 'b':
-      dbg_bytecode = true;
+      dbg_bytecode_ = true;
       break;
     case 's':
-      dbg_scanner = true;
+      dbg_scanner_ = true;
       break;
     case 'p':
-      dbg_parser = true;
+      dbg_parser_ = true;
       break;
     default:
       break;
@@ -94,9 +93,9 @@ void Main::InstallTimeout() {
   sa.sa_flags = SA_RESTART;
   sigaction(SIGALRM, &sa, nullptr);
   struct itimerval ival;
-  timeout *= 1000;
-  int sec = timeout / 1000000;
-  int usec = timeout % 1000000;
+  timeout_ *= 1000;
+  int sec = timeout_ / 1000000;
+  int usec = timeout_ % 1000000;
   ival.it_interval.tv_sec = 0;
   ival.it_interval.tv_usec = 0;
   ival.it_value.tv_sec = sec;
@@ -126,9 +125,9 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
 }
 
 int Main::main(int argc, char **argv) {
-  dbg_scanner = false;
-  dbg_parser = false;
-  dbg_bytecode = false;
+  dbg_scanner_ = false;
+  dbg_parser_ = false;
+  dbg_bytecode_ = false;
 
   ArgParser args;
   ParseArgs(argc, argv, &args);
@@ -139,14 +138,14 @@ int Main::main(int argc, char **argv) {
   if (args.GetBoolFlag("help", false)) {
     PrintUsage();
   }
-  vanilla = args.GetBoolFlag("vanilla", false);
-  print_exit_status = args.GetBoolFlag("print_exit_status", false);
+  vanilla_ = args.GetBoolFlag("vanilla", false);
+  print_exit_status_ = args.GetBoolFlag("print_exit_status", false);
 
   string arg;
   if (args.GetFlagValue("timeout", &arg)) {
-    timeout = atoi(arg.c_str());
+    timeout_ = atoi(arg.c_str());
   } else {
-    timeout = 0;
+    timeout_ = 0;
   }
 
   // Actually initialize modules and params.
@@ -166,7 +165,7 @@ int Main::main(int argc, char **argv) {
     Env::SetIrohaBinPath(arg);
   }
 
-  if (timeout) {
+  if (timeout_) {
     InstallTimeout();
   }
   Logger::Init(args.enable_logging_, args.log_modules);
@@ -178,7 +177,7 @@ int Main::main(int argc, char **argv) {
   if (Status::CheckAllErrors(true)) {
     exit_status = "error";
   }
-  if (print_exit_status) {
+  if (print_exit_status_) {
     // Used to confirm this program was finished normally.
     // (without SEGV and so on)
     cout << "KARUTA DONE: " << exit_status << "\n";
