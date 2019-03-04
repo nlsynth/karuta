@@ -26,6 +26,8 @@
         'base/annotation.h',
         'base/annotation_builder.cpp',
         'base/annotation_builder.h',
+        'base/arg_parser.cpp',
+        'base/arg_parser.h',
         'base/dump_stream.cpp',
         'base/dump_stream.h',
         'base/env.cpp',

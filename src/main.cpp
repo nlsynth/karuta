@@ -13,14 +13,12 @@
 #include <errno.h>
 #include <signal.h>
 #include <sys/time.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <string>
 #include <map>
 
+#include "base/arg_parser.h"
 #include "fe/fe.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
@@ -28,30 +26,6 @@
 #include "base/status.h"
 
 using std::map;
-
-class ArgParser {
-public:
-  ArgParser();
-
-  void RegisterBoolFlag(const char *name, const char *canonical);
-  void RegisterValueFlag(const char *name, const char *canonical);
-  bool Parse(int argc, char **argv);
-  bool GetBoolFlag(const char *name, bool default_value);
-  bool GetFlagValue(const char *name, string *value);
-
-public:
-  bool enable_logging_;
-  vector<char *> debug_flags;
-  vector<string> source_files;
-  set<string> log_modules;
-
-private:
-  void ParseLogModules(const char *s);
-  bool StripFlagName(const char *arg, string *name, string *value);
-  map<string, string> registered_flags_;
-  map<string, string> flag_values_;
-  set<string> flags_with_value_;
-};
 
 class Main {
 public:
@@ -111,114 +85,6 @@ void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
       break;
     }
   }
-}
-
-ArgParser::ArgParser() : enable_logging_(false) {
-}
-
-void ArgParser::RegisterBoolFlag(const char *name, const char *canonical) {
-  if (canonical == nullptr) {
-    canonical = name;
-  }
-  registered_flags_[string(name)] = string(canonical);
-}
-
-void ArgParser::RegisterValueFlag(const char *name, const char *canonical) {
-  RegisterBoolFlag(name, canonical);
-  flags_with_value_.insert(string(name));
-}
-
-bool ArgParser::Parse(int argc, char **argv) {
-  for (int i = 1; i < argc; i++) {
-    char *arg = argv[i];
-    char *next_arg = nullptr;
-    string flag_name;
-    string flag_value;
-    bool has_value = StripFlagName(arg, &flag_name, &flag_value);
-    if (i < argc - 1) {
-      next_arg = argv[i+1];
-    }
-    if (!strcmp(arg, "-l")) {
-      enable_logging_ = true;
-    } else if (!strncmp(arg, "-l=", 3)) {
-      ParseLogModules(&arg[3]);
-      enable_logging_ = true;
-    } else if (!strncmp(arg, "-d", 2)) {
-      debug_flags.push_back(&arg[2]);
-    } else if (registered_flags_.find(flag_name) != registered_flags_.end()) {
-      const string &canonical_flag_name = registered_flags_[flag_name];
-      if (flags_with_value_.find(flag_name) != flags_with_value_.end()) {
-	if (has_value) {
-	  flag_values_[canonical_flag_name] = flag_value;
-	} else {
-	  if (next_arg == nullptr) {
-	    Status::os(Status::USER_ERROR) << "Missing value for:" << flag_name;
-	    MessageFlush::Get(Status::USER_ERROR);
-	    return false;
-	  }
-	  flag_values_[canonical_flag_name] = next_arg;
-	  i++;
-	}
-      } else {
-	flag_values_[canonical_flag_name] = "";
-      }
-    } else {
-      if (arg[0] == '-') {
-	Status::os(Status::USER_ERROR) << "Unknown command line flag:" << arg;
-	MessageFlush::Get(Status::USER_ERROR);
-	return false;
-      }
-      source_files.push_back(arg);
-    }
-    if (!strcmp(arg, "--iroha")) {
-      // Stop parsing other flags.
-      return true;
-    }
-  }
-  return true;
-}
-
-bool ArgParser::GetBoolFlag(const char *name, bool dflt) {
-  if (flag_values_.find(name) != flag_values_.end()) {
-    return true;
-  }
-  return false;
-}
-
-bool ArgParser::GetFlagValue(const char *name, string *value) {
-  if (flag_values_.find(name) != flag_values_.end()) {
-    *value = flag_values_[name];
-    return true;
-  }
-  return false;
-}
-
-void ArgParser::ParseLogModules(const char *s) {
-  while (*s) {
-    const char *e = strchr(s, ',');
-    if (e) {
-      log_modules.insert(string(s, e - s));
-      s = e + 1;
-    } else {
-      log_modules.insert(s);
-      return;
-    }
-  }
-}
-
-bool ArgParser::StripFlagName(const char *arg, string *name, string *value) {
-  while (*arg == '-') {
-    ++arg;
-  }
-  int i;
-  for (i = 0; arg[i] && arg[i] != '='; ++i) {
-  }
-  *name = string(arg, i);
-  if (arg[i] == '=') {
-    *value = string(&arg[i + 1]);
-    return true;
-  }
-  return false;
 }
 
 void Main::InstallTimeout() {
