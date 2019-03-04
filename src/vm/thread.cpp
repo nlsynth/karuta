@@ -14,7 +14,7 @@
 
 namespace vm {
 
-bool Thread::dbg_bytecode_;
+string Thread::dbg_bytecode_;
 
 Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index)
   : vm_(vm), parent_thread_(parent),
@@ -31,8 +31,8 @@ Thread::~Thread() {
   }
 }
 
-void Thread::SetByteCodeDebug(bool enable) {
-  dbg_bytecode_ = enable;
+void Thread::SetByteCodeDebug(string flags) {
+  dbg_bytecode_ = flags;
 }
 
 void Thread::Run() {
@@ -65,7 +65,7 @@ void Thread::RunMethod() {
     }
   }
   PassReturnValues();
-  if (dbg_bytecode_) {
+  if (ByteCodeDebugMode::IsEnabled(dbg_bytecode_)) {
     // debug run time annotating.
     if (method->IsTopLevel()) {
       DumpStream ds(cout);

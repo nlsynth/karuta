@@ -38,6 +38,13 @@ public:
   static const string &Str(Insn *insn);
 };
 
+class ByteCodeDebugMode {
+public:
+  // Dumps before the execution and the type annotation.
+  static bool PreExec(const string &flags);
+  static bool IsEnabled(const string &flags);
+};
+
 }  // namespace vm
 
 #endif  // _vm_insn_h_

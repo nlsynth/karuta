@@ -27,7 +27,7 @@ public:
 
   void Compile();
 
-  static void SetByteCodeDebug(bool enable);
+  static void SetByteCodeDebug(string flags);
 
   // public: for ExprCompiler
   vm::Object *GetObj() const;
@@ -78,7 +78,7 @@ private:
   int InsnIndexFromLabel(sym_t label);
   void SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg);
 
-  static bool dbg_bytecode_;
+  static string dbg_bytecode_;
 
   vm::VM *vm_;
   vm::Object *obj_;

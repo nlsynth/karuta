@@ -40,7 +40,7 @@ private:
 
   bool dbg_scanner_;
   bool dbg_parser_;
-  bool dbg_bytecode_;
+  string dbg_bytecode_;
   int timeout_;
   bool print_exit_status_;
   bool vanilla_;
@@ -72,7 +72,7 @@ void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
   for (char *flag : dbg_flags) {
     switch (*flag) {
     case 'b':
-      dbg_bytecode_ = true;
+      dbg_bytecode_ = string(flag);
       break;
     case 's':
       dbg_scanner_ = true;
@@ -127,7 +127,6 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
 int Main::main(int argc, char **argv) {
   dbg_scanner_ = false;
   dbg_parser_ = false;
-  dbg_bytecode_ = false;
 
   ArgParser args;
   ParseArgs(argc, argv, &args);

@@ -9,7 +9,7 @@ namespace fe {
 
 class FE {
  public:
-  FE(bool dbg_parser, bool dbg_scanner, bool dbg_bytecode);
+  FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode);
 
   void Run(bool vanilla, const vector<string> &files);
 

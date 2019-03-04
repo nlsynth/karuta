@@ -33,8 +33,8 @@ vm::Method *Compiler::CompileParseTree(vm::VM *vm, vm::Object *obj,
   return method;
 }
 
-void Compiler::SetByteCodeDebug(bool enable) {
-  MethodCompiler::SetByteCodeDebug(enable);
+void Compiler::SetByteCodeDebug(string flags) {
+  MethodCompiler::SetByteCodeDebug(flags);
 }
 
 }  // namespace compiler

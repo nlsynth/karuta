@@ -22,7 +22,7 @@ public:
   bool GetInYield();
 
   VM *GetVM();
-  static void SetByteCodeDebug(bool enable);
+  static void SetByteCodeDebug(string flags);
 
   MethodFrame *PushMethodFrame(Object *obj, Method *method);
 
@@ -46,7 +46,7 @@ private:
   MethodFrame *ParentMethodFrame() const;
   void MaySetThreadIndex();
 
-  static bool dbg_bytecode_;
+  static string dbg_bytecode_;
 
   VM *vm_;
   Stat stat_;

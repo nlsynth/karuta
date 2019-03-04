@@ -17,10 +17,10 @@
 
 namespace compiler {
 
-bool MethodCompiler::dbg_bytecode_;
+string MethodCompiler::dbg_bytecode_;
 
-void MethodCompiler::SetByteCodeDebug(bool enable) {
-  dbg_bytecode_ = enable;
+void MethodCompiler::SetByteCodeDebug(string flags) {
+  dbg_bytecode_ = flags;
 }
 
 MethodCompiler::MethodCompiler(vm::VM *vm, vm::Object *obj, vm::Method *method)
@@ -68,8 +68,12 @@ void MethodCompiler::Compile() {
   EmitNop();
   FlushPendingInsns();
   ResolveLabels();
+  if (vm::ByteCodeDebugMode::PreExec(dbg_bytecode_) &&
+      method_->IsTopLevel()) {
+    method_->Dump();
+  }
   vm::InsnAnnotator::AnnotateMethod(vm_, obj_, method_);
-  if (dbg_bytecode_) {
+  if (vm::ByteCodeDebugMode::IsEnabled(dbg_bytecode_)) {
     // Top level result will be output after execution.
     if (!method_->IsTopLevel()) {
       method_->Dump();

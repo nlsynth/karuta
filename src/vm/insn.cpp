@@ -88,4 +88,12 @@ const string &InsnOpUtils::Str(Insn *insn) {
   return insn->insn_expr_->GetString();
 }
 
+bool ByteCodeDebugMode::IsEnabled(const string &flags) {
+  return !(flags.empty()) && !PreExec(flags);
+}
+
+bool ByteCodeDebugMode::PreExec(const string &flags) {
+  return flags.find("c") != string::npos;
+}
+
 }  // namespace vm

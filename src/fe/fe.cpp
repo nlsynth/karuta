@@ -159,7 +159,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
   return 0;
 }
 
-FE::FE(bool dbg_parser, bool dbg_scanner, bool dbg_bytecode)
+FE::FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode)
   : dbg_parser_(dbg_parser) {
   InitSyms();
   scanner_info_.reset(new ScannerInfo);

@@ -14,7 +14,7 @@ public:
   static vm::Method *CompileParseTree(vm::VM *vm, vm::Object *obj,
 				      const fe::Method *parse_tree);
 
-  static void SetByteCodeDebug(bool enable);
+  static void SetByteCodeDebug(string flags);
 };
 
 }  // namespace compiler
