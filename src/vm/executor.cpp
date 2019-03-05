@@ -336,13 +336,13 @@ void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
   CHECK(insn->obj_reg_ != nullptr);
   Object *array_obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(array_obj);
-  Value &lhs = frame->reg_values_[insn->dst_regs_[0]->id_];
+  Value &lhs_value = frame->reg_values_[insn->dst_regs_[0]->id_];
   auto *dst_reg = insn->dst_regs_[0];
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     vector<uint64_t> indexes;
     PopulateArrayIndexes(frame, insn, 0, &indexes);
-    lhs.num_ = array->Read(indexes);
+    lhs_value.num_ = array->Read(indexes);
     if (method->IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::NUM;
       dst_reg->type_.width_ = array->GetDataWidth();
@@ -350,7 +350,8 @@ void Executor::ExecArrayRead(const Method *method, MethodFrame *frame,
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
     int index = frame->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
-    lhs.object_ = ArrayWrapper::Get(array_obj, index);
+    lhs_value.type_ = Value::OBJECT;
+    lhs_value.object_ = ArrayWrapper::Get(array_obj, index);
     if (method->IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::OBJECT;
     }
