@@ -545,6 +545,10 @@ vm::Object *MethodCompiler::GetVMObject(vm::Register *obj_reg) {
   return reg_obj_map_[obj_reg];
 }
 
+void MethodCompiler::RegisterVMObject(vm::Register *reg, vm::Object *obj) {
+  reg_obj_map_[reg] = obj;
+}
+
 void MethodCompiler::SetDelayInsnEmit(bool delay) {
   delay_insn_emit_ = delay;
 }

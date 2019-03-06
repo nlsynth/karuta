@@ -6,6 +6,7 @@
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "numeric/numeric_op.h"  // from iroha
+#include "vm/array_wrapper.h"
 #include "vm/decl_annotator.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
@@ -199,6 +200,20 @@ vm::Register *ExprCompiler::CompileArrayRef(fe::Expr *expr) {
   insn->dst_regs_.push_back(compiler_->AllocRegister());
   insn->obj_reg_ = CompileExprToOneReg(array_expr);
 
+  if (!compiler_->IsTopLevel()) {
+    // Identify array element object.
+    // This works only for constant index for now.
+    vm::Object *array_obj = compiler_->GetVMObject(insn->obj_reg_);
+    if (array_obj != nullptr &&
+	vm::ArrayWrapper::IsObjectArray(array_obj)) {
+      if (indexes.size() == 1 &&
+	  indexes[0]->type_.is_const_) {
+	int idx = indexes[0]->initial_num_.GetValue0();
+	vm::Object *elm_obj = vm::ArrayWrapper::Get(array_obj, idx);
+	compiler_->RegisterVMObject(insn->dst_regs_[0], elm_obj);
+      }
+    }
+  }
   compiler_->EmitInsn(insn);
   return insn->dst_regs_[0];
 }

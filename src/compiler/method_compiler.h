@@ -42,6 +42,7 @@ public:
   vm::Register *EmitMemberLoad(vm::Register *obj_reg, sym_t m);
   void AddPrePostIncDecExpr(fe::Expr *expr, bool is_post);
   vm::Object *GetVMObject(vm::Register *obj_reg);
+  void RegisterVMObject(vm::Register *reg, vm::Object *obj);
   void SetDelayInsnEmit(bool delay);
 
 private:

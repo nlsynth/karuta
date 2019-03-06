@@ -15,11 +15,11 @@ public:
   ExprCompiler(MethodCompiler *compiler);
 
   RegisterTuple CompileExpr(fe::Expr *expr);
-  vm::Register *CompileSymExpr(fe::Expr *expr);
   void CompileIncDecExpr(fe::Expr *expr);
   static void FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas);
 
 private:
+  vm::Register *CompileSymExpr(fe::Expr *expr);
   vm::Register *CompileExprToOneReg(fe::Expr *expr);
   RegisterTuple CompileAssign(fe::Expr *expr);
   RegisterTuple CompileMultiAssign(fe::Expr *lhs_expr, fe::Expr *rhs_expr);
