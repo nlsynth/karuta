@@ -202,18 +202,7 @@ void InsnAnnotator::TryType(Insn *insn) {
     return;
   }
   if (insn->op_ == OP_ARRAY_READ) {
-    Object *obj = objs_[insn->obj_reg_];
-    if (obj == nullptr) {
-      CHECK(method_->IsTopLevel());
-      return;
-    }
-    if (TlsWrapper::IsTls(obj)) {
-      Value *value = TlsWrapper::GetValue(obj, nullptr);
-      obj = value->object_;
-    }
-    CHECK(ArrayWrapper::IsIntArray(obj));
-    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, ArrayWrapper::GetDataWidth(obj));
+    TypeArrayRead(insn);
     return;
   }
   if (insn->op_ == OP_MEMBER_READ ||
@@ -271,6 +260,32 @@ void InsnAnnotator::AnnotateNumCalculationOp(Insn *insn) {
       PropagateRegWidth(insn->src_regs_[0], insn->src_regs_[1],
 			insn->dst_regs_[0]);
     }
+  }
+}
+
+void InsnAnnotator::TypeArrayRead(Insn *insn) {
+  Object *array_obj = objs_[insn->obj_reg_];
+  if (array_obj == nullptr) {
+    CHECK(method_->IsTopLevel());
+    return;
+  }
+  if (TlsWrapper::IsTls(array_obj)) {
+    Value *value = TlsWrapper::GetValue(array_obj, nullptr);
+    array_obj = value->object_;
+  }
+  if (ArrayWrapper::IsIntArray(array_obj)) {
+    insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
+    insn->dst_regs_[0]->type_.width_ =
+      iroha::NumericWidth(false, ArrayWrapper::GetDataWidth(array_obj));
+  } else {
+    CHECK(ArrayWrapper::IsObjectArray(array_obj));
+    insn->dst_regs_[0]->type_.value_type_ = Value::OBJECT;
+    CHECK(insn->src_regs_.size() == 1);
+    Register *idx_reg = insn->src_regs_[0];
+    CHECK(idx_reg->type_.is_const_);
+    int idx = idx_reg->initial_num_.GetValue0();
+    Object *elm_obj = ArrayWrapper::Get(array_obj, idx);
+    objs_[insn->dst_regs_[0]] = elm_obj;
   }
 }
 
