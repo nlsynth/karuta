@@ -388,6 +388,7 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
     SynthMemberAccess(insn, true);
     break;
   case vm::OP_ARRAY_READ:
+    InsnWalker::MaybeLoadObjectArrayElement(insn);
     SynthArrayAccess(insn, false);
     break;
   case vm::OP_ARRAY_WRITE:
@@ -830,6 +831,9 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
 void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {
   vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
   CHECK(array_obj);
+  if (vm::ArrayWrapper::IsObjectArray(array_obj)) {
+    return;
+  }
   IResource *res;
   if (UseSharedArray(array_obj)) {
     SynthSharedArrayAccess(insn, is_write);

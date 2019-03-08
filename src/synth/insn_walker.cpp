@@ -68,6 +68,21 @@ void InsnWalker::LoadObj(vm::Insn *insn) {
   }
 }
 
+void InsnWalker::MaybeLoadObjectArrayElement(vm::Insn *insn) {
+  if (insn->op_ != vm::OP_ARRAY_READ) {
+    return;
+  }
+  vm::Object *array_obj = member_reg_to_obj_map_[insn->obj_reg_];
+  if (vm::ArrayWrapper::IsObjectArray(array_obj)) {
+    // NOTE: InsnAnnotator::TypeArrayRead has similar code.
+    vm::Register *idx_reg = insn->src_regs_[0];
+    CHECK(idx_reg->type_.is_const_);
+    int idx = idx_reg->initial_num_.GetValue0();
+    vm::Object *elm_obj = vm::ArrayWrapper::Get(array_obj, idx);
+    member_reg_to_obj_map_[insn->dst_regs_[0]] = elm_obj;
+  }
+}
+
 vm::Object *InsnWalker::GetObject() {
   return obj_;
 }
@@ -79,6 +94,7 @@ bool InsnWalker::IsNativeFuncall(vm::Insn *insn) {
 
 vm::Method *InsnWalker::GetCalleeMethod(vm::Insn *insn) {
   vm::Object *obj = GetCalleeObject(insn);
+  CHECK(obj);
   sym_t func_name = insn->label_;
   vm::Value *value = obj->LookupValue(func_name, false);
   CHECK(value != nullptr && value->type_ == vm::Value::METHOD);

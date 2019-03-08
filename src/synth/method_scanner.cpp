@@ -61,6 +61,7 @@ void MethodScanner::ScanInsn(vm::Insn *insn) {
     break;
   case vm::OP_ARRAY_READ:
   case vm::OP_ARRAY_WRITE:
+    InsnWalker::MaybeLoadObjectArrayElement(insn);
     ArrayAccess(insn);
     break;
   default:

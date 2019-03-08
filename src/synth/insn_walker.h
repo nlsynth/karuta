@@ -27,6 +27,7 @@ protected:
   InsnWalker(ThreadSynth *thr_synth, vm::Object *obj);
   void LoadObj(vm::Insn *insn);
   void MaybeLoadMemberObject(vm::Insn *insn);
+  void MaybeLoadObjectArrayElement(vm::Insn *insn);
   bool IsNativeFuncall(vm::Insn *insn);
   bool IsSubObjCall(vm::Insn *insn);
   bool IsDataFlowCall(vm::Insn *insn);
