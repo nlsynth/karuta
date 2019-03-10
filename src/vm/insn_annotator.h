@@ -33,6 +33,7 @@ private:
   static bool IsTypedReg(Register *reg);
   void TryType(Insn *insn);
   void TypeReturnValues(Insn *insn);
+  void TypeMemberAccess(Insn *insn);
   void TypeArrayRead(Insn *insn);
   void PropagateType();
   void TryPropagate(Insn *insn, std::set<Register *> *propagated);

@@ -207,29 +207,45 @@ void InsnAnnotator::TryType(Insn *insn) {
   }
   if (insn->op_ == OP_MEMBER_READ ||
       insn->op_ == OP_MEMBER_WRITE) {
-    Object *obj;
-    if (insn->op_ == OP_MEMBER_READ) {
-      obj = objs_[insn->src_regs_[0]];
-    } else {
-      obj = objs_[insn->src_regs_[1]];
+    TypeMemberAccess(insn);
+    return;
+  }
+}
+
+void InsnAnnotator::TypeMemberAccess(Insn *insn) {
+  Object *obj;
+  if (insn->op_ == OP_MEMBER_READ) {
+    obj = objs_[insn->src_regs_[0]];
+  } else {
+    obj = objs_[insn->src_regs_[1]];
+  }
+  if (obj == nullptr) {
+    if (!method_->IsTopLevel()) {
+      Status::os(Status::USER_ERROR) << "Failed to find object: "
+				     << sym_cstr(insn->label_);
+      MessageFlush::Get(Status::USER_ERROR);
+      method_->SetCompileFailure();
     }
-    if (obj == nullptr) {
-      CHECK(method_->IsTopLevel());
-      return;
+    return;
+  }
+  Value *value = obj->LookupValue(insn->label_, false);
+  if (value != nullptr) {
+    if (TlsWrapper::IsTlsValue(value)) {
+      value = TlsWrapper::GetValue(value->object_, nullptr);
     }
-    Value *value = obj->LookupValue(insn->label_, false);
-    if (value) {
-      if (TlsWrapper::IsTlsValue(value)) {
-	value = TlsWrapper::GetValue(value->object_, nullptr);
-      }
-      insn->dst_regs_[0]->type_.value_type_ = value->type_;
-      if (value->IsObjectType()) {
-	CHECK(value->object_ != nullptr);
-	objs_[insn->dst_regs_[0]] = value->object_;
-      }
+    insn->dst_regs_[0]->type_.value_type_ = value->type_;
+    if (value->IsObjectType()) {
+      CHECK(value->object_ != nullptr);
+      objs_[insn->dst_regs_[0]] = value->object_;
+    }
+  } else {
+    if (!method_->IsTopLevel()) {
+      Status::os(Status::USER_ERROR) << "Failed to find object: "
+				     << sym_cstr(insn->label_);
+      MessageFlush::Get(Status::USER_ERROR);
+      method_->SetCompileFailure();
     }
     // else, the type should be determined in the compiler.
-    return;
   }
 }
 
