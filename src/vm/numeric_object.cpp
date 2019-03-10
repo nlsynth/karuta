@@ -51,6 +51,8 @@ sym_t NumericObject::GetMethodName(Object *obj, enum OpCode op) {
     n = sym_lookup("Sub");
   } else if (op == OP_MUL || op == OP_MUL_MAY_WITH_TYPE) {
     n = sym_lookup("Mul");
+  } else if (op == OP_DIV || op == OP_DIV_MAY_WITH_TYPE) {
+    n = sym_lookup("Div");
   }
   if (n == sym_null) {
     return sym_null;
