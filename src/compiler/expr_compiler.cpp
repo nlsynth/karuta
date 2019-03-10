@@ -64,6 +64,7 @@ RegisterTuple ExprCompiler::CompileExpr(fe::Expr *expr) {
       type == fe::BINOP_ADD_ASSIGN ||
       type == fe::BINOP_SUB_ASSIGN ||
       type == fe::BINOP_MUL_ASSIGN ||
+      type == fe::BINOP_DIV_ASSIGN ||
       type == fe::BINOP_LSHIFT_ASSIGN ||
       type == fe::BINOP_RSHIFT_ASSIGN ||
       type == fe::BINOP_AND_ASSIGN ||
@@ -100,6 +101,8 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
   case vm::OP_SUB_MAY_WITH_TYPE:
   case vm::OP_MUL:
   case vm::OP_MUL_MAY_WITH_TYPE:
+  case vm::OP_DIV:
+  case vm::OP_DIV_MAY_WITH_TYPE:
   case vm::OP_GT:
   case vm::OP_LT:
   case vm::OP_GTE:
@@ -246,6 +249,7 @@ vm::OpCode ExprCompiler::GetOpCodeFromExpr(fe::Expr *expr) {
   case fe::BINOP_ADD: return vm::OP_ADD;
   case fe::BINOP_SUB: return vm::OP_SUB;
   case fe::BINOP_MUL: return vm::OP_MUL;
+  case fe::BINOP_DIV: return vm::OP_DIV;
   case fe::BINOP_GT: return vm::OP_GT;
   case fe::BINOP_LT: return vm::OP_LT;
   case fe::BINOP_GTE: return vm::OP_GTE;
@@ -279,6 +283,7 @@ vm::OpCode ExprCompiler::MayRewriteToOpWithType(vm::OpCode op) {
     case vm::OP_ADD: return vm::OP_ADD_MAY_WITH_TYPE;
     case vm::OP_SUB: return vm::OP_SUB_MAY_WITH_TYPE;
     case vm::OP_MUL: return vm::OP_MUL_MAY_WITH_TYPE;
+    case vm::OP_DIV: return vm::OP_DIV_MAY_WITH_TYPE;
     }
   }
   return op;

@@ -72,6 +72,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   case OP_ADD_MAY_WITH_TYPE:
   case OP_SUB_MAY_WITH_TYPE:
   case OP_MUL_MAY_WITH_TYPE:
+  case OP_DIV_MAY_WITH_TYPE:
     if (MayExecuteCustomOp(method, frame, insn)) {
       need_suspend = true;
       if (!thr_->IsRunnable()) {
@@ -251,6 +252,15 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
     iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
 			  &frame->reg_values_[dst].num_);
     break;
+  case OP_DIV:
+  case OP_DIV_MAY_WITH_TYPE:
+    iroha::Op::CalcBinOp(iroha::BINOP_DIV,
+			 frame->reg_values_[lhs].num_,
+			 frame->reg_values_[rhs].num_,
+			 &frame->reg_values_[dst].num_);
+    iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
+			  &frame->reg_values_[dst].num_);
+    break;
   case OP_ASSIGN:
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
     iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
@@ -316,7 +326,8 @@ void Executor::RetryBinopWithType(const Method *method, MethodFrame *frame, Insn
   } else {
     CHECK(insn->op_ == OP_ADD_MAY_WITH_TYPE ||
 	  insn->op_ == OP_SUB_MAY_WITH_TYPE ||
-	  insn->op_ == OP_MUL_MAY_WITH_TYPE);
+	  insn->op_ == OP_MUL_MAY_WITH_TYPE ||
+	  insn->op_ == OP_DIV_MAY_WITH_TYPE);
   }
   int lhs = insn->src_regs_[0]->id_;
   int rhs = insn->src_regs_[1]->id_;
