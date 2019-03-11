@@ -30,7 +30,7 @@ extern sym_t sym_branch;
 extern sym_t sym_for, sym_do, sym_while, sym_do_while;
 extern sym_t sym_switch, sym_case, sym_default;
 extern sym_t sym_break, sym_continue, sym_goto;
-extern sym_t sym_return;
+extern sym_t sym_return, sym_as;
 extern sym_t sym_logic_inv, sym_tri_term;
 extern sym_t sym_gt, sym_lt;
 extern sym_t sym_gte, sym_lte;

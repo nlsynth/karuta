@@ -119,7 +119,7 @@ Stmt *Emitter::BuildFuncDeclStmt(MethodDecl *decl) {
   return stmt;
 }
 
-void Emitter::EmitImportStmt(const char *str) {
+void Emitter::EmitImportStmt(const char *str, sym_t name) {
   Stmt *stmt = NewStmt(STMT_IMPORT);
   stmt->SetString(string(str));
   EmitStmt(stmt);

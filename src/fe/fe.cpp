@@ -105,56 +105,37 @@ namespace fe {
 std::unique_ptr<fe::ScannerInfo> FE::scanner_info_;
 
 int ScannerInfo::LookupKeyword(sym_t sym) const {
-  if (sym == sym_def) {
-    return K_DEF;
-  }else if (sym == sym_func) {
-    return K_FUNC;
-  } else if (sym == sym_bool) {
-    return K_BOOL;
-  } else if (sym == sym_int) {
-    return K_INT;
-  } else if (sym == sym_object) {
-    return K_OBJECT;
-  } else if (sym == sym_thread) {
-    return K_THREAD;
-  } else if (sym == sym_channel) {
-    return K_CHANNEL;
-  } else if (sym == sym_mailbox) {
-    return K_MAILBOX;
-  } else if (sym == sym_goto) {
-    return K_GOTO;
-  } else if (sym == sym_return) {
-    return K_RETURN;
-  } else if (sym == sym_if) {
-    return K_IF;
-  } else if (sym == sym_else) {
-    return K_ELSE;
-  } else if (sym == sym_enum) {
-    return K_ENUM;
-  } else if (sym == sym_import) {
-    return K_IMPORT;
-  } else if (sym == sym_for) {
-    return K_FOR;
-  } else if (sym == sym_while) {
-    return K_WHILE;
-  } else if (sym == sym_do) {
-    return K_DO;
-  } else if (sym == sym_const) {
-    return K_CONST;
-  } else if (sym == sym_switch) {
-    return K_SWITCH;
-  } else if (sym == sym_case) {
-    return K_CASE;
-  } else if (sym == sym_default) {
-    return K_DEFAULT;
-  } else if (sym == sym_break) {
-    return K_BREAK;
-  } else if (sym == sym_continue) {
-    return K_CONTINUE;
-  } else if (sym == sym_string) {
-    return K_STRING;
-  } else if (sym == sym_var) {
-    return K_VAR;
+  static map<string, int> kw = {
+    {"as", K_AS},
+    {"def", K_DEF},
+    {"func", K_FUNC},
+    {"bool", K_BOOL},
+    {"int", K_INT},
+    {"object", K_OBJECT},
+    {"thread", K_THREAD},
+    {"channel", K_CHANNEL},
+    {"mailbox", K_MAILBOX},
+    {"goto", K_GOTO},
+    {"return", K_RETURN},
+    {"if", K_IF},
+    {"else", K_ELSE},
+    {"enum", K_ENUM},
+    {"import", K_IMPORT},
+    {"for", K_FOR},
+    {"while", K_WHILE},
+    {"do", K_DO},
+    {"const", K_CONST},
+    {"switch", K_SWITCH},
+    {"case", K_CASE},
+    {"default", K_DEFAULT},
+    {"break", K_BREAK},
+    {"continue", K_CONTINUE},
+    {"string", K_STRING},
+    {"var", K_VAR},
+  };
+  auto it = kw.find(sym_str(sym));
+  if (it != kw.end()) {
+    return it->second;
   }
   return 0;
 }

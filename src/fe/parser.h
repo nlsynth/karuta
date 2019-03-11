@@ -49,41 +49,42 @@ extern int yydebug;
     K_FUNC = 259,
     K_ENUM = 260,
     K_IMPORT = 261,
-    K_ASSIGN = 262,
-    K_SHIFT = 263,
-    K_INT = 264,
-    K_BOOL = 265,
-    K_STRING = 266,
-    K_OBJECT = 267,
-    K_THREAD = 268,
-    K_CHANNEL = 269,
-    K_MAILBOX = 270,
-    K_VAR = 271,
-    K_ADD_SUB = 272,
-    K_LG_COMPARE = 273,
-    K_EQ_COMPARE = 274,
-    K_INC_DEC = 275,
-    K_CONST = 276,
-    K_IF = 277,
-    K_ELSE = 278,
-    K_RETURN = 279,
-    K_GOTO = 280,
-    K_FOR = 281,
-    K_WHILE = 282,
-    K_DO = 283,
-    K_CONTINUE = 284,
-    K_SWITCH = 285,
-    K_CASE = 286,
-    K_DEFAULT = 287,
-    K_BREAK = 288,
-    NUM = 289,
-    SYM = 290,
-    STR = 291,
-    K_LOGIC_OR = 292,
-    K_LOGIC_AND = 293,
-    K_BIT_CONCAT = 294,
-    SIGN = 295,
-    ADDRESS = 296
+    K_AS = 262,
+    K_ASSIGN = 263,
+    K_SHIFT = 264,
+    K_INT = 265,
+    K_BOOL = 266,
+    K_STRING = 267,
+    K_OBJECT = 268,
+    K_THREAD = 269,
+    K_CHANNEL = 270,
+    K_MAILBOX = 271,
+    K_VAR = 272,
+    K_ADD_SUB = 273,
+    K_LG_COMPARE = 274,
+    K_EQ_COMPARE = 275,
+    K_INC_DEC = 276,
+    K_CONST = 277,
+    K_IF = 278,
+    K_ELSE = 279,
+    K_RETURN = 280,
+    K_GOTO = 281,
+    K_FOR = 282,
+    K_WHILE = 283,
+    K_DO = 284,
+    K_CONTINUE = 285,
+    K_SWITCH = 286,
+    K_CASE = 287,
+    K_DEFAULT = 288,
+    K_BREAK = 289,
+    NUM = 290,
+    SYM = 291,
+    STR = 292,
+    K_LOGIC_OR = 293,
+    K_LOGIC_AND = 294,
+    K_BIT_CONCAT = 295,
+    SIGN = 296,
+    ADDRESS = 297
   };
 #endif
 /* Tokens.  */
@@ -91,41 +92,42 @@ extern int yydebug;
 #define K_FUNC 259
 #define K_ENUM 260
 #define K_IMPORT 261
-#define K_ASSIGN 262
-#define K_SHIFT 263
-#define K_INT 264
-#define K_BOOL 265
-#define K_STRING 266
-#define K_OBJECT 267
-#define K_THREAD 268
-#define K_CHANNEL 269
-#define K_MAILBOX 270
-#define K_VAR 271
-#define K_ADD_SUB 272
-#define K_LG_COMPARE 273
-#define K_EQ_COMPARE 274
-#define K_INC_DEC 275
-#define K_CONST 276
-#define K_IF 277
-#define K_ELSE 278
-#define K_RETURN 279
-#define K_GOTO 280
-#define K_FOR 281
-#define K_WHILE 282
-#define K_DO 283
-#define K_CONTINUE 284
-#define K_SWITCH 285
-#define K_CASE 286
-#define K_DEFAULT 287
-#define K_BREAK 288
-#define NUM 289
-#define SYM 290
-#define STR 291
-#define K_LOGIC_OR 292
-#define K_LOGIC_AND 293
-#define K_BIT_CONCAT 294
-#define SIGN 295
-#define ADDRESS 296
+#define K_AS 262
+#define K_ASSIGN 263
+#define K_SHIFT 264
+#define K_INT 265
+#define K_BOOL 266
+#define K_STRING 267
+#define K_OBJECT 268
+#define K_THREAD 269
+#define K_CHANNEL 270
+#define K_MAILBOX 271
+#define K_VAR 272
+#define K_ADD_SUB 273
+#define K_LG_COMPARE 274
+#define K_EQ_COMPARE 275
+#define K_INC_DEC 276
+#define K_CONST 277
+#define K_IF 278
+#define K_ELSE 279
+#define K_RETURN 280
+#define K_GOTO 281
+#define K_FOR 282
+#define K_WHILE 283
+#define K_DO 284
+#define K_CONTINUE 285
+#define K_SWITCH 286
+#define K_CASE 287
+#define K_DEFAULT 288
+#define K_BREAK 289
+#define NUM 290
+#define SYM 291
+#define STR 292
+#define K_LOGIC_OR 293
+#define K_LOGIC_AND 294
+#define K_BIT_CONCAT 295
+#define SIGN 296
+#define ADDRESS 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -152,7 +154,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 156 "src/fe/parser.h" /* yacc.c:1909  */
+#line 158 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

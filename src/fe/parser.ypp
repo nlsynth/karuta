@@ -51,7 +51,7 @@ extern void yyerror(const char *msg);
 %type <var_decl_set> RETURN_SPEC RETURN_TYPE_LIST
 %type <enum_decl> ENUM_DECL ENUM_ITEM_LIST
 %type <str> STR
-%type <sym> SYM TYPE_NAME
+%type <sym> SYM TYPE_NAME IMPORT_SPEC_OR_EMPTY
 %type <num> NUM NUM_EXPR ARRAY_ELM K_BIT_CONCAT
 %type <sub_op> K_ASSIGN K_LG_COMPARE K_EQ_COMPARE
 %type <sub_op> K_ADD_SUB K_INC_DEC K_SHIFT
@@ -61,7 +61,7 @@ extern void yyerror(const char *msg);
 %type <annotation_value> ANNOTATION_VALUE IMPORT_PARAM_HEAD
 %type <annotation_value_set> ANNOTATION_VALUE_LIST
 
-%token K_DEF K_FUNC K_ENUM K_IMPORT
+%token K_DEF K_FUNC K_ENUM K_IMPORT K_AS
 %token K_ASSIGN K_SHIFT
 %token K_INT K_BOOL K_STRING K_OBJECT K_THREAD K_CHANNEL K_MAILBOX K_VAR
 %token K_ADD_SUB K_LG_COMPARE K_EQ_COMPARE
@@ -317,9 +317,8 @@ STMT : EOS {
 } | VAR_DECL_STMT EOS {
   Emitter::EmitVarDeclStmtSet($1);
 } | LABEL
-  | K_IMPORT {ScannerInterface::InSemiColonStatement();} STR EOS {
-  Emitter::EmitImportStmt($3);
-} | THREAD_DECL_STMT EOS {
+  | IMPORT_STMT
+  | THREAD_DECL_STMT EOS {
 } | CHANNEL_DECL_STMT EOS {
 } | MAILBOX_DECL_STMT EOS {
 }
@@ -327,6 +326,16 @@ STMT : EOS {
 // End Of Statement
 EOS : ';' {
   ScannerInterface::EndSemiColonStatement();
+}
+
+IMPORT_STMT : K_IMPORT {ScannerInterface::InSemiColonStatement();} STR IMPORT_SPEC_OR_EMPTY EOS {
+  Emitter::EmitImportStmt($3, $4);
+}
+
+IMPORT_SPEC_OR_EMPTY : K_AS SYM {
+  $$ = $2;
+} | {
+  $$ = sym_null;
 }
 
 THREAD_DECL_STMT : K_THREAD {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN FUNCALL {
