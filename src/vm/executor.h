@@ -51,7 +51,7 @@ private:
   void ExecChannelDecl(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecMailboxDecl(const Method *method, MethodFrame *frame, Insn *insn);
   
-  void ExecImport(Insn *insn);
+  void ExecImport(MethodFrame *frame, Insn *insn);
   void ExecFuncdecl(const Method *method, MethodFrame *frame, Insn *insn);
   void ExecMemberReadWithCheck(Method *method, MethodFrame *frame,
 			       const Insn *insn);

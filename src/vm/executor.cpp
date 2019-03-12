@@ -164,7 +164,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     ExecMailboxDecl(method, frame, insn);
     break;
   case OP_IMPORT:
-    ExecImport(insn);
+    ExecImport(frame, insn);
     need_suspend = true;
     break;
   case OP_MEMBER_READ_WITH_CHECK:
@@ -796,22 +796,30 @@ void Executor::ExecMailboxDecl(const Method *method,
   value->object_ = mailbox_obj;
 }
 
-void Executor::ExecImport(Insn *insn) {
+void Executor::ExecImport(MethodFrame *frame, Insn *insn) {
   const string &fn = insn->insn_stmt_->GetString();
   VM *vm = thr_->GetVM();
   vm::Object *thr_obj = vm->kernel_object_->Clone();
   Method *method = fe::FE::CompileFile(fn, false, vm, thr_obj);
-  if (!method) {
+  if (method == nullptr) {
     Status::os(Status::USER_ERROR) << "Failed to import: " << fn;
     thr_->UserError();
     return;
   }
   vm->AddThreadFromMethod(thr_, thr_obj, method, 0);
   thr_->Suspend();
+
+  sym_t elm = insn->insn_stmt_->GetSym();
+  if (elm != sym_null) {
+    // import "foo.karuta" as elm.
+    Value *value = frame->obj_->LookupValue(elm, true);
+    value->type_ = Value::OBJECT;
+    value->object_ = thr_obj;
+  }
 }
 
 void Executor::ExecFuncdecl(const Method *method, MethodFrame *frame,
-				    Insn *insn) {
+			    Insn *insn) {
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   if (!obj) {
     Status::os(Status::USER_ERROR) << "Can't find object";
