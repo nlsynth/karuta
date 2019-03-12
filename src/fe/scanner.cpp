@@ -1,4 +1,4 @@
-// Copyright Yusuke Tabata 2007-2017
+// Copyright Yusuke Tabata 2007-2019
 
 #include "fe/scanner.h"
 
@@ -32,12 +32,11 @@ Scanner::Scanner() {
 int Scanner::GetToken(int *sub) {
   *sub = 0;
   SkipNonToken();
-  //
   char c = CurChar();
   if (IsDec(c)) {
     return ReadNum();
   }
-  //
+  // operator.
   struct OperatorTableEntry *op = lookup_op();
   if (op) {
     int r;
@@ -45,14 +44,23 @@ int Scanner::GetToken(int *sub) {
     *sub = op->sub_op;
     return r;
   }
-  //
+  // string
   if (c == '\"') {
     return ReadStr();
   }
+  // sym.
   if (IsSymHead(c)) {
     return ReadSym();
   }
-  return -1;
+  if (IsEof()) {
+    return -1;
+  }
+  // non sym char.
+  if (c < 0) {
+    int ch = c;
+    return ch + 256;
+  }
+  return c;
 }
 
 NumericLiteral Scanner::GetNum() {
@@ -155,6 +163,10 @@ bool Scanner::IsCommentStart() {
     return true;
   }
   return false;
+}
+
+bool Scanner::IsEof() {
+  return (cur_ >= im_->buf.size());
 }
 
 void Scanner::PushChar(char c) {
@@ -424,7 +436,7 @@ int ScannerInterface::GetToken(ScannerToken *tk) {
   } else if (r == Scanner::s_info->str_token) {
     tk->str = Scanner::current_scanner_->GetStr();
     if (Scanner::dbg_scanner) {
-      cout << "str=(" << tk->str << ")\n";
+      cout << "str=(" << *(tk->str) << ")\n";
     }
   } else {
     if (Scanner::dbg_scanner) {

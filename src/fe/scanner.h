@@ -86,6 +86,7 @@ private:
   void SkipNonToken();
   void SkipComment();
   bool IsCommentStart();
+  bool IsEof();
 
   void GoAhead();
 
