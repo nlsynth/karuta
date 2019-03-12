@@ -122,6 +122,7 @@ Stmt *Emitter::BuildFuncDeclStmt(MethodDecl *decl) {
 void Emitter::EmitImportStmt(const char *str, sym_t name) {
   Stmt *stmt = NewStmt(STMT_IMPORT);
   stmt->SetString(string(str));
+  stmt->SetSym(name);
   EmitStmt(stmt);
 }
 

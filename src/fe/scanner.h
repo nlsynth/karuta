@@ -25,6 +25,10 @@ struct NumericLiteral {
   int width;
 };
 
+
+// This is passed to the Scannar's constructor.
+// Passing this on Scanner's construction time to avoid static dependency on
+// the parser from the scanner.
 class ScannerInfo {
 public:
   int LookupKeyword(sym_t sym) const;
@@ -39,7 +43,7 @@ struct ScannerToken {
   sym_t sym;
   NumericLiteral num;
   int sub_op;
-  const char *str;
+  const string *str;
 };
 
 struct ScannerPos {
@@ -53,15 +57,17 @@ struct ScannerPos {
 class Scanner {
 public:
   Scanner();
+
   static void Init(const ScannerInfo *si, OperatorTableEntry *ops, bool dbg);
   static FileImage *CreateFileImage(const char *fn);
+
   void SetFileImage(FileImage *im);
   void ReleaseFileImage();
 
   int GetToken(int *sub);
   NumericLiteral GetNum();
   sym_t GetSym();
-  const char *GetStr();
+  const string *GetStr();
   void GetPosition(ScannerPos *pos);
   void InSemiColonStatement();
   void EndSemiColonStatement();
@@ -110,6 +116,8 @@ private:
   int ln_;
   bool in_semicolon_;
   bool in_array_elm_;
+  // Unescaped strings in this file.
+  vector<string *> strs_;
 
 public:
   static OperatorTableEntry *op_tab;

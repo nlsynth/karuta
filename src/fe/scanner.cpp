@@ -2,6 +2,8 @@
 
 #include "fe/scanner.h"
 
+#include "base/stl_util.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -88,8 +90,8 @@ sym_t Scanner::GetSym() {
   return sym_lookup(token_);
 }
 
-const char *Scanner::GetStr() {
-  return token_;
+const string *Scanner::GetStr() {
+  return strs_[strs_.size() - 1];
 }
 
 void Scanner::GetPosition(ScannerPos *pos) {
@@ -225,6 +227,7 @@ int Scanner::ReadStr() {
     PushChar(c);
     GoAhead();
   }
+  strs_.push_back(new string(token_));
   return s_info->str_token;
 }
 
@@ -356,6 +359,8 @@ void Scanner::SetFileImage(FileImage *im) {
 void Scanner::Reset() {
   cur_ = 0;
   ln_ = 1;
+  STLDeleteValues(&strs_);
+  strs_.clear();
 }
 
 bool Scanner::UseReturnAsSep() {
@@ -363,7 +368,7 @@ bool Scanner::UseReturnAsSep() {
 }
 
 void Scanner::ReleaseFileImage() {
-  im_.reset(nullptr);
+  SetFileImage(nullptr);
 }
 
 void Scanner::InSemiColonStatement() {

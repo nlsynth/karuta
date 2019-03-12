@@ -77,7 +77,7 @@ int yylex() {
   } else if (r == NUM) {
     yylval.num = tk.num;
   } else if (r == STR) {
-    yylval.str = tk.str;
+    yylval.str = tk.str->c_str();
   } else if (r == K_ASSIGN || r == K_ADD_SUB ||
 	     r == K_INC_DEC || r == K_LG_COMPARE ||
 	     r == K_EQ_COMPARE || r == K_SHIFT) {
