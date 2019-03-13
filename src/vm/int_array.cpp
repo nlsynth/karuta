@@ -63,15 +63,15 @@ void IntArray::WriteSingle(uint64_t addr, const iroha::Numeric &data) {
   p->data[offset] = data;
 }
 
-void IntArray::WriteWide(uint64_t addr, const iroha::Numeric &data) {
+void IntArray::WriteWide(uint64_t byte_addr, const iroha::Numeric &data) {
   int mw = data_width_.GetWidth();
-  addr /= (mw / 8);
+  uint64_t array_addr = byte_addr / (mw / 8);
   int c = data.type_.GetWidth() / mw;
   for (int i = 0; i < c; ++i) {
     int l = mw * i;
     iroha::Numeric d;
     iroha::Op::SelectBits(data, l + mw - 1, l, &d);
-    WriteSingle(addr + i, d);
+    WriteSingle(array_addr + i, d);
   }
 }
 
@@ -85,15 +85,15 @@ iroha::Numeric IntArray::ReadSingle(uint64_t addr) {
   return p->data[offset];
 }
 
-iroha::Numeric IntArray::ReadWide(uint64_t addr, int width) {
+iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
   int mw = data_width_.GetWidth();
-  addr /= (mw / 8);
+  uint64_t array_addr = byte_addr / (mw / 8);
   iroha::Numeric n;
   n.type_.SetWidth(0);
   int c = width / mw;
   for (int i = 0; i < c; ++i) {
     iroha::Numeric d;
-    d = ReadSingle(addr + i);
+    d = ReadSingle(array_addr + i);
     iroha::Numeric t;
     iroha::Op::Concat(d, n, &t);
     n = t;
@@ -111,6 +111,9 @@ const iroha::NumericWidth &IntArray::GetDataWidth() const {
 
 const vector<uint64_t> &IntArray::GetShape() const {
   return shape_;
+}
+
+void IntArray::ImageIO(const string &fn, bool save) {
 }
 
 int IntArray::GetAddressWidth() const {

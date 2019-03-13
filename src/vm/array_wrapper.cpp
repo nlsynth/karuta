@@ -10,6 +10,7 @@
 #include "vm/native_objects.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/string_wrapper.h"
 #include "vm/thread.h"
 #include "vm/vm.h"
 
@@ -245,6 +246,26 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
   }
 }
 
+void ArrayWrapper::SaveImage(Thread *thr, Object *obj,
+			     const vector<Value> &args) {
+  ImageIO(true, thr, obj, args);
+}
+
+void ArrayWrapper::LoadImage(Thread *thr, Object *obj,
+			     const vector<Value> &args) {
+  ImageIO(false, thr, obj, args);
+}
+
+void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
+			   const vector<Value> &args) {
+  CHECK(args.size() > 0) << "save/load image requires a file name";
+  const Value& arg = args[0];
+  CHECK(StringWrapper::IsString(arg.object_));
+  ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
+  IntArray *arr = data->int_array_.get();
+  arr->ImageIO(StringWrapper::String(arg.object_), save);
+}
+
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m;
@@ -261,6 +282,10 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   m = NativeObjects::InstallNativeMethod(vm, obj, "notifyAccess",
 					 &ArrayWrapper::Notify,
 					 rets);
+  NativeObjects::InstallNativeMethod(vm, obj, "saveImage",
+				     &ArrayWrapper::SaveImage, rets);
+  NativeObjects::InstallNativeMethod(vm, obj, "loadImage",
+				     &ArrayWrapper::LoadImage, rets);
 }
 
 void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {
