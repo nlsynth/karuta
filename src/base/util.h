@@ -8,7 +8,6 @@ class Util {
 public:
   static string DirName(const string &fn);
   static bool IsHtmlFileName(const string &fn);
-  static bool IsCCFileName(const string &fn);
   static bool IsIrFileName(const string &fn);
   static bool CopyFile(const char *fn, ostream &os);
   static bool RewriteFile(const char *fn, const char *tag,

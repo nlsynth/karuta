@@ -41,16 +41,6 @@ bool Util::IsHtmlFileName(const string &fn) {
   return false;
 }
 
-bool Util::IsCCFileName(const string &fn) {
-  static set<string> suffixes;
-  if (suffixes.size() == 0) {
-    suffixes.insert("cc");
-    suffixes.insert("cpp");
-    suffixes.insert("cxx");
-  }
-  return CheckFileSuffix(fn, suffixes);
-}
-
 bool Util::IsIrFileName(const string &fn) {
   static set<string> suffixes;
   if (suffixes.size() == 0) {
