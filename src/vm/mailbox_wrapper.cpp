@@ -1,5 +1,6 @@
 #include "vm/mailbox_wrapper.h"
 
+#include "base/status.h"
 #include "synth/object_method_names.h"
 #include "vm/method.h"
 #include "vm/native_objects.h"
@@ -113,7 +114,13 @@ void MailboxWrapper::Put(Thread *thr, Object *obj,
   }
 }
 
-void MailboxWrapper::Notify(Thread *thr, Object *obj, const vector<Value> &args) {
+void MailboxWrapper::Notify(Thread *thr, Object *obj,
+			    const vector<Value> &args) {
+  if (args.size() != 1 || args[0].type_ != Value::NUM) {
+    Status::os(Status::USER_ERROR) << "Mailbox.write takes one value argument";
+    thr->UserError();
+    return;
+  }
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   data->number_ = args[0].num_;
   for (Thread *t : data->notify_waiters_) {
