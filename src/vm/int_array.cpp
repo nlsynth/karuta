@@ -113,7 +113,35 @@ const vector<uint64_t> &IntArray::GetShape() const {
   return shape_;
 }
 
-void IntArray::ImageIO(const string &fn, bool save) {
+bool IntArray::ImageIO(const string &fn, bool save) {
+  string raw_fn;
+  if (!Env::GetOutputPath(fn.c_str(), &raw_fn)) {
+    return false;
+  }
+  FILE *fp;
+  if (save) {
+    fp = fopen(raw_fn.c_str(), "w");
+  } else {
+    fp = fopen(raw_fn.c_str(), "r");
+  }
+  if (fp == nullptr) {
+    return false;
+  }
+  int num_bytes = (data_width_.GetWidth() + 1) / 8;
+  for (int i = 0; i < GetLength(); ++i) {
+    if (save) {
+      iroha::Numeric n = ReadSingle(i);
+      iroha::NumericValue *nv = n.GetMutableArray();
+      fwrite((void *)&nv->value_[0], num_bytes, 1, fp);
+    } else {
+      iroha::Numeric n;
+      iroha::NumericValue *nv = n.GetMutableArray();
+      fread((void *)&nv->value_[0], num_bytes, 1, fp);
+      WriteSingle(i, n);
+    }
+  }
+  fclose(fp);
+  return true;
 }
 
 int IntArray::GetAddressWidth() const {

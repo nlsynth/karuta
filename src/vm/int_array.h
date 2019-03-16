@@ -37,7 +37,7 @@ public:
   const iroha::NumericWidth &GetDataWidth() const;
   const vector<uint64_t> &GetShape() const;
 
-  void ImageIO(const string &fn, bool save);
+  bool ImageIO(const string &fn, bool save);
 
 private:
   IntArrayPage *FindPage(uint64_t addr);
