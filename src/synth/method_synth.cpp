@@ -357,6 +357,7 @@ void MethodSynth::SynthInsn(vm::Insn *insn) {
   case vm::OP_ADD:
   case vm::OP_SUB:
   case vm::OP_MUL:
+  case vm::OP_DIV:
   case vm::OP_EQ:
   case vm::OP_NE:
   case vm::OP_GT:
@@ -662,7 +663,23 @@ StateWrapper *MethodSynth::AllocState() {
   return sw;
 }
 
+void MethodSynth::SynthDivExpr(vm::Insn *insn) {
+  // Allows const / const only for now.
+  CHECK(insn->src_regs_[0]->type_.is_const_ &&
+	insn->src_regs_[1]->type_.is_const_);
+  int v = insn->src_regs_[0]->initial_num_.GetValue0() /
+    insn->src_regs_[1]->initial_num_.GetValue0();
+  vm::Register *dst_reg = insn->dst_regs_[0];
+  IRegister *ireg =
+    DesignTool::AllocConstNum(tab_, dst_reg->type_.width_.GetWidth(), v);
+  local_reg_map_[dst_reg] = ireg;
+}
+
 void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
+  if (insn->op_ == vm::OP_DIV) {
+    SynthDivExpr(insn);
+    return;
+  }
   IValueType vt;
   InsnToCalcValueType(insn, &vt);
   IResource *res = res_set_->GetOpResource(insn->op_, vt);
