@@ -84,6 +84,7 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
   case OP_ADD:
   case OP_SUB:
   case OP_MUL:
+  case OP_DIV:
   case OP_ASSIGN:
   case OP_GT:
   case OP_LT:
