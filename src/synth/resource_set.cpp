@@ -155,7 +155,8 @@ IResource *ResourceSet::GetAxiSlavePort(vm::Object *obj) {
   return res;
 }
 
-IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner, bool is_put) {
+IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner,
+				   bool is_put) {
   map<vm::Object *, IResource *> *m;
   const char *n;
   if (is_owner) {
@@ -180,6 +181,22 @@ IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner, bool is_put) 
   }
   tab_->resources_.push_back(res);
   (*m)[obj] = res;
+  return res;
+}
+
+IResource *ResourceSet::GetMailboxExtWriter(vm::Object *obj) {
+  auto it = mailbox_shared_reg_ext_writers_.find(obj);
+  if (it != mailbox_shared_reg_ext_writers_.end()) {
+    return it->second;
+  }
+  IResource *mb = GetMailbox(obj, true, false);
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  resource::kSharedRegExtWriter);
+  IResource *res = new IResource(tab_, rc);
+  res->SetParentResource(mb);
+  tab_->resources_.push_back(res);
+  mailbox_shared_reg_ext_writers_[obj] = res;
   return res;
 }
 

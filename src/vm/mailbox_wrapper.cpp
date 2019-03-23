@@ -14,7 +14,8 @@ static const char *kMailboxObjectKey = "mailbox";
 
 class MailboxData : public ObjectSpecificData {
 public:
-  MailboxData(int width, sym_t name) : width_(width), name_(sym_cstr(name)) {
+  MailboxData(int width, sym_t name, Annotation *an)
+    : width_(width), name_(sym_cstr(name)), an_(an) {
     number_.type_ = iroha::NumericWidth(false, width);
     has_value_ = false;
   }
@@ -31,11 +32,13 @@ public:
   set<Thread *> notified_threads_;
   iroha::Numeric number_;
   bool has_value_;
+  Annotation *an_;
 };
 
-Object *MailboxWrapper::NewMailbox(VM *vm, int width, sym_t name) {
+Object *MailboxWrapper::NewMailbox(VM *vm, int width, sym_t name,
+				   Annotation *an) {
   Object *mailbox_obj = vm->root_object_->Clone();
-  mailbox_obj->object_specific_.reset(new MailboxData(width, name));
+  mailbox_obj->object_specific_.reset(new MailboxData(width, name, an));
   InstallMethods(vm, mailbox_obj, width);
   return mailbox_obj;
 }
@@ -48,6 +51,11 @@ int MailboxWrapper::GetWidth(Object *obj) {
   CHECK(IsMailbox(obj));
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   return data->width_;
+}
+
+Annotation *MailboxWrapper::GetAnnotation(Object *obj) {
+  MailboxData *data = (MailboxData *)obj->object_specific_.get();
+  return data->an_;
 }
 
 void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {

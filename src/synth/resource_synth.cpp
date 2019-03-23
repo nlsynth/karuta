@@ -9,6 +9,7 @@
 #include "synth/object_synth.h"
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
+#include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 #include "vm/object.h"
 
@@ -95,6 +96,15 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
     res->GetParams()->SetDistance(d);
   }
   return res;
+}
+
+void ResourceSynth::MayAddSharedRegExtWriter(vm::Object *mailbox_obj) {
+  Annotation *an = vm::MailboxWrapper::GetAnnotation(mailbox_obj);
+  if (an == nullptr || !an->IsExtIO()) {
+    return;
+  }
+  IResource *res = rset_->GetMailboxExtWriter(mailbox_obj);
+  res->GetParams()->SetPortNamePrefix(an->GetName());
 }
 
 }  // namespace synth

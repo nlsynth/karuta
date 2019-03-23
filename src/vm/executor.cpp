@@ -715,7 +715,8 @@ void Executor::ExecBitRange(const Method *method, MethodFrame *frame,
   iroha::Op::SelectBits(value.num_, h, l, &res.num_);
 }
 
-void Executor::InitializeArray(IntArray *array, fe::ArrayInitializer *array_initializer) {
+void Executor::InitializeArray(IntArray *array,
+			       fe::ArrayInitializer *array_initializer) {
   if (array_initializer) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       iroha::Numeric num;
@@ -787,9 +788,10 @@ void Executor::ExecChannelDecl(const Method *method,
 
 void Executor::ExecMailboxDecl(const Method *method,
 			       MethodFrame *frame, Insn *insn) {
+  Annotation *an = insn->insn_stmt_->GetAnnotation();
   int width = insn->insn_stmt_->GetWidth().GetWidth();
   Object *mailbox_obj =
-    MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn->label_);
+    MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn->label_, an);
   Object *obj = frame->reg_values_[insn->obj_reg_->id_].object_;
   CHECK(obj);
   Value *value = obj->LookupValue(insn->label_, true);

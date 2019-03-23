@@ -220,6 +220,7 @@ void Emitter::EmitMailboxDeclStmt(Expr *var, bool is_primitive,
 				  sym_t name,
 				  const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
+  stmt->SetAnnotation(annotation_);
   EmitTypedObjStmt(stmt, var, is_primitive, name, width);
 }
 

@@ -346,8 +346,8 @@ CHANNEL_DECL_STMT : ANNOTATION_OR_EMPTY K_CHANNEL {ScannerInterface::InSemiColon
   Emitter::EmitChannelDeclStmt($4, $6.is_primitive, $6.name, $6.width);
 }
 
-MAILBOX_DECL_STMT : K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
-  Emitter::EmitMailboxDeclStmt($3, $5.is_primitive, $5.name, $5.width);
+MAILBOX_DECL_STMT : ANNOTATION_OR_EMPTY K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
+  Emitter::EmitMailboxDeclStmt($4, $6.is_primitive, $6.name, $6.width);
 }
 
 ASSIGN_OR_EMPTY : {

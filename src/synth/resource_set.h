@@ -43,6 +43,7 @@ public:
   IResource *GetAxiMasterPort(vm::Object *obj);
   IResource *GetAxiSlavePort(vm::Object *obj);
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
+  IResource *GetMailboxExtWriter(vm::Object *obj);
   IResource *GetTaskReturnRegWriter(int width);
   IResource *GetExtIO(const string &name, bool is_output, int width);
   IResource *GetExtTaskResource();
@@ -91,6 +92,7 @@ private:
   map<vm::Object *, IResource *> mailbox_shared_reg_;
   map<vm::Object *, IResource *> mailbox_putters_;
   map<vm::Object *, IResource *> mailbox_getters_;
+  map<vm::Object *, IResource *> mailbox_shared_reg_ext_writers_;
   map<string, IResource *> ext_io_;
 };
 

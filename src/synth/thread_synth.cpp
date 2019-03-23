@@ -16,6 +16,7 @@
 #include "synth/tool.h"
 #include "vm/array_wrapper.h"
 #include "vm/object.h"
+#include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 
 namespace synth {
@@ -164,6 +165,12 @@ void ThreadSynth::CollectUnclaimedMembers() {
       }
       rsynth_->MayAddAxiMasterPort(obj_synth_->GetObject(), member_obj);
       rsynth_->MayAddAxiSlavePort(obj_synth_->GetObject(), member_obj);
+    }
+    if (vm::MailboxWrapper::IsMailbox(member_obj)) {
+      if (sres->HasAccessor(member_obj, nullptr)) {
+	continue;
+      }
+      rsynth_->MayAddSharedRegExtWriter(member_obj);
     }
   }
   map<sym_t, vm::Method *> member_methods;
