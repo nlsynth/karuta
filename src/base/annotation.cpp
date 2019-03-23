@@ -182,6 +182,18 @@ bool Annotation::IsNoWait() {
   return nw;
 }
 
+string Annotation::GetWenSuffix() {
+  return LookupStrParam("wen", "");
+}
+
+string Annotation::GetNotifySuffix() {
+  return LookupStrParam("notify", "");
+}
+
+string Annotation::GetPutSuffix() {
+  return LookupStrParam("put", "");
+}
+
 bool Annotation::IsDataFlowEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
   return (s == "DataFlowEntry") || (s == "dataflow_entry");

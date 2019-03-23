@@ -105,6 +105,18 @@ void ResourceSynth::MayAddSharedRegExtWriter(vm::Object *mailbox_obj) {
   }
   IResource *res = rset_->GetMailboxExtWriter(mailbox_obj);
   res->GetParams()->SetPortNamePrefix(an->GetName());
+  string s = an->GetWenSuffix();
+  if (!s.empty()) {
+    res->GetParams()->SetWenSuffix(s);
+  }
+  s = an->GetNotifySuffix();
+  if (!s.empty()) {
+    res->GetParams()->SetNotifySuffix(s);
+  }
+  s = an->GetPutSuffix();
+  if (!s.empty()) {
+    res->GetParams()->SetPutSuffix(s);
+  }
 }
 
 }  // namespace synth

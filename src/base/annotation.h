@@ -86,6 +86,10 @@ public:
   int GetDepth();
   bool IsNoWait();
 
+  string GetWenSuffix();
+  string GetNotifySuffix();
+  string GetPutSuffix();
+
   void AddPinDecl(sym_t name, bool is_out, int width);
   int GetNrPinDecls();
   bool GetNthPinDecl(int nth, ResourceParams_pin *decl);
