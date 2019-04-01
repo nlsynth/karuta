@@ -3,13 +3,44 @@ Author: Yusuke TABATA (tabata.yusuke@gmail.com)
 
 ## What's this?
 TL;DR:
-    High level synthesis (HLS) from prototype based object oriented scripting language to RTL (Verilog).
-    The main objective of this project is to be useful for FPGA development.
+    High level synthesis (HLS) from scripting language (Karuta) to RTL (Verilog).
+    The main objective is to make FPGA development productive.
 
-This software Karuta (compiler) takes source code in Karuta Script language as an input and outputs cirtuits in Verilog HDL.
-As of now, this software is not so mature and has many many bugs.
+See docs/LRM.md for some more details.
 
-See https://sites.google.com/site/karutacompiler/ for some more details.
+## Overview
+Karuta Script is an object oriented scripting language. The syntax is similar to recent programming languages like JavaScript, Python, Ruby or so on.
+Minimum code looks like as follows.
+
+     def main() {
+       // Do some computation, I/O or call other methods.
+     }
+
+This defines a method 'main' of current object. It can be called like this.
+
+     main() // obj.main() can be used to specify an object.
+
+Now some computation is defined within the object, so Karuta compiler can take a snapshot of this object and transform it into RTL.
+
+     compile()  // A snapshot is taken.
+     // "my_module_rtl.html" is also possible.
+     writeHdl("my_module_rtl.v")
+
+### Important features
+
+This project designed its own language Karuta just only for RTL design instead of reusing existing languages.
+So, some of following features are incorporated in the language constructs to make it easy to use.
+
+* Prototype based object system to model design structures
+* Flexible data types
+    * Integer with width. Custom operators for defined data types like FP16
+* Communication primitives
+    * Threads, mailboxes, channels and so on
+    * AXI, RPC like handshake, GPIO, embedded verilog and so on
+* HDL generators and optimizers
+    * Generates Verilog or HTML
+    * SSA based optimizers
+    * Scheduling and allocation based on device parameters
 
 ## Usage
 
@@ -45,37 +76,6 @@ Run the output with your Verilog simulator.
 
 (If you do 'make install', karuta command will be available at the path you specified)
 
-## Overview
-Karuta Script is an object oriented scripting language. The syntax is similar to JavaScript, Python, Ruby or so on.
-Minimum code looks like as follows.
-
-     def Kernel.main() {
-       // Do some computation, I/O or call other methods.
-     }
-
-This defines a method 'main' of 'Kernel' object. It can be called like this.
-
-     Kernel.main()  // or just main() as 'Kernel' is default.
-
-Now some computation is defined within object 'Kernel', so Karuta compiler can take a snapshot of this object and transform it into RTL.
-
-     Kernel.compile()  // A snapshot is taken.
-     // "my_module_rtl.html" is also possible.
-     Kernel.writeHdl("my_module_rtl.v")
-
-### Features (selected)
-(Still many of them are just in demo level).
-
-* Prototype based object system
-    * Object.clone() to create derivative designs
-* Interger with width
-    * Declaration like "var x #32"
-* Threads
-* Channels
-* Verilog embedding
-* HTML output (in addition to Verilog)
-* (WIP: SSA based optimizers, scheduling and allocation)
-
 ## Command line options
 
 * Debug options
@@ -92,37 +92,20 @@ Now some computation is defined within object 'Kernel', so Karuta compiler can t
     * This can be used to get fixed module name for testing.
 * --output_marker=[marker]
     * Marker string to be output before output file name.
-    * NLI server uses this to generate links from output log.
+    * Karuta server uses this to generate links from output log.
 * --print_exit_status
     * Shows exit status at the end of execution.
-    * Test uses this to check if NLI isn't aborted.
+    * Test uses this to check if karuta isn't aborted.
 * --root
     * Prefix for file output name.
-    * NLI server uses this to isolate each run.
+    * Karuta server uses this to isolate each run.
 * --timeout
-    * Timeout of NLI command execution.
-    * Avoid infinite loop to run forever for test or NLI server.
+    * Timeout of karuta command execution.
+    * Avoid infinite loop to run forever for test or Karuta server.
 * --vanilla
     * Don't read lib/default-isynth.karuta.
 * --version
     * Print version number.
-
-## Source tree
-
-* src/
-    * Command and common utilities.
-* src/base
-    * Common code for other components.
-* src/compiler
-    * Karuta Script to bytecode.
-* src/fe
-    * Karuta Script parser.
-* src/synth
-    * Bytecode to Iroha IR.
-* src/vm
-    * Bytecode executor.
-* iroha/
-    * Iroha backend.
 
 ## COPYING
 
