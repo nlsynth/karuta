@@ -12,6 +12,8 @@ NOTE: The word Karuta means Japanese playing cards.
 
 Author: Yusuke Tabata (tabata.yusuke@gmail.com)
 
+Source of this projects: <https://github.com/nlsynth/karuta> (see its docs/ directory for this document)
+
 Karuta is an object-oriented scripting language and its compiler to design logic circuits. The main objective of Karuta is to improve the productivity of logic circuit design. This kind of software is usually known as HLS (High Level Synthesis).
 
 Karuta has various features to support hardware design.
@@ -94,8 +96,8 @@ With Karuta, you can annotate a method to make it an output port. The output val
 .. code-block:: none
 
    @ExtIO(output = "o")
-   def output(y int) {
-      print(y)
+   def output(v int) {
+      print(v)
    }
 
    def main() {
@@ -109,19 +111,45 @@ With Karuta, you can annotate a method to make it an output port. The output val
    compile()
    writeHdl("xorshift32.v")
 
-the code above will generate a Verilog file like as follows. The top module xorshift32 has an output port 'o'.
+The code above will generate a Verilog file like as follows. The top module xorshift32 has an output port 'o', so you can connect the port to other parts of your design.
 
 .. code-block:: none
 
    ... 100~ lines of code in Verilog here. ...
-   
+
    module xorshift32(clk, rst, o);
      input clk;
      input rst;
      output [31:0] o;
      mod_main mod_main_inst(.clk(clk), .rst(rst), .o(o));
    endmodule
-   
+
+This can be tidied up a bit by factoring out update formulas.
+
+.. code-block:: none
+
+   // Member variable of the default object for this file.
+   var y int
+
+   @ExtIO(output = "o")
+   def output(v int) {
+      print(v)
+   }
+
+   // Gets an argument t and returns an update value.
+   def update(t int) (int) {
+     t = t ^ (t << 13); t = t ^ (t >> 17); t = t ^ (t << 15)
+     return t
+   }
+
+   def main() {
+     y = 1
+     while true {
+       y = update(y)
+       output(y)
+     }
+   }
+
 =================
 Program structure
 =================
