@@ -22,7 +22,13 @@ static const char *kChannelObjectKey = "channel";
 class ChannelData : public ObjectSpecificData {
 public:
   ChannelData(int width, sym_t name, Annotation *an)
-    : width_(width), name_(sym_cstr(name)), an_(an) {};
+    : width_(width), name_(sym_cstr(name)), an_(an) {
+    if (an == nullptr) {
+      depth_ = 1;
+    } else {
+      depth_ = an_->GetDepth();
+    }
+  };
   virtual ~ChannelData() {};
 
   virtual const char *ObjectTypeKey() {
@@ -32,8 +38,10 @@ public:
   int width_;
   string name_;
   list<iroha::NumericValue> values_;
+  int depth_;
 
   set<Thread *> read_waiters_;
+  set<Thread *> write_waiters_;
   Annotation *an_;
 };
 
@@ -77,10 +85,7 @@ int ChannelWrapper::ChannelWidth(Object *obj) {
 int ChannelWrapper::ChannelDepth(Object *obj) {
   CHECK(IsChannel(obj));
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
-  if (pipe_data->an_ != nullptr) {
-    return pipe_data->an_->GetDepth();
-  }
-  return 1;
+  return pipe_data->depth_;
 }
 
 void ChannelWrapper::ReadMethod(Thread *thr, Object *obj,
@@ -96,7 +101,7 @@ void ChannelWrapper::ReadMethod(Thread *thr, Object *obj,
 bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   if (pipe_data->values_.size() == 0) {
-    BlockOnThis(thr, obj);
+    BlockOnRead(thr, obj);
     thr->Suspend();
     return false;
   }
@@ -106,6 +111,13 @@ bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
   *(value->num_.GetMutableArray()) = v;
   value->num_.type_ = iroha::NumericWidth(false, pipe_data->width_);
   pipe_data->values_.pop_front();
+  // Wake writers.
+  if (pipe_data->write_waiters_.size() > 0) {
+    for (Thread *t : pipe_data->write_waiters_) {
+      t->Resume();
+    }
+    pipe_data->write_waiters_.clear();
+  }
   return true;
 }
 
@@ -116,22 +128,35 @@ void ChannelWrapper::WriteMethod(Thread *thr, Object *obj,
     thr->UserError();
     return;
   }
-  WriteValue(args[0], obj);
+  WriteValue(args[0], thr, obj);
 }
 
-void ChannelWrapper::WriteValue(const Value &value, Object *obj) {
-  const iroha::NumericValue &v = value.num_.GetArray();
+void ChannelWrapper::WriteValue(const Value &value, Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
-  pipe_data->values_.push_back(v);
-  for (Thread *t : pipe_data->read_waiters_) {
-    t->Resume();
+  if (pipe_data->values_.size() == pipe_data->depth_) {
+    BlockOnWrite(thr, obj);
+    thr->Suspend();
+    return;
   }
-  pipe_data->read_waiters_.clear();
+  const iroha::NumericValue &v = value.num_.GetArray();
+  pipe_data->values_.push_back(v);
+  // Wake readers.
+  if (pipe_data->read_waiters_.size() > 0) {
+    for (Thread *t : pipe_data->read_waiters_) {
+      t->Resume();
+    }
+    pipe_data->read_waiters_.clear();
+  }
 }
 
-void ChannelWrapper::BlockOnThis(Thread *thr, Object *obj) {
+void ChannelWrapper::BlockOnRead(Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   pipe_data->read_waiters_.insert(thr);
+}
+
+void ChannelWrapper::BlockOnWrite(Thread *thr, Object *obj) {
+  ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
+  pipe_data->write_waiters_.insert(thr);
 }
 
 }  // namespace vm

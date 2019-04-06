@@ -18,11 +18,12 @@ public:
   static void ReadMethod(Thread *thr, Object *obj, const vector<Value> &args);
   static void WriteMethod(Thread *thr, Object *obj, const vector<Value> &args);
 
-  static void WriteValue(const Value &value, Object *obj);
+  static void WriteValue(const Value &value, Thread *thr, Object *obj);
   static bool ReadValue(Thread *thr, Object *obj, Value *value);
 
 private:
-  static void BlockOnThis(Thread *thr, Object *obj);
+  static void BlockOnRead(Thread *thr, Object *obj);
+  static void BlockOnWrite(Thread *thr, Object *obj);
 };
 
 }  // namespace vm
