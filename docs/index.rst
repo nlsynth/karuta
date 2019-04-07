@@ -27,7 +27,7 @@ Simplest Xorshift32 in Karuta is like this:
 
 .. code-block:: none
 
-    def main() {
+    func main() {
       var y int = 1
       for (var i int = 0; i < 10; ++i) {
           y = y ^ (y << 13)
@@ -54,7 +54,7 @@ I guess this looks pretty mundane to you, so let's start hardware design.
 
 .. code-block:: none
 
-   def main() {
+   func main() {
       var y int = 1
       for (var i int = 0; i < 10; ++i) {
           y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
@@ -96,11 +96,11 @@ With Karuta, you can annotate a method to make it an output port. The output val
 .. code-block:: none
 
    @ExtIO(output = "o")
-   def output(v int) {
+   func output(v int) {
       print(v)
    }
 
-   def main() {
+   func main() {
       var y int = 1
       for (var i int = 0; i < 10; ++i) {
           y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
@@ -132,23 +132,68 @@ This can be tidied up a bit by factoring out update formulas.
    var y int
 
    @ExtIO(output = "o")
-   def output(v int) {
+   func output(v int) {
       print(v)
    }
 
    // Gets an argument t and returns an update value.
-   def update(t int) (int) {
+   func update(t int) (int) {
      t = t ^ (t << 13); t = t ^ (t >> 17); t = t ^ (t << 15)
      return t
    }
 
-   def main() {
+   func main() {
      y = 1
      while true {
        y = update(y)
        output(y)
      }
    }
+
+The last example here illustrates some of the most important features of Karuta such as multiple threads and channels.
+
+.. code-block:: none
+
+   // This channels can be accessed like ch.write(v) or v = ch.read()
+   channel ch int
+
+   func update(t int) (int) {
+     t = t ^ (t << 13); t = t ^ (t >> 17); t = t ^ (t << 15)
+     return t
+   }
+
+   // main() will be compiled to be an entry point of a thread.
+   func main() {
+     var y int = 1
+     while true {
+       y = update(y)
+       ch.write(y)
+     }
+   }
+
+   @ExtIO(output = "o")
+   func output(y #0) {
+     print(y)
+   }
+
+   // @ThreadEntry() annotation makes this method as an entry point of a thread.
+   @ThreadEntry()
+   func thr() {
+     var b #0 = 0
+     while true {
+       var v int = ch.read()
+       // Flip the output on-off value when the generated random number is
+       // below this number.
+       if v < 1000000 {
+         b = ~b
+         output(b)
+       }
+     }
+    }
+
+This code has 2 thread entry points. One generates random numbers and the another reads the numbers via the channel.
+When the code is compiled, generated Verilog code will have 2 state machines ('always' blocks).
+You can deploy the code to an FPGA board, connect the output to an LED and see it flickers randomly.
 
 =================
 Program structure
