@@ -12,6 +12,7 @@
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/thread.h"
+#include "vm/thread_wrapper.h"
 #include "vm/vm.h"
 // This should be the last.
 #include "fe/parser.h"
@@ -150,17 +151,17 @@ FE::FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode)
   vm::Thread::SetByteCodeDebug(dbg_bytecode);
 }
 
-void FE::Run(bool vanilla, const vector<string>& files) {
+void FE::Run(bool with_run, bool vanilla, const vector<string>& files) {
   NodePool::Init();
 
   vm::VM vm;
   bool ok = true;
   if (!vanilla) {
-    ok = RunFile("default-isynth.karuta", &vm);
+    ok = RunFile(false, "default-isynth.karuta", &vm);
   }
   if (ok) {
     for (size_t i = 0; i < files.size(); ++i) {
-      ok = RunFile(files[i], &vm);
+      ok = RunFile(with_run, files[i], &vm);
       if (!ok) {
 	break;
       }
@@ -187,7 +188,7 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
     compiler::Compiler::CompileParseTree(vm, obj, parse_tree);
 }
 
-bool FE::RunFile(const string &file, vm::VM *vm) {
+bool FE::RunFile(bool with_run, const string &file, vm::VM *vm) {
   Env::SetCurrentFile(file);
   vm::Object *thr_obj = vm->kernel_object_->Clone();
   vm::Method *method = CompileFile(file, dbg_parser_, vm, thr_obj);
@@ -196,6 +197,10 @@ bool FE::RunFile(const string &file, vm::VM *vm) {
   }
   vm->AddThreadFromMethod(nullptr, thr_obj, method, 0);
   vm->Run();
+  if (with_run) {
+    vm::ThreadWrapper::Run(vm, thr_obj);
+    vm->Run();
+  }
   return true;
 }
 

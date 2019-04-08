@@ -35,7 +35,7 @@ private:
   void InstallTimeout();
   void ParseArgs(int argc, char **argv, ArgParser *arg_parser);
   void ProcDebugArgs(vector<char *> &dbg_flags);
-  void RunFiles(vector<string> &files);
+  void RunFiles(bool with_run, vector<string> &files);
   void PrintUsage();
 
   bool dbg_scanner_;
@@ -56,16 +56,17 @@ void Main::PrintUsage() {
        << "   --output_marker [marker]\n"
        << "   --print_exit_status\n"
        << "   --root [path]\n"
+       << "   --run\n"
        << "   --timeout [ms]\n"
        << "   --vanilla\n"
        << "   --version\n";
   exit(0);
 }
 
-void Main::RunFiles(vector<string> &files) {
+void Main::RunFiles(bool with_run, vector<string> &files) {
   fe::FE fe(dbg_parser_, dbg_scanner_, dbg_bytecode_);
 
-  fe.Run(vanilla_, files);
+  fe.Run(with_run, vanilla_, files);
 }
 
 void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
@@ -118,6 +119,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("output_marker", nullptr);
   parser->RegisterValueFlag("module_prefix", nullptr);
   parser->RegisterValueFlag("iroha_bin", nullptr);
+  parser->RegisterBoolFlag("run", nullptr);
   parser->RegisterBoolFlag("z", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
@@ -172,7 +174,8 @@ int Main::main(int argc, char **argv) {
   ProcDebugArgs(args.debug_flags);
   string exit_status;
   LOG(INFO) << "KARUTA-" << Env::GetVersion();
-  RunFiles(args.source_files);
+  bool with_run = args.GetBoolFlag("run", false);
+  RunFiles(with_run, args.source_files);
   if (Status::CheckAllErrors(true)) {
     exit_status = "error";
   }
