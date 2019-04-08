@@ -442,7 +442,8 @@ void Executor::ExecNumUniop(MethodFrame *frame, Insn *insn) {
     break;
   }
   int dst_id = insn->dst_regs_[0]->id_;
-  iroha::Op::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_, &res);
+  iroha::Op::FixupWidth(frame->method_->method_regs_[dst_id]->type_.width_,
+			&res);
   dst_value.num_ = res;
 }
 
