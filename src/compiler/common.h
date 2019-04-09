@@ -24,6 +24,7 @@ class Value;
 
 namespace compiler {
 class Compiler;
+class CompileOptions;
 class ExprCompiler;
 class MethodCompiler;
 

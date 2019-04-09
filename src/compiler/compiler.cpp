@@ -11,11 +11,32 @@ namespace compiler {
 
 void Compiler::CompileMethod(vm::VM *vm, vm::Object *obj,
 			     vm::Method *method) {
+  CompileOptions opts;
+  CompileMethodWithOpts(vm, obj, opts, method);
+}
+
+vm::Method *Compiler::CompileParseTree(vm::VM *vm, vm::Object *obj,
+				       const CompileOptions &opts,
+				       const fe::Method *parse_tree) {
+  vm::Method *method = vm->NewMethod(true /* toplevel */);
+  method->SetParseTree(parse_tree);
+  CompileMethodWithOpts(vm, obj, opts, method);
+  return method;
+}
+
+void Compiler::SetByteCodeDebug(string flags) {
+  MethodCompiler::SetByteCodeDebug(flags);
+}
+
+void Compiler::CompileMethodWithOpts(vm::VM *vm, vm::Object *obj,
+				     const CompileOptions &opts,
+				     vm::Method *method) {
   if (method->GetParseTree() == nullptr) {
     // native method.
     return;
   }
-  std::unique_ptr<MethodCompiler> compiler(new MethodCompiler(vm, obj, method));
+  std::unique_ptr<MethodCompiler>
+    compiler(new MethodCompiler(opts, vm, obj, method));
   compiler->Compile();
   if (Status::CheckAllErrors(false)) {
     auto *parse_tree = method->GetParseTree();
@@ -23,18 +44,6 @@ void Compiler::CompileMethod(vm::VM *vm, vm::Object *obj,
       << "Failed in compilation of method: "
       << parse_tree->GetName();
   }
-}
-
-vm::Method *Compiler::CompileParseTree(vm::VM *vm, vm::Object *obj,
-				       const fe::Method *parse_tree) {
-  vm::Method *method = vm->NewMethod(true /* toplevel */);
-  method->SetParseTree(parse_tree);
-  CompileMethod(vm, obj, method);
-  return method;
-}
-
-void Compiler::SetByteCodeDebug(string flags) {
-  MethodCompiler::SetByteCodeDebug(flags);
 }
 
 }  // namespace compiler

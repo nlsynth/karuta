@@ -804,7 +804,8 @@ void Executor::ExecImport(MethodFrame *frame, Insn *insn) {
   const string &fn = insn->insn_stmt_->GetString();
   VM *vm = thr_->GetVM();
   vm::Object *thr_obj = vm->kernel_object_->Clone();
-  Method *method = fe::FE::CompileFile(fn, false, vm, thr_obj);
+  compiler::CompileOptions opts;
+  Method *method = fe::FE::CompileFile(fn, false, false, false, vm, thr_obj);
   if (method == nullptr) {
     Status::os(Status::USER_ERROR) << "Failed to import: " << fn;
     thr_->UserError();

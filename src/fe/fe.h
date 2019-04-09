@@ -11,14 +11,18 @@ class FE {
  public:
   FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode);
 
-  void Run(bool with_run, bool vanilla, const vector<string> &files);
+  void Run(bool with_run, bool with_compile, bool vanilla,
+	   const vector<string> &files);
 
-  static vm::Method *CompileFile(const string &file, bool dbg_parser,
+  static vm::Method *CompileFile(const string &file,
+				 bool with_run, bool with_compile,
+				 bool dbg_parser,
 				 vm::VM *vm, vm::Object *obj);
   static FileImage *GetFileImage(const string &fn);
 
  private:
-  bool RunFile(bool with_run, const string &file, vm::VM *vm);
+  bool RunFile(bool with_run, bool with_compile, const string &file,
+	       vm::VM *vm);
 
   static Method *ReadFile(const string &file);
   static void InitScannerInfo(ScannerInfo *s_info);

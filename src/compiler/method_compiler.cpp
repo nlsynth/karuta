@@ -1,6 +1,7 @@
 #include "compiler/method_compiler.h"
 
 #include "base/status.h"
+#include "compiler/compiler.h"
 #include "compiler/expr_compiler.h"
 #include "compiler/reg_checker.h"
 #include "fe/expr.h"
@@ -23,8 +24,10 @@ void MethodCompiler::SetByteCodeDebug(string flags) {
   dbg_bytecode_ = flags;
 }
 
-MethodCompiler::MethodCompiler(vm::VM *vm, vm::Object *obj, vm::Method *method)
-  : vm_(vm), obj_(obj), method_(method), tree_(method->GetParseTree()),
+MethodCompiler::MethodCompiler(const CompileOptions &opts,
+			       vm::VM *vm, vm::Object *obj, vm::Method *method)
+  : opts_(opts), vm_(vm), obj_(obj), method_(method),
+    tree_(method->GetParseTree()),
     last_queued_insn_(nullptr), delay_insn_emit_(true) {
   exc_.reset(new ExprCompiler(this));
 }
@@ -61,6 +64,7 @@ void MethodCompiler::Compile() {
       return;
     }
   }
+  MayEmitEpilogueCode();
   PopScope();
   EmitNop();
   AddLabel(sym_return);
@@ -326,7 +330,8 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     rhs_val = rt.GetOne();
   }
 
-  if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF || (IsTopLevel() && bindings_.size() == 1)) {
+  if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF ||
+      (IsTopLevel() && bindings_.size() == 1)) {
     CHECK(IsTopLevel());
     if (rhs_val != nullptr) {
       SetWidthByDecl(stmt->GetVarDecl(), rhs_val);
@@ -555,6 +560,15 @@ void MethodCompiler::SetDelayInsnEmit(bool delay) {
 
 bool MethodCompiler::IsTopLevel() const {
   return method_->IsTopLevel();
+}
+
+void MethodCompiler::MayEmitEpilogueCode() {
+  if (opts_.run) {
+    exc_->EmitRun();
+  }
+  if (!opts_.output.empty()) {
+    exc_->EmitCompileAndWriteHdl(opts_.output);
+  }
 }
 
 }  // namespace compiler

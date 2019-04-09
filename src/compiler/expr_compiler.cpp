@@ -824,4 +824,15 @@ void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
   compiler_->SetDelayInsnEmit(true);
 }
 
+void ExprCompiler::EmitRun() {
+  vm::Insn *insn = new vm::Insn;
+  insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
+  insn->obj_reg_ = compiler_->EmitLoadObj(nullptr);
+  insn->label_ = sym_lookup("run");
+  compiler_->EmitInsn(insn);
+}
+
+void ExprCompiler::EmitCompileAndWriteHdl(const string &fn) {
+}
+
 }  // namespace compiler

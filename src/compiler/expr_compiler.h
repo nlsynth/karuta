@@ -17,6 +17,8 @@ public:
   RegisterTuple CompileExpr(fe::Expr *expr);
   void CompileIncDecExpr(fe::Expr *expr);
   static void FlattenCommas(fe::Expr *expr, vector<fe::Expr*> *commas);
+  void EmitCompileAndWriteHdl(const string &fn);
+  void EmitRun();
 
 private:
   vm::Register *CompileSymExpr(fe::Expr *expr);

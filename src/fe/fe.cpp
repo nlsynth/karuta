@@ -12,7 +12,6 @@
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/thread.h"
-#include "vm/thread_wrapper.h"
 #include "vm/vm.h"
 // This should be the last.
 #include "fe/parser.h"
@@ -151,17 +150,18 @@ FE::FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode)
   vm::Thread::SetByteCodeDebug(dbg_bytecode);
 }
 
-void FE::Run(bool with_run, bool vanilla, const vector<string>& files) {
+void FE::Run(bool with_run, bool with_compile, bool vanilla,
+	     const vector<string>& files) {
   NodePool::Init();
 
   vm::VM vm;
   bool ok = true;
   if (!vanilla) {
-    ok = RunFile(false, "default-isynth.karuta", &vm);
+    ok = RunFile(false, false, "default-isynth.karuta", &vm);
   }
   if (ok) {
     for (size_t i = 0; i < files.size(); ++i) {
-      ok = RunFile(with_run, files[i], &vm);
+      ok = RunFile(with_run, with_compile, files[i], &vm);
       if (!ok) {
 	break;
       }
@@ -172,7 +172,9 @@ void FE::Run(bool with_run, bool vanilla, const vector<string>& files) {
   NodePool::Release();
 }
 
-vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
+vm::Method *FE::CompileFile(const string &file, bool with_run,
+			    bool with_compile,
+			    bool dbg_parser,
 			    vm::VM *vm, vm::Object *obj) {
   Method *parse_tree = ReadFile(file);
   if (parse_tree == nullptr) {
@@ -184,23 +186,28 @@ vm::Method *FE::CompileFile(const string &file, bool dbg_parser,
     parse_tree->Dump(ds);
   }
 
+  compiler::CompileOptions opts;
+  if (with_compile) {
+    opts.output = "a.out.v";
+  }
+  if (with_run) {
+    opts.run = true;
+  }
   return
-    compiler::Compiler::CompileParseTree(vm, obj, parse_tree);
+    compiler::Compiler::CompileParseTree(vm, obj, opts, parse_tree);
 }
 
-bool FE::RunFile(bool with_run, const string &file, vm::VM *vm) {
+bool FE::RunFile(bool with_run, bool with_compile, const string &file,
+		 vm::VM *vm) {
   Env::SetCurrentFile(file);
   vm::Object *thr_obj = vm->kernel_object_->Clone();
-  vm::Method *method = CompileFile(file, dbg_parser_, vm, thr_obj);
+  vm::Method *method = CompileFile(file, with_run, with_compile, dbg_parser_,
+				   vm, thr_obj);
   if (method == nullptr || method->IsCompileFailure()) {
     return false;
   }
   vm->AddThreadFromMethod(nullptr, thr_obj, method, 0);
   vm->Run();
-  if (with_run) {
-    vm::ThreadWrapper::Run(vm, thr_obj);
-    vm->Run();
-  }
   return true;
 }
 

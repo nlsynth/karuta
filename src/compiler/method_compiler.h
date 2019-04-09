@@ -22,7 +22,8 @@ public:
 
 class MethodCompiler {
 public:
-  MethodCompiler(vm::VM *vm, vm::Object *obj, vm::Method *method);
+  MethodCompiler(const CompileOptions &opts, vm::VM *vm, vm::Object *obj,
+		 vm::Method *method);
   ~MethodCompiler();
 
   void Compile();
@@ -78,9 +79,11 @@ private:
   vm::Register *TraverseMemberPath(fe::Expr *e);
   int InsnIndexFromLabel(sym_t label);
   void SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg);
+  void MayEmitEpilogueCode();
 
   static string dbg_bytecode_;
 
+  const CompileOptions &opts_;
   vm::VM *vm_;
   vm::Object *obj_;
   vm::Method *method_;
