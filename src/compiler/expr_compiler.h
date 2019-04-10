@@ -61,6 +61,8 @@ private:
   void MayEmitTypeDoneInsn(vm::Insn *insn);
   vm::Method *GetCalleeMethod(vm::Insn *call_insn);
   vm::Register *LoadNumericTypeRegister(sym_t obj_name);
+  void EmitFuncallForEpilogue(const char *name, vm::Register *obj_reg,
+			      vm::Register *arg_reg);
 
   MethodCompiler *compiler_;
 };

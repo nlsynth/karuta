@@ -85,8 +85,13 @@ bool InsnType::IsNumCalculation(int op) {
   return false;
 }
 
-const string &InsnOpUtils::Str(Insn *insn) {
-  return insn->insn_expr_->GetString();
+const string InsnOpUtils::Str(Insn *insn) {
+  if (insn->insn_expr_ != nullptr) {
+    // This value is from the parse tree.
+    return insn->insn_expr_->GetString();
+  }
+  // From compiler.
+  return sym_str(insn->label_);
 }
 
 bool ByteCodeDebugMode::IsEnabled(const string &flags) {

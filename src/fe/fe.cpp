@@ -188,7 +188,7 @@ vm::Method *FE::CompileFile(const string &file, bool with_run,
 
   compiler::CompileOptions opts;
   if (with_compile) {
-    opts.output = "a.out.v";
+    opts.output = "a_out.v";
   }
   if (with_run) {
     opts.run = true;

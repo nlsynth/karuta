@@ -825,14 +825,38 @@ void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
 }
 
 void ExprCompiler::EmitRun() {
-  vm::Insn *insn = new vm::Insn;
-  insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
-  insn->obj_reg_ = compiler_->EmitLoadObj(nullptr);
-  insn->label_ = sym_lookup("run");
-  compiler_->EmitInsn(insn);
+  vm::Register *obj_reg = compiler_->EmitLoadObj(nullptr);
+  EmitFuncallForEpilogue("run", obj_reg, nullptr);
 }
 
 void ExprCompiler::EmitCompileAndWriteHdl(const string &fn) {
+  vm::Register *obj_reg = compiler_->EmitLoadObj(nullptr);
+
+  EmitFuncallForEpilogue("compile", obj_reg, nullptr);
+
+  vm::Insn *insn = new vm::Insn;
+  insn->op_ = vm::OP_STR;
+  insn->label_ = sym_lookup(fn.c_str());
+  vm::Register *fn_reg = compiler_->AllocRegister();
+  fn_reg->type_.value_type_ = vm::Value::OBJECT;
+  fn_reg->SetIsDeclaredType(true);
+  insn->dst_regs_.push_back(fn_reg);
+  compiler_->EmitInsn(insn);
+
+  EmitFuncallForEpilogue("writeHdl", obj_reg, fn_reg);
+}
+
+void ExprCompiler::EmitFuncallForEpilogue(const char *name,
+					  vm::Register *obj_reg,
+					  vm::Register *arg_reg) {
+  vm::Insn *insn = new vm::Insn;
+  insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
+  insn->obj_reg_ = obj_reg;
+  insn->label_ = sym_lookup(name);
+  if (arg_reg != nullptr) {
+    insn->src_regs_.push_back(arg_reg);
+  }
+  compiler_->EmitInsn(insn);
 }
 
 }  // namespace compiler

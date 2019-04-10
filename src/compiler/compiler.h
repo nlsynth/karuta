@@ -9,7 +9,9 @@ namespace compiler {
 struct CompileOptions {
   CompileOptions() : run(false) {
   }
+  // Calls run() at the end.
   bool run;
+  // Calls compile() and writeHdl(output).
   string output;
 };
 

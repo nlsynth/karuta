@@ -35,7 +35,7 @@ public:
 
 class InsnOpUtils {
 public:
-  static const string &Str(Insn *insn);
+  static const string Str(Insn *insn);
 };
 
 class ByteCodeDebugMode {
