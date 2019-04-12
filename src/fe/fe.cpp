@@ -2,6 +2,7 @@
 
 #include "base/dump_stream.h"
 #include "base/status.h"
+#include "base/util.h"
 #include "compiler/compiler.h"
 #include "fe/builder.h"
 #include "fe/common.h"
@@ -188,7 +189,7 @@ vm::Method *FE::CompileFile(const string &file, bool with_run,
 
   compiler::CompileOptions opts;
   if (with_compile) {
-    opts.output = "a_out.v";
+    opts.output = Util::BaseNameWithoutSuffix(file) + ".v";
   }
   if (with_run) {
     opts.run = true;

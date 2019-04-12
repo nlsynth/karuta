@@ -1,5 +1,7 @@
 #include "base/util.h"
 
+#include "iroha/util.h"
+
 #include <fstream>
 #include <set>
 #include <string.h>
@@ -30,6 +32,15 @@ string Util::DirName(const string &fn) {
   }
   int len = s - fn.c_str();
   return string(fn.c_str(), len + 1);
+}
+
+string Util::BaseNameWithoutSuffix(const string &fn) {
+  string bn = iroha::Util::BaseName(fn);
+  int pos = bn.rfind(".");
+  if (pos == string::npos) {
+    return bn;
+  }
+  return string(bn.c_str(), pos);
 }
 
 bool Util::IsHtmlFileName(const string &fn) {
