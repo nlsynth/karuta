@@ -86,6 +86,9 @@ Run the output with your Verilog simulator.
 * -l
     * Enable info logging.
     * Comma separated list of modules to enable for specific files.
+* --compile
+    * Compiles the file object and writes to a Verilog file.
+    * Calls compile() and writeHdl(name.v) at the end of execution.
 * --module_prefix=[mod]
     * Module name prefix.
     * File name without suffix ("a" for "a.v") will be used if this is not specified.
@@ -99,6 +102,9 @@ Run the output with your Verilog simulator.
 * --root
     * Prefix for file output name.
     * Karuta server uses this to isolate each run.
+* --run
+    * Runs every runnable threads in the source file.
+    * Calls run() at the end of execution.
 * --timeout
     * Timeout of karuta command execution.
     * Avoid infinite loop to run forever for test or Karuta server.
