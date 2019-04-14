@@ -19,7 +19,7 @@ string Thread::dbg_bytecode_;
 Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index)
   : vm_(vm), parent_thread_(parent),
     executor_(new Executor(this)),
-    in_yield_(false), index_(index) {
+    in_yield_(false), index_(index), busy_counter_(0) {
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
   MaySetThreadIndex();
@@ -88,6 +88,7 @@ bool Thread::IsDone() const {
 }
 
 void Thread::Suspend() {
+  MayBlock();
   stat_ = SUSPENDED;
 }
 
@@ -131,6 +132,23 @@ void Thread::UserError() {
   Method *method = frame->method_;
   frame->pc_ = method->insns_.size();
   stat_ = DONE;
+}
+
+bool Thread::OnJump() {
+  busy_counter_++;
+  // TODO: Make this configurable.
+  if (busy_counter_ > 10000000) {
+    Status::os(Status::USER_ERROR) << "Busy loop detected. Killing the thread.";
+    UserError();
+    Exit();
+    // true to suspend the Executor.
+    return true;
+  }
+  return false;
+}
+
+void Thread::MayBlock() {
+  busy_counter_ = 0;
 }
 
 MethodFrame *Thread::PushMethodFrame(Object *obj, Method *method) {

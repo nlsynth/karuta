@@ -119,9 +119,11 @@ bool Executor::ExecInsn(Method *method, MethodFrame *frame, Insn *insn) {
     // do not increment pc.
     return false;
   case OP_GOTO:
-    ExecGoto(frame, insn);
-    // do not increment pc.
-    return false;
+    {
+      bool v = ExecGoto(frame, insn);
+      // do not increment pc.
+      return v;
+    }
   case OP_NOP:
     break;
   case OP_PRE_INC:
@@ -568,8 +570,9 @@ void Executor::ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
   }
 }
 
-void Executor::ExecGoto(MethodFrame *frame, Insn *insn) {
+bool Executor::ExecGoto(MethodFrame *frame, Insn *insn) {
   frame->pc_ = insn->jump_target_;
+  return thr_->OnJump();
 }
 
 void Executor::ExecIf(MethodFrame *frame, Insn *insn) {

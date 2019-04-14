@@ -34,6 +34,11 @@ public:
 
   void UserError();
 
+  // Busy look detection.
+  // Consecutive jumps without thread suspend are considered to be a busy loop.
+  bool OnJump();
+  void MayBlock();
+
 private:
   enum Stat {
     RUNNABLE, SUSPENDED, DONE
@@ -57,6 +62,7 @@ private:
   vector<MethodFrame*> method_stack_;
   bool in_yield_;
   int index_;
+  int busy_counter_;
 };
 
 }  // namespace vm

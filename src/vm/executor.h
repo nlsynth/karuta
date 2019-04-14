@@ -42,7 +42,7 @@ private:
   void ExecNonNumResultBinop(const Method *method, MethodFrame *frame,
 			     Insn *insn);
   void ExecIf(MethodFrame *frame, Insn *insn);
-  void ExecGoto(MethodFrame *frame, Insn *insn);
+  bool ExecGoto(MethodFrame *frame, Insn *insn);
   void ExecBitRange(const Method *method, MethodFrame *frame, Insn *insn);
 
   // for toplevel
