@@ -15,7 +15,7 @@ bool Env::sandbox_mode_;
 string Env::argv0_;
 string Env::iroha_bin_path_;
 vector<string> Env::source_dirs_;
-long Env::duration_ = 10000000;
+long Env::duration_ = 1000000;
 
 const string &Env::GetVersion() {
   static string v(VERSION);

@@ -1,5 +1,6 @@
 #include "vm/vm.h"
 
+#include "base/env.h"
 #include "base/status.h"
 #include "base/stl_util.h"
 #include "compiler/compiler.h"
@@ -34,6 +35,9 @@ VM::~VM() {
 
 void VM::Run() {
   bool may_continue = true;
+  long duration = Env::GetDuration();
+  long context_switch_count = 0;
+  bool expired = false;
   while (may_continue) {
     may_continue = false;
     for (Thread *thr : threads_) {
@@ -50,12 +54,20 @@ void VM::Run() {
 	may_continue = true;
       }
     }
+    context_switch_count++;
+    if (duration > 0 && context_switch_count > duration) {
+      Status::os(Status::INFO) << "Simulation expired";
+      may_continue = false;
+      expired = true;
+    }
   }
 
-  for (Thread *thr : threads_) {
-    if (!thr->IsDone()) {
-      Status::os(Status::USER_ERROR) << "Remaining runnable thread(s)";
-      MessageFlush::Get(Status::USER_ERROR);
+  if (!expired) {
+    for (Thread *thr : threads_) {
+      if (!thr->IsDone()) {
+	Status::os(Status::USER_ERROR) << "Remaining runnable thread(s)";
+	MessageFlush::Get(Status::USER_ERROR);
+      }
     }
   }
   Status::CheckAllErrors(true);
