@@ -22,6 +22,7 @@
 #include "fe/fe.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
+#include "iroha/util.h"
 #include "karuta.h"
 #include "base/status.h"
 
@@ -52,6 +53,7 @@ void Main::PrintUsage() {
        << "   -l\n"
        << "   -l=[modules]\n"
        << "   --compile\n"
+       << "   --duration\n"
        << "   --iroha_bin [iroha]\n"
        << "   --module_prefix [mod]\n"
        << "   --output_marker [marker]\n"
@@ -109,6 +111,7 @@ void Main::InstallTimeout() {
 }
 
 void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
+  parser->RegisterValueFlag("duration", nullptr);
   parser->RegisterBoolFlag("h", "help");
   parser->RegisterBoolFlag("help", nullptr);
   parser->RegisterBoolFlag("version", "help");
@@ -166,6 +169,10 @@ int Main::main(int argc, char **argv) {
   }
   if (args.GetFlagValue("iroha_bin", &arg)) {
     Env::SetIrohaBinPath(arg);
+  }
+  if (args.GetFlagValue("duration", &arg)) {
+    long d = iroha::Util::AtoULL(arg);
+    Env::SetDuration(d);
   }
 
   if (timeout_) {

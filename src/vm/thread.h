@@ -62,7 +62,8 @@ private:
   vector<MethodFrame*> method_stack_;
   bool in_yield_;
   int index_;
-  int busy_counter_;
+  long busy_counter_;
+  long busy_counter_limit_;
 };
 
 }  // namespace vm

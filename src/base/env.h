@@ -29,6 +29,8 @@ public:
   static bool IsSandboxMode();
   static void SetIrohaBinPath(const string &iroha);
   static const string &GetIrohaBinPath();
+  static long GetDuration();
+  static void SetDuration(long duration);
 
 private:
   static const char *karuta_dir_;
@@ -39,6 +41,7 @@ private:
   static string argv0_;
   static string iroha_bin_path_;
   static vector<string> source_dirs_;
+  static long duration_;
 };
 
 #endif  // _base_env_h_

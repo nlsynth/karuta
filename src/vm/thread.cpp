@@ -1,6 +1,7 @@
 #include "vm/thread.h"
 
 #include "base/dump_stream.h"
+#include "base/env.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "base/status.h"
@@ -23,6 +24,7 @@ Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index)
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
   MaySetThreadIndex();
+  busy_counter_limit_ = Env::GetDuration();
 }
 
 Thread::~Thread() {
@@ -136,9 +138,10 @@ void Thread::UserError() {
 
 bool Thread::OnJump() {
   busy_counter_++;
-  // TODO: Make this configurable.
-  if (busy_counter_ > 10000000) {
-    Status::os(Status::USER_ERROR) << "Busy loop detected. Killing the thread.";
+  if (busy_counter_limit_ > 0 && busy_counter_ > busy_counter_limit_) {
+    Status::os(Status::USER_ERROR)
+      << "Busy loop detected. Killing the thread. "
+      << "Increase the limit by --duration option, if necessary.";
     UserError();
     Exit();
     // true to suspend the Executor.
