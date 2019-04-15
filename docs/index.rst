@@ -27,15 +27,15 @@ Simplest Xorshift32 in Karuta is like this:
 
 .. code-block:: none
 
-    func main() {
-      var y int = 1
-      for (var i int = 0; i < 10; ++i) {
-          y = y ^ (y << 13)
-          y = y ^ (y >> 17)
-          y = y ^ (y << 15)
-          print(y)
-      }
-    }
+   func main() {
+     var y int = 1
+     for (var i int = 0; i < 10; ++i) {
+       y = y ^ (y << 13)
+       y = y ^ (y >> 17)
+       y = y ^ (y << 15)
+       print(y)
+     }
+   }
 
     main()
 
@@ -55,11 +55,11 @@ I guess this looks pretty mundane to you, so let's start hardware design.
 .. code-block:: none
 
    func main() {
-      var y int = 1
-      for (var i int = 0; i < 10; ++i) {
-          y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
-          print(y)
-      }
+     var y int = 1
+     for (var i int = 0; i < 10; ++i) {
+       y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
+       print(y)
+     }
    }
    
    // Instead of calling main()
@@ -97,15 +97,15 @@ With Karuta, you can annotate a method to make it an output port. The output val
 
    @ExtIO(output = "o")
    func output(v int) {
-      print(v)
+     print(v)
    }
 
    func main() {
-      var y int = 1
-      for (var i int = 0; i < 10; ++i) {
-          y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
-          output(y)
-      }
+     var y int = 1
+     for (var i int = 0; i < 10; ++i) {
+       y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
+       output(y)
+     }
    }
 
    compile()
@@ -133,7 +133,7 @@ This can be tidied up a bit by factoring out update formulas.
 
    @ExtIO(output = "o")
    func output(v int) {
-      print(v)
+     print(v)
    }
 
    // Gets an argument t and returns an update value.
@@ -189,31 +189,56 @@ The last example here illustrates some of the most important features of Karuta 
          output(b)
        }
      }
-    }
+   }
 
 This code has 2 thread entry points. One generates random numbers and the another reads the numbers via the channel.
 When the code is compiled, generated Verilog code will have 2 state machines ('always' blocks).
 You can deploy the code to an FPGA board, connect the output to an LED and see it flickers randomly.
 
-=================
-Program structure
-=================
+==============
+Run or Compile
+==============
 
-======================
-External communication
-======================
+For example, you have a design like this and save to a file my_design.karuta
 
-======
-Values
-======
+.. code-block:: none
 
-=======
-Objects
-=======
+   @ThreadEntry()
+   func thr() {
+     // Possibly communicate with main() and other threads.
+   }
+   
+   func main() {
+     // Does interesting computation.
+   }
 
-=====================
-Source code structure
-=====================
+You can get synthesizable Verilog file with --compile flag.
+
+.. code-block:: none
+
+   $ karuta my_design.karuta --compile
+   ... karuta will output my_design.v
+
+
+This is equivalent to call compile() and writeHdl("my_design.v") at the end of the code.
+
+To run the threads described in the code, --run option can be used. The example above has 2 thread entries thr() and main, so it will make 2 threads and wait for them to finish (or timeout).
+
+.. code-block:: none
+
+   $ karuta my_design.karuta --run
+   ... thr() and main() will run
+
+This is equivalent to call run() at the end of the code.
+
+======================================
+Architecture and source code structure
+======================================
+
+Karuta parses an input source code file, builds an AST (fe::Method), then compiles (by compiler::Compiler) into a bytecode sequence (vm::Method). A bytecode sequence can be executed (by vm::Executor) or synthesized to HDL.
+
+To synthesize HDL from a bytecode sequence, Karuta uses Iroha library. Karuta builds Iroha's data structure (iroha::IDesign) and dumps the results into a file, then it invokes iroha command to perform some optimizations and conversion to HDL.
+
 
 * src/
 
