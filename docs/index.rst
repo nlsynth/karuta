@@ -1,14 +1,15 @@
-(WIP) Welcome to Karuta's documentation! (WIP)
-==============================================
+Welcome to Karuta's documentation! (WIP)
+========================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
 NOTE: There may be mistakes or glitches in this document due to my English skill. Please feel free to point out (or ignore...) them.
 
 NOTE: The word Karuta means Japanese playing cards.
+
+I am just adding various topics of Karuta to this document for now and will start to organize topics later.
 
 Author: Yusuke Tabata (tabata.yusuke@gmail.com)
 
@@ -17,6 +18,9 @@ Source of this projects: <https://github.com/nlsynth/karuta> (see its docs/ dire
 Karuta is an object-oriented scripting language and its compiler to design logic circuits. The main objective of Karuta is to improve the productivity of logic circuit design. This kind of software is usually known as HLS (High Level Synthesis).
 
 Karuta has various features to support hardware design.
+
+.. contents::
+
 
 ==============
 Quick tutorial
@@ -37,17 +41,17 @@ Simplest Xorshift32 in Karuta is like this:
      }
    }
 
-    main()
+   main()
 
 Save this to a file named xorshift32.karuta, then you can run this program like
 
 .. code-block:: none
 
-    $ karuta xorshift32.karuta
-    print: default-isynth.karuta loaded
-    print: 268476417
-    print: 1157628417
-    print: 1158709409
+   $ karuta xorshift32.karuta
+   print: default-isynth.karuta loaded
+   print: 268476417
+   print: 1157628417
+   print: 1158709409
     ...
 
 I guess this looks pretty mundane to you, so let's start hardware design.
@@ -207,6 +211,12 @@ For example, you have a design like this and save to a file my_design.karuta
    func thr() {
      // Possibly communicate with main() and other threads.
    }
+
+   @SoftThreadEntry()
+   func testThr() {
+     // Code to generate stimulus to other threads.
+     // (NOTE: a thread with @SoftThreadEntry() will not be synthesized)
+   }
    
    func main() {
      // Does interesting computation.
@@ -222,7 +232,7 @@ You can get synthesizable Verilog file with --compile flag.
 
 This is equivalent to call compile() and writeHdl("my_design.v") at the end of the code.
 
-To run the threads described in the code, --run option can be used. The example above has 2 thread entries thr() and main, so it will make 2 threads and wait for them to finish (or timeout).
+To run the threads described in the code, --run option can be used. The example above has 3 thread entries thr(), testThr() and main(), so it will make 3 threads and wait for them to finish (or timeout).
 
 .. code-block:: none
 
@@ -230,6 +240,32 @@ To run the threads described in the code, --run option can be used. The example 
    ... thr() and main() will run
 
 This is equivalent to call run() at the end of the code.
+
+=================================
+Profile Guided Optimization (PGO)
+=================================
+
+One of the most important points of opitmization is to know which part of the design is a good target of optimization. Karuta uses a technique called PGO (Profile Guided Optimization) to obtain the information.
+
+Following example illustrates how to enable profiling. Profiling is enabled between the calls of Env.enableProfile() and Env.disableProfile(), so the profile information will be collected while running main().
+compile() takes the profile information into account and does optimization.
+
+.. code-block:: none
+
+   func main() {
+     // Does some stuff.
+   }
+
+   Env.clearProfile()
+   Env.enableProfile()
+
+   // Run actual code here.
+   main()
+
+   Env.disableProfile()
+
+   compile()
+   writeHdl("my_design.v")
 
 ======================================
 Architecture and source code structure
@@ -266,5 +302,4 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
