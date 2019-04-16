@@ -49,6 +49,9 @@ bool ThreadSynth::HasExtVisibleResource(vm::Object *obj) {
   obj->GetAllMemberObjs(&member_objs);
   for (auto it : member_objs) {
     vm::Object *member_obj = it.second;
+    if (obj == member_obj) {
+      continue;
+    }
     if (vm::ArrayWrapper::IsIntArray(member_obj)) {
       Annotation *a = vm::ArrayWrapper::GetAnnotation(member_obj);
       if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave())) {
@@ -159,6 +162,9 @@ void ThreadSynth::CollectUnclaimedMembers() {
   obj->GetAllMemberObjs(&member_objs);
   for (auto it : member_objs) {
     vm::Object *member_obj = it.second;
+    if (member_obj == obj) {
+      continue;
+    }
     if (vm::ArrayWrapper::IsIntArray(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {
 	continue;

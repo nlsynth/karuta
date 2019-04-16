@@ -22,7 +22,7 @@ VM::VM() {
   methods_.reset(new Pool<Method>());
   profile_.reset(new Profile());
 
-  root_object_ = NewObject();
+  root_object_ = NewEmptyObject();
   InstallBoolType();
   NativeObjects::InstallNativeRootObjectMethods(this, root_object_);
   InstallObjects();
@@ -162,7 +162,7 @@ Method *VM::NewMethod(bool is_toplevel) {
   return method;
 }
 
-Object *VM::NewObject() {
+Object *VM::NewEmptyObject() {
   Object *object = new Object(this);
   objects_.insert(object);
   return object;

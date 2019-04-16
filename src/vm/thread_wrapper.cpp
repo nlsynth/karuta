@@ -47,6 +47,10 @@ void ThreadWrapper::GetThreadEntryMethods(Object *obj,
 					  bool with_soft_thread) {
   for (auto it : obj->members_) {
     Value &value = it.second;
+    if (value.type_ == Value::OBJECT && value.object_ == obj) {
+      // excluding self.
+      continue;
+    }
     ThreadWrapperData *data = GetData(value);
     if (data == nullptr) {
       continue;

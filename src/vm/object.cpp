@@ -98,7 +98,7 @@ void Object::GetAllMemberMethods(map<sym_t, Method *> *member_objs) {
 }
 
 Object *Object::Clone() {
-  Object *new_obj = vm_->NewObject();
+  Object *new_obj = vm_->NewEmptyObject();
   // This does shallow copy for most of data types.
   new_obj->members_ = members_;
   for (auto it : new_obj->members_) {
@@ -114,6 +114,9 @@ Object *Object::Clone() {
 	Annotation::Copy(value.annotation_);
     }
   }
+  Value *self = new_obj->LookupValue(sym_lookup("self"), true);
+  self->type_ = Value::OBJECT;
+  self->object_ = new_obj;
   return new_obj;
 }
 

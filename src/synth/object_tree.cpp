@@ -73,6 +73,9 @@ void ObjectTree::CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
   map<sym_t, vm::Object *> member_objs;
   o->GetAllMemberObjs(&member_objs);
   for (auto it : member_objs) {
+    if (it.second == o) {
+      continue;
+    }
     auto &m = obj_children_map_[o];
     if (seen.find(it.second) != seen.end()) {
       continue;

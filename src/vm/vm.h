@@ -24,7 +24,7 @@ public:
   IntArray *GetDefaultMemory();
 
   Method *NewMethod(bool is_toplevel);
-  Object *NewObject();
+  Object *NewEmptyObject();
   Profile *GetProfile() const;
 
   // root of the objects.
