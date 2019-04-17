@@ -785,7 +785,7 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
 void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
 				       vm::Value *value, bool is_store) {
   IRegister *reg = member_name_reg_map_[std::make_tuple(owner_obj,  sym_cstr(insn->label_))];
-  if (!reg) {
+  if (reg == nullptr) {
     string name = sym_cstr(insn->label_);
     name = "m_" + name;
     reg = thr_synth_->AllocRegister(name);
@@ -804,7 +804,9 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
     iinsn->outputs_.push_back(reg);
   } else {
     iinsn->inputs_.push_back(reg);
-    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+    IRegister *oreg = FindLocalVarRegister(insn->dst_regs_[0]);
+    oreg->value_type_.SetWidth(reg->value_type_.GetWidth());
+    iinsn->outputs_.push_back(oreg);
   }
   StateWrapper *sw = AllocState();
   sw->state_->insns_.push_back(iinsn);
@@ -839,6 +841,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
   if (is_store) {
     iinsn->inputs_.push_back(ireg);
   } else {
+    ireg->value_type_.SetWidth(value->num_.type_.GetWidth());
     iinsn->outputs_.push_back(ireg);
   }
   StateWrapper *sw = AllocState();
