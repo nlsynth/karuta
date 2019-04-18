@@ -784,7 +784,8 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
 
 void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
 				       vm::Value *value, bool is_store) {
-  IRegister *reg = member_name_reg_map_[std::make_tuple(owner_obj,  sym_cstr(insn->label_))];
+  IRegister *reg =
+    member_name_reg_map_[std::make_tuple(owner_obj, sym_cstr(insn->label_))];
   if (reg == nullptr) {
     string name = sym_cstr(insn->label_);
     name = "m_" + name;
@@ -826,6 +827,8 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
     int w = value->num_.type_.GetWidth();
     auto *params = res->GetParams();
     params->SetWidth(w);
+    // TODO: Fix this for a value wider than 32bits.
+    params->SetInitialValue(value->num_.GetValue0());
   } else {
     res = res_set_->GetMemberSharedReg(insn->label_, false, is_store);
     sres->AddAccessorResource(res, thr_synth_->GetObjectSynth()->GetObject());
