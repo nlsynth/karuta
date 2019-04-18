@@ -241,6 +241,43 @@ To run the threads described in the code, --run option can be used. The example 
 
 This is equivalent to call run() at the end of the code.
 
+===================
+Default file object
+===================
+
+Karuta allocates an object for each file and the object is used as the default object while executing the code. The default object can be ommitted or explicitly denoted as *self*.
+
+.. code-block:: none
+
+   // All self. are optional in this example.
+   var self.m int
+   func self.main() {
+   }
+   self.compile()
+   self.writeHdl("my_design.v")
+
+=============
+Integer width
+=============
+
+(Karuta also has features for user defined types (e.g. bfloat16). Document will be added later.)
+
+Bit width of data is important to use FPGAs efficiently while it is not cared so much for CPUs. Karuta allows arbitrary bit width.
+
+.. code-block:: none
+
+   // Variable declarations.
+   var x int  // default width is 32 bits.
+   var rgb #24  // specify 24 bits.
+
+   // This function takes a 32 bits argument (arg) and returns a 32 bits argument.
+   func bswap32(arg #32) (#32) {
+     // [h:l] - bit slice operator
+     // ::    - bit concatenation operator
+     return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
+   }
+
+
 =================================
 Profile Guided Optimization (PGO)
 =================================
