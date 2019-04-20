@@ -304,6 +304,85 @@ compile() takes the profile information into account and does optimization.
    compile()
    writeHdl("my_design.v")
 
+=============
+Karuta Syntax
+=============
+
+Comments
+
+.. code-block:: none
+
+   // Comment
+   /* Comment too */
+   # is alloed at the beginning of a file. This is for #! for shells.
+
+Literals
+
+.. code-block:: none
+
+   // Just a number.
+   123
+   0xf00d
+   0b1010
+   // A number with explicit width
+   123#32
+   // string
+   "abc"
+
+Method definition
+
+.. code-block:: none
+
+   // func name(arguments) (return values) { ... }
+   // (return values) can be omitted if there is no arguments.
+   func funcName(arg1, arg2 #16, arg3 int) (int, int) {
+     return arg1, arg3
+   }
+
+Declarations
+
+.. code-block:: none
+
+   //
+   var x int
+   var x #32
+   var x #MyType
+   var x object
+   //
+   var x, y int
+   var x int = 0
+   //
+   channel c int
+   mailbox m int
+
+Expressions
+
+.. code-block:: none
+
+   //
+   a + b
+   a - b
+   a * b
+   a = b
+   a, b
+   (a)
+   f(x)
+   a = f(x,y)
+   (a, b) = f(x,y)
+   obj.a
+   obj.f()
+
+Statements
+
+.. code-block:: none
+
+   if a > b {
+   } else {
+   }
+
+   for (x = 0; x < 10; ++x) {
+   }
+
 ======================================
 Architecture and source code structure
 ======================================
