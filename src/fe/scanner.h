@@ -110,7 +110,7 @@ private:
 private:
   static const int MAX_TOKEN = 256;
   std::unique_ptr<FileImage> im_;
-  int cur_;
+  int cur_pos_;
 
   char token_[MAX_TOKEN];
   int token_len_;

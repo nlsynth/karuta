@@ -109,7 +109,7 @@ void Scanner::GetPosition(ScannerPos *pos) {
 }
 
 char Scanner::CurChar() {
-  return im_->buf[cur_];
+  return im_->buf[cur_pos_];
 }
 
 char Scanner::NextChar() {
@@ -117,8 +117,8 @@ char Scanner::NextChar() {
 }
 
 char Scanner::ReadAhead(int a) {
-  if (cur_ + a < (int)im_->buf.size()) {
-    return im_->buf.data()[cur_ + a];
+  if (cur_pos_ + a < (int)im_->buf.size()) {
+    return im_->buf.data()[cur_pos_ + a];
   }
   return -1;
 }
@@ -139,9 +139,10 @@ void Scanner::SkipComment() {
   if (!IsCommentStart()) {
     return ;
   }
-  char c = NextChar();
-  if (c == '/') {
-    // // comment
+  char c = CurChar();
+  char nc = NextChar();
+  if (c == '#' || nc == '/') {
+    // # or // comment
     while (CurChar() != '\n' && CurChar() != 0) {
       GoAhead();
     }
@@ -158,6 +159,10 @@ void Scanner::SkipComment() {
 }
 
 bool Scanner::IsCommentStart() {
+  if (cur_pos_ == 0 && CurChar() == '#') {
+    // # is allowed only at the beginning for #!
+    return true;
+  }
   if (CurChar() == '/' &&
       (NextChar() == '*' || NextChar() == '/')) {
     return true;
@@ -166,7 +171,7 @@ bool Scanner::IsCommentStart() {
 }
 
 bool Scanner::IsEof() {
-  return (cur_ >= im_->buf.size());
+  return (cur_pos_ >= im_->buf.size());
 }
 
 void Scanner::PushChar(char c) {
@@ -271,11 +276,11 @@ struct OperatorTableEntry *Scanner::lookup_op() {
 
 void Scanner::GoAhead() {
   if (CurChar()) {
-    cur_ ++;
+    cur_pos_++;
   }
   char c = CurChar();
   if (c == '\n') {
-    ln_ ++;
+    ln_++;
   }
 }
 
@@ -369,7 +374,7 @@ void Scanner::SetFileImage(FileImage *im) {
 }
 
 void Scanner::Reset() {
-  cur_ = 0;
+  cur_pos_ = 0;
   ln_ = 1;
   STLDeleteValues(&strs_);
   strs_.clear();
