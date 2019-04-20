@@ -8,6 +8,7 @@ namespace fe {
 
 VarDecl::VarDecl() : name_expr_(nullptr), type_(nullptr),
 		     object_name_(sym_null),
+		     is_local_(false),
 		     initial_val_(nullptr),
 		     array_initializer_(nullptr),
 		     annotation_(nullptr) {
@@ -21,6 +22,9 @@ void VarDecl::Dump() {
 void VarDecl::Dump(DumpStream &ds) {
   ds.indent();
   ds.os << "type: ";
+  if (is_local_) {
+    ds.os << "local ";
+  }
   if (type_) {
     ds.os << sym_cstr(type_) << " ";
   } else {
@@ -101,6 +105,14 @@ sym_t VarDecl::GetObjectName() const {
 
 void VarDecl::SetObjectName(sym_t object_name) {
   object_name_ = object_name;
+}
+
+void VarDecl::SetIsLocal(bool is_local) {
+  is_local_ = is_local;
+}
+
+bool VarDecl::GetIsLocal() const {
+  return is_local_;
 }
 
 Expr *VarDecl::GetInitialVal() const {

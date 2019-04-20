@@ -133,6 +133,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
     {"continue", K_CONTINUE},
     {"string", K_STRING},
     {"var", K_VAR},
+    {"local", K_LOCAL},
   };
   auto it = kw.find(sym_str(sym));
   if (it != kw.end()) {

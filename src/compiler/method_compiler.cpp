@@ -323,16 +323,25 @@ void MethodCompiler::CompileIfStmt(fe::Stmt *stmt) {
 }
 
 void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
-  fe::Expr *var_expr = stmt->GetVarDecl()->GetNameExpr();
+  fe::VarDecl *vdd = stmt->GetVarDecl();
+  fe::Expr *var_expr = vdd->GetNameExpr();
   vm::Register *rhs_val = nullptr;
-  if (stmt->GetVarDecl()->GetInitialVal() != nullptr) {
-    RegisterTuple rt = exc_->CompileExpr(stmt->GetVarDecl()->GetInitialVal());
+  if (vdd->GetInitialVal() != nullptr) {
+    RegisterTuple rt = exc_->CompileExpr(vdd->GetInitialVal());
     rhs_val = rt.GetOne();
   }
 
-  if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF ||
-      (IsTopLevel() && bindings_.size() == 1)) {
-    CHECK(IsTopLevel());
+  bool is_member_decl = false;
+  if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF) {
+    CHECK(IsTopLevel() && !vdd->GetIsLocal());
+    is_member_decl = true;
+  }
+  if (IsTopLevel() && !vdd->GetIsLocal()) {
+    CHECK(bindings_.size() == 1);
+    is_member_decl = true;
+  }
+
+  if (is_member_decl) {
     if (rhs_val != nullptr) {
       SetWidthByDecl(stmt->GetVarDecl(), rhs_val);
     }

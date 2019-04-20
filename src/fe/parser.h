@@ -60,31 +60,32 @@ extern int yydebug;
     K_CHANNEL = 270,
     K_MAILBOX = 271,
     K_VAR = 272,
-    K_ADD_SUB = 273,
-    K_LG_COMPARE = 274,
-    K_EQ_COMPARE = 275,
-    K_INC_DEC = 276,
-    K_CONST = 277,
-    K_IF = 278,
-    K_ELSE = 279,
-    K_RETURN = 280,
-    K_GOTO = 281,
-    K_FOR = 282,
-    K_WHILE = 283,
-    K_DO = 284,
-    K_CONTINUE = 285,
-    K_SWITCH = 286,
-    K_CASE = 287,
-    K_DEFAULT = 288,
-    K_BREAK = 289,
-    NUM = 290,
-    SYM = 291,
-    STR = 292,
-    K_LOGIC_OR = 293,
-    K_LOGIC_AND = 294,
-    K_BIT_CONCAT = 295,
-    SIGN = 296,
-    ADDRESS = 297
+    K_LOCAL = 273,
+    K_ADD_SUB = 274,
+    K_LG_COMPARE = 275,
+    K_EQ_COMPARE = 276,
+    K_INC_DEC = 277,
+    K_CONST = 278,
+    K_IF = 279,
+    K_ELSE = 280,
+    K_RETURN = 281,
+    K_GOTO = 282,
+    K_FOR = 283,
+    K_WHILE = 284,
+    K_DO = 285,
+    K_CONTINUE = 286,
+    K_SWITCH = 287,
+    K_CASE = 288,
+    K_DEFAULT = 289,
+    K_BREAK = 290,
+    NUM = 291,
+    SYM = 292,
+    STR = 293,
+    K_LOGIC_OR = 294,
+    K_LOGIC_AND = 295,
+    K_BIT_CONCAT = 296,
+    SIGN = 297,
+    ADDRESS = 298
   };
 #endif
 /* Tokens.  */
@@ -103,31 +104,32 @@ extern int yydebug;
 #define K_CHANNEL 270
 #define K_MAILBOX 271
 #define K_VAR 272
-#define K_ADD_SUB 273
-#define K_LG_COMPARE 274
-#define K_EQ_COMPARE 275
-#define K_INC_DEC 276
-#define K_CONST 277
-#define K_IF 278
-#define K_ELSE 279
-#define K_RETURN 280
-#define K_GOTO 281
-#define K_FOR 282
-#define K_WHILE 283
-#define K_DO 284
-#define K_CONTINUE 285
-#define K_SWITCH 286
-#define K_CASE 287
-#define K_DEFAULT 288
-#define K_BREAK 289
-#define NUM 290
-#define SYM 291
-#define STR 292
-#define K_LOGIC_OR 293
-#define K_LOGIC_AND 294
-#define K_BIT_CONCAT 295
-#define SIGN 296
-#define ADDRESS 297
+#define K_LOCAL 273
+#define K_ADD_SUB 274
+#define K_LG_COMPARE 275
+#define K_EQ_COMPARE 276
+#define K_INC_DEC 277
+#define K_CONST 278
+#define K_IF 279
+#define K_ELSE 280
+#define K_RETURN 281
+#define K_GOTO 282
+#define K_FOR 283
+#define K_WHILE 284
+#define K_DO 285
+#define K_CONTINUE 286
+#define K_SWITCH 287
+#define K_CASE 288
+#define K_DEFAULT 289
+#define K_BREAK 290
+#define NUM 291
+#define SYM 292
+#define STR 293
+#define K_LOGIC_OR 294
+#define K_LOGIC_AND 295
+#define K_BIT_CONCAT 296
+#define SIGN 297
+#define ADDRESS 298
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -148,13 +150,14 @@ union YYSTYPE
   const char *str;
   sym_t sym;
   NumericLiteral num;
+  int id;
   int sub_op;
   struct WidthSpec width_spec;
   class Annotation *annotation;
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 158 "src/fe/parser.h" /* yacc.c:1909  */
+#line 161 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

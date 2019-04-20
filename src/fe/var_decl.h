@@ -37,6 +37,8 @@ public:
   void SetWidth(const iroha::NumericWidth &width);
   sym_t GetObjectName() const;
   void SetObjectName(sym_t object_name);
+  void SetIsLocal(bool is_local);
+  bool GetIsLocal() const;
   Expr *GetInitialVal() const;
   void SetInitialVal(Expr *initial_val);
   ArrayInitializer *GetArrayInitializer() const;
@@ -54,6 +56,7 @@ private:
   iroha::NumericWidth width_;
   // for numeric object.
   sym_t object_name_;
+  bool is_local_;
   Expr *initial_val_;
   std::unique_ptr<ArrayInitializer> array_initializer_;
   std::unique_ptr<ArrayShape> array_shape_;
