@@ -11,7 +11,7 @@ EXAMPLES = {
            's' : 'print("Hello World!")'},
     'h1': {'i' : 1,
            'n' : '01 - Function',
-           's' : '''def main() {
+           's' : '''func main() {
   print("Hello World!")
 }
 
@@ -19,7 +19,7 @@ main()
 '''},
     'h2': {'i' : 2,
            'n' : '02 - Synth',
-           's' : '''def Kernel.main() {
+           's' : '''func Kernel.main() {
   var i int
   var t int = 0
   for i = 0; i < 10; i++ {
@@ -36,7 +36,7 @@ Kernel.writeHdl("sum.v")
 '''},
     'h3': {'i' : 3,
            'n' : '03 - Memory',
-           's' : '''def Kernel.main() {
+           's' : '''func Kernel.main() {
   var i int
   var t int = 0
   for i = 0; i < 10; i++ {
@@ -56,7 +56,7 @@ Kernel.writeHdl("sum.v")
     'h4': {'i' : 4,
            'n' : '04 - Ext entry',
            's' : '''@ExtEntry()
-def Kernel.fn(in #32) (#32) {
+func Kernel.fn(in #32) (#32) {
   var i int
   var t #32 = 0
   for i = 0; i < in; i++ {
@@ -74,7 +74,7 @@ Kernel.writeHdl("sum.v")
            's' : '''channel Kernel.in int
 channel Kernel.out int
 
-def Kernel.f(arg int) (int) {
+func Kernel.f(arg int) (int) {
   var i int
   var t int = 0
   for i = 0; i < arg; i++ {
@@ -83,15 +83,15 @@ def Kernel.f(arg int) (int) {
   return t
 }
 
-def Kernel.main() {
+func Kernel.main() {
   out.write(f(in.read()))
 }
 
 Kernel.compile()
 Kernel.writeHdl("sum.v")
 
-var T object = Kernel.clone()
-def T.main() {
+shared T object = Kernel.clone()
+func T.main() {
   assert(f(10) == 45)
 }
 
@@ -106,12 +106,12 @@ T.writeHdl("sum_test.v")
 channel Kernel.resp int
 
 @ThreadEntry()
-def Kernel.f() {
+func Kernel.f() {
   resp.write(req.read() + 1)
 }
 
 @ThreadEntry()
-def Kernel.g() {
+func Kernel.g() {
   req.write(10)
   print(resp.read())
 }
@@ -121,14 +121,14 @@ Kernel.writeHdl("thr.v")
 '''},
     'h7': {'i' : 7,
            'n' : '07 - Member',
-           's' : '''var O object = Kernel.clone()
-var M object = Kernel.clone()
-var O.M object = M
-def M.f(a int) (int) {
+           's' : '''shared O object = Kernel.clone()
+shared M object = Kernel.clone()
+shared O.M object = M
+func M.f(a int) (int) {
   return a + 1
 }
 
-def O.main() {
+func O.main() {
   print(M.f(10))
 }
 
@@ -137,14 +137,14 @@ O.writeHdl("call.v")
 '''},
     'h8': {'i' : 8,
            'n' : '08 - External port',
-           's' : '''var L object = Kernel.clone()
+           's' : '''shared L object = Kernel.clone()
 
 @embed(output = "led")
-def L.f(b bool) {
+func L.f(b bool) {
   // print(b)
 }
 
-def L.main() {
+func L.main() {
   var b bool = false;
   while (true) {
     wait(10000000)
@@ -165,11 +165,11 @@ L.writeHdl("led.v")
     ack = "ack",
     file= "copy",
     module= "wait_cycles")
-def M.my_wait(cycles int) {
+func M.my_wait(cycles int) {
   print(cycles)
 }
 
-def M.main() {
+func M.main() {
   my_wait(10)
 }
 
@@ -180,7 +180,7 @@ M.writeHdl("wait.v")
            'n' : '10 - Misc',
            's' : '''var M object = Kernel.clone()
 
-def M.main() {
+func M.main() {
   var i int
   for i = 0; i < 10; i++ {
   }
@@ -190,11 +190,10 @@ M.setSynthParam("resetPolarity", "0")
 M.setDump("zz")
 M.compile()
 M.writeHdl("dummy.v")
-M.writeHdl("dummy.cpp")
 '''},
     'default': {'i' : 999,
                 'n' : 'Synth example',
-         's' : '''def main() {
+         's' : '''func main() {
   var i int
   var s int = 0
   for i = 0; i < 10; ++i {

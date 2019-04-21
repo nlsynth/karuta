@@ -4,14 +4,14 @@
 // funcion.
 
 @ExtCombinational(resource="add8c", verilog="add8c.v", module="add8c", file="copy")
-def add8c(x, y #8, c #1) (#1, #8) {
+func add8c(x, y #8, c #1) (#1, #8) {
   // This implementation will be used only for simulation.
   var r #9
   r = x + y + c
   return r[8:8], r[7:0]
 }
 
-def add16(x, y #16) (#16) {
+func add16(x, y #16) (#16) {
   var rl #8
   var cl #1
   (cl, rl) = add8c(x[7:0], y[7:0], 0)
@@ -21,7 +21,7 @@ def add16(x, y #16) (#16) {
   return rh :: rl
 }
 
-def main() {
+func main() {
   var r16 #16
   r16 = add16(256, 128)
   print(r16)

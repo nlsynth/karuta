@@ -28,7 +28,7 @@ return;
 
 // NLI_NEXT_TEST
 // too many elements.
-var Kernel.x int[4] = {1,2,3,4,5};
+shared Kernel.x int[4] = {1,2,3,4,5};
 
 // NLI_NEXT_TEST
 // compile without main()
@@ -36,5 +36,5 @@ compile();
 
 // NLI_NEXT_TEST
 // bad type assignment.
-var Kernel.x int = 0;
+shared Kernel.x int = 0;
 Kernel.x = Kernel.clone();

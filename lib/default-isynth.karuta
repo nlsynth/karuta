@@ -5,7 +5,7 @@
 print("default-isynth.karuta loaded")
 
 // Alias for convenience
-var Kernel.M object = Kernel
+shared Kernel.M object = Kernel
 
 def Kernel.setName(s object) {
   setSynthParam("name", s)
@@ -31,7 +31,7 @@ def Kernel.__exit() {
 }
 
 // Utility to create a vanilla object.
-var Kernel.Kernel_ object = Kernel.clone()
+shared Kernel.Kernel_ object = Kernel.clone()
 
 def Kernel.new() (object) {
   return Kernel_.clone()

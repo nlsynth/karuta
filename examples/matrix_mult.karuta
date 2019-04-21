@@ -9,17 +9,17 @@
 
 // Array attached to an AXI master interface to read/write external memory.
 @AxiMaster()
-var M.buf #32 [256]
+shared M.buf #32 [256]
 // Array attached to an AXI slave interface to set parameters from
 // the outside circuits.
 @AxiSlave()
-var M.regs #32 [4]
+shared M.regs #32 [4]
 
 // Matrix values.
 // Y=AX where Y(16*1), A(16*16) and X(16*1).
-var M.A #32 [256]
-var M.X #32 [16]
-var M.Y #32 [16]
+shared M.A #32 [256]
+shared M.X #32 [16]
+shared M.Y #32 [16]
 
 // mailbox to request to start the calculation.
 mailbox M.start #0
@@ -28,7 +28,7 @@ mailbox M.done #0
 
 // Thread to handle a request and data copies.
 @ThreadEntry()
-def M.main() {
+func M.main() {
   // Waits until something is writting to regs[3] to start.
   do {
     regs.waitAccess()
@@ -58,7 +58,7 @@ def M.main() {
 
 // Thread to handle matrix multiplication.
 @ThreadEntry()
-def M.mul() {
+func M.mul() {
   // Wait for start request.
   start.get()
   // Actually multiply the matrix and the vector.
@@ -77,7 +77,7 @@ def M.mul() {
 
 // This is for test and will not be included in the output to be synthesized.
 @SoftThreadEntry()
-def M.testDrive() {
+func M.testDrive() {
   // Makes sure the main thread starts.
   yield()
   // Writes register values.

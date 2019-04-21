@@ -115,14 +115,14 @@ prefix '__' is reserved for implementation
 
 An object can have member objects.
 
-    var O.m1 object = SubObj
+    shared O.m1 object = SubObj
     def O.f() {
       m1.h()
     }
 
 ### Type object
 
-    var Numerics.Int32 object = Object.clone()
+    shared Numerics.Int32 object = Object.clone()
     func Numerics.Int32.Build(arg #32) (#32) {
       return arg
     }
@@ -213,13 +213,13 @@ As for variable declaration, please see types section.
     // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
     // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
     @AxiMaster()
-    var M.x int[32]
+    shared M.x int[32]
     def f() {
       x.load(mem_addr, count, array_addr)
     }
 
     @AxiSlave()
-    var M.x int[32]
+    shared M.x int[32]
 
 ### Channel
 
@@ -278,7 +278,7 @@ This assumes 32bit address/data for now.
 #### Object distance.
 
     @_(distance=10)
-    var m object = new()
+    shared m object = new()
     
     def f() {
       f.x()
@@ -295,12 +295,12 @@ This assumes 32bit address/data for now.
 
 ### Shared register
 
-    var M.x int
+    shared M.x int
 
 ### Thread local
 
     @ThreadLocal()
-    var M.x int
+    shared M.x int
 
 ## RTL generation
 

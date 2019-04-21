@@ -2,7 +2,7 @@
 
 // regression in wire insn optimizer.
 
-var Kernel.MT int[1024] = {0};
+shared Kernel.MT int[1024] = {0};
 
 def Kernel.main() {
   var x int = MT[0];

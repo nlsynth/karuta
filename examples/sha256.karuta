@@ -5,7 +5,7 @@
 //  https://github.com/ikwzm/SECURE_HASH
 //  linux/crypto/sha256_generic.c (and related files)
 
-var M.k #32[64] = {
+shared M.k #32[64] = {
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
   0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
   0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
@@ -16,76 +16,76 @@ var M.k #32[64] = {
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 }
 
-def M.Ch(x, y, z #32) (#32) {
+func M.Ch(x, y, z #32) (#32) {
   return z ^ (x & (y ^ z))
 }
 
-def M.Maj(x, y, z #32) (#32) {
+func M.Maj(x, y, z #32) (#32) {
   return (x & y) | (z & (x | y))
 }
 
-def M.ror32_2(arg #32) (#32) {
+func M.ror32_2(arg #32) (#32) {
   return arg[1:0] :: arg[31:2]
 }
 
-def M.ror32_6(arg #32) (#32) {
+func M.ror32_6(arg #32) (#32) {
   return arg[5:0] :: arg[31:6]
 }
 
-def M.ror32_7(arg #32) (#32) {
+func M.ror32_7(arg #32) (#32) {
   return arg[6:0] :: arg[31:7]
 }
 
-def M.ror32_11(arg #32) (#32) {
+func M.ror32_11(arg #32) (#32) {
   return arg[10:0] :: arg[31:11]
 }
 
-def M.ror32_13(arg #32) (#32) {
+func M.ror32_13(arg #32) (#32) {
   return arg[12:0] :: arg[31:13]
 }
 
-def M.ror32_17(arg #32) (#32) {
+func M.ror32_17(arg #32) (#32) {
   return arg[16:0] :: arg[31:17]
 }
 
-def M.ror32_18(arg #32) (#32) {
+func M.ror32_18(arg #32) (#32) {
   return arg[17:0] :: arg[31:18]
 }
 
-def M.ror32_19(arg #32) (#32) {
+func M.ror32_19(arg #32) (#32) {
   return arg[18:0] :: arg[31:19]
 }
 
-def M.ror32_22(arg #32) (#32) {
+func M.ror32_22(arg #32) (#32) {
   return arg[21:0] :: arg[31:22]
 }
 
-def M.ror32_25(arg #32) (#32) {
+func M.ror32_25(arg #32) (#32) {
   return arg[24:0] :: arg[31:25]
 }
 
-def M.e0(x #32) (#32) {
+func M.e0(x #32) (#32) {
   return ror32_2(x) ^ ror32_13(x) ^ ror32_22(x)
 }
 
-def M.e1(x #32) (#32) {
+func M.e1(x #32) (#32) {
   return ror32_6(x) ^ ror32_11(x) ^ ror32_25(x)
 }
 
-def M.s0(x #32) (#32) {
+func M.s0(x #32) (#32) {
   return ror32_7(x) ^ ror32_18(x) ^ (x >> 3)
 }
 
-def M.s1(x #32) (#32) {
+func M.s1(x #32) (#32) {
   return ror32_17(x) ^ ror32_19(x) ^ (x >> 10)
 }
 
-var M.W #32[64]
-var M.state #32[8]
+shared M.W #32[64]
+shared M.state #32[8]
 @AxiMaster()
-var M.buf #32[16]
+shared M.buf #32[16]
 
-def M.init() {
+func M.init() {
   state[0] = 0x6a09e667
   state[1] = 0xbb67ae85
   state[2] = 0x3c6ef372
@@ -96,7 +96,7 @@ def M.init() {
   state[7] = 0x5be0cd19
 }
 
-def M.iterate(a, b, c, d, e, f, g, h, idx #32) (#32, #32, #32, #32, #32, #32, #32, #32) {
+func M.iterate(a, b, c, d, e, f, g, h, idx #32) (#32, #32, #32, #32, #32, #32, #32, #32) {
   var t1, t2 #32
   t1 = h + e1(e) + Ch(e,f,g) + k[idx] + W[idx]
   t2 = e0(a) + Maj(a,b,c);    d+=t1;    h=t1+t2;
@@ -117,11 +117,11 @@ def M.iterate(a, b, c, d, e, f, g, h, idx #32) (#32, #32, #32, #32, #32, #32, #3
   return a, b, c, d, e, f, g, h
 }
 
-def M.bswap(arg #32) (#32) {
+func M.bswap(arg #32) (#32) {
   return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
 }
 
-def M.transform() {
+func M.transform() {
   var i #32
   for i = 0; i < 16; i++ {
     W[i] = bswap(buf[i])
@@ -142,7 +142,7 @@ def M.transform() {
 }
 
 @ExtEntry()
-def M.sha256(addr, blocks #32) (#256) {
+func M.sha256(addr, blocks #32) (#256) {
   init()
   var i int
   for i = 0; i < blocks; ++i {

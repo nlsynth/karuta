@@ -2,10 +2,10 @@
 // VERILOG_TB: axi_ms_tb.v
 
 @AxiMaster()
-var a int[16]
+shared a int[16]
 
 @AxiSlave()
-var b int[16]
+shared b int[16]
 
 def main() {
 }

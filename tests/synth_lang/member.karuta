@@ -1,5 +1,5 @@
 // VERILOG_OUTPUT: a.v
-var Kernel.m int = 10;
+shared Kernel.m int = 10;
 
 def Kernel.main() {
   assert(m == 10);

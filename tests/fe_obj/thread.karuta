@@ -1,7 +1,7 @@
-var Kernel.x int = 9;
+shared Kernel.x int = 9;
 
-var M object = Kernel.clone();
-var M.x int = 10;
+shared M object = Kernel.clone();
+shared M.x int = 10;
 
 def M.f() {
   // *this* should be M.

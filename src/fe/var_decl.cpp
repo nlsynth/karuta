@@ -8,7 +8,7 @@ namespace fe {
 
 VarDecl::VarDecl() : name_expr_(nullptr), type_(nullptr),
 		     object_name_(sym_null),
-		     is_local_(false),
+		     is_shared_(false),
 		     initial_val_(nullptr),
 		     array_initializer_(nullptr),
 		     annotation_(nullptr) {
@@ -22,8 +22,8 @@ void VarDecl::Dump() {
 void VarDecl::Dump(DumpStream &ds) {
   ds.indent();
   ds.os << "type: ";
-  if (is_local_) {
-    ds.os << "local ";
+  if (is_shared_) {
+    ds.os << "shared ";
   }
   if (type_) {
     ds.os << sym_cstr(type_) << " ";
@@ -107,12 +107,12 @@ void VarDecl::SetObjectName(sym_t object_name) {
   object_name_ = object_name;
 }
 
-void VarDecl::SetIsLocal(bool is_local) {
-  is_local_ = is_local;
+void VarDecl::SetIsShared(bool is_shared) {
+  is_shared_ = is_shared;
 }
 
-bool VarDecl::GetIsLocal() const {
-  return is_local_;
+bool VarDecl::GetIsShared() const {
+  return is_shared_;
 }
 
 Expr *VarDecl::GetInitialVal() const {

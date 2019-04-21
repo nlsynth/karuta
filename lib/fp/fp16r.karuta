@@ -2,9 +2,9 @@
 // Not yet tested.
 //
 
-var Numerics.FP16R object = new()
+shared Numerics.FP16R object = new()
 
-var FP16R object = Numerics.FP16R
+shared FP16R object = Numerics.FP16R
 
 func FP16R.Build(s #0, e #5, f #10) (#16) {
   return s :: e :: f

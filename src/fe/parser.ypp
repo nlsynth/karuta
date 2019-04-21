@@ -61,12 +61,12 @@ extern void yyerror(const char *msg);
 %type <annotation> ANNOTATION_OR_EMPTY
 %type <annotation_value> ANNOTATION_VALUE IMPORT_PARAM_HEAD
 %type <annotation_value_set> ANNOTATION_VALUE_LIST
-%type <id> VAR_OR_LOCAL
+%type <id> VAR_OR_SHARED
 
 %token K_DEF K_FUNC K_ENUM K_IMPORT K_AS
 %token K_ASSIGN K_SHIFT
 %token K_INT K_BOOL K_STRING K_OBJECT K_THREAD
-%token K_CHANNEL K_MAILBOX K_VAR K_LOCAL
+%token K_CHANNEL K_MAILBOX K_VAR K_SHARED
 %token K_ADD_SUB K_LG_COMPARE K_EQ_COMPARE
 %token K_INC_DEC K_CONST
 %token K_IF K_ELSE K_RETURN K_GOTO K_FOR
@@ -180,14 +180,14 @@ VAR_DECL_TAIL : VAR_LIST WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
   $$ = vds;
 }
 
-VAR_OR_LOCAL : K_VAR {$$ = K_VAR;} | K_LOCAL {$$ = K_LOCAL;}
+VAR_OR_SHARED : K_VAR {$$ = K_VAR;} | K_SHARED {$$ = K_SHARED;}
 
-VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::InSemiColonStatement();} VAR_OR_LOCAL VAR_DECL_TAIL {
-  bool is_local = ($3 == K_LOCAL);
+VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::InSemiColonStatement();} VAR_OR_SHARED VAR_DECL_TAIL {
+  bool is_shared = ($3 == K_SHARED);
   for (VarDecl *vd : $4->decls) {
     Builder::SetVarDeclAnnotation(vd, $1);
-    if (is_local) {
-      vd->SetIsLocal(true);
+    if (is_shared) {
+      vd->SetIsShared(true);
     }
   }
   $$ = $4;

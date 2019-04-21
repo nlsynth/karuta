@@ -333,10 +333,10 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
   bool is_member_decl = false;
   if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF) {
-    CHECK(IsTopLevel() && !vdd->GetIsLocal());
+    CHECK(IsTopLevel() && vdd->GetIsShared());
     is_member_decl = true;
   }
-  if (IsTopLevel() && !vdd->GetIsLocal()) {
+  if (IsTopLevel() && vdd->GetIsShared()) {
     CHECK(bindings_.size() == 1);
     is_member_decl = true;
   }

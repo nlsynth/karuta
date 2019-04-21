@@ -2,10 +2,10 @@
 // WIP
 //
 
-var Numerics.FP16B object = new()
+shared Numerics.FP16B object = new()
 
-var FP16B object = Numerics.FP16B
-var Numerics.bfloat16 object = Numerics.FP16B
+shared FP16B object = Numerics.FP16B
+shared Numerics.bfloat16 object = Numerics.FP16B
 
 func FP16B.Build(s #0, e #8, f #7) (#16) {
   return s :: e :: f

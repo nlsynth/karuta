@@ -1,5 +1,5 @@
 /**/
-var Global.x int = 10;
+shared Global.x int = 10;
 import "imported_file.karuta";
 
 assert(Global.x == 0);

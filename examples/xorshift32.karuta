@@ -1,7 +1,7 @@
 // XORSHIFT32 random generator.
 //
 
-var y int
+shared y int
 
 @ExtEntry()
 def setSeed(s #32) {

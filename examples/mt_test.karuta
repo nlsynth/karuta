@@ -1,10 +1,10 @@
 import "mt.n";
 
-var MT object = Global.MT;
+shared MT object = Global.MT;
 
-var MT_test object = MT.clone();
+shared MT_test object = MT.clone();
 
-def MT_test.main() {
+func MT_test.main() {
   initializeGenerator();
   assert(MT[623] == 1796872496);
 }

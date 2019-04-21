@@ -1,5 +1,5 @@
-var x int = 9;
-var Kernel.x int = 10;
+shared x int = 9;
+shared Kernel.x int = 10;
 
 def Kernel.main() {
   assert(x == 10);
@@ -7,7 +7,7 @@ def Kernel.main() {
   assert(x == 11);
 }
 
-main();
+Kernel.main();
 
 assert(x == 9);
 assert(Kernel.x == 10);

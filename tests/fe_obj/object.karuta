@@ -1,6 +1,6 @@
 //
-var Kernel.x int = 3;
-var Kernel.Hoge object = Kernel.clone();
+shared Kernel.x int = 3;
+shared Kernel.Hoge object = Kernel.clone();
 assert(Kernel.x == 3);
 assert(Kernel.Hoge.x == 3);
 
@@ -13,7 +13,7 @@ def Kernel.f() (int) {
   return 1;
 }
 assert(Kernel.f() == 1);
-var MyObj object = Kernel.clone();
+shared MyObj object = Kernel.clone();
 def MyObj.f() (int) {
   return 2;
 }

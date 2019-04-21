@@ -11,7 +11,7 @@ Kernel.f1(10, 20)
 def Kernel.f3(x int) {
 }
 
-var Kernel.a int[10] = {0}
+shared Kernel.a int[10] = {0}
 Kernel.f3(Kernel.a[0])
 
 /**/

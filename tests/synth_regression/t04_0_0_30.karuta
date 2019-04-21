@@ -2,7 +2,7 @@
 
 // fix for memory access reordering.
 
-var Kernel.MT int[1024] = {0};
+shared Kernel.MT int[1024] = {0};
 
 def Kernel.main() {
   MT[0] = 0;

@@ -1,5 +1,5 @@
 // Member variable
-var Kernel.a #7[] = {1,2,3,4};
+shared Kernel.a #7[] = {1,2,3,4};
 
 assert(Kernel.a[2] == 3);
 

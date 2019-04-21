@@ -1,4 +1,4 @@
-var Kernel.x bool = false;
+shared Kernel.x bool = false;
 
 var x bool = false
 

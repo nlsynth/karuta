@@ -60,7 +60,7 @@ extern int yydebug;
     K_CHANNEL = 270,
     K_MAILBOX = 271,
     K_VAR = 272,
-    K_LOCAL = 273,
+    K_SHARED = 273,
     K_ADD_SUB = 274,
     K_LG_COMPARE = 275,
     K_EQ_COMPARE = 276,
@@ -104,7 +104,7 @@ extern int yydebug;
 #define K_CHANNEL 270
 #define K_MAILBOX 271
 #define K_VAR 272
-#define K_LOCAL 273
+#define K_SHARED 273
 #define K_ADD_SUB 274
 #define K_LG_COMPARE 275
 #define K_EQ_COMPARE 276

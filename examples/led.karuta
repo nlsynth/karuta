@@ -1,13 +1,13 @@
 // This generates a blinking output port "ext_led".
 
-var L object = Kernel.clone();
+shared L object = Kernel.clone();
 
 @ExtIO(output = "led")
-def L.f(b bool) {
+func L.f(b bool) {
   // print(b);
 }
 
-def L.main() {
+func L.main() {
   var b bool = false;
   while (true) {
     wait(10000000);

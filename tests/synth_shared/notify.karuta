@@ -3,7 +3,7 @@ mailbox M.m0 int
 mailbox M.m1 int
 mailbox M.m2 int
 mailbox M.n0 int
-var M.x int
+shared M.x int
 
 @ThreadEntry()
 def M.f0() {

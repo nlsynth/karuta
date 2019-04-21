@@ -12,7 +12,7 @@ See docs/LRM.md for some more details.
 Karuta Script is an object oriented scripting language. The syntax is similar to recent programming languages like JavaScript, Python, Ruby or so on.
 Minimum code looks like as follows.
 
-     def main() {
+     func main() {
        // Do some computation, I/O or call other methods.
      }
 

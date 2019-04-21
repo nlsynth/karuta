@@ -2,7 +2,7 @@
 
 // additional fix
 
-var Kernel.MT int[1024] = {0};
+shared Kernel.MT int[1024] = {0};
 
 def Kernel.main() {
   var i int;

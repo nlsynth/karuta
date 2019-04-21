@@ -12,8 +12,8 @@
 //  x.F(y) ==> T.F(x, y)
 //
 
-var Numerics.T object = Kernel.clone()
-var T object = Numerics.T
+shared Numerics.T object = Kernel.clone()
+shared T object = Numerics.T
 
 func T.Build(a int) (#32) {
   return a * 10

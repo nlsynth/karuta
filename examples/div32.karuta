@@ -1,4 +1,4 @@
-def div32impl(a, b int) (int) {
+func div32impl(a, b int) (int) {
   var r int = 0
   var aa #64 = a
   var bb #64 = b

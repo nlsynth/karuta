@@ -1,6 +1,6 @@
 // VERILOG_OUTPUT: a.v
 
-var M.x int
+shared M.x int
 mailbox M.mu int
 
 @ThreadEntry()

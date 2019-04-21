@@ -1,6 +1,6 @@
 // VERILOG_OUTPUT: a.v
-var Kernel.MT int[1024] = {0};
-var Kernel.index int = 0;
+shared Kernel.MT int[1024] = {0};
+shared Kernel.index int = 0;
 
 def Kernel.main() {
   var i int;

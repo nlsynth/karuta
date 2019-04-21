@@ -1,9 +1,9 @@
 // VERILOG_OUTPUT: a.v
 
-var Kernel.m object = Kernel.clone()
+shared Kernel.m object = Kernel.clone()
 
-var S object = Kernel.m
-var S.p object = Kernel
+shared S object = Kernel.m
+shared S.p object = Kernel
 
 func Kernel.main() {
  m.f()

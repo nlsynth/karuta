@@ -1,14 +1,14 @@
 // This is not yet tested well
 // TODO: test this.
-var M object = Kernel.clone();
+shared M object = Kernel.clone();
 
 @AxiMaster()
-var M.a int[16]
+shared M.a int[16]
 
 @AxiSlave()
-var M.b int[16]
+shared M.b int[16]
 
-def M.main() {
+func M.main() {
   // memory addr, length(-1), array addr
   a.load(0, 15, 0)
   a[1] = 10

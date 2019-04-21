@@ -42,14 +42,14 @@
 //      }
 //  }
 
-var MT object = Kernel.clone();
-var Global.MT object = MT;
+shared MT object = Kernel.clone();
+shared Global.MT object = MT;
 
-var MT.MT int[1024] = {0};
-var MT.seed int = 0;
-var MT.index int = 0;
+shared MT.MT int[1024] = {0};
+shared MT.seed int = 0;
+shared MT.index int = 0;
 
-def MT.initializeGenerator() {
+func MT.initializeGenerator() {
   MT[0] = seed;
   var i int;
   for i = 1; i < 624; ++i {
@@ -60,7 +60,7 @@ def MT.initializeGenerator() {
   }
 }
 
-def MT.extractNumbers() (int) {
+func MT.extractNumbers() (int) {
   if (index == 0) {
     generateNumbers();
   }
@@ -77,7 +77,7 @@ def MT.extractNumbers() (int) {
   return y;
 }
 
-def MT.generateNumbers() {
+func MT.generateNumbers() {
   var i int;
   for i = 0; i < 624; ++i {
     var next_idx int = i + 1;
@@ -96,7 +96,7 @@ def MT.generateNumbers() {
   }
 }
 
-def MT.main() {
+func MT.main() {
   initializeGenerator();
   var addr int = 0
   var i int;

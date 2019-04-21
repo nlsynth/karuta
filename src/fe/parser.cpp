@@ -130,7 +130,7 @@ extern int yydebug;
     K_CHANNEL = 270,
     K_MAILBOX = 271,
     K_VAR = 272,
-    K_LOCAL = 273,
+    K_SHARED = 273,
     K_ADD_SUB = 274,
     K_LG_COMPARE = 275,
     K_EQ_COMPARE = 276,
@@ -174,7 +174,7 @@ extern int yydebug;
 #define K_CHANNEL 270
 #define K_MAILBOX 271
 #define K_VAR 272
-#define K_LOCAL 273
+#define K_SHARED 273
 #define K_ADD_SUB 274
 #define K_LG_COMPARE 275
 #define K_EQ_COMPARE 276
@@ -571,7 +571,7 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "K_DEF", "K_FUNC", "K_ENUM", "K_IMPORT",
   "K_AS", "K_ASSIGN", "K_SHIFT", "K_INT", "K_BOOL", "K_STRING", "K_OBJECT",
-  "K_THREAD", "K_CHANNEL", "K_MAILBOX", "K_VAR", "K_LOCAL", "K_ADD_SUB",
+  "K_THREAD", "K_CHANNEL", "K_MAILBOX", "K_VAR", "K_SHARED", "K_ADD_SUB",
   "K_LG_COMPARE", "K_EQ_COMPARE", "K_INC_DEC", "K_CONST", "K_IF", "K_ELSE",
   "K_RETURN", "K_GOTO", "K_FOR", "K_WHILE", "K_DO", "K_CONTINUE",
   "K_SWITCH", "K_CASE", "K_DEFAULT", "K_BREAK", "NUM", "SYM", "STR", "','",
@@ -581,7 +581,7 @@ static const char *const yytname[] =
   "input", "IMPORT_PARAM_HEAD", "ANNOTATION_VALUE",
   "ANNOTATION_VALUE_LIST", "ANNOTATION_OR_EMPTY", "RETURN_TYPE",
   "RETURN_TYPE_LIST", "RETURN_SPEC", "FUNC_DECL", "$@1", "FUNC_DECL_HEAD",
-  "FUNC_DECL_NAME", "STMT_LIST", "VAR_DECL_TAIL", "VAR_OR_LOCAL",
+  "FUNC_DECL_NAME", "STMT_LIST", "VAR_DECL_TAIL", "VAR_OR_SHARED",
   "VAR_DECL", "$@2", "WIDTH_SPEC", "ARG_DECL", "ARG_DECL_LIST",
   "ARRAY_SPEC", "EMPTY_OR_ARRAY_SPEC", "ARRAY_ELM", "ARRAY_ELM_LIST",
   "ARRAY_INITIALIZER", "$@3", "$@4", "VAR_DECL_STMT", "TYPE_NAME", "LABEL",
@@ -1860,7 +1860,7 @@ yyreduce:
 
   case 30:
 #line 183 "src/fe/parser.ypp" /* yacc.c:1646  */
-    {(yyval.id) = K_LOCAL;}
+    {(yyval.id) = K_SHARED;}
 #line 1865 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
@@ -1873,11 +1873,11 @@ yyreduce:
   case 32:
 #line 185 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  bool is_local = ((yyvsp[-1].id) == K_LOCAL);
+  bool is_shared = ((yyvsp[-1].id) == K_SHARED);
   for (VarDecl *vd : (yyvsp[0].var_decl_set)->decls) {
     Builder::SetVarDeclAnnotation(vd, (yyvsp[-3].annotation));
-    if (is_local) {
-      vd->SetIsLocal(true);
+    if (is_shared) {
+      vd->SetIsShared(true);
     }
   }
   (yyval.var_decl_set) = (yyvsp[0].var_decl_set);

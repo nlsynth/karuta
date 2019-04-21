@@ -133,7 +133,7 @@ This can be tidied up a bit by factoring out update formulas.
 .. code-block:: none
 
    // Member variable of the default object for this file.
-   var y int
+   shared y int
 
    @ExtIO(output = "o")
    func output(v int) {
@@ -250,7 +250,7 @@ Karuta allocates an object for each file and the object is used as the default o
 .. code-block:: none
 
    // All self. are optional in this example.
-   var self.m int
+   shared self.m int
    func self.main() {
    }
    self.compile()
@@ -382,6 +382,26 @@ Statements
 
    for var x = 0; x < 10; ++x {
    }
+
+===========
+Annotations
+===========
+
+.. code-block:: none
+
+   // Annotation for a method
+   @ThreadEntry()
+   @SoftThreadEntry()
+   @ExtEntry()
+   @ExtStub()
+   @ExtIO()
+   @ExtCombinational()
+   @DataFlowEntry()  // Might be removed
+   @ExtFlowStub()  // Might be removed
+   // Annotation for an array
+   @AxiMaster()
+   @AxiSlave()
+   @ThreadLocal()
 
 ======================================
 Architecture and source code structure
