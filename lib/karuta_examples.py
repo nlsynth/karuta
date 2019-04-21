@@ -22,7 +22,7 @@ main()
            's' : '''def Kernel.main() {
   var i int
   var t int = 0
-  for (i = 0; i < 10; i++) {
+  for i = 0; i < 10; i++ {
     print(i)
     t += i
   }
@@ -39,7 +39,7 @@ Kernel.writeHdl("sum.v")
            's' : '''def Kernel.main() {
   var i int
   var t int = 0
-  for (i = 0; i < 10; i++) {
+  for i = 0; i < 10; i++ {
     t += i
   }
   Memory.write(0, t)
@@ -59,7 +59,7 @@ Kernel.writeHdl("sum.v")
 def Kernel.fn(in #32) (#32) {
   var i int
   var t #32 = 0
-  for (i = 0; i < in; i++) {
+  for i = 0; i < in; i++ {
     t += i
   }
   return t
@@ -77,7 +77,7 @@ channel Kernel.out int
 def Kernel.f(arg int) (int) {
   var i int
   var t int = 0
-  for (i = 0; i < arg; i++) {
+  for i = 0; i < arg; i++ {
     t += i
   }
   return t
@@ -182,7 +182,7 @@ M.writeHdl("wait.v")
 
 def M.main() {
   var i int
-  for (i = 0; i < 10; i++) {
+  for i = 0; i < 10; i++ {
   }
 }
 
@@ -197,7 +197,7 @@ M.writeHdl("dummy.cpp")
          's' : '''def main() {
   var i int
   var s int = 0
-  for (i = 0; i < 10; ++i) {
+  for i = 0; i < 10; ++i {
     s += i
   }
   // TODO: Do real I/O.

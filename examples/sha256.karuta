@@ -123,17 +123,17 @@ def M.bswap(arg #32) (#32) {
 
 def M.transform() {
   var i #32
-  for (i = 0; i < 16; i++) {
+  for i = 0; i < 16; i++ {
     W[i] = bswap(buf[i])
   }
-  for (i = 16; i < 64; i++) {
+  for i = 16; i < 64; i++ {
     W[i] = s1(W[i-2]) + W[i-7] + s0(W[i-15]) + W[i-16];
   }
   var a, b, c, d, e, f, g, h #32
   a=state[0];  b=state[1];  c=state[2];  d=state[3];
   e=state[4];  f=state[5];  g=state[6];  h=state[7];
 
-  for (i = 0; i < 64; i += 8) {
+  for i = 0; i < 64; i += 8 {
     (a, b, c, d, e, f, g, h) = iterate(a, b, c, d, e, f, g, h, i)
   }
 
@@ -145,7 +145,7 @@ def M.transform() {
 def M.sha256(addr, blocks #32) (#256) {
   init()
   var i int
-  for (i = 0; i < blocks; ++i) {
+  for i = 0; i < blocks; ++i {
     buf.load(addr, 16, 0)
     transform()
     addr += 64

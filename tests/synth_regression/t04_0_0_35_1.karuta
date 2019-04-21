@@ -6,7 +6,7 @@ var Kernel.MT int[1024] = {0};
 
 def Kernel.main() {
   var i int;
-  for (i = 1; i < 10; ++i) {
+  for i = 1; i < 10; ++i {
     var prev int = 0;
     var cur #64;
     cur = prev ^ (prev >> 30);

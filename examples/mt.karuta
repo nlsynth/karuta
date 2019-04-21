@@ -52,7 +52,7 @@ var MT.index int = 0;
 def MT.initializeGenerator() {
   MT[0] = seed;
   var i int;
-  for (i = 1; i < 624; ++i) {
+  for i = 1; i < 624; ++i {
     var prev int = MT[i - 1];
     var cur #64;
     cur = (1812433253 * (prev ^ (prev >> 30)) + i);
@@ -79,7 +79,7 @@ def MT.extractNumbers() (int) {
 
 def MT.generateNumbers() {
   var i int;
-  for (i = 0; i < 624; ++i) {
+  for i = 0; i < 624; ++i {
     var next_idx int = i + 1;
     if (next_idx > 623) {
       next_idx = 0;
@@ -100,7 +100,7 @@ def MT.main() {
   initializeGenerator();
   var addr int = 0
   var i int;
-  for (i = 0; i < 624; ++i) {
+  for i = 0; i < 624; ++i {
     Memory.write(addr, extractNumbers())
     addr++
   }

@@ -2,7 +2,7 @@
    when new function is defined.
    */
 var i int
-for (i = 0; i < 10; ++i) {
+for i = 0; i < 10; ++i {
 }
 
 def f(p int, q int) {

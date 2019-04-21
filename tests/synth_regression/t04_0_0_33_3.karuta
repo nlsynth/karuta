@@ -4,7 +4,7 @@
 
 def generateNumbers() {
   var i int;
-  for (i = 0; i < 10; ++i) {
+  for i = 0; i < 10; ++i {
     var next_idx int = i + 1;
     if (next_idx > 5) {
       next_idx = 0;

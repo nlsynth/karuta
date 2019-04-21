@@ -387,7 +387,7 @@ IF_STMT : IF_COND_PART BLOCK {
   Emitter::EmitLabel($1->GetLabel(true, false));
 }
 
-FOR_HEAD : K_FOR '(' {
+FOR_HEAD : K_FOR {
   Emitter::BeginBlock();
 }
 
@@ -402,7 +402,7 @@ FOR_COND_PART : FOR_HEAD_PART EXPR {
   Emitter::EmitLabel($$->GetLabel(false, true));
 }
 
-FOR_STMT : FOR_COND_PART ';' EXPR ')' BLOCK {
+FOR_STMT : FOR_COND_PART ';' EXPR BLOCK {
   // join:
   // cond_expr
   // if (cond_expr)

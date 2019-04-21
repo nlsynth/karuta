@@ -3,9 +3,9 @@
 def main() {
   var k int = 0;
   var i int;
-  for (i = 0; i < 4; ++i) {
+  for i = 0; i < 4; ++i {
     var j int;
-    for (j = 0; j < 4; ++j) {
+    for j = 0; j < 4; ++j {
       ++k;
     }
   }

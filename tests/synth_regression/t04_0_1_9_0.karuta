@@ -10,7 +10,7 @@ def main() {
   var i int;
   curr = 0;
   next = 1;
-  for (i = 0; i < param; ++i) {
+  for i = 0; i < param; ++i {
     prev = curr;
     curr = next;
     next = next + prev;

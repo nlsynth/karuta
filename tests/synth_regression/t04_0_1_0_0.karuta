@@ -4,7 +4,7 @@ var Kernel.index int = 0;
 
 def Kernel.main() {
   var i int;
-  for (i = 0; i < 1; ++i) {
+  for i = 0; i < 1; ++i {
     var y int = MT[index];
     assert(y == 0);
     index = index + 1;
