@@ -1,3 +1,5 @@
+# NOTE: Rewrite to .rst format is in progress
+
 # Karuta Language Reference Manual
 
 ## Program structure
@@ -234,30 +236,6 @@ It can be accessed like
 
 ## Misc features (or to be classified)
 
-### Built in methods
-
-* Object
-    * Kernel
-        * Module
-
-* Object.clone()
-* Object.dump()
-* Object.setDump()
-* Object.assert()
-* Object.Kernel()
-
-* Kernel.abort()
-* Kernel.compile()
-* Kernel.exit()
-* Kernel.print()
-* Kernel.writeHdl()
-* Kernel.bool()
-* Kernel.Object()
-* Kernel.Module ()
-
-* .$compiled_module
-* .$dump_file_name
-
 #### Memory operations
 
 Memory object represents an address space and can be accessed by read/write method.
@@ -309,15 +287,6 @@ When compilation is requested by calling compile() method, the synthesizer takes
     setSynthParam("resetPolarity", 0) // set negative reset (e.g. rst_n).
     setSynthParam("maxDelayPs", 10000) // 10ns
     compile()
-
-### Profile Guided Optimization (PGO)
-
-    Env.clearProfile()
-    Env.enableProfile()
-    // Run actual code.
-    Env.disableProfile()
-
-NOTE: In development.
 
 ## Format this document
 

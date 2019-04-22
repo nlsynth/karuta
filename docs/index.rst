@@ -1,10 +1,6 @@
 Welcome to Karuta's documentation! (WIP)
 ========================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
 NOTE: There may be mistakes or glitches in this document due to my English skill. Please feel free to point out (or ignore...) them.
 
 NOTE: The word Karuta means Japanese playing cards.
@@ -19,8 +15,13 @@ Karuta is an object-oriented scripting language and its compiler to design logic
 
 Karuta has various features to support hardware design.
 
-.. contents::
+.. toctree::
+   :maxdepth: 2
+   :caption: Index and topics:
 
+   Reference <reference>
+
+.. contents::
 
 ==============
 Quick tutorial
@@ -277,6 +278,67 @@ Bit width of data is important to use FPGAs efficiently while it is not cared so
      return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
    }
 
+===================
+Channel and mailbox
+===================
+
+Communication between threads is really important for circuit design.
+While one simple way of communication is just to use shared registers or arrrays, Karuta also supports channel and mailbox to communicate between threads.
+
+This example this just write values and read them from other threads.
+
+.. code-block:: none
+
+   channel ch int
+
+   @ThreadEntry()
+   func th1() {
+     ch.write(1)
+     ch.write(1)
+   }
+
+   @ThreadEntry()
+   func th2() {
+     ch.read()
+   }
+
+   // channel can be written or read by arbitrary number of threads.
+   @ThreadEntry()
+   func th3() {
+     ch.read()
+   }
+
+A mailbox is just a channel with one value.
+
+.. code-block:: none
+
+   mailbox mb int
+
+   @ThreadEntry()
+   func th1() {
+     mb.put(1)
+   }
+
+   @ThreadEntry()
+   func th2() {
+     mb.get()
+   }
+
+But it can notify waiting threads.
+
+.. code-block:: none
+
+   mailbox mb int
+
+   @ThreadEntry()
+   func th1() {
+     mb.notify(10)
+   }
+
+   @ThreadEntry()
+   func th2() {
+     print(mb.wait())
+   }
 
 =================================
 Profile Guided Optimization (PGO)
@@ -402,6 +464,10 @@ Annotations
    @AxiMaster()
    @AxiSlave()
    @ThreadLocal()
+   // channel parameters
+   depth=
+   // object parameters
+   distance=
 
 ======================================
 Architecture and source code structure
