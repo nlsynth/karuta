@@ -6,7 +6,8 @@ TL;DR:
     High level synthesis (HLS) from scripting language (Karuta) to RTL (Verilog).
     The main objective is to make FPGA development productive.
 
-See docs/LRM.md for some more details.
+See [docs/index.rst](docs/index.rst) or [its public copy](https://karuta.readthedocs.io/en/latest/) for more details.
+In case you really like this software, please be a patron from [Patreon](https://www.patreon.com/karuta).
 
 ## Overview
 Karuta Script is an object oriented scripting language. The syntax is similar to recent programming languages like JavaScript, Python, Ruby or so on.
