@@ -278,6 +278,47 @@ Bit width of data is important to use FPGAs efficiently while it is not cared so
      return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
    }
 
+================
+Member variables
+================
+
+Karuta is an object oriented language, so a design can be described as objects and their members. `shared` keyword is used to declare an member value of an in teger, array or object (other kinds of member has different syntax).
+
+
+.. code-block:: none
+
+   // `self.` part can be omitted. Just `shared o object` is also ok.
+   shared self.o object = new()
+   // This declares a member of a member `o`.
+   shared self.o.v int
+
+   func self.main() {
+     // Accesses a member of a member.
+     o.v++
+   }
+
+   @ThreadEntry()
+   func self.o.f() {
+     v = 0
+   }
+
+======
+Arrays
+======
+
+Arrays are really important to utilize FPGA, so Karuta has features to use arrays efficiently.
+
+.. code-block:: none
+
+   shared arr int[16]
+
+   func f(idx int) (int) {
+     // This index wraps around by 16.
+     return arr[idx - 1] + arr[idx] + arr[idx + 1]
+   }
+
+One important diffrence from Karuta and other languages is that an array index wraps around by the length of the array.
+
 ===================
 Channel and mailbox
 ===================
