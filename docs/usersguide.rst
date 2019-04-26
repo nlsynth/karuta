@@ -222,6 +222,40 @@ To run the threads described in the code, --run option can be used. The example 
 
 This is equivalent to call run() at the end of the code.
 
+=============================
+Prototype-based object system
+=============================
+
+Karuta adopts prototype-base object oriented programming style.
+
+.. code-block:: none
+
+   // Temporary object.
+   var o object = new()
+
+   // Adds 2 method f() and g()
+   func o.f() {
+     print(g())
+   }
+   func o.g() (int) {
+     return 1
+   }
+
+   // Makes 2 clones of the object `o` and set them as member objects of `self`.
+   shared self.o1 object = o.clone()
+   shared self.o2 object = o.clone()
+
+   // Modifies one of them a bit.
+   func o2.g() (int) {
+     return 2
+   }
+
+   // `self` can access 2 objects and their methods.
+   func self.main() {
+     o1.f()
+     o2.f()
+   }
+
 ===================
 Default file object
 ===================
@@ -298,6 +332,35 @@ Arrays are really important to utilize FPGA, so Karuta has features to use array
    }
 
 One important diffrence from Karuta and other languages is that an array index wraps around by the length of the array.
+
+==========
+AXI master
+==========
+
+.. code-block:: none
+
+   @AxiMaster()
+   shared m int[16]
+
+   def f() {
+     m.load(mem_addr, count, array_addr)
+     m.store(mem_addr, count, array_addr)
+   }
+
+=========
+AXI slave
+=========
+
+.. code-block:: none
+
+   @AxiSlave()
+   shared s int[16]
+
+   func f() {
+     while true {
+       s.waitAccess()
+     }
+   }
 
 ===================
 Channel and mailbox
@@ -387,6 +450,21 @@ compile() takes the profile information into account and does optimization.
    compile()
    writeHdl("my_design.v")
 
+==============
+Importing file
+==============
+
+.. code-block:: none
+
+   // Just reads and executes the file.
+   import "filename_1.karuta"
+
+   // Reads the file and assigns the object to `self.m`.
+   import "filename_2.karuta" as m
+
+   // Now you can access m.
+   m.dump()
+
 =============
 Karuta Syntax
 =============
@@ -466,30 +544,6 @@ Statements
    for var x = 0; x < 10; ++x {
    }
 
-===========
-Annotations
-===========
-
-.. code-block:: none
-
-   // Annotation for a method
-   @ThreadEntry()
-   @SoftThreadEntry()
-   @ExtEntry()
-   @ExtStub()
-   @ExtIO()
-   @ExtCombinational()
-   @DataFlowEntry()  // Might be removed
-   @ExtFlowStub()  // Might be removed
-   // Annotation for an array
-   @AxiMaster()
-   @AxiSlave()
-   @ThreadLocal()
-   // channel parameters
-   depth=
-   // object parameters
-   distance=
-
 ======================================
 Architecture and source code structure
 ======================================
@@ -520,3 +574,42 @@ To synthesize HDL from a bytecode sequence, Karuta uses Iroha library. Karuta bu
 * iroha/
 
   * Iroha backend.
+
+==================
+Overview of Karuta
+==================
+
+(This section would be moved to a separate file)
+
+As readers might know, there have been a good amount of efforts to improve efficiency to design digital circuits. One of the most significant achievement in this area is the introduction of RTL and languages which can describe in RTL. The introduction of RTL is so successful and most of recent designs are done in RTL.
+
+Karuta is one of the efforts to make some of circuit designs more efficient. Karuta is a new programming designed for this purpose and its compiler. The language introduces higher level abstraction than RTL (so called HLS).
+
+While most of other attempts to introduce higher level abstraction adopts existing programming languages for software, this project designed a new language. This is because I believe following things:
+
+1. Languages for software have different assumptions on underlying hardware.
+2. Own language will make it easy to experiment new ideas and features.
+
+
+============
+Installation
+============
+
+Installing Karuta requires a C++ compiler (namely g++ or clang++), python, gyp (Makefile generator) and make.
+
+.. code-block:: none
+
+   # Get the source code.
+   $ git clone --recursive https://github.com/nlsynth/karuta
+
+   # Do build.
+   $ ./configure
+   $ make
+
+   # Compile an example.
+   $ cd examples
+   $ ../karuta top.karuta
+
+   # Test the output from the example.
+   $ iverilog tb_top.v top.v
+   $ ./a.out
