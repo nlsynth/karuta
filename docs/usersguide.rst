@@ -333,9 +333,13 @@ Arrays are really important to utilize FPGA, so Karuta has features to use array
 
 One important diffrence from Karuta and other languages is that an array index wraps around by the length of the array.
 
-==========
+=====================
+AXI interface support
+=====================
+
+----------
 AXI master
-==========
+----------
 
 .. code-block:: none
 
@@ -347,9 +351,9 @@ AXI master
      m.store(mem_addr, count, array_addr)
    }
 
-=========
+---------
 AXI slave
-=========
+---------
 
 .. code-block:: none
 
@@ -544,6 +548,10 @@ Statements
    for var x = 0; x < 10; ++x {
    }
 
+====================
+Platform description
+====================
+
 ======================================
 Architecture and source code structure
 ======================================
@@ -581,14 +589,53 @@ Overview of Karuta
 
 (This section would be moved to a separate file)
 
-As readers might know, there have been a good amount of efforts to improve efficiency to design digital circuits. One of the most significant achievement in this area is the introduction of RTL and languages which can describe in RTL. The introduction of RTL is so successful and most of recent designs are done in RTL.
+As readers might know, there have been a good amount of efforts to improve efficiency to design digital circuits. One of the most significant achievement in this area is the introduction of RTL and languages which can describe in RTL. The introduction of RTL was so successful and most of recent designs are done in RTL.
 
 Karuta is one of the efforts to make some of circuit designs more efficient. Karuta is a new programming designed for this purpose and its compiler. The language introduces higher level abstraction than RTL (so called HLS).
 
-While most of other attempts to introduce higher level abstraction adopts existing programming languages for software, this project designed a new language. This is because I believe following things:
+While most of other attempts to introduce higher level abstraction adopt existing programming languages for software, Karuta project designs a new language. This is because I believe following things:
 
-1. Languages for software have different assumptions on underlying hardware.
-2. Own language will make it easy to experiment new ideas and features.
+1. Different assumptions on underlying hardware.
+
+   * Most of languages for software has some assumptions that they run on CPUs with an instruction pointer, one global address space and so on.
+2. Reuse is not easy.
+
+   * Reusing an existing language still requires to get familiar with different semantics from that for software, while is said to save efforts to learn a new language.
+   * Anyway many of users have to learn a new language because there is no lingua franca.
+3. Own language will make it easy to experiment new ideas and features.
+
+   * It is also fun!
+
+With above hypotheses, Karuta's design took following considerations.
+
+* Object system
+
+To choose features to support object oriented programming, language designers usually have to consider two issues; (1) Users' convenience and (2) Runtime efficiency. So we have to be careful about the differences of these conditions from software design.
+
+Most of software languages uses class based object oriented programming. It works really well by assigning each class to code and each instance to data. On the other hand, Karuta's hypothesis is prototype based object oriented programming seems to fit better for hardware design.
+Karuta assumes it is more intuitive to place code as an FSM and make member variables as registers or RAMs.
+
+
+* Concurrency and communication
+
+Use of concurrency is an essential issue in hardware designs. A whole design is placed over an area of FPGA and computation can happen anywhare on it. So Karuta aims to make it easy to describe such a behavior by threads.
+
+A thread on software is typically a natural unit of computation from its beginning to the end and can be assigned to a CPU when it is available. This also means any thread with any computation can be assigned to a CPU.
+
+On the other hand, Karuta assumes a thread is a piece of computation and corresponds to an FSM.
+So a whole design will consist of threads and their communications.
+
+
+* Arrays
+
+Efficient use of RAM is also crucial for programs on FPGAs.
+Most of software runtime assumes a shared memory between threads.
+
+
+* Data types
+
+CPUs, GPUs and most of accelerators have fixed set of data types and operators for them. It can be inefficient if narrow data type is enough for the purpose.
+So Karuta is designed to allow arbitrary data width.
 
 
 ============

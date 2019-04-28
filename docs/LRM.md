@@ -162,14 +162,6 @@ An object can have member objects.
 
 TODO: switch/case statement
 
-### Declarations
-
-As for variable declaration, please see types section.
-
-### Import
-
-    import "fn.n"
-
 ## External communication
 
 ### Ext I/O
