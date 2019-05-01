@@ -35,3 +35,18 @@ install:
 	install -D lib/fp/fp16rmul.v $(prefix)/share/karuta/fp/fp16rmul.v
 	install -D lib/fp/fp16raddsub.v $(prefix)/share/karuta/fp/fp16raddsub.v
 	make -C iroha install-data
+
+.PHONY: pkg
+pkg:
+	mkdir pkg
+	cp karuta pkg/
+	cp karuta-bin pkg/
+	mkdir pkg/lib
+	cp lib/default-isynth.karuta pkg/lib
+	cp lib/karuta_exit.v pkg/lib
+	cp lib/karuta_wait.v pkg/lib
+	cp lib/fp/fp16r.karuta pkg/lib
+	cp lib/fp/fp16rmul.v pkg/lib
+	cp lib/fp/fp16raddsub.v pkg/lib
+	tar cvzf pkg.tar.gz pkg
+	rm -rf pkg

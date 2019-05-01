@@ -5,6 +5,7 @@
 *.o
 *.pyc
 *.deps/
+*.snap
 .dirstamp
 .libs/
 src/Makefile
