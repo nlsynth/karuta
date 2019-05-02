@@ -352,10 +352,7 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   // local variable.
   CHECK(var_expr->GetType() == fe::EXPR_SYM);
   sym_t name = var_expr->GetSym();
-  vm::Register *reg = AllocRegister();
-  reg->orig_name_ = name;
-  VarScope *scope = CurrentScope();
-  scope->local_regs_[name] = reg;
+  vm::Register *reg = LookupOrAllocateLocalVar(name);
   SetWidthByDecl(stmt->GetVarDecl(), reg);
   sym_t obj_name = stmt->GetVarDecl()->GetObjectName();
   if (obj_name != sym_null) {
@@ -429,6 +426,12 @@ void MethodCompiler::CompileImportStmt(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_IMPORT;
   insn->insn_stmt_ = stmt;
+  sym_t name = stmt->GetSym();
+  if (name != sym_null) {
+    // import "fn" as v
+    vm::Register *reg = LookupOrAllocateLocalVar(name);
+    insn->dst_regs_.push_back(reg);
+  }
   EmitInsn(insn);
 }
 
@@ -450,6 +453,17 @@ vm::Register *MethodCompiler::LookupLocalVar(sym_t name) {
     }
   }
   return nullptr;
+}
+
+vm::Register *MethodCompiler::LookupOrAllocateLocalVar(sym_t name) {
+  vm::Register *reg = LookupLocalVar(name);
+  if (reg == nullptr) {
+    VarScope *scope = CurrentScope();
+    reg = AllocRegister();
+    reg->orig_name_ = name;
+    scope->local_regs_[name] = reg;
+  }
+  return reg;
 }
 
 void MethodCompiler::CompileFuncDecl(fe::Stmt *stmt) {

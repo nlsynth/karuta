@@ -817,12 +817,11 @@ void Executor::ExecImport(MethodFrame *frame, Insn *insn) {
   vm->AddThreadFromMethod(thr_, thr_obj, method, 0);
   thr_->Suspend();
 
-  sym_t elm = insn->insn_stmt_->GetSym();
-  if (elm != sym_null) {
-    // import "foo.karuta" as elm.
-    Value *value = frame->obj_->LookupValue(elm, true);
-    value->type_ = Value::OBJECT;
-    value->object_ = thr_obj;
+  if (insn->dst_regs_.size() > 0) {
+    // import "foo.karuta" as v
+    int dst_id = insn->dst_regs_[0]->id_;
+    frame->reg_values_[dst_id].object_ = thr_obj;
+    frame->reg_values_[dst_id].type_ = Value::OBJECT;
   }
 }
 

@@ -40,7 +40,11 @@ void Stmt::Dump(DumpStream &ds) {
     ds.pop_indent();
     break;
   case STMT_IMPORT:
-    ds.os << "import: " << str_ << " as " << sym_cstr(sym_) << "\n";
+    ds.os << "import:";
+    if (sym_ != sym_null) {
+      ds.os << " " << str_ << " as " << sym_cstr(sym_);
+    }
+    ds.os << "\n";
     break;
   case STMT_VARDECL:
     ds.os << "vardecl:\n";
