@@ -2,38 +2,6 @@
 
 # Karuta Language Reference Manual
 
-## Program structure
-
-A program is comprised of top level environment and method environment.
-Methods and various things can be declared only in top level environment.
-
-    // * Top level environment
-    // Modifying objects by declaring member variables.
-    //
-    def f() {
-      // * Method environment
-      // Object modification is not allowed (hence synthesizable).
-    }
-
-TODO: Consider non synthesizable methods.
-
-### Methods
-
-A method is declared as a member of an object.
-If no object name is given in the declaration, the method will belong to the current file object.
-
-    // This method belong to the current file object.
-    def f() {
-    }
-    
-    @Annotation(key1="value1", key2="value2")
-    def mod.f(x, y #32) (#16, #16) {
-      return (0, 0)
-    }
-
-A method declaration can have an argument list and return value list.
-
-
 ### Threads
 
 A thread can be be declared either by an annotation to a method or by using thread declaration syntax.

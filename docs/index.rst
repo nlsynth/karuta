@@ -3,15 +3,13 @@ Welcome to Karuta's documentation! (WIP)
 
 Karuta is an object-oriented scripting language and its compiler to design logic circuits. The main objective of Karuta is to improve the productivity of logic circuit design. This kind of software is usually known as HLS (High Level Synthesis).
 
-Karuta has various features to support hardware design.
-
 Author: Yusuke Tabata (tabata.yusuke@gmail.com)
 
 NOTE: There may be mistakes or glitches in this document due to my English skill. Please feel free to point out (or ignore...) them.
 
 NOTE: The word Karuta means Japanese playing cards.
 
-I am just adding various topics of Karuta to this document for now and will start to organize topics later.
+Karuta has various features to support hardware design. I am just adding various topics of Karuta to this document for now and will start to organize topics later.
 
 Source of this projects: <https://github.com/nlsynth/karuta> (see its docs/ directory for this document)
 

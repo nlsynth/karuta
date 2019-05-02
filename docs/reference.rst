@@ -61,6 +61,47 @@ Command line flags
 
   * Print version number.
 
+=================
+Program structure
+=================
+
+A program is comprised of top level environment and method environment.
+Methods and various things can be declared only in top level environment.
+
+.. code-block:: none
+
+   // * Top level environment
+   // Modifying objects by declaring member variables.
+   //
+   func f() {
+     // * Method environment
+     // Object modification is not allowed (hence synthesizable).
+   }
+
+-------
+Methods
+-------
+
+A method is declared as a member of an object.
+If no object name is given in the declaration, the method will belong to the current file object.
+
+.. code-block:: none
+
+   // This method belong to the current file object.
+   func f() {
+   }
+
+   @Annotation(key1="value1", key2="value2")
+   func mod.f(x, y #32) (#16, #16) {
+     return (0, 0)
+   }
+
+A method declaration can have an argument list and return value list.
+
+--------------------
+Variable declaration
+--------------------
+
 ================
 Built in methods
 ================
