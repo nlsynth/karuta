@@ -370,6 +370,27 @@ AXI slave
 Handshake to external
 =====================
 
+--------------------
+I/O from/to external
+--------------------
+
+.. code-block:: none
+
+   @ExtIO(output = "o")
+   func L.f(b bool) {
+   }
+
+   @ExtIO(input = "i")
+   func L.g() (bool) {
+     return true
+   }
+
+----------------
+Method interface
+----------------
+
+Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f1f3291998fc7dbb5fbf0> to communicate with external circuits.
+
 ===================
 Channel and mailbox
 ===================
@@ -467,7 +488,7 @@ Importing file
    // Just reads and executes the file.
    import "filename_1.karuta"
 
-   // Reads the file and assigns the object to `self.m`.
+   // Reads the file and assigns a local variable `m`.
    import "filename_2.karuta" as m
 
    // Now you can access m.
@@ -591,6 +612,8 @@ To synthesize HDL from a bytecode sequence, Karuta uses Iroha library. Karuta bu
 Overview of Karuta
 ==================
 
+NOTE: The word Karuta means Japanese playing cards.
+
 (This section would be moved to a separate file)
 
 As readers might know, there have been a good amount of efforts to improve efficiency to design digital circuits. One of the most significant achievement in this area is the introduction of RTL and languages which can describe in RTL. The introduction of RTL was so successful and most of recent designs are done in RTL.
@@ -612,6 +635,15 @@ While most of other attempts to introduce higher level abstraction adopt existin
 
 With above hypotheses, Karuta's design took following considerations.
 
+* Concurrency and communication
+
+Use of concurrency is an essential issue in hardware designs. A whole design is placed over the area of an FPGA and computation can happen anywhare on it. So Karuta aims to make it easy to describe such a behavior by threads.
+
+A thread on software is typically a natural unit of computation from its beginning to the end and can be assigned to a CPU when it is available. This also means any thread with any computation can be assigned to a CPU.
+
+On the other hand, Karuta assumes a thread is a piece of computation and corresponds to an FSM instance on an FPGA. So a whole design will consist of threads and their communications.
+
+
 * Object system
 
 To choose features to support object oriented programming, language designers usually have to consider two issues; (1) Users' convenience and (2) Runtime efficiency. So we have to be careful about the differences of these conditions from software design.
@@ -620,20 +652,11 @@ Most of software languages uses class based object oriented programming. It work
 Karuta assumes it is more intuitive to place code as an FSM and make member variables as registers or RAMs.
 
 
-* Concurrency and communication
-
-Use of concurrency is an essential issue in hardware designs. A whole design is placed over an area of FPGA and computation can happen anywhare on it. So Karuta aims to make it easy to describe such a behavior by threads.
-
-A thread on software is typically a natural unit of computation from its beginning to the end and can be assigned to a CPU when it is available. This also means any thread with any computation can be assigned to a CPU.
-
-On the other hand, Karuta assumes a thread is a piece of computation and corresponds to an FSM.
-So a whole design will consist of threads and their communications.
-
-
 * Arrays
 
-Efficient use of RAM is also crucial for programs on FPGAs.
-Most of software runtime assumes a shared memory between threads.
+Efficient use of RAM is also crucial for programs on FPGAs. While most of software runtime assumes a shared memory between threads, FPGAs allow to put RAMs near the place where the actual computation is done. This is important to achieve higher performance and energy efficiency.
+
+Karuta allows to add arrays as member of an object and maps them to RAMs at synthesis.
 
 
 * Data types
@@ -641,6 +664,11 @@ Most of software runtime assumes a shared memory between threads.
 CPUs, GPUs and most of accelerators have fixed set of data types and operators for them. It can be inefficient if narrow data type is enough for the purpose.
 So Karuta is designed to allow arbitrary data width.
 
+In addition to allow arbitrary width, Karuta allows to define custom operators to variables. This makes it easy to implement data types like narrower/wider precision floating/fixed points or vector-ish data types like complex numbers, RGB or so on.
+
+* Interface to outside of the design
+
+Every design has some kinds of I/Os like master or slave interface of a certain bus protocol, GPIO, handshake or so on. Karuta supports them by annotations to a method or an array.
 
 ============
 Installation

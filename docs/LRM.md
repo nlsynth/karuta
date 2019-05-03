@@ -132,17 +132,6 @@ TODO: switch/case statement
 
 ## External communication
 
-### Ext I/O
-
-    @ExtIO(output = "o")
-    def L.f(b bool) {
-    }
-
-    @ExtIO(input = "i")
-    def L.g() (bool) {
-      return true
-    }
-
 ### Ext call/stub with method interface
 
     // f() will be callable outside of the design.
