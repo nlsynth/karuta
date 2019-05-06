@@ -14,7 +14,7 @@ Simplest Xorshift32 in Karuta is like this:
 
    func main() {
      var y int = 1
-     for (var i int = 0; i < 10; ++i) {
+     for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13)
        y = y ^ (y >> 17)
        y = y ^ (y << 15)
@@ -41,7 +41,7 @@ I guess this looks pretty mundane to you, so let's start hardware design.
 
    func main() {
      var y int = 1
-     for (var i int = 0; i < 10; ++i) {
+     for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
        print(y)
      }
@@ -87,7 +87,7 @@ With Karuta, you can annotate a method to make it an output port. The output val
 
    func main() {
      var y int = 1
-     for (var i int = 0; i < 10; ++i) {
+     for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
        output(y)
      }
@@ -139,7 +139,7 @@ The last example here illustrates some of the most important features of Karuta 
 
 .. code-block:: none
 
-   // This channels can be accessed like ch.write(v) or v = ch.read()
+   // This channel can be accessed like ch.write(v) or v = ch.read()
    channel ch int
 
    func update(t int) (int) {
