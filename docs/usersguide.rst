@@ -674,7 +674,13 @@ Every design has some kinds of I/Os like master or slave interface of a certain 
 Installation
 ============
 
-Installing Karuta requires a C++ compiler (namely g++ or clang++), python, gyp (Makefile generator) and make.
+If you are using Ubuntu, just do
+
+.. code-block:: none
+
+   $ sudo snap install karuta
+
+Installing Karuta from its source code requires a C++ compiler (namely g++ or clang++), python, gyp (Makefile generator) and make.
 
 .. code-block:: none
 

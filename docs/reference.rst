@@ -153,3 +153,24 @@ Annotations
    depth=
    // object parameters
    distance=
+
+========
+Glossary
+========
+
+* DFG
+
+  * Data Flow Graph to represent internal RTL
+
+* Bytecode
+
+  * Compiled fron Karuta Light Script and can be executed or synthesized
+
+* Iroha
+
+  * Intermediate Representation Of Hardware Abstraction
+  * https://github.com/nlsynth/iroha
+
+* Soft thread
+
+  * Threads which will not be synthesized (used for tests).
