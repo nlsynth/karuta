@@ -1,19 +1,18 @@
 name: karuta
 base: core18
-version: '0.1'
+version: '0.4.2wip'
 summary: Karuta is a scripting language for FPGA design (so called HLS).
 description: |
   Karuta is an object-oriented scripting language and its compiler to design logic circuits. The main objective of Karuta is to improve the productivity of logic circuit design. This kind of software is usually known as HLS (High Level Synthesis).
 
-grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: devmode # use 'strict' once you have the right plugs and slots
+grade: stable
+confinement: strict
 base: core18
 
 parts:
   karuta:
-    # See 'snapcraft plugins'
     plugin: dump
-    source: pkg.tar.gz
+    source: pkg.tar.gz # make pkg
 
 apps:
   karuta:

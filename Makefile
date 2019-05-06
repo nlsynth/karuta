@@ -38,6 +38,7 @@ install:
 
 .PHONY: pkg
 pkg:
+	rm -rf pkg
 	mkdir pkg
 	cp karuta pkg/
 	cp karuta-bin pkg/
@@ -48,5 +49,8 @@ pkg:
 	cp lib/fp/fp16r.karuta pkg/lib
 	cp lib/fp/fp16rmul.v pkg/lib
 	cp lib/fp/fp16raddsub.v pkg/lib
+	PWD=`pwd`
+	mkdir -p pkg/iroha/lib
+	(cd iroha; pkgdir=$(PWD)/pkg/iroha/lib make pkg-data)
 	tar cvzf pkg.tar.gz pkg
 	rm -rf pkg
