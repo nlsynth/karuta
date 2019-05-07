@@ -1,13 +1,11 @@
 Design and Implementation
 =========================
 
+.. contents::
+
 ==================
 Overview of Karuta
 ==================
-
-NOTE: The word Karuta means Japanese playing cards.
-
-(This section would be moved to a separate file)
 
 As readers might know, there have been a good amount of efforts to improve efficiency to design digital circuits. One of the most significant achievement in this area is the introduction of RTL and languages which can describe in RTL. The introduction of RTL was so successful and most of recent designs are done in RTL.
 
@@ -17,11 +15,11 @@ While most of other attempts to introduce higher level abstraction adopt existin
 
 1. Different assumptions on underlying hardware.
 
-   * Most of languages for software has some assumptions that they run on CPUs with an instruction pointer, one global address space and so on.
+   * Most of languages for software have some assumptions that they run on CPUs with an instruction pointer, one global address space and so on.
 2. Reuse is not easy.
 
    * Reusing an existing language still requires to get familiar with different semantics from that for software, while is said to save efforts to learn a new language.
-   * Anyway many of users have to learn a new language because there is no lingua franca.
+   * Anyway many of users have to learn a new language because there is no lingua franca nowadays.
 3. Own language will make it easy to experiment new ideas and features.
 
    * It is also fun!
@@ -62,6 +60,11 @@ In addition to allow arbitrary width, Karuta allows to define custom operators t
 * Interface to outside of the design
 
 Every design has some kinds of I/Os like master or slave interface of a certain bus protocol, GPIO, handshake or so on. Karuta supports them by annotations to a method or an array.
+
+------------------------
+Compiler and interpreter
+------------------------
+
 
 
 ======================================

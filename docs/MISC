@@ -23,16 +23,6 @@ or
 
 @SoftThreadEntry() can be used instead of @ThreadEntry() to specify the method is not a target of synthesis (only for tests).
 
-### Data flow
-
-A method can be an entry of a data flow instead of FSM.
-
-    @DataFlowEntry()
-    def f(x int) {
-    }
-
-NOTE: WIP.
-
 ## Value types
 
 ### Integer with width spec
@@ -147,12 +137,6 @@ TODO: switch/case statement
       return 0
     }
 
-#### Ext data flow
-
-    @ExtFlowStub(name="e")
-    def f(x int) (int) {
-    }
-
 #### Ext combinational logic.
 
     @ExtCombinational(resource = "a", verilog = "resource.v", file="copy", module="hello")
@@ -202,16 +186,6 @@ This assumes 32bit address/data for now.
 * setIROuput(p string)
 * runIroha(opts string)
     * e.g. runIroha("-v -S -o x.v")
-
-#### Object distance.
-
-    @_(distance=10)
-    shared m object = new()
-    
-    def f() {
-      f.x()
-    }
-
 
 ### Mailbox
 

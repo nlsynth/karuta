@@ -22,13 +22,11 @@ Simplest Xorshift32 in Karuta is like this:
      }
    }
 
-   main()
-
 Save this to a file named xorshift32.karuta, then you can run this program like
 
 .. code-block:: none
 
-   $ karuta xorshift32.karuta
+   $ karuta xorshift32.karuta --run
    print: default-isynth.karuta loaded
    print: 268476417
    print: 1157628417
@@ -36,23 +34,11 @@ Save this to a file named xorshift32.karuta, then you can run this program like
     ...
 
 I guess this looks pretty mundane to you, so let's start hardware design.
+So you can the run same karuta command again and will get xorshift32.v! The content should look like this.
 
 .. code-block:: none
 
-   func main() {
-     var y int = 1
-     for var i int = 0; i < 10; ++i {
-       y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
-       print(y)
-     }
-   }
-   
-   // Instead of calling main()
-   compile()
-   writeHdl("xorshift32.v")
-
-So you can the run same karuta command again and will get xorshift32.v! The content should look like this.
-
+   $ karuta xorshift32.karuta --compile
 .. code-block:: none
 
    ... 100~ lines of code in Verilog here. ...
@@ -493,6 +479,26 @@ Importing file
 
    // Now you can access m.
    m.dump()
+
+===============
+Object distance
+===============
+
+.. code-block:: none
+
+   // Object distance between `self` and `m` is 10 clocks.
+   @_(distance=10)
+   shared self.m object = new()
+   shared self.m.v int
+
+   func self.m.f() {
+     v = v + 1
+   }
+
+   func self.f() {
+     m.v = 1
+     m.f()
+   }
 
 =============
 Karuta Syntax

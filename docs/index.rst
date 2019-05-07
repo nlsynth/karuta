@@ -18,3 +18,4 @@ Source of this projects: <https://github.com/nlsynth/karuta> (see its docs/ dire
    User's guide <usersguide>
    Design and Implementation <designandimpl>
    Reference <reference>
+   (Experimental features - might be removed without notice) <experimental>
