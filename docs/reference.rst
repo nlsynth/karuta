@@ -14,13 +14,21 @@ Command line flags
 
 * -l
 
-  * Enable info logging.
+  * Enables info logging.
   * Comma separated list of modules to enable for specific files.
 
 * --compile
 
   * Compiles the file object and writes to a Verilog file.
   * Calls compile() and writeHdl(name.v) at the end of execution.
+
+* --duration
+
+  * Maximum duration of the simulation.
+
+* --iroha_bin [binary]
+
+  * Specifies annalternative iroha binary.
 
 * --module_prefix=[mod]
 
@@ -55,7 +63,7 @@ Command line flags
 
 * --vanilla
 
-  * Don't read lib/default-isynth.karuta.
+  * Doesn't read lib/default-isynth.karuta.
 
 * --version
 
@@ -102,6 +110,122 @@ A method declaration can have an argument list and return value list.
 Variable declaration
 --------------------
 
+------
+Syntax
+------
+
+Comments
+
+.. code-block:: none
+
+   // Comment
+   /* Comment too */
+   # is alloed at the beginning of a file. This is for #! for shells.
+
+Literals
+
+.. code-block:: none
+
+   // Just a number.
+   123
+   0xf00d
+   0b1010
+   // A number with explicit width
+   123#32
+   // string
+   "abc"
+
+Method definition
+
+.. code-block:: none
+
+   // func name(arguments) (return values) { ... }
+   // (return values) can be omitted if there is no arguments.
+   func funcName(arg1, arg2 #16, arg3 int) (int, int) {
+     return arg1, arg3
+   }
+
+Declarations
+
+.. code-block:: none
+
+   //
+   var x int
+   var x #32
+   var x #MyType
+   var x object
+   //
+   var x, y int
+   var x int = 0
+   //
+   channel c int
+   mailbox m int
+   //
+   var s string = "abc"
+   // var is not allowed
+   shared a int[32]
+   shared m.a #16[4] = {1,2,3,4}
+
+Expressions
+
+.. code-block:: none
+
+   //
+   name
+   __name // reserved for the implementation
+   //
+   a + b
+   a - b
+   a * b
+   a = b
+   a, b
+   (a)
+   f(x)
+   a = f(x,y)
+   (a, b) = f(x,y)
+   obj.a
+   obj.f()
+
+Operators
+
+.. code-block:: none
+   
+   a + b
+   a - b
+   a * b
+   // TODO: Describe the limitations
+   a / b
+   // shift amount should be constant
+   a >> b
+   a << b
+   // bit concat
+   a :: b
+   // range should be constant
+   a[l:r]
+
+Statements
+
+.. code-block:: none
+
+   if a > b {
+   } else {
+   }
+
+   for var x = 0; x < 10; ++x {
+   }
+
+Control
+
+.. code-block:: none
+
+   if cond {
+   }
+
+   for init; cond; update {
+   }
+
+TODO: switch/case statement
+		
 ================
 Built in methods
 ================
@@ -129,6 +253,23 @@ Built in methods
 
 * .$compiled_module
 * .$dump_file_name
+
+* setIrohaPath(p string)
+* setIROuput(p string)
+* runIroha(opts string)
+
+  * e.g. runIroha("-v -S -o x.v")
+
+====================
+Synthesis parameters
+====================
+
+When compilation is requested by calling compile() method, the synthesizer takes a snapshot of the object and generates IR from the structure and computation.
+
+.. code-block:: none
+
+   setSynthParam("resetPolarity", 0) // set negative reset (e.g. rst_n).
+   setSynthParam("maxDelayPs", 10000) // 10ns
 
 ===========
 Annotations

@@ -14,11 +14,36 @@ Data flow
 .. code-block:: none
 
    @DataFlowEntry()
-   def f(x int) {
+   func f(x int) {
    }
 
 .. code-block:: none
 
    @ExtFlowStub(name="e")
-   def f(x int) (int) {
+   func f(x int) (int) {
    }
+
+-------------------------
+Thread member declaration
+-------------------------
+
+Threads can be declared as a member object instead of @ThreadEntry().
+
+.. code-block:: none
+
+   func f() {
+   }
+   thread Kernel.thr1 = f()
+   run()
+
+------------------------
+External SRAM operations
+------------------------
+
+Memory object represents an address space and can be accessed by read/write method.
+This assumes 32bit address/data for now.
+
+.. code-block:: none
+
+   Memory.read(addr)
+   Memory.write(addr, data)

@@ -319,6 +319,19 @@ Arrays are really important to utilize FPGA, so Karuta has features to use array
 
 One important diffrence from Karuta and other languages is that an array index wraps around by the length of the array.
 
+============
+Thread local
+============
+
+.. code-block:: none
+
+   @ThreadLocal()
+   shared M.x int
+
+   @ThreadEntry(num=2)
+   func thr(idx int) {
+   }
+
 =====================
 AXI interface support
 =====================
@@ -329,6 +342,8 @@ AXI master
 
 .. code-block:: none
 
+   // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
+   // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
    @AxiMaster()
    shared m int[16]
 
@@ -352,9 +367,9 @@ AXI slave
      }
    }
 
-=====================
-Handshake to external
-=====================
+=========================
+Communication to external
+=========================
 
 --------------------
 I/O from/to external
@@ -376,6 +391,31 @@ Method interface
 ----------------
 
 Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f1f3291998fc7dbb5fbf0> to communicate with external circuits.
+
+.. code-block:: none
+
+   // f() will be callable outside of the design.
+   @ExtEntry(name="e")
+   def f(x int) (int) {
+     return 0
+   }
+
+   // Actual implementation of f() will be outside of the design.
+   @ExtStub(name="e")
+   def f(x int) (int) {
+     return 0
+   }
+
+-------------------
+Combinational logic
+-------------------
+
+.. code-block:: none
+
+   @ExtCombinational(resource = "a", verilog = "resource.v", file="copy", module="hello")
+   func f(x #32) (#32) {
+     return x
+   }
 
 ===================
 Channel and mailbox
@@ -439,6 +479,40 @@ But it can notify waiting threads.
      print(mb.wait())
    }
 
+===========
+Type object
+===========
+
+.. code-block:: none
+
+   shared Numerics.Int32 object = Object.clone()
+   func Numerics.Int32.Build(arg #32) (#32) {
+     return arg
+   }
+
+   func Numerics.Int32.Add(lhs, rhs #32) (#32) {
+     return lhs + rhs
+   }
+
+   // Type class can't be accessed from top level environment.
+   func f() {
+     var x #Int32
+     x = Numerics.Int32.Build(1)
+     print(x + x)
+   }
+
+   // Add a method for the type.
+   func Numerics.Int32.IsZero(arg #32) (bool) {
+     return arg == 0
+   }
+
+   func g() {
+     var x #Int32
+     x = Numerics.Int32.Build(1)
+     print(x.IsZero())
+     x + x
+   }		
+
 =================================
 Profile Guided Optimization (PGO)
 =================================
@@ -498,85 +572,6 @@ Object distance
    func self.f() {
      m.v = 1
      m.f()
-   }
-
-=============
-Karuta Syntax
-=============
-
-Comments
-
-.. code-block:: none
-
-   // Comment
-   /* Comment too */
-   # is alloed at the beginning of a file. This is for #! for shells.
-
-Literals
-
-.. code-block:: none
-
-   // Just a number.
-   123
-   0xf00d
-   0b1010
-   // A number with explicit width
-   123#32
-   // string
-   "abc"
-
-Method definition
-
-.. code-block:: none
-
-   // func name(arguments) (return values) { ... }
-   // (return values) can be omitted if there is no arguments.
-   func funcName(arg1, arg2 #16, arg3 int) (int, int) {
-     return arg1, arg3
-   }
-
-Declarations
-
-.. code-block:: none
-
-   //
-   var x int
-   var x #32
-   var x #MyType
-   var x object
-   //
-   var x, y int
-   var x int = 0
-   //
-   channel c int
-   mailbox m int
-
-Expressions
-
-.. code-block:: none
-
-   //
-   a + b
-   a - b
-   a * b
-   a = b
-   a, b
-   (a)
-   f(x)
-   a = f(x,y)
-   (a, b) = f(x,y)
-   obj.a
-   obj.f()
-
-Statements
-
-.. code-block:: none
-
-   if a > b {
-   } else {
-   }
-
-   for var x = 0; x < 10; ++x {
    }
 
 =======
