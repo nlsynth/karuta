@@ -54,7 +54,7 @@ void Main::PrintUsage() {
        << "   -l=[modules]\n"
        << "   --compile\n"
        << "   --duration\n"
-       << "   --iroha_bin [iroha]\n"
+       << "   --iroha_binary [iroha]\n"
        << "   --module_prefix [mod]\n"
        << "   --output_marker [marker]\n"
        << "   --print_exit_status\n"
@@ -122,7 +122,9 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("root", nullptr);
   parser->RegisterValueFlag("output_marker", nullptr);
   parser->RegisterValueFlag("module_prefix", nullptr);
+  // for compatibility.
   parser->RegisterValueFlag("iroha_bin", nullptr);
+  parser->RegisterValueFlag("iroha_binary", nullptr);
   parser->RegisterBoolFlag("compile", nullptr);
   parser->RegisterBoolFlag("run", nullptr);
   parser->RegisterBoolFlag("z", nullptr);
@@ -167,7 +169,11 @@ int Main::main(int argc, char **argv) {
   if (args.GetFlagValue("module_prefix", &arg)) {
     Env::SetModulePrefix(arg);
   }
+  // For compatibility.
   if (args.GetFlagValue("iroha_bin", &arg)) {
+    Env::SetIrohaBinPath(arg);
+  }
+  if (args.GetFlagValue("iroha_binary", &arg)) {
     Env::SetIrohaBinPath(arg);
   }
   if (args.GetFlagValue("duration", &arg)) {

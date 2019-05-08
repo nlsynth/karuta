@@ -26,7 +26,7 @@ Command line flags
 
   * Maximum duration of the simulation.
 
-* --iroha_bin [binary]
+* --iroha_binary [binary]
 
   * Specifies annalternative iroha binary.
 

@@ -10,7 +10,7 @@ import tempfile
 
 import test_files
 
-print "Running tests"
+print("Running tests")
 os.putenv("KARUTA_DIR", "../lib/")
 nli_binary="../karuta-bin"
 iroha_binary=""
@@ -47,11 +47,11 @@ class TestSummary():
     def AddResult(self, test_name, num_fails, ign_fail,
                   done_stat, exp_abort, exp_fails):
         if num_fails != exp_fails and (not ign_fail):
-            print "Unexpected fails %d (exp%d)" % (num_fails, exp_fails)
+            print("Unexpected fails %d (exp%d)" % (num_fails, exp_fails))
             self.total_failures += num_fails
             self.failed_tests.append(test_name)
         if not done_stat and not exp_abort:
-            print "Unexpected abort"
+            print("Unexpected abort")
             self.total_unexpected_aborts += 1
             self.aborted_tests.append(test_name)
         self.num_tests += 1
@@ -59,7 +59,7 @@ class TestSummary():
     def AddVerilogResult(self, test_name, num_fails, ign_fail, exp_fails):
         self.num_vl_tests += 1
         if num_fails != exp_fails and (not ign_fail):
-            print "unexpected failure in vlfile"
+            print("unexpected failure in vlfile")
             self.total_failures += num_fails
             self.failed_tests.append(test_name)
 
@@ -163,7 +163,7 @@ class NLITest():
         else:
             tb_fn = default_tb
         cmd = self.GetVerilogCompileCommand(fn, tb_fn, test_bin_fn)
-        print "  compiling " + fn + "(" + cmd + ")"
+        print("  compiling " + fn + "(" + cmd + ")")
         os.system(cmd)
         if not os.path.isfile(test_bin_fn):
             summary.AddVerilogCompileFailure(self.source_fn)
@@ -197,7 +197,7 @@ class NLITest():
         if use_zfe:
             cmd += " -z"
         if iroha_binary != "":
-            cmd += " --iroha_bin " + iroha_binary
+            cmd += " --iroha_binary " + iroha_binary
         cmd += " --root " + tmp_prefix
         cmd += " --timeout " + timeout + " "
         cmd += " --print_exit_status "
@@ -214,10 +214,10 @@ class NLITest():
                 os.unlink(tmp_prefix + "/" + test_info["verilog"])
             except:
                 pass
-        print "executing test " + self.source_fn
+        print("executing test " + self.source_fn)
         if "split_info" in test_info:
-            print " split: " + str(test_info["split_info"])
-        print " command line=" + cmd
+            print(" split: " + str(test_info["split_info"]))
+        print(" command line=" + cmd)
         rv = os.system(cmd)
         if rv:
             summary.AddAbort(rv)
