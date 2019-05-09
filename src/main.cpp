@@ -159,6 +159,7 @@ int Main::main(int argc, char **argv) {
   // Actually initialize modules and params.
   ::sym_table_init();
   iroha::Iroha::Init();
+  iroha::Iroha::SetImportPaths(Env::SearchDirList());
   Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);

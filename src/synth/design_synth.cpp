@@ -167,6 +167,14 @@ void DesignSynth::SetSynthParams() {
     if (d >= 0) {
       params->SetMaxDelayPs(d);
     }
+    string f = an->GetPlatformFamily();
+    if (!f.empty()) {
+      params->SetPlatformFamily(f);
+    }
+    string n = an->GetPlatformName();
+    if (!n.empty()) {
+      params->SetPlatformName(n);
+    }
   }
 }
 

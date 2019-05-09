@@ -313,6 +313,14 @@ bool Annotation::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
   return false;
 }
 
+string Annotation::GetPlatformFamily() {
+  return LookupStrParam("platformFamily", "");
+}
+
+string Annotation::GetPlatformName() {
+  return LookupStrParam("platformName", "");
+}
+
 void Annotation::AddStrParam(const string &key, const string &value) {
   AnnotationKeyValue *param = LookupParam(key);
   if (param) {

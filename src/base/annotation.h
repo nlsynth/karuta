@@ -94,6 +94,9 @@ public:
   int GetNrPinDecls();
   bool GetNthPinDecl(int nth, ResourceParams_pin *decl);
 
+  string GetPlatformFamily();
+  string GetPlatformName();
+
   void AddStrParam(const string &key, const string &value);
   void AddIntParam(const string &key, uint64_t value);
 
