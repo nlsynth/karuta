@@ -45,39 +45,39 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    K_DEF = 258,
-    K_FUNC = 259,
-    K_ENUM = 260,
-    K_IMPORT = 261,
-    K_AS = 262,
-    K_ASSIGN = 263,
-    K_SHIFT = 264,
-    K_INT = 265,
-    K_BOOL = 266,
-    K_STRING = 267,
-    K_OBJECT = 268,
-    K_THREAD = 269,
-    K_CHANNEL = 270,
-    K_MAILBOX = 271,
-    K_VAR = 272,
-    K_SHARED = 273,
-    K_ADD_SUB = 274,
-    K_LG_COMPARE = 275,
-    K_EQ_COMPARE = 276,
-    K_INC_DEC = 277,
-    K_CONST = 278,
-    K_IF = 279,
-    K_ELSE = 280,
-    K_RETURN = 281,
-    K_GOTO = 282,
-    K_FOR = 283,
-    K_WHILE = 284,
-    K_DO = 285,
-    K_CONTINUE = 286,
+    K_ADD_SUB = 258,
+    K_AS = 259,
+    K_ASSIGN = 260,
+    K_BOOL = 261,
+    K_BREAK = 262,
+    K_CASE = 263,
+    K_CHANNEL = 264,
+    K_CONST = 265,
+    K_CONTINUE = 266,
+    K_DEF = 267,
+    K_DEFAULT = 268,
+    K_DO = 269,
+    K_ELSE = 270,
+    K_ENUM = 271,
+    K_EQ_COMPARE = 272,
+    K_FUNC = 273,
+    K_FOR = 274,
+    K_GOTO = 275,
+    K_IF = 276,
+    K_IMPORT = 277,
+    K_INC_DEC = 278,
+    K_INT = 279,
+    K_LG_COMPARE = 280,
+    K_MAILBOX = 281,
+    K_OBJECT = 282,
+    K_RETURN = 283,
+    K_SHARED = 284,
+    K_SHIFT = 285,
+    K_STRING = 286,
     K_SWITCH = 287,
-    K_CASE = 288,
-    K_DEFAULT = 289,
-    K_BREAK = 290,
+    K_THREAD = 288,
+    K_VAR = 289,
+    K_WHILE = 290,
     NUM = 291,
     SYM = 292,
     STR = 293,
@@ -89,39 +89,39 @@ extern int yydebug;
   };
 #endif
 /* Tokens.  */
-#define K_DEF 258
-#define K_FUNC 259
-#define K_ENUM 260
-#define K_IMPORT 261
-#define K_AS 262
-#define K_ASSIGN 263
-#define K_SHIFT 264
-#define K_INT 265
-#define K_BOOL 266
-#define K_STRING 267
-#define K_OBJECT 268
-#define K_THREAD 269
-#define K_CHANNEL 270
-#define K_MAILBOX 271
-#define K_VAR 272
-#define K_SHARED 273
-#define K_ADD_SUB 274
-#define K_LG_COMPARE 275
-#define K_EQ_COMPARE 276
-#define K_INC_DEC 277
-#define K_CONST 278
-#define K_IF 279
-#define K_ELSE 280
-#define K_RETURN 281
-#define K_GOTO 282
-#define K_FOR 283
-#define K_WHILE 284
-#define K_DO 285
-#define K_CONTINUE 286
+#define K_ADD_SUB 258
+#define K_AS 259
+#define K_ASSIGN 260
+#define K_BOOL 261
+#define K_BREAK 262
+#define K_CASE 263
+#define K_CHANNEL 264
+#define K_CONST 265
+#define K_CONTINUE 266
+#define K_DEF 267
+#define K_DEFAULT 268
+#define K_DO 269
+#define K_ELSE 270
+#define K_ENUM 271
+#define K_EQ_COMPARE 272
+#define K_FUNC 273
+#define K_FOR 274
+#define K_GOTO 275
+#define K_IF 276
+#define K_IMPORT 277
+#define K_INC_DEC 278
+#define K_INT 279
+#define K_LG_COMPARE 280
+#define K_MAILBOX 281
+#define K_OBJECT 282
+#define K_RETURN 283
+#define K_SHARED 284
+#define K_SHIFT 285
+#define K_STRING 286
 #define K_SWITCH 287
-#define K_CASE 288
-#define K_DEFAULT 289
-#define K_BREAK 290
+#define K_THREAD 288
+#define K_VAR 289
+#define K_WHILE 290
 #define NUM 291
 #define SYM 292
 #define STR 293
