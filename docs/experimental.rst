@@ -3,7 +3,7 @@ Experimental features
 
 .. contents::
 
-Karuta has some experimental and premature features to see their feasibility and implementation difficulty.
+Karuta has some experimental and premature features to see their feasibility and implementation difficulty. This section describes such features.
 
 They might be remove without notice, probably due to low convenience against high maintenance burden.
 
@@ -47,3 +47,17 @@ This assumes 32bit address/data for now.
 
    Memory.read(addr)
    Memory.write(addr, data)
+
+------------------------
+Multi dimensional arrays
+------------------------
+
+Multi dimensional array is just an additional view of a normal 1 dimensional array.
+
+.. code-block:: none
+
+   shared a int[4][4]
+
+   func main() {
+     x[1][2]
+   }

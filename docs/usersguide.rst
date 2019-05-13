@@ -332,41 +332,6 @@ Thread local
    func thr(idx int) {
    }
 
-=====================
-AXI interface support
-=====================
-
-----------
-AXI master
-----------
-
-.. code-block:: none
-
-   // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
-   // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
-   @AxiMaster()
-   shared m int[16]
-
-   def f() {
-     m.load(mem_addr, count, array_addr)
-     m.store(mem_addr, count, array_addr)
-   }
-
----------
-AXI slave
----------
-
-.. code-block:: none
-
-   @AxiSlave()
-   shared s int[16]
-
-   func f() {
-     while true {
-       s.waitAccess()
-     }
-   }
-
 =========================
 Communication to external
 =========================
@@ -384,6 +349,43 @@ I/O from/to external
    @ExtIO(input = "i")
    func L.g() (bool) {
      return true
+   }
+
+---------------------
+AXI interface support
+---------------------
+
+Karuta supports AXI master/slave interface. Karuta attaches a DMA controller to an SRAM to use an AXI interface.
+
+^^^^^^^^^^
+AXI master
+^^^^^^^^^^
+
+.. code-block:: none
+
+   // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
+   // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
+   @AxiMaster()
+   shared m int[16]
+
+   def f() {
+     m.load(mem_addr, count, array_addr)
+     m.store(mem_addr, count, array_addr)
+   }
+
+^^^^^^^^^
+AXI slave
+^^^^^^^^^
+
+.. code-block:: none
+
+   @AxiSlave()
+   shared s int[16]
+
+   func f() {
+     while true {
+       s.waitAccess()
+     }
    }
 
 ----------------
@@ -477,6 +479,36 @@ But it can notify waiting threads.
    @ThreadEntry()
    func th2() {
      print(mb.wait())
+   }
+
+===========
+Method call
+===========
+
+
+.. code-block:: none
+
+   shared m object = new()
+   func m.f() {
+   }
+
+   func g() {
+   }
+
+   @ThreadEntry()
+   func th1() {
+     // Does handshake and arbitration
+     m.f()
+     // Inlined for this thread.
+     g()
+   }
+
+   @ThreadEntry()
+   func th2() {
+     // Does handshake and arbitration
+     m.f()
+     // Different inlined instance for this thread.
+     g()
    }
 
 ===========

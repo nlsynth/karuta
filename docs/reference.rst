@@ -270,6 +270,8 @@ When compilation is requested by calling compile() method, the synthesizer takes
 
    setSynthParam("resetPolarity", 0) // set negative reset (e.g. rst_n).
    setSynthParam("maxDelayPs", 10000) // 10ns
+   setSynthParam("platformFamily", "generic-platform")
+   setSynthParam("platformName", "generic")
 
 ===========
 Annotations
