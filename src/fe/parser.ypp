@@ -297,6 +297,7 @@ TYPE_NAME : K_INT {
 
 
 LABEL : SYM ':' {
+  Emitter::EmitLabel($1);
 }
 
 RETURN : K_RETURN {
@@ -308,8 +309,9 @@ STMT : EOS {
 } | EXPR EOS {
   Emitter::EmitExprStmt($1);
 } | ENUM_DECL EOS {
-} | K_GOTO FUNCALL EOS {
-} | K_GOTO SYM EOS {
+} | GOTO_HEAD FUNCALL EOS {
+} | GOTO_HEAD SYM EOS {
+  Emitter::EmitGoto($2);
 } | RETURN EXPR EOS {
   Emitter::EmitReturnStmt($2);
 } | RETURN EOS {
@@ -332,6 +334,10 @@ STMT : EOS {
 // End Of Statement
 EOS : ';' {
   ScannerInterface::EndSemiColonStatement();
+}
+
+GOTO_HEAD : K_GOTO {
+  ScannerInterface::InSemiColonStatement();
 }
 
 IMPORT_STMT : K_IMPORT {ScannerInterface::InSemiColonStatement();} STR IMPORT_SPEC_OR_EMPTY EOS {

@@ -53,6 +53,9 @@ void MethodCompiler::Compile() {
   SetupArgumentRegisters();
   SetupReturnRegisters();
 
+  // For a label at the beginning.
+  EmitNop();
+
   auto &stmts = tree_->GetStmts();
   for (size_t i = 0; i < stmts.size(); ++i) {
     CompileStmt(stmts[i]);
