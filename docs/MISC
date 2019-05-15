@@ -10,12 +10,10 @@
  * Object array
  * Enum
  * goto f();
- * goto label;
  * switch
-* Web UI
+ * select
 * Maturity
  * Better error reporting
- * Coding style consistency
  * More documents
 * More examples
  * Basic functionalities

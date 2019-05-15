@@ -72,7 +72,7 @@ So, users can simulate and test the behavior on Karuta's interpreter first befor
 Simple and familiar syntax
 --------------------------
 
-Karuta adopts syntax similar to recently popular programming languages. For example, declaring a variable is like `var x int = 123`.
+Karuta adopts syntax similar to recently popular programming languages. For example, declaring a variable is like `var x int = 123`. It also allows multiple return values as other languages do.
 Karuta also takes some syntax from HDLs so bits can be sliced like `x[15:8]` and concatenated like `x :: y`.
 
 ---------
@@ -80,6 +80,12 @@ Use of IR
 ---------
 
 Karuta adopts Iroha (Intermediate Representation Of Hardware Abstraction) as its IR and backend which borrowed concepts from LLVM. Karuta generates Iroha based IR and Iroha takes it as its input, optimize and write out HDL files.
+
+-------------
+HDL embedding
+-------------
+
+Trying to design everything in one HLS language is a terrible goal, so Karuta has features to embed Verilog code in users' design.
 
 ======================================
 Architecture and source code structure
