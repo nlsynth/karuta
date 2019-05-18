@@ -13,7 +13,7 @@ def Kernel.setName(s object) {
 
 def Kernel.compile() {
   __compile("")
-  __compile("clean,array_to_mem,alloc_resource,clean")
+  __compile("clean,alloc_resource,clean")
 }
 
 @embed(resource = "wait_cycles",
