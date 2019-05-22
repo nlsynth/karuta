@@ -102,6 +102,7 @@ MethodDecl &Emitter::CurrentMethod() {
 void Emitter::EmitNop() {
   NumericLiteral nl;
   nl.value = 0;
+  nl.width = -1;
   EmitExprStmt(Builder::NumExpr(nl));
 }
 
