@@ -1,24 +1,6 @@
 Introduction
 ============
 
-
-==================
-Quick introduction
-==================
-
-10 language features you might like... (selected as of 2019 May)
-
-* New scripting language with contemporary syntax designed only for this purpose
-* Prototype based OOP
-* Data width for each variable
-* Static thread concurrency
-* Channels and mailboxes
-* Attach AXI DMA controller to arrays
-* Custom data types
-* Distance between objects can be speficied
-* Interfaces circuits outside
-* HDL embedding
-
 ==================
 Quick installation
 ==================
@@ -193,3 +175,20 @@ The last example here illustrates some of the most important features of Karuta 
 This code has 2 thread entry points. One generates random numbers and the another reads the numbers via the channel.
 When the code is compiled, generated Verilog code will have 2 state machines ('always' blocks).
 You can deploy the code to an FPGA board, connect the output to an LED and see it flickers randomly.
+
+==================
+Quick introduction
+==================
+
+10 language features you might like... (selected as of 2019 May)
+
+* New scripting language with contemporary syntax designed only for this purpose
+* Prototype based OOP
+* Data width for each variable
+* Static thread concurrency
+* Channels and mailboxes
+* Attach AXI DMA controller to arrays
+* Custom data types
+* Distance between objects can be speficied
+* Interfaces circuits outside
+* HDL embedding

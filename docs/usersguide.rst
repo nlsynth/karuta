@@ -41,7 +41,7 @@ To run the threads described in the code, --run option can be used. The example 
 .. code-block:: none
 
    $ karuta my_design.karuta --run
-   ... thr() and main() will run
+   ... thr(), testThr() and main() will run
 
 This is equivalent to call run() at the end of the code.
 
@@ -173,13 +173,20 @@ Array images can be written to a file or read from a file.
 Thread local
 ============
 
+Karuta can create multiple threads from one @ThreadEntry() by specifying num= parameter.
+
 .. code-block:: none
 
    @ThreadLocal()
    shared M.x int
 
    @ThreadEntry(num=2)
-   func thr(idx int) {
+   func M.thr(idx int) {
+     // 2 copies of this thread runs and the index is given as the method
+     // argument. idx = 0, 1.
+
+     // x is a per thread variable.
+     x = x + idx
    }
 
 =========================
@@ -463,6 +470,8 @@ Importing file
 ===============
 Object distance
 ===============
+
+Elements of designs are placed onto the physical area of FPGAs and there are distances between them. So Karuta has a feature to specify number of clocks to propagete signals for communication.
 
 .. code-block:: none
 

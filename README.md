@@ -6,8 +6,15 @@ TL;DR:
     High level synthesis (HLS) from scripting language (Karuta) to RTL (Verilog).
     The main objective is to make FPGA development productive.
 
-See [docs/index.rst](docs/index.rst) or its [public copy at readthedocs.io](https://karuta.readthedocs.io/en/latest/) for more details.
-In case you really like this software, please be a patron from [Patreon](https://www.patreon.com/karuta).
+See the document at [readthedocs.io](https://karuta.readthedocs.io/en/latest/) or [docs/index.rst](docs/index.rst) for more details.
+
+
+     If you are using recent Ubuntu, just
+     $ sudo snap install karuta
+     to install the Karuta package.
+
+
+(In case you really like this software, please be a patron from [Patreon](https://www.patreon.com/karuta).)
 
 ## Quick overview
 Karuta Script is an object oriented scripting language. The syntax is similar to recent programming languages like JavaScript, Python, Ruby or so on.
@@ -23,7 +30,7 @@ This defines a method 'main' of current object. It can be called like this.
 
 Now some computation is defined within the object, so Karuta compiler can take a snapshot of this object and transform it into RTL.
 
-     compile()  // A snapshot is taken.
+     compile()  // A snapshot of the object is taken.
      // "my_module_rtl.html" is also possible.
      writeHdl("my_module_rtl.v")
 
@@ -42,9 +49,3 @@ So, some of following features are incorporated in the language constructs to ma
     * Generates Verilog or HTML
     * SSA based optimizers
     * Scheduling and allocation based on device parameters
-
-## COPYING
-
-See COPYING file. Feel free to ask me to change to other licenses, if it is inconvenient for you.
-
-The license of course doesn't apply to the outputs of Karuta. It's up to the author of input source code.
