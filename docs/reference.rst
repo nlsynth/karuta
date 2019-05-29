@@ -110,6 +110,20 @@ A method declaration can have an argument list and return value list.
 Variable declaration
 --------------------
 
+.. code-block:: none
+
+   // top level local variable.
+   var x int
+   // member variable.
+   shared y int
+   shared self.z int
+
+   func f() {
+     // method local variable
+     var a int
+     a = y + z
+   }
+
 ------
 Syntax
 ------
@@ -162,7 +176,7 @@ Declarations
    mailbox m int
    //
    var s string = "abc"
-   // var is not allowed
+   // var for an array is not allowed
    shared a int[32]
    shared m.a #16[4] = {1,2,3,4}
 

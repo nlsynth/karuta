@@ -6,12 +6,14 @@ TL;DR:
     High level synthesis (HLS) from scripting language (Karuta) to RTL (Verilog).
     The main objective is to make FPGA development productive.
 
-See the document at [readthedocs.io](https://karuta.readthedocs.io/en/latest/) or [docs/index.rst](docs/index.rst) for more details.
+See the [document at karuta.readthedocs.io](https://karuta.readthedocs.io/en/latest/) or [docs/index.rst](docs/index.rst) for more details.
 
 
-     If you are using recent Ubuntu, just
+If you are using recent Ubuntu, just
+
      $ sudo snap install karuta
-     to install the Karuta package.
+
+to install the Karuta package.
 
 
 (In case you really like this software, please be a patron from [Patreon](https://www.patreon.com/karuta).)
