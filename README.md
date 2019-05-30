@@ -1,4 +1,4 @@
-# Karuta
+# Karuta HLS Compiler
 Author: Yusuke TABATA (tabata.yusuke@gmail.com)
 
 ## What's this?
