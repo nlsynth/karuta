@@ -132,7 +132,8 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
     {
       // using same register for src/dst.
       dst_reg->type_.value_type_ = vm::Value::NUM;
-      dst_reg->initial_num_ = expr->GetNum();
+      iroha::Numeric::CopyValue(expr->GetNum(),
+				nullptr, &dst_reg->initial_num_);
       dst_reg->type_.is_const_ = true;
       dst_reg->type_.width_ = expr->GetNum().type_;
       dst_reg->SetIsDeclaredType(true);

@@ -268,7 +268,8 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
     frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
     iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
 			  &frame->reg_values_[dst].num_);
-    if (method->IsTopLevel()) {
+    if (method->IsTopLevel() &&
+	!frame->method_->method_regs_[dst]->GetIsDeclaredType()) {
       frame->method_->method_regs_[dst]->type_ =
 	frame->method_->method_regs_[rhs]->type_;
     }

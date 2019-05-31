@@ -90,6 +90,7 @@ Expr *Builder::NumExpr(NumericLiteral num) {
   if (num.width > -1) {
     n.type_.SetWidth(num.width);
   }
+  iroha::Numeric::MayExpandStorage(nullptr, &n);
   expr->SetNum(n);
   return expr;
 }
