@@ -265,7 +265,11 @@ void Executor::ExecBinop(const Method *method, MethodFrame *frame,
 			  &frame->reg_values_[dst].num_);
     break;
   case OP_ASSIGN:
-    frame->reg_values_[dst].num_ = frame->reg_values_[rhs].num_;
+    iroha::Numeric::CopyValueWithWidth(frame->reg_values_[rhs].num_.GetArray(),
+				       frame->reg_values_[rhs].num_.type_,
+				       frame->method_->method_regs_[dst]->type_.width_,
+				       nullptr,
+				       frame->reg_values_[dst].num_.GetMutableArray());
     iroha::Op::FixupWidth(frame->method_->method_regs_[dst]->type_.width_,
 			  &frame->reg_values_[dst].num_);
     if (method->IsTopLevel() &&
