@@ -745,6 +745,8 @@ void Executor::ExecVardecl(const Method *method, MethodFrame *frame,
   Value *value = obj->LookupValue(name, true);
   DeclAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
+    iroha::Numeric::MayPopulateStorage(value->num_.type_,
+				       nullptr, &value->num_);
     iroha::Op::MakeConst(0, &value->num_);
   }
   if (value->type_ == Value::OBJECT && an != nullptr) {
