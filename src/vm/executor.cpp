@@ -691,7 +691,8 @@ void Executor::ExecMemberAccess(Method *method, MethodFrame *frame,
     member = TlsWrapper::GetValue(member->object_, thr_);
   }
   if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
-    frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member);
+    frame->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member,
+							     member->num_.type_);
     if (method->IsTopLevel()) {
       // Copies data type to the method.
       auto *dst_reg = insn->dst_regs_[0];
@@ -704,8 +705,9 @@ void Executor::ExecMemberAccess(Method *method, MethodFrame *frame,
     CHECK(insn->src_regs_.size() == 2);
     CHECK(insn->src_regs_[0]->id_ == insn->dst_regs_[0]->id_);
     // src: value, obj
-    Value &src = frame->reg_values_[insn->src_regs_[0]->id_];
-    member->CopyDataFrom(src);
+    int id = insn->src_regs_[0]->id_;
+    Value &src = frame->reg_values_[id];
+    member->CopyDataFrom(src, method->method_regs_[id]->type_.width_);
     member->type_ =
       method->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_;
   }

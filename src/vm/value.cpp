@@ -101,11 +101,15 @@ bool Value::IsObjectType() const {
     type_ == INT_ARRAY || type_ == OBJECT_ARRAY;
 }
 
-void Value::CopyDataFrom(const Value &src) {
-  iroha::NumericWidth w = num_.type_;
-  *this = src;
-  // Writes back saved parameters.
-  num_.type_ = w;
+void Value::CopyDataFrom(const Value &src, const iroha::NumericWidth &width) {
+  if (src.type_ == NUM) {
+    iroha::Numeric::CopyValueWithWidth(src.num_.GetArray(),
+				       width, num_.type_,
+				       nullptr,
+				       num_.GetMutableArray());
+  } else {
+    *this = src;
+  }
 }
 
 }  // namespace vm

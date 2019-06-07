@@ -20,7 +20,7 @@ public:
   void Dump(ostream &os) const;
   void SetBool(bool b);
   bool IsObjectType() const;
-  void CopyDataFrom(const Value &src);
+  void CopyDataFrom(const Value &src, const iroha::NumericWidth &width);
 
   enum ValueType {
     NONE,
