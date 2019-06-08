@@ -4,18 +4,9 @@
 
 #include "vm/common.h"
 #include "vm/value.h"
+#include "vm/method_frame.h"
 
 namespace vm {
-
-class MethodFrame {
-public:
-  Method *method_;
-  size_t pc_;
-  Object *obj_;
-  vector<Value> reg_values_;
-  // callee writes here.
-  vector<Value> returns_;
-};
 
 class Executor {
 public:

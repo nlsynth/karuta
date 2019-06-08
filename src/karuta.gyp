@@ -132,6 +132,7 @@
         'vm/mailbox_wrapper.h',
         'vm/method.cpp',
         'vm/method.h',
+        'vm/method_frame.h',
         'vm/native_methods.cpp',
         'vm/native_methods.h',
         'vm/native_objects.cpp',
