@@ -1,9 +1,12 @@
 #include "base/util.h"
 
+#include "base/env.h"
+#include "base/logging.h"
 #include "iroha/util.h"
 
 #include <fstream>
 #include <set>
+#include <memory>
 #include <string.h>
 
 using std::set;

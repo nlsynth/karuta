@@ -2,7 +2,9 @@
 #ifndef _base_dump_stream_h_
 #define _base_dump_stream_h_
 
-#include "karuta/karuta.h"
+#include <iostream>
+
+using std::ostream;
 
 class DumpStream {
 public:

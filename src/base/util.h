@@ -2,7 +2,11 @@
 #ifndef _base_util_h_
 #define _base_util_h_
 
-#include "karuta/karuta.h"
+#include <iostream>
+#include <string>
+
+using std::ostream;
+using std::string;
 
 class Util {
 public:
