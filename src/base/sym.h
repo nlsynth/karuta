@@ -32,18 +32,7 @@ extern sym_t sym_switch, sym_case, sym_default;
 extern sym_t sym_break, sym_continue, sym_goto;
 extern sym_t sym_return, sym_as;
 extern sym_t sym_logic_inv, sym_tri_term;
-extern sym_t sym_gt, sym_lt;
-extern sym_t sym_gte, sym_lte;
-extern sym_t sym_eq, sym_ne;
-extern sym_t sym_or_reduce;
-extern sym_t sym_function, sym_funcall;
-extern sym_t sym_unsigned, sym_const;
-extern sym_t sym_int, sym_bool, sym_void, sym_object, sym_thread;
-extern sym_t sym_channel, sym_read_channel, sym_write_channel;
-extern sym_t sym_mailbox;
-extern sym_t sym_sram_if, sym_bit_sel, sym_imported, sym_sub_module_call;
-extern sym_t sym_task_entry, sym_task_finish;
-extern sym_t sym_array_ref, sym_phi, sym_selector;
-extern sym_t sym_ext_io, sym_output, sym_input;
+extern sym_t sym_int, sym_bool, sym_object;
+extern sym_t sym_output, sym_input;
 
 #endif  // _base_sym_h_
