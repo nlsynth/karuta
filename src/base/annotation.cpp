@@ -120,11 +120,13 @@ int Annotation::MaxDelayPs() {
 }
 
 bool Annotation::IsAxiMaster() {
-  return LookupStrParam(annotation::kAnnotationKey, "") == "AxiMaster";
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "AxiMaster") || (s == "AxiMaster64") || (s == "AxiMaster32");
 }
 
 bool Annotation::IsAxiSlave() {
-  return LookupStrParam(annotation::kAnnotationKey, "") == "AxiSlave";
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "AxiSlave") || (s == "AxiSlave64") || (s == "AxiSlave32");
 }
 
 bool Annotation::IsAxiExclusive() {
@@ -132,6 +134,13 @@ bool Annotation::IsAxiExclusive() {
 }
 
 int Annotation::GetAddrWidth() {
+  string k = LookupStrParam(annotation::kAnnotationKey, "");
+  if (k == "AxiMaster64" || k == "AxiSlave64") {
+    return 64;
+  }
+  if (k == "AxiMaster32" || k == "AxiSlave32") {
+    return 32;
+  }
   uint64_t w = LookupIntParam("addrWidth", 0);
   if (w == 64 || w == 32) {
     return w;
