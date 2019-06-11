@@ -2,7 +2,7 @@
 #ifndef _compiler_common_h_
 #define _compiler_common_h_
 
-#include "karuta.h"
+#include "karuta/karuta.h"
 
 namespace fe {
 class Expr;

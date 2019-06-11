@@ -2,7 +2,7 @@
 #ifndef _base_annotation_builder_h_
 #define _base_annotation_builder_h_
 
-#include "karuta.h"
+#include "karuta/karuta.h"
 
 class AnnotationKeyValue;
 class AnnotationKeyValueSet;

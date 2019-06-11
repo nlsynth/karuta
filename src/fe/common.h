@@ -2,8 +2,8 @@
 #ifndef _fe_common_
 #define _fe_common_
 
-#include "karuta.h"
 #include "base/pool.h"
+#include "karuta/karuta.h"
 
 class Annotation;
 class AnnotationKeyValueSet;

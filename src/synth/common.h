@@ -2,7 +2,7 @@
 #ifndef _synth_common_h_
 #define _synth_common_h_
 
-#include "karuta.h"
+#include "karuta/karuta.h"
 
 class Annotation;
 

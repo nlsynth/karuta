@@ -19,12 +19,12 @@
 #include <map>
 
 #include "base/arg_parser.h"
+#include "base/status.h"
 #include "fe/fe.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
 #include "iroha/util.h"
-#include "karuta.h"
-#include "base/status.h"
+#include "karuta/karuta.h"
 
 using std::map;
 

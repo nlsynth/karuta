@@ -2,7 +2,7 @@
 #ifndef _vm_common_h_
 #define _vm_common_h_
 
-#include "karuta.h"
+#include "karuta/karuta.h"
 
 class Annotation;
 class DumpStream;

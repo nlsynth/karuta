@@ -2,7 +2,7 @@
 #ifndef _base_util_h_
 #define _base_util_h_
 
-#include "karuta.h"
+#include "karuta/karuta.h"
 
 class Util {
 public:

@@ -75,7 +75,7 @@
         'fe/var_decl.cpp',
         'fe/var_decl.h',
         'main.cpp',
-        'karuta.h',
+        'karuta/karuta.h',
         'synth/common.h',
         'synth/design_synth.cpp',
         'synth/design_synth.h',
