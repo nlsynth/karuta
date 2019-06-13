@@ -1,5 +1,6 @@
 #include "vm/decl_annotator.h"
 
+#include "base/status.h"
 #include "fe/var_decl.h"
 #include "vm/insn_annotator.h"
 #include "vm/numeric_object.h"
@@ -12,7 +13,8 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 				   Register *reg) {
   reg->SetIsDeclaredType(true);
   if (decl->GetArrayShape() != nullptr) {
-    CHECK(false);
+    Status::os(Status::USER_ERROR) << "Local array is not allowed";
+    return;
   } else {
     reg->type_.value_type_ = InsnAnnotator::SymToType(decl->GetType());
     if (decl->GetType() == sym_bool) {
