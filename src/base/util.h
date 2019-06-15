@@ -14,7 +14,6 @@ public:
   static string BaseNameWithoutSuffix(const string &fn);
   static bool IsHtmlFileName(const string &fn);
   static bool IsIrFileName(const string &fn);
-  static bool CopyFile(const char *fn, ostream &os);
   static bool RewriteFile(const char *fn, const char *tag,
 			  const char *content);
   // 0,1,2,3,4 -> 0,0,1,2,2

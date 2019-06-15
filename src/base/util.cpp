@@ -1,7 +1,6 @@
 #include "base/util.h"
 
 #include "base/logging.h"
-#include "karuta/env.h"
 #include "iroha/util.h"
 
 #include <fstream>
@@ -62,31 +61,6 @@ bool Util::IsIrFileName(const string &fn) {
     suffixes.insert("iroha");
   }
   return CheckFileSuffix(fn, suffixes);
-}
-
-bool Util::CopyFile(const char *fn, ostream &os) {
-  vector<string> paths;
-  Env::SearchPathList(fn, &paths);
-
-  FILE *fp = nullptr;
-  for (string &path : paths) {
-    fp = fopen(path.c_str(), "r");
-    if (fp) {
-      break;
-    }
-  }
-  LOG(INFO) << "Copying " << fn;
-  os << "// copied from " << fn << " -- begin --\n";
-  if (!fp) {
-    return false;
-  }
-  char buf[1024];
-  while (fgets(buf, 1024, fp)) {
-    os << buf;
-  }
-  os << "// copied from " << fn << " -- end --\n\n";
-  fclose(fp);
-  return true;
 }
 
 bool Util::RewriteFile(const char *fn, const char *tag,
