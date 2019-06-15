@@ -1,10 +1,10 @@
 #include "vm/thread.h"
 
 #include "base/dump_stream.h"
-#include "base/env.h"
+#include "base/status.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
-#include "base/status.h"
+#include "karuta/env.h"
 #include "vm/value.h"
 #include "vm/executor.h"
 #include "vm/insn.h"

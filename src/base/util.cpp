@@ -1,7 +1,7 @@
 #include "base/util.h"
 
-#include "base/env.h"
 #include "base/logging.h"
+#include "karuta/env.h"
 #include "iroha/util.h"
 
 #include <fstream>

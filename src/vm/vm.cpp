@@ -1,10 +1,10 @@
 #include "vm/vm.h"
 
-#include "base/env.h"
 #include "base/status.h"
 #include "base/stl_util.h"
 #include "compiler/compiler.h"
 #include "fe/expr.h"
+#include "karuta/env.h"
 #include "vm/array_wrapper.h"
 #include "vm/enum_type_wrapper.h"
 #include "vm/gc.h"
