@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _base_annotation_builder_h_
-#define _base_annotation_builder_h_
+#ifndef _karuta_annotation_builder_h_
+#define _karuta_annotation_builder_h_
 
 #include "karuta/karuta.h"
 
@@ -22,4 +22,4 @@ public:
   static void AddIntParam(AnnotationKeyValue *p, uint64_t num);
 };
 
-#endif  // _base_annotation_builder_h_
+#endif  // _karuta_annotation_builder_h_

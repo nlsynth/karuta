@@ -1,6 +1,6 @@
-#include "base/annotation_builder.h"
+#include "karuta/annotation_builder.h"
 
-#include "base/annotation.h"
+#include "karuta/annotation.h"
 
 void AnnotationBuilder::AddStrParam(AnnotationKeyValue *p, const char *str) {
   p->str_value_ = string(str);

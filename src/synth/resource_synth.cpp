@@ -1,9 +1,9 @@
 #include "synth/resource_synth.h"
 
-#include "base/annotation.h"
 #include "base/status.h"
 #include "fe/method.h"
 #include "iroha/iroha.h"
+#include "karuta/annotation.h"
 #include "synth/design_synth.h"
 #include "synth/resource_set.h"
 #include "synth/object_synth.h"

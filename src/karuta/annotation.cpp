@@ -1,13 +1,13 @@
-#include "base/annotation.h"
+#include "karuta/annotation.h"
 
 #include <iostream>
 #include <list>
 #include <stdlib.h>
 #include <string.h>
 
-#include "base/annotation_builder.h"
 #include "base/pool.h"
 #include "base/stl_util.h"
+#include "karuta/annotation_builder.h"
 
 static const char kResource[] = "resource";
 static const char kFile[] = "file";

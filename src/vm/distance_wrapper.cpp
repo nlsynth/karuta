@@ -1,6 +1,6 @@
 #include "vm/distance_wrapper.h"
 
-#include "base/annotation.h"
+#include "karuta/annotation.h"
 #include "vm/object.h"
 #include "vm/vm.h"
 

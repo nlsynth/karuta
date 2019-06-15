@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _base_env_h_
-#define _base_env_h_
+#ifndef _karuta_env_h_
+#define _karuta_env_h_
 
 #include <string>
 #include <vector>
@@ -44,4 +44,4 @@ private:
   static long duration_;
 };
 
-#endif  // _base_env_h_
+#endif  // _karuta_env_h_

@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // Common definition for all the components of Karuta.
-#ifndef _karuta_h_
-#define _karuta_h_
+#ifndef _karuta_karuta_h_
+#define _karuta_karuta_h_
 
 #include <iostream>
 #include <memory>
@@ -18,4 +18,4 @@ using std::ostringstream;
 using std::string;
 using std::vector;
 
-#endif  // _karuta_h_
+#endif  // _karuta_karuta_h_

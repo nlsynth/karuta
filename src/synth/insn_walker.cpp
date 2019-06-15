@@ -1,8 +1,8 @@
 #include "synth/insn_walker.h"
 
-#include "base/annotation.h"
 #include "base/status.h"
 #include "fe/method.h"
+#include "karuta/annotation.h"
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
 #include "synth/shared_resource_set.h"

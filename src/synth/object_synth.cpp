@@ -1,10 +1,10 @@
 #include "synth/object_synth.h"
 
-#include "base/annotation.h"
 #include "base/status.h"
 #include "base/stl_util.h"
 #include "fe/method.h"
 #include "iroha/iroha.h"
+#include "karuta/annotation.h"
 #include "synth/design_synth.h"
 #include "synth/thread_synth.h"
 #include "vm/method.h"

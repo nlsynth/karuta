@@ -1,6 +1,6 @@
 #include "vm/value.h"
 
-#include "base/annotation.h"
+#include "karuta/annotation.h"
 #include "vm/array_wrapper.h"
 #include "vm/enum_type_wrapper.h"
 #include "vm/int_array.h"

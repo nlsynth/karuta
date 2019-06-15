@@ -1,12 +1,12 @@
 #include "fe/stmt.h"
 
-#include "base/annotation.h"
 #include "base/dump_stream.h"
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/nodecode.h"
 #include "fe/var_decl.h"
+#include "karuta/annotation.h"
 
 namespace fe {
 

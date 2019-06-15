@@ -2,10 +2,10 @@
 
 #include <stdlib.h>
 
-#include "base/annotation.h"
-#include "base/annotation_builder.h"
 #include "base/pool.h"
 #include "base/status.h"
+#include "karuta/annotation.h"
+#include "karuta/annotation_builder.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/synth.h"
 #include "synth/object_attr_names.h"

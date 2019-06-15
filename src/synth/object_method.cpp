@@ -1,8 +1,8 @@
 #include "synth/object_method.h"
 
-#include "base/annotation.h"
 #include "base/status.h"
 #include "iroha/iroha.h"
+#include "karuta/annotation.h"
 #include "synth/insn_walker.h"
 #include "synth/method_context.h"
 #include "synth/method_synth.h"

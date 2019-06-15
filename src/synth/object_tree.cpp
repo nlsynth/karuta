@@ -1,6 +1,6 @@
 #include "synth/object_tree.h"
 
-#include "base/annotation.h"
+#include "karuta/annotation.h"
 #include "synth/object_attr_names.h"
 #include "vm/distance_wrapper.h"
 #include "vm/object.h"

@@ -64,7 +64,6 @@
 /* Copy the first part of user declarations.  */
 #line 2 "src/fe/parser.ypp" /* yacc.c:339  */
 
-#include "base/annotation_builder.h"
 #include "base/status.h"
 #include "base/sym.h"
 #include "fe/builder.h"
@@ -75,6 +74,7 @@
 #include "fe/scanner.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "karuta/annotation_builder.h"
 
 extern int yylex();
 extern void yyerror(const char *msg);

@@ -1,7 +1,5 @@
 #include "fe/emitter.h"
 
-#include "base/annotation.h"
-#include "base/annotation_builder.h"
 #include "base/status.h"
 #include "fe/builder.h"
 #include "fe/common.h"
@@ -10,6 +8,8 @@
 #include "fe/nodecode.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "karuta/annotation.h"
+#include "karuta/annotation_builder.h"
 
 namespace fe {
 

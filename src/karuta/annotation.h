@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _base_annotation_h_
-#define _base_annotation_h_
+#ifndef _karuta_annotation_h_
+#define _karuta_annotation_h_
 
 #include "karuta/karuta.h"
 
@@ -111,4 +111,4 @@ private:
   static std::unique_ptr<Annotation> empty_annotation_;
 };
 
-#endif  // _base_annotation_h_
+#endif  // _karuta_annotation_h_

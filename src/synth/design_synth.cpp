@@ -2,11 +2,11 @@
 
 #include <list>
 
-#include "base/annotation.h"
 #include "base/status.h"
 #include "base/stl_util.h"
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
+#include "karuta/annotation.h"
 #include "synth/shared_resource_set.h"
 #include "synth/object_attr_names.h"
 #include "synth/object_synth.h"

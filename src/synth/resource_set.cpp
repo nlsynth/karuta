@@ -1,11 +1,11 @@
 #include "synth/resource_set.h"
 
-#include "base/annotation.h"
 #include "base/util.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
+#include "karuta/annotation.h"
 #include "vm/array_wrapper.h"
 #include "vm/channel_wrapper.h"
 #include "vm/insn.h"

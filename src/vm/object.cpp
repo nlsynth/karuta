@@ -1,7 +1,7 @@
 #include "vm/object.h"
 
-#include "base/annotation.h"
 #include "base/dump_stream.h"
+#include "karuta/annotation.h"
 #include "vm/array_wrapper.h"
 #include "vm/int_array.h"
 #include "vm/object_util.h"

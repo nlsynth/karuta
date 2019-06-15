@@ -2,8 +2,8 @@
 
 #include <sstream>
 
-#include "base/annotation.h"
 #include "base/util.h"
+#include "karuta/annotation.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
