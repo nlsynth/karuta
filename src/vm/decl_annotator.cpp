@@ -15,11 +15,16 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
   if (decl->GetArrayShape() != nullptr) {
     Status::os(Status::USER_ERROR) << "Local array is not allowed";
     return;
-  } else {
-    reg->type_.value_type_ = InsnAnnotator::SymToType(decl->GetType());
-    if (decl->GetType() == sym_bool) {
-      reg->type_.enum_type_ = vm->bool_type_;
-    }
+  }
+  reg->type_.value_type_ = InsnAnnotator::SymToType(decl->GetType());
+  if (reg->type_.value_type_ == Value::NONE) {
+    // This may not happen and ICE would be better as the FE should reject this.
+    Status::os(Status::USER_ERROR) << "Unknown value type: "
+				   << sym_cstr(decl->GetType());
+    return;
+  }
+  if (decl->GetType() == sym_bool) {
+    reg->type_.enum_type_ = vm->bool_type_;
   }
   reg->type_.width_ = decl->GetWidth();
   reg->type_.object_name_ = decl->GetObjectName();
@@ -31,7 +36,6 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
       reg->type_.width_ = iroha::NumericWidth(false, w);
     }
   }
-  CHECK(reg->type_.value_type_ != Value::NONE) << sym_cstr(decl->GetType());
 }
 
 void DeclAnnotator::AnnotateByValue(Value *value, Register *reg) {
