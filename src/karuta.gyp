@@ -76,6 +76,8 @@
         'karuta/env.cpp',
         'karuta/env.h',
         'karuta/karuta.h',
+        'karuta/karuta_main.cpp',
+        'karuta/karuta_main.h',
         'synth/common.h',
         'synth/design_synth.cpp',
         'synth/design_synth.h',
