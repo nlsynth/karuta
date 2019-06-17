@@ -18,6 +18,20 @@
       'type': 'executable',
       'include_dirs': [
         './',
+      ],
+      'sources': [
+        'main.cpp',
+      ],
+      'dependencies': [
+        ':libkaruta',
+      ],
+    },
+    {
+      'target_name': 'libkaruta',
+      'product_name': 'karuta',
+      'type': 'static_library',
+      'include_dirs': [
+        './',
         '../iroha/src/',
       ],
       'sources': [
@@ -68,7 +82,6 @@
         'fe/stmt.h',
         'fe/var_decl.cpp',
         'fe/var_decl.h',
-        'main.cpp',
         'karuta/annotation.cpp',
         'karuta/annotation.h',
         'karuta/annotation_builder.cpp',

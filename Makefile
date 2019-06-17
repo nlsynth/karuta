@@ -13,8 +13,9 @@ src/out/Default/karuta: src/Makefile src/fe/parser.cpp config.mk
 build:
 	make -C src
 
+# duplicated basenames are vm/method.cpp and fe/method.cpp.
 src/Makefile: src/karuta.gyp
-	gyp src/karuta.gyp --depth=. -f make --generator-output=src
+	gyp src/karuta.gyp --depth=. -f make --generator-output=src --no-duplicate-basename-check
 
 src/fe/parser.cpp: src/fe/parser.ypp
 	python ./genparser.py
