@@ -9,14 +9,14 @@ static const int PAGE_SIZE = 1024;
 
 struct IntArrayPage {
   IntArrayPage(const iroha::NumericWidth &w);
-  iroha::Numeric data[PAGE_SIZE];
+  iroha::NumericValue data_[PAGE_SIZE];
+  iroha::NumericWidth width_;
 };
 
-IntArrayPage::IntArrayPage(const iroha::NumericWidth &width) {
+IntArrayPage::IntArrayPage(const iroha::NumericWidth &width) : width_(width) {
   int i;
   for (i = 0; i < PAGE_SIZE; i++) {
-    data[i].SetValue0(0);
-    data[i].type_ = width;
+    iroha::Numeric::Clear(width_, &data_[i]);
   }
 }
 
@@ -53,14 +53,16 @@ IntArray::IntArray(const IntArray *src) {
   }
 }
 
-void IntArray::Write(const vector<uint64_t> &indexes, const iroha::Numeric &data) {
+void IntArray::Write(const vector<uint64_t> &indexes,
+		     const iroha::Numeric &data) {
   WriteSingle(GetIndex(indexes), data);
 }
 
 void IntArray::WriteSingle(uint64_t addr, const iroha::Numeric &data) {
   IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
-  p->data[offset] = data;
+  iroha::Numeric::CopyValueWithWidth(data.GetArray(), data.type_, p->width_,
+				     nullptr, &p->data_[offset]);
 }
 
 void IntArray::WriteWide(uint64_t byte_addr, const iroha::Numeric &data) {
@@ -82,7 +84,10 @@ iroha::Numeric IntArray::Read(const vector<uint64_t> &indexes) {
 iroha::Numeric IntArray::ReadSingle(uint64_t addr) {
   IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
-  return p->data[offset];
+  iroha::Numeric n;
+  *n.GetMutableArray() = p->data_[offset];
+  n.type_ = p->width_;
+  return n;
 }
 
 iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
