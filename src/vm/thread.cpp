@@ -19,7 +19,6 @@ string Thread::dbg_bytecode_;
 
 Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index)
   : vm_(vm), parent_thread_(parent),
-    executor_(new Executor(this)),
     in_yield_(false), index_(index), busy_counter_(0) {
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
@@ -53,7 +52,7 @@ void Thread::Run() {
 void Thread::RunMethod() {
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
-  Executor *executor = executor_.get();
+  Executor executor(this, frame);
   Profile *profile = vm_->GetProfile();
   bool profile_enabled = profile->IsEnabled();
   while (frame->pc_ < method->insns_.size()) {
@@ -61,7 +60,7 @@ void Thread::RunMethod() {
       profile->Mark(method, frame->pc_);
     }
     Insn *insn = method->insns_[frame->pc_];
-    bool need_suspend = executor->ExecInsn(method, frame, insn);
+    bool need_suspend = executor.ExecInsn(insn);
     if (need_suspend) {
       return;
     }

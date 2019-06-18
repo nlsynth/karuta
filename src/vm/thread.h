@@ -57,8 +57,6 @@ private:
   Stat stat_;
   Thread *parent_thread_;
 
-  std::unique_ptr<Executor> executor_;
-
   vector<MethodFrame*> method_stack_;
   bool in_yield_;
   int index_;
