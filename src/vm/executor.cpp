@@ -716,7 +716,7 @@ void Executor::InitializeArray(IntArray *array,
   if (array_initializer) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       iroha::Numeric num;
-      iroha::Op::MakeConst(array_initializer->num_[i], &num);
+      iroha::Op::MakeConst0(array_initializer->num_[i], num.GetMutableArray());
       array->WriteSingle(i, num);
     }
   }
@@ -733,7 +733,7 @@ void Executor::ExecVardecl() {
   if (value->type_ == Value::NUM) {
     iroha::Numeric::MayPopulateStorage(value->num_.type_,
 				       nullptr, &value->num_);
-    iroha::Op::MakeConst(0, &value->num_);
+    iroha::Op::MakeConst0(0, value->num_.GetMutableArray());
   }
   if (value->type_ == Value::OBJECT && an != nullptr) {
     DistanceWrapper::MaySetDistanceAnnotation(name, an, thr_->GetVM(), obj);

@@ -86,7 +86,7 @@ Expr *Builder::SymExpr(sym_t sym) {
 Expr *Builder::NumExpr(NumericLiteral num) {
   Expr *expr = NewExpr(EXPR_NUM);
   iroha::Numeric n;
-  iroha::Op::MakeConst(num.value, &n);
+  iroha::Op::MakeConst0(num.value, n.GetMutableArray());
   if (num.width > -1) {
     n.type_.SetWidth(num.width);
   }

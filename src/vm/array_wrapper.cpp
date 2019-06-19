@@ -157,7 +157,8 @@ void ArrayWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
   IntArray *arr = data->int_array_.get();
   Value value;
   value.type_ = Value::NUM;
-  iroha::Op::MakeConst(arr->ReadSingle(addr).GetValue0(), &value.num_);
+  iroha::Op::MakeConst0(arr->ReadSingle(addr).GetValue0(),
+			value.num_.GetMutableArray());
   thr->SetReturnValueFromNativeMethod(value);
 }
 
@@ -168,7 +169,7 @@ void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = ad->int_array_.get();
   iroha::Numeric num;
-  iroha::Op::MakeConst(data, &num);
+  iroha::Op::MakeConst0(data, num.GetMutableArray());
   arr->WriteSingle(addr, num);
 }
 
