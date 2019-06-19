@@ -17,15 +17,15 @@
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
 #include "vm/int_array.h"
-#include "vm/string_wrapper.h"
-#include "vm/thread.h"
-#include "vm/thread_wrapper.h"
-#include "vm/tls_wrapper.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 #include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
+#include "vm/string_wrapper.h"
+#include "vm/thread.h"
+#include "vm/thread_wrapper.h"
+#include "vm/tls_wrapper.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -50,20 +50,20 @@ Object *Executor::CreateObjectArray(fe::ArrayShape *shape) {
 }
 
 bool Executor::ExecInsn(Insn *insn) {
-  Method *method = m();
+  insn_ = insn;
   bool need_suspend = false;
-  switch (insn->op_) {
+  switch (op()) {
   case OP_NUM:
-    ExecNum(insn);
+    ExecNum();
     break;
   case OP_STR:
-    ExecStr(insn);
+    ExecStr();
     break;
   case OP_ADD_MAY_WITH_TYPE:
   case OP_SUB_MAY_WITH_TYPE:
   case OP_MUL_MAY_WITH_TYPE:
   case OP_DIV_MAY_WITH_TYPE:
-    if (MayExecuteCustomOp(insn)) {
+    if (MayExecuteCustomOp()) {
       need_suspend = true;
       if (!thr_->IsRunnable()) {
 	return true;
@@ -90,27 +90,27 @@ bool Executor::ExecInsn(Insn *insn) {
   case OP_CONCAT:
   case OP_LSHIFT:
   case OP_RSHIFT:
-    ExecBinop(insn);
+    ExecBinop();
     break;
   case OP_FUNCALL:
-    need_suspend = ExecFuncall(insn);
+    need_suspend = ExecFuncall();
     if (!thr_->IsRunnable()) {
       return true;
     }
     break;
   case OP_FUNCALL_DONE:
-    ExecFuncallDone(insn);
+    ExecFuncallDone();
     break;
   case OP_LOAD_OBJ:
-    ExecLoadObj(insn);
+    ExecLoadObj();
     break;
   case OP_IF:
-    ExecIf(insn);
+    ExecIf();
     // do not increment pc.
     return false;
   case OP_GOTO:
     {
-      bool v = ExecGoto(insn);
+      bool v = ExecGoto();
       // do not increment pc.
       return v;
     }
@@ -118,251 +118,241 @@ bool Executor::ExecInsn(Insn *insn) {
     break;
   case OP_PRE_INC:
   case OP_PRE_DEC:
-    ExecIncDec(insn);
+    ExecIncDec();
     break;
   case OP_ARRAY_READ:
-    ExecArrayRead(insn);
+    ExecArrayRead();
     break;
   case OP_ARRAY_WRITE:
-    ExecArrayWrite(insn);
+    ExecArrayWrite();
     break;
   case OP_LOGIC_INV:
-    ExecLogicInv(insn);
+    ExecLogicInv();
     break;
   case OP_BIT_INV:
   case OP_PLUS:
   case OP_MINUS:
-    ExecNumUniop(insn);
+    ExecNumUniop();
     break;
   case OP_MEMBER_READ:
   case OP_MEMBER_WRITE:
-    ExecMemberAccess(insn);
+    ExecMemberAccess();
     break;
   case OP_BIT_RANGE:
-    ExecBitRange(insn);
+    ExecBitRange();
     break;
   case OP_FUNCDECL:
-    ExecFuncdecl(insn);
+    ExecFuncdecl();
     break;
   case OP_VARDECL:
-    ExecVardecl(insn);
+    ExecVardecl();
     break;
   case OP_THREAD_DECL:
-    ExecThreadDecl(insn);
+    ExecThreadDecl();
     break;
   case OP_CHANNEL_DECL:
-    ExecChannelDecl(insn);
+    ExecChannelDecl();
     break;
   case OP_MAILBOX_DECL:
-    ExecMailboxDecl(insn);
+    ExecMailboxDecl();
     break;
   case OP_IMPORT:
-    ExecImport(insn);
+    ExecImport();
     need_suspend = true;
     break;
   case OP_MEMBER_READ_WITH_CHECK:
-    ExecMemberReadWithCheck(insn);
+    ExecMemberReadWithCheck();
     break;
   case OP_ARRAY_WRITE_WITH_CHECK:
-    ExecArrayWriteWithCheck(insn);
+    ExecArrayWriteWithCheck();
     break;
   case OP_FUNCALL_WITH_CHECK:
-    need_suspend = ExecFuncallWithCheck(insn);
+    need_suspend = ExecFuncallWithCheck();
     if (!thr_->IsRunnable()) {
       return true;
     }
     break;
   case OP_FUNCALL_DONE_WITH_CHECK:
-    ExecFuncallDoneWithCheck(insn);
+    ExecFuncallDoneWithCheck();
     break;
   case OP_SET_TYPE_OBJECT:
-    ExecSetTypeObject(insn);
+    ExecSetTypeObject();
     break;
   case OP_MAY_WITH_TYPE_DONE:
-    ExecMayWithTypeDone(insn);
+    ExecMayWithTypeDone();
     break;
   default:
-    CHECK(false) << "unknown insn:" << vm::OpCodeName(insn->op_);
+    CHECK(false) << "unknown insn:" << vm::OpCodeName(op());
   }
   ++frame_->pc_;
   return need_suspend;
 }
 
-void Executor::ExecNum(Insn *insn) {
-  int dst = insn->dst_regs_[0]->id_;
-  iroha::Numeric::CopyValueWithWidth(insn->src_regs_[0]->initial_num_.GetArray(),
-				     insn->src_regs_[0]->initial_num_.type_,
-				     frame_->method_->method_regs_[dst]->type_.width_,
+void Executor::ExecNum() {
+  int dst = dreg(0)->id_;
+  iroha::Numeric::CopyValueWithWidth(sreg(0)->initial_num_.GetArray(),
+				     sreg(0)->initial_num_.type_,
+				     mreg(dst)->type_.width_,
 				     nullptr,
-				     frame_->reg_values_[dst].num_.GetMutableArray());
+				     val(dst).num_.GetMutableArray());
   if (frame_->method_->IsTopLevel()) {
-    frame_->reg_values_[dst].type_ = Value::NUM;
-    frame_->reg_values_[dst].num_.type_ =
-      frame_->method_->method_regs_[dst]->type_.width_;
+    val(dst).type_ = Value::NUM;
+    val(dst).num_.type_ = mreg(dst)->type_.width_;
   }
 }
 
-void Executor::ExecStr(Insn *insn) {
-  int dst = insn->dst_regs_[0]->id_;
-  frame_->reg_values_[dst].object_ =
-    StringWrapper::NewStringWrapper(thr_->GetVM(), InsnOpUtils::Str(insn));
+void Executor::ExecStr() {
+  int dst = dreg(0)->id_;
+  val(dst).object_ =
+    StringWrapper::NewStringWrapper(thr_->GetVM(), InsnOpUtils::Str(insn_));
   if (frame_->method_->IsTopLevel()) {
-    frame_->reg_values_[dst].type_ = Value::OBJECT;
+    val(dst).type_ = Value::OBJECT;
   }
 }
 
-void Executor::ExecBinop(Insn *insn) {
-  int dst = insn->dst_regs_[0]->id_;
-  if (m()->method_regs_[dst]->type_.value_type_ != Value::NUM) {
-    if (m()->method_regs_[dst]->type_.value_type_ == Value::NONE) {
-      RetryBinopWithType(insn);
+void Executor::ExecBinop() {
+  int dst = dreg(0)->id_;
+  if (mreg(dst)->type_.value_type_ != Value::NUM) {
+    if (mreg(dst)->type_.value_type_ == Value::NONE) {
+      RetryBinopWithType();
     } else {
-      ExecNonNumResultBinop(insn);
+      ExecNonNumResultBinop();
     }
     return;
   }
-  int lhs = insn->src_regs_[0]->id_;
-  int rhs = insn->src_regs_[1]->id_;
+  int lhs = sreg(0)->id_;
+  int rhs = sreg(1)->id_;
   if (m()->IsTopLevel()) {
-    if (InsnType::IsNumCalculation(insn->op_)) {
-      InsnAnnotator::AnnotateNumCalculationOp(insn);
+    if (InsnType::IsNumCalculation(op())) {
+      InsnAnnotator::AnnotateNumCalculationOp(insn_);
     }
-    if (insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT) {
-      frame_->reg_values_[dst].num_.type_ =
-	m()->method_regs_[lhs]->type_.width_;
+    if (op() == OP_LSHIFT || op() == OP_RSHIFT) {
+      val(dst).num_.type_ = mreg(lhs)->type_.width_;
     }
   }
-  switch (insn->op_) {
+  switch (op()) {
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
-    iroha::Op::Add(frame_->reg_values_[lhs].num_,
-		   frame_->reg_values_[rhs].num_,
-		   &frame_->reg_values_[dst].num_);
-    iroha::Op::FixupWidth(m()->method_regs_[dst]->type_.width_,
-			  &frame_->reg_values_[dst].num_);
+    iroha::Op::Add(val(lhs).num_, val(rhs).num_,
+		   &val(dst).num_);
+    iroha::Op::FixupWidth(mreg(dst)->type_.width_,
+			  &val(dst).num_);
     break;
   case OP_SUB:
   case OP_SUB_MAY_WITH_TYPE:
-    iroha::Op::Sub(frame_->reg_values_[lhs].num_,
-		   frame_->reg_values_[rhs].num_,
-		   &frame_->reg_values_[dst].num_);
-    iroha::Op::FixupWidth(m()->method_regs_[dst]->type_.width_,
-			  &frame_->reg_values_[dst].num_);
+    iroha::Op::Sub(val(lhs).num_, val(rhs).num_,
+		   &val(dst).num_);
+    iroha::Op::FixupWidth(mreg(dst)->type_.width_,
+			  &val(dst).num_);
     break;
   case OP_MUL:
   case OP_MUL_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_MUL,
-			 frame_->reg_values_[lhs].num_,
-			 frame_->reg_values_[rhs].num_,
-			 &frame_->reg_values_[dst].num_);
-    iroha::Op::FixupWidth(m()->method_regs_[dst]->type_.width_,
-			  &frame_->reg_values_[dst].num_);
+			 val(lhs).num_, val(rhs).num_,
+			 &val(dst).num_);
+    iroha::Op::FixupWidth(mreg(dst)->type_.width_,
+			  &val(dst).num_);
     break;
   case OP_DIV:
   case OP_DIV_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_DIV,
-			 frame_->reg_values_[lhs].num_,
-			 frame_->reg_values_[rhs].num_,
-			 &frame_->reg_values_[dst].num_);
-    iroha::Op::FixupWidth(m()->method_regs_[dst]->type_.width_,
-			  &frame_->reg_values_[dst].num_);
+			 val(lhs).num_, val(rhs).num_,
+			 &val(dst).num_);
+    iroha::Op::FixupWidth(mreg(dst)->type_.width_,
+			  &val(dst).num_);
     break;
   case OP_ASSIGN:
-    iroha::Numeric::CopyValueWithWidth(frame_->reg_values_[rhs].num_.GetArray(),
-				       frame_->reg_values_[rhs].num_.type_,
-				       m()->method_regs_[dst]->type_.width_,
+    iroha::Numeric::CopyValueWithWidth(val(rhs).num_.GetArray(),
+				       val(rhs).num_.type_,
+				       mreg(dst)->type_.width_,
 				       nullptr,
-				       frame_->reg_values_[dst].num_.GetMutableArray());
-    iroha::Op::FixupWidth(m()->method_regs_[dst]->type_.width_,
-			  &frame_->reg_values_[dst].num_);
+				       val(dst).num_.GetMutableArray());
+    iroha::Op::FixupWidth(mreg(dst)->type_.width_,
+			  &val(dst).num_);
     if (m()->IsTopLevel() &&
-	!m()->method_regs_[dst]->GetIsDeclaredType()) {
-      m()->method_regs_[dst]->type_ =
-	m()->method_regs_[rhs]->type_;
+	!mreg(dst)->GetIsDeclaredType()) {
+      mreg(dst)->type_ = mreg(rhs)->type_;
     }
     break;
   case OP_AND:
     iroha::Op::CalcBinOp(iroha::BINOP_AND,
-			 frame_->reg_values_[lhs].num_,
-			 frame_->reg_values_[rhs].num_,
-			 &frame_->reg_values_[dst].num_);
+			 val(lhs).num_, val(rhs).num_,
+			 &val(dst).num_);
     break;
   case OP_OR:
     iroha::Op::CalcBinOp(iroha::BINOP_OR,
-			 frame_->reg_values_[lhs].num_,
-			 frame_->reg_values_[rhs].num_,
-			 &frame_->reg_values_[dst].num_);
+			 val(lhs).num_, val(rhs).num_,
+			 &val(dst).num_);
     break;
   case OP_XOR:
     iroha::Op::CalcBinOp(iroha::BINOP_XOR,
-			 frame_->reg_values_[lhs].num_,
-			 frame_->reg_values_[rhs].num_,
-			 &frame_->reg_values_[dst].num_);
+			 val(lhs).num_, val(rhs).num_,
+			 &val(dst).num_);
     break;
   case OP_CONCAT:
     {
-      iroha::Numeric l = frame_->reg_values_[lhs].num_;
-      iroha::Numeric r = frame_->reg_values_[rhs].num_;
-      l.type_ = m()->method_regs_[lhs]->type_.width_;
-      r.type_ =	m()->method_regs_[rhs]->type_.width_;
+      iroha::Numeric l = val(lhs).num_;
+      iroha::Numeric r = val(rhs).num_;
+      l.type_ = mreg(lhs)->type_.width_;
+      r.type_ =	mreg(rhs)->type_.width_;
       iroha::Op::Concat(l, r,
-			&frame_->reg_values_[dst].num_);
+			&val(dst).num_);
     }
     break;
   case OP_LSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
-			 frame_->reg_values_[lhs].num_,
-			 frame_->reg_values_[rhs].num_,
-			 &frame_->reg_values_[dst].num_);
-    iroha::Op::FixupWidth(m()->method_regs_[dst]->type_.width_,
-			  &frame_->reg_values_[dst].num_);
+			 val(lhs).num_,
+			 val(rhs).num_,
+			 &val(dst).num_);
+    iroha::Op::FixupWidth(mreg(dst)->type_.width_,
+			  &val(dst).num_);
     break;
   case OP_RSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
-			 frame_->reg_values_[lhs].num_,
-			 frame_->reg_values_[rhs].num_,
-			 &frame_->reg_values_[dst].num_);
-    iroha::Op::FixupWidth(m()->method_regs_[dst]->type_.width_,
-			  &frame_->reg_values_[dst].num_);
+			 val(lhs).num_,
+			 val(rhs).num_,
+			 &val(dst).num_);
+    iroha::Op::FixupWidth(mreg(dst)->type_.width_,
+			  &val(dst).num_);
     break;
   default:
-    CHECK(false) << "unknown binop:" << vm::OpCodeName(insn->op_);
+    CHECK(false) << "unknown binop:" << vm::OpCodeName(op());
   }
 }
 
-void Executor::RetryBinopWithType(Insn *insn) {
-  if (insn->op_ == OP_CONCAT) {
-    InsnAnnotator::AnnotateConcatInsn(insn);
+void Executor::RetryBinopWithType() {
+  if (op() == OP_CONCAT) {
+    InsnAnnotator::AnnotateConcatInsn(insn_);
     // TODO: Annotate other types of insns.
   } else {
-    CHECK(insn->op_ == OP_ADD_MAY_WITH_TYPE ||
-	  insn->op_ == OP_SUB_MAY_WITH_TYPE ||
-	  insn->op_ == OP_MUL_MAY_WITH_TYPE ||
-	  insn->op_ == OP_DIV_MAY_WITH_TYPE);
+    CHECK(op() == OP_ADD_MAY_WITH_TYPE ||
+	  op() == OP_SUB_MAY_WITH_TYPE ||
+	  op() == OP_MUL_MAY_WITH_TYPE ||
+	  op() == OP_DIV_MAY_WITH_TYPE);
   }
-  int lhs = insn->src_regs_[0]->id_;
-  int rhs = insn->src_regs_[1]->id_;
-  CHECK(m()->method_regs_[lhs]->type_.value_type_ ==
-	m()->method_regs_[rhs]->type_.value_type_);
-  int dst = insn->dst_regs_[0]->id_;
-  if (m()->method_regs_[lhs]->type_.value_type_ == Value::NUM) {
-    m()->method_regs_[dst]->type_.value_type_ = Value::NUM;
-  } else if (m()->method_regs_[lhs]->type_.value_type_ == Value::OBJECT) {
-    m()->method_regs_[dst]->type_.value_type_ = Value::OBJECT;
+  int lhs = sreg(0)->id_;
+  int rhs = sreg(1)->id_;
+  CHECK(mreg(lhs)->type_.value_type_ ==
+	mreg(rhs)->type_.value_type_);
+  int dst = dreg(0)->id_;
+  if (mreg(lhs)->type_.value_type_ == Value::NUM) {
+    mreg(dst)->type_.value_type_ = Value::NUM;
+  } else if (mreg(lhs)->type_.value_type_ == Value::OBJECT) {
+    mreg(dst)->type_.value_type_ = Value::OBJECT;
   }
-  ExecBinop(insn);
+  ExecBinop();
 }
 
-void Executor::ExecArrayRead(Insn *insn) {
-  CHECK(insn->obj_reg_ != nullptr);
-  Object *array_obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+void Executor::ExecArrayRead() {
+  CHECK(oreg() != nullptr);
+  Object *array_obj = val(oreg()->id_).object_;
   CHECK(array_obj);
-  Value &lhs_value = frame_->reg_values_[insn->dst_regs_[0]->id_];
-  auto *dst_reg = insn->dst_regs_[0];
+  Value &lhs_value = val(dreg(0)->id_);
+  auto *dst_reg = dreg(0);
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     vector<uint64_t> indexes;
-    PopulateArrayIndexes(insn, 0, &indexes);
+    PopulateArrayIndexes(0, &indexes);
     lhs_value.num_ = array->Read(indexes);
     if (m()->IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::NUM;
@@ -370,7 +360,7 @@ void Executor::ExecArrayRead(Insn *insn) {
     }
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
-    int index = frame_->reg_values_[insn->src_regs_[0]->id_].num_.GetValue0();
+    int index = val(sreg(0)->id_).num_.GetValue0();
     lhs_value.type_ = Value::OBJECT;
     lhs_value.object_ = ArrayWrapper::Get(array_obj, index);
     if (m()->IsTopLevel()) {
@@ -379,55 +369,54 @@ void Executor::ExecArrayRead(Insn *insn) {
   }
 }
 
-void Executor::ExecArrayWrite(Insn *insn) {
-  CHECK(insn->obj_reg_ != nullptr);
-  Object *array_obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+void Executor::ExecArrayWrite() {
+  CHECK(oreg() != nullptr);
+  Object *array_obj = val(oreg()->id_).object_;
   CHECK(array_obj);
   if (ArrayWrapper::IsIntArray(array_obj)) {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     vector<uint64_t> indexes;
-    PopulateArrayIndexes(insn, 1, &indexes);
+    PopulateArrayIndexes(1, &indexes);
     array->Write(indexes,
-		 frame_->reg_values_[insn->src_regs_[0]->id_].num_);
+		 val(sreg(0)->id_).num_);
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
-    CHECK(m()->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_
+    CHECK(mreg(sreg(0)->id_)->type_.value_type_
 	  == Value::OBJECT);
-    int index = frame_->reg_values_[insn->src_regs_[1]->id_].num_.GetValue0();
+    int index = val(sreg(1)->id_).num_.GetValue0();
     ArrayWrapper::Set(array_obj, index,
-		      frame_->reg_values_[insn->src_regs_[0]->id_].object_);
+		      val(sreg(0)->id_).object_);
   }
 }
 
-void Executor::PopulateArrayIndexes(Insn *insn, int start,
-				    vector<uint64_t> *indexes) {
-  for (int i = start; i < insn->src_regs_.size(); ++i) {
-    uint64_t v = frame_->reg_values_[insn->src_regs_[i]->id_].num_.GetValue0();
+void Executor::PopulateArrayIndexes(int start, vector<uint64_t> *indexes) {
+  for (int i = start; i < insn_->src_regs_.size(); ++i) {
+    uint64_t v = val(insn_->src_regs_[i]->id_).num_.GetValue0();
     indexes->push_back(v);
   }
 }
 
-void Executor::ExecLogicInv(Insn *insn) {
-  int val = 1;
-  Value &value = frame_->reg_values_[insn->src_regs_[0]->id_];
+void Executor::ExecLogicInv() {
+  int v = 1;
+  Value &value = val(sreg(0)->id_);
   if (value.type_ == Value::ENUM_ITEM) {
     if (value.enum_val_.val != 0) {
-      val = 0;
+      v = 0;
     }
   } else if (value.type_ == Value::NUM) {
     if (!iroha::Op::IsZero(value.num_)) {
-      val = 0;
+      v = 0;
     }
   }
-  Value &dst_value = frame_->reg_values_[insn->dst_regs_[0]->id_];
-  dst_value.enum_val_.val = val;
+  Value &dst_value = val(dreg(0)->id_);
+  dst_value.enum_val_.val = v;
 }
 
-void Executor::ExecNumUniop(Insn *insn) {
-  Value &value = frame_->reg_values_[insn->src_regs_[0]->id_];
-  Value &dst_value = frame_->reg_values_[insn->dst_regs_[0]->id_];
+void Executor::ExecNumUniop() {
+  Value &value = val(sreg(0)->id_);
+  Value &dst_value = val(dreg(0)->id_);
   if (value.type_ == Value::ENUM_ITEM) {
-    CHECK(insn->op_ == OP_BIT_INV);
+    CHECK(op() == OP_BIT_INV);
     if (value.enum_val_.val) {
       dst_value.enum_val_.val = 0;
     } else {
@@ -436,7 +425,7 @@ void Executor::ExecNumUniop(Insn *insn) {
     return;
   }
   iroha::Numeric res;
-  switch (insn->op_) {
+  switch (op()) {
   case OP_BIT_INV:
     iroha::Op::BitInv(value.num_, &res);
     break;
@@ -450,24 +439,24 @@ void Executor::ExecNumUniop(Insn *insn) {
     CHECK(false);
     break;
   }
-  int dst_id = insn->dst_regs_[0]->id_;
-  iroha::Op::FixupWidth(m()->method_regs_[dst_id]->type_.width_,
+  int dst_id = dreg(0)->id_;
+  iroha::Op::FixupWidth(mreg(dst_id)->type_.width_,
 			&res);
   dst_value.num_ = res;
 }
 
-void Executor::ExecLoadObj(Insn *insn) {
-  Value &dst_value = frame_->reg_values_[insn->dst_regs_[0]->id_];
+void Executor::ExecLoadObj() {
+  Value &dst_value = val(dreg(0)->id_);
   Value *obj_value;
-  if (insn->label_) {
+  if (insn_->label_) {
     Object *src_obj;
-    if (insn->obj_reg_) {
-      src_obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+    if (oreg()) {
+      src_obj = val(oreg()->id_).object_;
     } else {
       src_obj = frame_->obj_;
     }
-    obj_value = src_obj->LookupValue(insn->label_, false);
-    CHECK(obj_value) << "Failed to LoadObj: " << sym_cstr(insn->label_);
+    obj_value = src_obj->LookupValue(insn_->label_, false);
+    CHECK(obj_value) << "Failed to LoadObj: " << sym_cstr(insn_->label_);
     CHECK(obj_value->IsObjectType()) << " is not a object";
     dst_value.object_ = obj_value->object_;
     dst_value.type_ = obj_value->type_;
@@ -477,40 +466,40 @@ void Executor::ExecLoadObj(Insn *insn) {
   }
 }
 
-void Executor::ExecIncDec(Insn *insn) {
-  int target = insn->dst_regs_[0]->id_;
+void Executor::ExecIncDec() {
+  int target = dreg(0)->id_;
   iroha::Numeric n1;
   iroha::Op::MakeConst(1, &n1);
   iroha::Numeric res;
-  if (insn->op_ == OP_PRE_INC) {
-    iroha::Op::Add(frame_->reg_values_[target].num_, n1, &res);
+  if (op() == OP_PRE_INC) {
+    iroha::Op::Add(val(target).num_, n1, &res);
   } else {
-    iroha::Op::Sub(frame_->reg_values_[target].num_, n1, &res);
+    iroha::Op::Sub(val(target).num_, n1, &res);
   }
-  iroha::Op::FixupWidth(frame_->method_->method_regs_[target]->type_.width_,
+  iroha::Op::FixupWidth(mreg(target)->type_.width_,
 			&res);
-  res.type_ = frame_->method_->method_regs_[target]->type_.width_;
-  frame_->reg_values_[target].num_ = res;
+  res.type_ = mreg(target)->type_.width_;
+  val(target).num_ = res;
 }
 
-void Executor::ExecNonNumResultBinop(Insn *insn) {
-  int dst = insn->dst_regs_[0]->id_;
-  int lhs = insn->src_regs_[0]->id_;
-  int rhs = insn->src_regs_[1]->id_;
-  switch (insn->op_) {
+void Executor::ExecNonNumResultBinop() {
+  int dst = dreg(0)->id_;
+  int lhs = sreg(0)->id_;
+  int rhs = sreg(1)->id_;
+  switch (op()) {
   case OP_ASSIGN:
-    frame_->reg_values_[lhs] = frame_->reg_values_[rhs];
-    frame_->reg_values_[dst] = frame_->reg_values_[rhs];
+    val(lhs) = val(rhs);
+    val(dst) = val(rhs);
     break;
   case OP_LAND:
-    frame_->reg_values_[dst].enum_val_.val =
-      frame_->reg_values_[lhs].enum_val_.val &&
-      frame_->reg_values_[rhs].enum_val_.val;
+    val(dst).enum_val_.val =
+      val(lhs).enum_val_.val &&
+      val(rhs).enum_val_.val;
     break;
   case OP_LOR:
-    frame_->reg_values_[dst].enum_val_.val =
-      frame_->reg_values_[lhs].enum_val_.val ||
-      frame_->reg_values_[rhs].enum_val_.val;
+    val(dst).enum_val_.val =
+      val(lhs).enum_val_.val ||
+      val(rhs).enum_val_.val;
     break;
   case OP_GT:
   case OP_LT:
@@ -518,100 +507,100 @@ void Executor::ExecNonNumResultBinop(Insn *insn) {
   case OP_LTE:
     {
       // fall through.
-      CHECK(m()->method_regs_[lhs]->type_.value_type_ == Value::NUM &&
-	    m()->method_regs_[rhs]->type_.value_type_ == Value::NUM);
+      CHECK(mreg(lhs)->type_.value_type_ == Value::NUM &&
+	    mreg(rhs)->type_.value_type_ == Value::NUM);
     }
   case OP_EQ:
   case OP_NE:
     {
       bool r;
-      if (m()->method_regs_[rhs]->type_.value_type_ == Value::NUM) {
-	iroha::CompareOp op;
-	switch (insn->op_) {
+      if (mreg(rhs)->type_.value_type_ == Value::NUM) {
+	iroha::CompareOp cmp_op;
+	switch (op()) {
 	case OP_LT:
 	case OP_GTE:
-	  op = iroha::COMPARE_LT;
+	  cmp_op = iroha::COMPARE_LT;
 	  break;
 	case OP_GT:
 	case OP_LTE:
-	  op = iroha::COMPARE_GT;
+	  cmp_op = iroha::COMPARE_GT;
 	  break;
 	case OP_EQ:
 	case OP_NE:
-	  op = iroha::COMPARE_EQ;
+	  cmp_op = iroha::COMPARE_EQ;
 	  break;
 	default:
-	  op = iroha::COMPARE_EQ;
+	  cmp_op = iroha::COMPARE_EQ;
 	  CHECK(false);
 	  break;
 	}
-	r = iroha::Op::Compare(op, frame_->reg_values_[lhs].num_,
-			       frame_->reg_values_[rhs].num_);
-      } else if (m()->method_regs_[rhs]->type_.value_type_ ==
+	r = iroha::Op::Compare(cmp_op, val(lhs).num_,
+			       val(rhs).num_);
+      } else if (mreg(rhs)->type_.value_type_ ==
 		 Value::ENUM_ITEM) {
-	r = (frame_->reg_values_[lhs].enum_val_.val ==
-	     frame_->reg_values_[rhs].enum_val_.val);
+	r = (val(lhs).enum_val_.val ==
+	     val(rhs).enum_val_.val);
       } else {
-	r = frame_->reg_values_[lhs].object_->Compare(frame_->reg_values_[rhs].object_);
+	r = val(lhs).object_->Compare(val(rhs).object_);
       }
-      if (insn->op_ == OP_NE || insn->op_ == OP_GTE ||
-	  insn->op_ == OP_LTE) {
+      if (op() == OP_NE || op() == OP_GTE ||
+	  op() == OP_LTE) {
 	r = !r;
       }
-      frame_->reg_values_[dst].SetBool(r);
+      val(dst).SetBool(r);
     }
     break;
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
     {
-      CHECK(m()->method_regs_[lhs]->type_.value_type_ ==
-	    m()->method_regs_[rhs]->type_.value_type_);
-      CHECK(m()->method_regs_[lhs]->type_.value_type_ == Value::OBJECT);
-      string r = frame_->reg_values_[lhs].object_->ToString() +
-	frame_->reg_values_[rhs].object_->ToString();
-      frame_->reg_values_[dst].object_ =
+      CHECK(mreg(lhs)->type_.value_type_ ==
+	    mreg(rhs)->type_.value_type_);
+      CHECK(mreg(lhs)->type_.value_type_ == Value::OBJECT);
+      string r = val(lhs).object_->ToString() +
+	val(rhs).object_->ToString();
+      val(dst).object_ =
 	StringWrapper::NewStringWrapper(thr_->GetVM(), r);
     }
     break;
   default:
-    CHECK(false) << "unknown non num binop:" << vm::OpCodeName(insn->op_);
+    CHECK(false) << "unknown non num binop:" << vm::OpCodeName(op());
   }
 }
 
-bool Executor::ExecGoto(Insn *insn) {
-  frame_->pc_ = insn->jump_target_;
+bool Executor::ExecGoto() {
+  frame_->pc_ = insn_->jump_target_;
   return thr_->OnJump();
 }
 
-void Executor::ExecIf(Insn *insn) {
-  int cond = insn->src_regs_[0]->id_;
-  Value &cond_val = frame_->reg_values_[cond];
+void Executor::ExecIf() {
+  int cond = sreg(0)->id_;
+  Value &cond_val = val(cond);
   CHECK(cond_val.type_ == Value::ENUM_ITEM);
   if (cond_val.enum_val_.val) {
     ++frame_->pc_;
   } else {
-    frame_->pc_ = insn->jump_target_;
+    frame_->pc_ = insn_->jump_target_;
   }
 }
 
-bool Executor::ExecFuncall(Insn *insn) {
+bool Executor::ExecFuncall() {
   Object *obj;
-  Method *callee_method = LookupCompiledMethod(insn, &obj);
+  Method *callee_method = LookupCompiledMethod(&obj);
   if (callee_method == nullptr) {
     return true;
   }
   vector<Value> args;
-  for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
-    args.push_back(frame_->reg_values_[insn->src_regs_[i]->id_]);
+  for (size_t i = 0; i < insn_->src_regs_.size(); ++i) {
+    args.push_back(val(insn_->src_regs_[i]->id_));
   }
   auto fn = callee_method->GetMethodFunc();
   if (fn != nullptr) {
     // Native method call (implementation in C++).
     // Copy types of argument values too, since (most of) native methods
     // don't assume argument types.
-    for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
-      args[i].type_ = insn->src_regs_[i]->type_.value_type_;
-      args[i].num_.type_ = insn->src_regs_[i]->type_.width_;
+    for (size_t i = 0; i < insn_->src_regs_.size(); ++i) {
+      args[i].type_ = insn_->src_regs_[i]->type_.value_type_;
+      args[i].num_.type_ = insn_->src_regs_[i]->type_.width_;
     }
     fn(thr_, obj, args);
     if (!thr_->IsRunnable()) {
@@ -625,8 +614,8 @@ bool Executor::ExecFuncall(Insn *insn) {
   return false;
 }
 
-Method *Executor::LookupCompiledMethod(Insn *insn, Object **obj) {
-  Method *method = LookupMethod(insn, obj);
+Method *Executor::LookupCompiledMethod(Object **obj) {
+  Method *method = LookupMethod(obj);
   if (method == nullptr) {
     return nullptr;
   }
@@ -637,14 +626,14 @@ Method *Executor::LookupCompiledMethod(Insn *insn, Object **obj) {
   return method;
 }
 
-Method *Executor::LookupMethod(Insn *insn, Object **obj) {
-  Value &obj_value = frame_->reg_values_[insn->obj_reg_->id_];
+Method *Executor::LookupMethod(Object **obj) {
+  Value &obj_value = val(oreg()->id_);
   CHECK(obj_value.IsObjectType());
   *obj = obj_value.object_;
-  Value *value = (*obj)->LookupValue(insn->label_, false);
+  Value *value = (*obj)->LookupValue(insn_->label_, false);
   if (!value) {
     Status::os(Status::USER_ERROR) << "method not found: "
-				   << sym_cstr(insn->label_);
+				   << sym_cstr(insn_->label_);
     thr_->UserError();
     return nullptr;
   }
@@ -652,10 +641,10 @@ Method *Executor::LookupMethod(Insn *insn, Object **obj) {
   return value->method_;
 }
 
-void Executor::ExecFuncallDone(Insn *insn) {
-  for (size_t i = 0; i < insn->dst_regs_.size() &&
+void Executor::ExecFuncallDone() {
+  for (size_t i = 0; i < insn_->dst_regs_.size() &&
 	 i < frame_->returns_.size(); ++i) {
-    frame_->reg_values_[insn->dst_regs_[i]->id_] = frame_->returns_[i];
+    val(insn_->dst_regs_[i]->id_) = frame_->returns_[i];
   }
   frame_->returns_.clear();
 }
@@ -670,55 +659,55 @@ void Executor::SetupCalleeFrame(Object *obj, Method *callee_method,
   }
 }
 
-void Executor::ExecMemberAccess(const Insn *insn) {
+void Executor::ExecMemberAccess() {
   Object *obj;
-  if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
-    obj = frame_->reg_values_[insn->src_regs_[0]->id_].object_;
+  if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
+    obj = val(sreg(0)->id_).object_;
   } else {
-    obj = frame_->reg_values_[insn->src_regs_[1]->id_].object_;
+    obj = val(sreg(1)->id_).object_;
   }
-  Value *member = obj->LookupValue(insn->label_, false);
+  Value *member = obj->LookupValue(insn_->label_, false);
   if (member == nullptr) {
     Status::os(Status::USER_ERROR) << "member not found: "
-				   << sym_cstr(insn->label_);
+				   << sym_cstr(insn_->label_);
     thr_->UserError();
     return;
   }
   if (TlsWrapper::IsTlsValue(member)) {
     member = TlsWrapper::GetValue(member->object_, thr_);
   }
-  if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_READ_WITH_CHECK) {
-    frame_->reg_values_[insn->dst_regs_[0]->id_].CopyDataFrom(*member,
-							      member->num_.type_);
+  if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
+    val(dreg(0)->id_).CopyDataFrom(*member,
+				   member->num_.type_);
     if (m()->IsTopLevel()) {
       // Copies data type to the method.
-      auto *dst_reg = insn->dst_regs_[0];
+      auto *dst_reg = dreg(0);
       dst_reg->type_.value_type_ = member->type_;
       dst_reg->type_.width_ = member->num_.type_;
       dst_reg->type_.object_name_ = member->type_object_name_;
     }
   } else {
     // OP_MEMBER_WRITE
-    CHECK(insn->src_regs_.size() == 2);
-    CHECK(insn->src_regs_[0]->id_ == insn->dst_regs_[0]->id_);
+    CHECK(insn_->src_regs_.size() == 2);
+    CHECK(sreg(0)->id_ == dreg(0)->id_);
     // src: value, obj
-    int id = insn->src_regs_[0]->id_;
-    Value &src = frame_->reg_values_[id];
-    member->CopyDataFrom(src, m()->method_regs_[id]->type_.width_);
+    int id = sreg(0)->id_;
+    Value &src = val(id);
+    member->CopyDataFrom(src, mreg(id)->type_.width_);
     member->type_ =
-      m()->method_regs_[insn->src_regs_[0]->id_]->type_.value_type_;
+      mreg(sreg(0)->id_)->type_.value_type_;
   }
 }
 
-void Executor::ExecBitRange(Insn *insn) {
-  int dst = insn->dst_regs_[0]->id_;
-  if (m()->method_regs_[dst]->type_.value_type_ == Value::NONE) {
-    InsnAnnotator::AnnotateBitRangeInsn(insn);
+void Executor::ExecBitRange() {
+  int dst = dreg(0)->id_;
+  if (mreg(dst)->type_.value_type_ == Value::NONE) {
+    InsnAnnotator::AnnotateBitRangeInsn(insn_);
   }
-  int h = frame_->reg_values_[insn->src_regs_[1]->id_].num_.GetValue0();
-  int l = frame_->reg_values_[insn->src_regs_[2]->id_].num_.GetValue0();
-  Value &value = frame_->reg_values_[insn->src_regs_[0]->id_];
-  Value &res = frame_->reg_values_[dst];
+  int h = val(sreg(1)->id_).num_.GetValue0();
+  int l = val(sreg(2)->id_).num_.GetValue0();
+  Value &value = val(sreg(0)->id_);
+  Value &res = val(dst);
   iroha::Op::SelectBits(value.num_, h, l, &res.num_);
 }
 
@@ -733,10 +722,10 @@ void Executor::InitializeArray(IntArray *array,
   }
 }
 
-void Executor::ExecVardecl(Insn *insn) {
-  fe::VarDecl *decl = insn->insn_stmt_->GetVarDecl();
+void Executor::ExecVardecl() {
+  fe::VarDecl *decl = insn_->insn_stmt_->GetVarDecl();
   Annotation *an = decl->GetAnnotation();
-  Object *obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+  Object *obj = val(oreg()->id_).object_;
   CHECK(obj);
   sym_t name = decl->GetNameExpr()->GetSym();
   Value *value = obj->LookupValue(name, true);
@@ -763,49 +752,49 @@ void Executor::ExecVardecl(Insn *insn) {
   }
 }
 
-void Executor::ExecThreadDecl(Insn *insn) {
+void Executor::ExecThreadDecl() {
   Object *callee_obj;
-  Method *callee_method = LookupMethod(insn, &callee_obj);
+  Method *callee_method = LookupMethod(&callee_obj);
   CHECK(callee_method) << "no method";
-  sym_t method_name = insn->label_;
+  sym_t method_name = insn_->label_;
   Object *thread_obj =
     ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, false, 0);
 
-  CHECK(callee_obj == frame_->reg_values_[insn->obj_reg_->id_].object_);
-  sym_t member_name = insn->insn_stmt_->GetExpr()->GetLhs()->GetSym();
+  CHECK(callee_obj == val(oreg()->id_).object_);
+  sym_t member_name = insn_->insn_stmt_->GetExpr()->GetLhs()->GetSym();
   Value *value = callee_obj->LookupValue(member_name, true);
   value->type_ = Value::OBJECT;
   value->object_ = thread_obj;
 }
 
-void Executor::ExecChannelDecl(Insn *insn) {
-  int width = insn->insn_stmt_->GetWidth().GetWidth();
-  Annotation *an = insn->insn_stmt_->GetAnnotation();
+void Executor::ExecChannelDecl() {
+  int width = insn_->insn_stmt_->GetWidth().GetWidth();
+  Annotation *an = insn_->insn_stmt_->GetAnnotation();
   CHECK(an == nullptr || !an->IsThreadLocal());
   Object *channel_obj =
-    ChannelWrapper::NewChannel(thr_->GetVM(), width, insn->label_, an);
+    ChannelWrapper::NewChannel(thr_->GetVM(), width, insn_->label_, an);
 
-  Object *obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+  Object *obj = val(oreg()->id_).object_;
   CHECK(obj);
-  Value *value = obj->LookupValue(insn->label_, true);
+  Value *value = obj->LookupValue(insn_->label_, true);
   value->type_ = Value::OBJECT;
   value->object_ = channel_obj;
 }
 
-void Executor::ExecMailboxDecl(Insn *insn) {
-  Annotation *an = insn->insn_stmt_->GetAnnotation();
-  int width = insn->insn_stmt_->GetWidth().GetWidth();
+void Executor::ExecMailboxDecl() {
+  Annotation *an = insn_->insn_stmt_->GetAnnotation();
+  int width = insn_->insn_stmt_->GetWidth().GetWidth();
   Object *mailbox_obj =
-    MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn->label_, an);
-  Object *obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+    MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn_->label_, an);
+  Object *obj = val(oreg()->id_).object_;
   CHECK(obj);
-  Value *value = obj->LookupValue(insn->label_, true);
+  Value *value = obj->LookupValue(insn_->label_, true);
   value->type_ = Value::OBJECT;
   value->object_ = mailbox_obj;
 }
 
-void Executor::ExecImport(Insn *insn) {
-  const string &fn = insn->insn_stmt_->GetString();
+void Executor::ExecImport() {
+  const string &fn = insn_->insn_stmt_->GetString();
   VM *vm = thr_->GetVM();
   vm::Object *thr_obj = vm->kernel_object_->Clone();
   compiler::CompileOptions opts;
@@ -818,29 +807,29 @@ void Executor::ExecImport(Insn *insn) {
   vm->AddThreadFromMethod(thr_, thr_obj, method, 0);
   thr_->Suspend();
 
-  if (insn->dst_regs_.size() > 0) {
+  if (insn_->dst_regs_.size() > 0) {
     // import "foo.karuta" as v
-    int dst_id = insn->dst_regs_[0]->id_;
-    frame_->reg_values_[dst_id].object_ = thr_obj;
-    frame_->reg_values_[dst_id].type_ = Value::OBJECT;
+    int dst_id = dreg(0)->id_;
+    val(dst_id).object_ = thr_obj;
+    val(dst_id).type_ = Value::OBJECT;
   }
 }
 
-void Executor::ExecFuncdecl(Insn *insn) {
-  Object *obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+void Executor::ExecFuncdecl() {
+  Object *obj = val(oreg()->id_).object_;
   if (!obj) {
     Status::os(Status::USER_ERROR) << "Can't find object";
     thr_->UserError();
     return;
   }
 
-  Value *value = obj->LookupValue(insn->label_, true);
+  Value *value = obj->LookupValue(insn_->label_, true);
   value->type_ = Value::METHOD;
   Method *new_method = thr_->GetVM()->NewMethod(false /* not toplevel */);
-  new_method->SetParseTree(insn->insn_stmt_->GetMethodDef());
+  new_method->SetParseTree(insn_->insn_stmt_->GetMethodDef());
   value->method_ = new_method;
 
-  ClearThreadEntry(insn);
+  ClearThreadEntry();
   bool is_soft_thread = false;
   bool is_thread_entry = false;
   string thr_name;
@@ -850,32 +839,30 @@ void Executor::ExecFuncdecl(Insn *insn) {
     is_thread_entry = an->IsThreadEntry();
     is_soft_thread = an->IsSoftThreadEntry();
   }
-  if (sym_str(insn->label_) == "main") {
+  if (sym_str(insn_->label_) == "main") {
     is_thread_entry = true;
   }
   if (thr_name.empty()) {
-    thr_name = "$thr_" + sym_str(insn->label_);
+    thr_name = "$thr_" + sym_str(insn_->label_);
   }
   if (is_thread_entry || is_soft_thread) {
     int num = 1;
     if (an != nullptr) {
       num = an->GetNum();
     }
-    AddThreadEntry(insn, thr_name, num, is_soft_thread);
+    AddThreadEntry(thr_name, num, is_soft_thread);
   }
   if (an != nullptr && an->IsDataFlowEntry()) {
-    AddThreadEntry(insn, thr_name, 1, false);
+    AddThreadEntry(thr_name, 1, false);
   }
 }
 
-void Executor::AddThreadEntry(Insn *insn,
-			      const string &name, int num,
-			      bool is_soft) {
+void Executor::AddThreadEntry(const string &name, int num, bool is_soft) {
   Object *callee_obj;
-  Object *obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+  Object *obj = val(oreg()->id_).object_;
   for (int i = 0; i < num; ++i) {
     Object *thread_obj =
-      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), insn->label_, is_soft, i);
+      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), insn_->label_, is_soft, i);
     string thr_name = name;
     if (num > 1) {
       char buf[20];
@@ -888,79 +875,79 @@ void Executor::AddThreadEntry(Insn *insn,
   }
 }
 
-void Executor::ClearThreadEntry(Insn *insn) {
-  Object *obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
-  ThreadWrapper::DeleteThreadByMethodName(obj, sym_str(insn->label_));
+void Executor::ClearThreadEntry() {
+  Object *obj = val(oreg()->id_).object_;
+  ThreadWrapper::DeleteThreadByMethodName(obj, sym_str(insn_->label_));
 }
 
-void Executor::ExecMemberReadWithCheck(const Insn *insn) {
-  ExecMemberAccess(insn);
+void Executor::ExecMemberReadWithCheck() {
+  ExecMemberAccess();
   // Annotate the type of the results now.
-  CHECK(insn->op_ == OP_MEMBER_READ_WITH_CHECK);
-  Value &obj_value = frame_->reg_values_[insn->src_regs_[0]->id_];
+  CHECK(op() == OP_MEMBER_READ_WITH_CHECK);
+  Value &obj_value = val(sreg(0)->id_);
   CHECK(obj_value.type_ == Value::OBJECT);
   Object *obj = obj_value.object_;
-  Value *member = obj->LookupValue(insn->label_, false);
-  int dst_id = insn->dst_regs_[0]->id_;
-  Register *dst_reg = m()->method_regs_[dst_id];
+  Value *member = obj->LookupValue(insn_->label_, false);
+  int dst_id = dreg(0)->id_;
+  Register *dst_reg = mreg(dst_id);
   dst_reg->type_.value_type_ = member->type_;
   dst_reg->type_.object_name_ = member->type_object_name_;
   dst_reg->type_object_ = NumericObject::Get(thr_->GetVM(),
 					     member->type_object_name_);
 }
 
-bool Executor::ExecFuncallWithCheck(Insn *insn) {
+bool Executor::ExecFuncallWithCheck() {
   Object *obj;
-  Method *callee_method = LookupMethod(insn, &obj);
+  Method *callee_method = LookupMethod(&obj);
   if (callee_method == nullptr) {
     return true;
   }
   if (callee_method->GetParseTree() != nullptr) {
     // non native
-    if (insn->src_regs_.size() != callee_method->GetNumArgRegisters()) {
+    if (insn_->src_regs_.size() != callee_method->GetNumArgRegisters()) {
       CHECK(false) << "number of arguments doesn't match";
     }
   }
-  return ExecFuncall(insn);
+  return ExecFuncall();
 }
 
-void Executor::ExecFuncallDoneWithCheck(Insn *insn) {
+void Executor::ExecFuncallDoneWithCheck() {
   Object *obj;
-  Method *callee_method = LookupMethod(insn, &obj);
+  Method *callee_method = LookupMethod(&obj);
   CHECK(callee_method);
   int num_returns = callee_method->GetNumReturnRegisters();
-  int num_dsts = insn->dst_regs_.size();
+  int num_dsts = insn_->dst_regs_.size();
   // Annotates return values.
   CHECK(num_dsts == 1 || num_dsts == num_returns);
   for (int i = 0; i < num_dsts && i < num_returns; ++i) {
-    insn->dst_regs_[i]->type_ = callee_method->return_types_[i];
+    insn_->dst_regs_[i]->type_ = callee_method->return_types_[i];
   }
-  ExecFuncallDone(insn);
+  ExecFuncallDone();
 }
 
-void Executor::ExecArrayWriteWithCheck(Insn *insn) {
-  if (insn->obj_reg_) {
+void Executor::ExecArrayWriteWithCheck() {
+  if (oreg()) {
     // Annotates the result value.
     // e.g. result = (a[i] = v)
-    Object *array_obj = frame_->reg_values_[insn->obj_reg_->id_].object_;
+    Object *array_obj = val(oreg()->id_).object_;
     if (ArrayWrapper::IsIntArray(array_obj)) {
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);
 
-      int dst_id = insn->dst_regs_[0]->id_;
-      m()->method_regs_[dst_id]->type_.width_ = array->GetDataWidth();
-      m()->method_regs_[dst_id]->type_.value_type_ = Value::NUM;
+      int dst_id = dreg(0)->id_;
+      mreg(dst_id)->type_.width_ = array->GetDataWidth();
+      mreg(dst_id)->type_.value_type_ = Value::NUM;
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
-      int dst_id = insn->dst_regs_[0]->id_;
-      m()->method_regs_[dst_id]->type_.value_type_ = Value::OBJECT;
+      int dst_id = dreg(0)->id_;
+      mreg(dst_id)->type_.value_type_ = Value::OBJECT;
     }
   }
-  ExecArrayWrite(insn);
+  ExecArrayWrite();
 }
 
-void Executor::ExecSetTypeObject(Insn *insn) {
-  int dst_id = insn->dst_regs_[0]->id_;
-  Register *reg = m()->method_regs_[dst_id];
+void Executor::ExecSetTypeObject() {
+  int dst_id = dreg(0)->id_;
+  Register *reg = mreg(dst_id);
   reg->type_object_ = NumericObject::Get(thr_->GetVM(),
 					 reg->type_.object_name_);
   if (reg->type_object_ == nullptr) {
@@ -970,23 +957,23 @@ void Executor::ExecSetTypeObject(Insn *insn) {
   }
 }
 
-bool Executor::MayExecuteCustomOp(Insn *insn) {
-  int lhs = insn->src_regs_[0]->id_;
-  int rhs = insn->src_regs_[1]->id_;
-  if (frame_->method_->method_regs_[lhs]->type_.value_type_ != Value::NUM ||
-      frame_->method_->method_regs_[rhs]->type_.value_type_ != Value::NUM) {
+bool Executor::MayExecuteCustomOp() {
+  int lhs = sreg(0)->id_;
+  int rhs = sreg(1)->id_;
+  if (mreg(lhs)->type_.value_type_ != Value::NUM ||
+      mreg(rhs)->type_.value_type_ != Value::NUM) {
     return false;
   }
-  if (IsCustomOpCall(frame_->method_, insn)) {
-    return ExecCustomOp(insn);
+  if (IsCustomOpCall(frame_->method_)) {
+    return ExecCustomOp();
   }
   return false;
 }
 
-bool Executor::ExecCustomOp(Insn *insn) {
-  int lhs = insn->src_regs_[0]->id_;
-  Object *type_obj = m()->method_regs_[lhs]->type_object_;
-  sym_t s = NumericObject::GetMethodName(type_obj, insn->op_);
+bool Executor::ExecCustomOp() {
+  int lhs = sreg(0)->id_;
+  Object *type_obj = mreg(lhs)->type_object_;
+  sym_t s = NumericObject::GetMethodName(type_obj, op());
   CHECK(s);
   Value *value = type_obj->LookupValue(s, false);
   CHECK(value != nullptr && value->type_ == Value::METHOD &&
@@ -995,8 +982,8 @@ bool Executor::ExecCustomOp(Insn *insn) {
   compiler::Compiler::CompileMethod(thr_->GetVM(), type_obj, op_method);
   CHECK(!m()->IsCompileFailure());
   vector<Value> args;
-  for (size_t i = 0; i < insn->src_regs_.size(); ++i) {
-    args.push_back(frame_->reg_values_[insn->src_regs_[i]->id_]);
+  for (size_t i = 0; i < insn_->src_regs_.size(); ++i) {
+    args.push_back(val(insn_->src_regs_[i]->id_));
   }
   auto fn = op_method->GetMethodFunc();
   CHECK(fn == nullptr);
@@ -1005,16 +992,16 @@ bool Executor::ExecCustomOp(Insn *insn) {
 }
 
 
-void Executor::ExecMayWithTypeDone(Insn *insn) {
-  if (IsCustomOpCall(m(), insn)) {
-    insn->dst_regs_[0]->type_ = insn->src_regs_[0]->type_;
-    ExecFuncallDone(insn);
+void Executor::ExecMayWithTypeDone() {
+  if (IsCustomOpCall(m())) {
+    dreg(0)->type_ = sreg(0)->type_;
+    ExecFuncallDone();
   }
 }
 
-bool Executor::IsCustomOpCall(const Method *method, Insn *insn) {
-  int lhs = insn->src_regs_[0]->id_;
-  int rhs = insn->src_regs_[1]->id_;
+bool Executor::IsCustomOpCall(const Method *method) {
+  int lhs = sreg(0)->id_;
+  int rhs = sreg(1)->id_;
   if (method->method_regs_[rhs]->type_object_ != nullptr &&
       method->method_regs_[lhs]->type_object_ ==
       method->method_regs_[rhs]->type_object_) {
