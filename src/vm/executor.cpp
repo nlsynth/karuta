@@ -233,15 +233,15 @@ void Executor::ExecBinop() {
   switch (op()) {
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
-    iroha::Op::Add(val(lhs).num_, val(rhs).num_,
-		   &val(dst).num_);
+    iroha::Op::Add0(val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+		    val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
     break;
   case OP_SUB:
   case OP_SUB_MAY_WITH_TYPE:
-    iroha::Op::Sub(val(lhs).num_, val(rhs).num_,
-		   &val(dst).num_);
+    iroha::Op::Sub0(val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+		    val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
     break;
@@ -468,13 +468,13 @@ void Executor::ExecLoadObj() {
 
 void Executor::ExecIncDec() {
   int target = dreg(0)->id_;
-  iroha::Numeric n1;
-  iroha::Op::MakeConst(1, &n1);
+  iroha::NumericValue n1;
+  n1.SetValue0(1);
   iroha::Numeric res;
   if (op() == OP_PRE_INC) {
-    iroha::Op::Add(val(target).num_, n1, &res);
+    iroha::Op::Add0(val(target).num_.GetArray(), n1, res.GetMutableArray());
   } else {
-    iroha::Op::Sub(val(target).num_, n1, &res);
+    iroha::Op::Sub0(val(target).num_.GetArray(), n1, res.GetMutableArray());
   }
   iroha::Op::FixupWidth(mreg(target)->type_.width_,
 			&res);
