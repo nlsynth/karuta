@@ -433,7 +433,7 @@ void Executor::ExecNumUniop() {
     res = value.num_;
     break;
   case OP_MINUS:
-    iroha::Op::Minus(value.num_, &res);
+    iroha::Op::Minus0(value.num_.GetArray(), res.GetMutableArray());
     break;
   default:
     CHECK(false);
@@ -534,8 +534,8 @@ void Executor::ExecNonNumResultBinop() {
 	  CHECK(false);
 	  break;
 	}
-	r = iroha::Op::Compare(cmp_op, val(lhs).num_,
-			       val(rhs).num_);
+	r = iroha::Op::Compare0(cmp_op, val(lhs).num_.GetArray(),
+				val(rhs).num_.GetArray());
       } else if (mreg(rhs)->type_.value_type_ ==
 		 Value::ENUM_ITEM) {
 	r = (val(lhs).enum_val_.val ==
