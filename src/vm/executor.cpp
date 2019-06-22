@@ -732,7 +732,7 @@ void Executor::ExecVardecl() {
   DeclAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
     iroha::Numeric::MayPopulateStorage(value->num_.type_,
-				       nullptr, &value->num_);
+				       nullptr, value->num_.GetMutableArray());
     iroha::Op::MakeConst0(0, value->num_.GetMutableArray());
   }
   if (value->type_ == Value::OBJECT && an != nullptr) {
