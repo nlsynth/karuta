@@ -72,7 +72,7 @@ void IntArray::WriteWide(uint64_t byte_addr, const iroha::Numeric &data) {
   for (int i = 0; i < c; ++i) {
     int l = mw * i;
     iroha::Numeric d;
-    iroha::Op::SelectBits(data, l + mw - 1, l, &d);
+    iroha::Op::SelectBits(data, l + mw - 1, l, d.GetMutableArray(), &d.type_);
     WriteSingle(array_addr + i, d);
   }
 }

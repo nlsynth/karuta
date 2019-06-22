@@ -708,7 +708,7 @@ void Executor::ExecBitRange() {
   int l = val(sreg(2)->id_).num_.GetValue0();
   Value &value = val(sreg(0)->id_);
   Value &res = val(dst);
-  iroha::Op::SelectBits(value.num_, h, l, &res.num_);
+  iroha::Op::SelectBits(value.num_, h, l, res.num_.GetMutableArray(), nullptr);
 }
 
 void Executor::InitializeArray(IntArray *array,
