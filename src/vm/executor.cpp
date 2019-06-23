@@ -404,7 +404,7 @@ void Executor::ExecLogicInv() {
       v = 0;
     }
   } else if (value.type_ == Value::NUM) {
-    if (!iroha::Op::IsZero(value.num_)) {
+    if (!iroha::Op::IsZero(value.num_.type_, value.num_.GetArray())) {
       v = 0;
     }
   }
@@ -427,7 +427,7 @@ void Executor::ExecNumUniop() {
   iroha::Numeric res;
   switch (op()) {
   case OP_BIT_INV:
-    iroha::Op::BitInv(value.num_, &res);
+    iroha::Op::BitInv0(value.num_.GetArray(), res.GetMutableArray());
     break;
   case OP_PLUS:
     res = value.num_;
