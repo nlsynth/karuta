@@ -25,7 +25,8 @@ public:
   iroha::Numeric Read(const vector<uint64_t> &indexes);
   iroha::Numeric ReadSingle(uint64_t addr);
   void Write(const vector<uint64_t> &indexes, const iroha::Numeric &data);
-  void WriteSingle(uint64_t addr, const iroha::Numeric &data);
+  void WriteSingle(uint64_t addr, const iroha::NumericWidth &type,
+		   const iroha::NumericValue &data);
   // Assumes the width of data is equal or wider than or the width
   // of this array.
   iroha::Numeric ReadWide(uint64_t byte_addr, int width);

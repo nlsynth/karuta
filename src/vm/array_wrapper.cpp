@@ -170,7 +170,7 @@ void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
   IntArray *arr = ad->int_array_.get();
   iroha::Numeric num;
   iroha::Op::MakeConst0(data, num.GetMutableArray());
-  arr->WriteSingle(addr, num);
+  arr->WriteSingle(addr, num.type_, num.GetArray());
 }
 
 void ArrayWrapper::AxiLoad(Thread *thr, Object *obj,
@@ -237,7 +237,8 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
   // Do the copy.
   for (int i = 0; i < count; ++i) {
     if (is_load) {
-      arr->WriteSingle(array_addr, mem->ReadWide(mem_addr, mem_addr_step * 8));
+      iroha::Numeric n = mem->ReadWide(mem_addr, mem_addr_step * 8);
+      arr->WriteSingle(array_addr, n.type_, n.GetArray());
     } else {
       mem->WriteWide(mem_addr, arr->ReadSingle(array_addr));
     }

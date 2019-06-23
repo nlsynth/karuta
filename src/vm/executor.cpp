@@ -717,7 +717,7 @@ void Executor::InitializeArray(IntArray *array,
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       iroha::Numeric num;
       iroha::Op::MakeConst0(array_initializer->num_[i], num.GetMutableArray());
-      array->WriteSingle(i, num);
+      array->WriteSingle(i, num.type_, num.GetArray());
     }
   }
 }

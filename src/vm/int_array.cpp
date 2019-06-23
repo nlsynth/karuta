@@ -55,13 +55,14 @@ IntArray::IntArray(const IntArray *src) {
 
 void IntArray::Write(const vector<uint64_t> &indexes,
 		     const iroha::Numeric &data) {
-  WriteSingle(GetIndex(indexes), data);
+  WriteSingle(GetIndex(indexes), data.type_, data.GetArray());
 }
 
-void IntArray::WriteSingle(uint64_t addr, const iroha::Numeric &data) {
+void IntArray::WriteSingle(uint64_t addr, const iroha::NumericWidth &width,
+			   const iroha::NumericValue &data) {
   IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
-  iroha::Numeric::CopyValueWithWidth(data.GetArray(), data.type_, p->width_,
+  iroha::Numeric::CopyValueWithWidth(data, width, p->width_,
 				     nullptr, &p->data_[offset]);
 }
 
@@ -73,7 +74,7 @@ void IntArray::WriteWide(uint64_t byte_addr, const iroha::Numeric &data) {
     int l = mw * i;
     iroha::Numeric d;
     iroha::Op::SelectBits(data, l + mw - 1, l, d.GetMutableArray(), &d.type_);
-    WriteSingle(array_addr + i, d);
+    WriteSingle(array_addr + i, d.type_, d.GetArray());
   }
 }
 
@@ -142,7 +143,7 @@ bool IntArray::ImageIO(const string &fn, bool save) {
       iroha::Numeric n;
       iroha::NumericValue *nv = n.GetMutableArray();
       fread((void *)&nv->value_[0], num_bytes, 1, fp);
-      WriteSingle(i, n);
+      WriteSingle(i, n.type_, n.GetArray());
     }
   }
   fclose(fp);
