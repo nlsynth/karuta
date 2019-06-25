@@ -353,7 +353,7 @@ void Executor::ExecArrayRead() {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     vector<uint64_t> indexes;
     PopulateArrayIndexes(0, &indexes);
-    lhs_value.num_ = array->Read(indexes);
+    *(lhs_value.num_.GetMutableArray()) = array->Read(indexes);
     if (m()->IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::NUM;
       dst_reg->type_.width_ = array->GetDataWidth();

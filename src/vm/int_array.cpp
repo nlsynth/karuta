@@ -66,29 +66,29 @@ void IntArray::WriteSingle(uint64_t addr, const iroha::NumericWidth &width,
 				     nullptr, &p->data_[offset]);
 }
 
-void IntArray::WriteWide(uint64_t byte_addr, const iroha::Numeric &data) {
-  int mw = data_width_.GetWidth();
-  uint64_t array_addr = byte_addr / (mw / 8);
-  int c = data.type_.GetWidth() / mw;
+void IntArray::WriteWide(uint64_t byte_addr, const iroha::NumericWidth &type,
+			 const iroha::NumericValue &data) {
+  int mem_width = data_width_.GetWidth();
+  uint64_t array_addr = byte_addr / (mem_width / 8);
+  int c = type.GetWidth() / mem_width;
   for (int i = 0; i < c; ++i) {
-    int l = mw * i;
+    int l = mem_width * i;
+    iroha::Numeric src(data, type);
     iroha::Numeric d;
-    iroha::Op::SelectBits(data, l + mw - 1, l, d.GetMutableArray(), &d.type_);
+    iroha::Op::SelectBits(src, l + mem_width - 1, l,
+			  d.GetMutableArray(), &d.type_);
     WriteSingle(array_addr + i, d.type_, d.GetArray());
   }
 }
 
-iroha::Numeric IntArray::Read(const vector<uint64_t> &indexes) {
+iroha::NumericValue IntArray::Read(const vector<uint64_t> &indexes) {
   return ReadSingle(GetIndex(indexes));
 }
 
-iroha::Numeric IntArray::ReadSingle(uint64_t addr) {
+iroha::NumericValue IntArray::ReadSingle(uint64_t addr) {
   IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
-  iroha::Numeric n;
-  *n.GetMutableArray() = p->data_[offset];
-  n.type_ = p->width_;
-  return n;
+  return p->data_[offset];
 }
 
 iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
@@ -99,7 +99,8 @@ iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
   int c = width / mw;
   for (int i = 0; i < c; ++i) {
     iroha::Numeric d;
-    d = ReadSingle(array_addr + i);
+    *(d.GetMutableArray()) = ReadSingle(array_addr + i);
+    d.type_ = data_width_;
     iroha::Numeric t;
     iroha::Op::Concat(d, n, &t);
     n = t;
@@ -136,9 +137,8 @@ bool IntArray::ImageIO(const string &fn, bool save) {
   int num_bytes = (data_width_.GetWidth() + 1) / 8;
   for (int i = 0; i < GetLength(); ++i) {
     if (save) {
-      iroha::Numeric n = ReadSingle(i);
-      iroha::NumericValue *nv = n.GetMutableArray();
-      fwrite((void *)&nv->value_[0], num_bytes, 1, fp);
+      iroha::NumericValue nv = ReadSingle(i);
+      fwrite((void *)&nv.value_[0], num_bytes, 1, fp);
     } else {
       iroha::Numeric n;
       iroha::NumericValue *nv = n.GetMutableArray();

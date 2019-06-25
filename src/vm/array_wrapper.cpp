@@ -240,7 +240,9 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
       iroha::Numeric n = mem->ReadWide(mem_addr, mem_addr_step * 8);
       arr->WriteSingle(array_addr, n.type_, n.GetArray());
     } else {
-      mem->WriteWide(mem_addr, arr->ReadSingle(array_addr));
+      iroha::NumericValue v = arr->ReadSingle(array_addr);
+      iroha::NumericWidth w = arr->GetDataWidth();
+      mem->WriteWide(mem_addr, w, v);
     }
     mem_addr += mem_addr_step;
     ++array_addr;
