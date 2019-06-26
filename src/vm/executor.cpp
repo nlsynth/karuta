@@ -248,7 +248,8 @@ void Executor::ExecBinop() {
   case OP_MUL:
   case OP_MUL_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_MUL,
-			 val(lhs).num_, val(rhs).num_,
+			 val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+			 val(rhs).num_.type_,
 			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
@@ -256,7 +257,8 @@ void Executor::ExecBinop() {
   case OP_DIV:
   case OP_DIV_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_DIV,
-			 val(lhs).num_, val(rhs).num_,
+			 val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+			 val(rhs).num_.type_,
 			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
@@ -276,17 +278,20 @@ void Executor::ExecBinop() {
     break;
   case OP_AND:
     iroha::Op::CalcBinOp(iroha::BINOP_AND,
-			 val(lhs).num_, val(rhs).num_,
+			 val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+			 val(lhs).num_.type_,
 			 val(dst).num_.GetMutableArray());
     break;
   case OP_OR:
     iroha::Op::CalcBinOp(iroha::BINOP_OR,
-			 val(lhs).num_, val(rhs).num_,
+			 val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+			 val(lhs).num_.type_,
 			 val(dst).num_.GetMutableArray());
     break;
   case OP_XOR:
     iroha::Op::CalcBinOp(iroha::BINOP_XOR,
-			 val(lhs).num_, val(rhs).num_,
+			 val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+			 val(lhs).num_.type_,
 			 val(dst).num_.GetMutableArray());
     break;
   case OP_CONCAT:
@@ -300,16 +305,16 @@ void Executor::ExecBinop() {
     break;
   case OP_LSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
-			 val(lhs).num_,
-			 val(rhs).num_,
+			 val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+			 val(lhs).num_.type_,
 			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
     break;
   case OP_RSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
-			 val(lhs).num_,
-			 val(rhs).num_,
+			 val(lhs).num_.GetArray(), val(rhs).num_.GetArray(),
+			 val(lhs).num_.type_,
 			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
