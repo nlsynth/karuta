@@ -97,11 +97,10 @@ iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
   n.type_.SetWidth(0);
   int c = width / mw;
   for (int i = 0; i < c; ++i) {
-    iroha::Numeric d;
-    *(d.GetMutableArray()) = ReadSingle(array_addr + i);
-    d.type_ = data_width_;
+    iroha::NumericValue a = ReadSingle(array_addr + i);
     iroha::Numeric t;
-    iroha::Op::Concat(d, n, t.GetMutableArray(), &t.type_);
+    iroha::Op::Concat(a, data_width_, n.GetArray(), n.type_,
+		      t.GetMutableArray(), &t.type_);
     n = t;
   }
   return n;

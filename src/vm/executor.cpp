@@ -291,11 +291,10 @@ void Executor::ExecBinop() {
     break;
   case OP_CONCAT:
     {
-      iroha::Numeric l = val(lhs).num_;
-      iroha::Numeric r = val(rhs).num_;
-      l.type_ = mreg(lhs)->type_.width_;
-      r.type_ =	mreg(rhs)->type_.width_;
-      iroha::Op::Concat(l, r,
+      iroha::NumericWidth &lt = mreg(lhs)->type_.width_;
+      iroha::NumericWidth &rt = mreg(rhs)->type_.width_;
+      iroha::Op::Concat(val(lhs).num_.GetArray(), lt,
+			val(rhs).num_.GetArray(), rt,
 			val(dst).num_.GetMutableArray(), nullptr);
     }
     break;
