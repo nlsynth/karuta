@@ -249,7 +249,7 @@ void Executor::ExecBinop() {
   case OP_MUL_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_MUL,
 			 val(lhs).num_, val(rhs).num_,
-			 &val(dst).num_);
+			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
     break;
@@ -257,7 +257,7 @@ void Executor::ExecBinop() {
   case OP_DIV_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_DIV,
 			 val(lhs).num_, val(rhs).num_,
-			 &val(dst).num_);
+			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
     break;
@@ -277,17 +277,17 @@ void Executor::ExecBinop() {
   case OP_AND:
     iroha::Op::CalcBinOp(iroha::BINOP_AND,
 			 val(lhs).num_, val(rhs).num_,
-			 &val(dst).num_);
+			 val(dst).num_.GetMutableArray());
     break;
   case OP_OR:
     iroha::Op::CalcBinOp(iroha::BINOP_OR,
 			 val(lhs).num_, val(rhs).num_,
-			 &val(dst).num_);
+			 val(dst).num_.GetMutableArray());
     break;
   case OP_XOR:
     iroha::Op::CalcBinOp(iroha::BINOP_XOR,
 			 val(lhs).num_, val(rhs).num_,
-			 &val(dst).num_);
+			 val(dst).num_.GetMutableArray());
     break;
   case OP_CONCAT:
     {
@@ -296,14 +296,14 @@ void Executor::ExecBinop() {
       l.type_ = mreg(lhs)->type_.width_;
       r.type_ =	mreg(rhs)->type_.width_;
       iroha::Op::Concat(l, r,
-			&val(dst).num_);
+			val(dst).num_.GetMutableArray(), nullptr);
     }
     break;
   case OP_LSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
 			 val(lhs).num_,
 			 val(rhs).num_,
-			 &val(dst).num_);
+			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
     break;
@@ -311,7 +311,7 @@ void Executor::ExecBinop() {
     iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
 			 val(lhs).num_,
 			 val(rhs).num_,
-			 &val(dst).num_);
+			 val(dst).num_.GetMutableArray());
     iroha::Op::FixupWidth(mreg(dst)->type_.width_,
 			  &val(dst).num_);
     break;
@@ -708,7 +708,8 @@ void Executor::ExecBitRange() {
   int l = val(sreg(2)->id_).num_.GetValue0();
   Value &value = val(sreg(0)->id_);
   Value &res = val(dst);
-  iroha::Op::SelectBits(value.num_, h, l, res.num_.GetMutableArray(), nullptr);
+  iroha::Op::SelectBits(value.num_.GetArray(), value.num_.type_,
+			h, l, res.num_.GetMutableArray(), nullptr);
 }
 
 void Executor::InitializeArray(IntArray *array,

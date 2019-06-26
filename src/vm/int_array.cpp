@@ -73,9 +73,8 @@ void IntArray::WriteWide(uint64_t byte_addr, const iroha::NumericWidth &type,
   int c = type.GetWidth() / mem_width;
   for (int i = 0; i < c; ++i) {
     int l = mem_width * i;
-    iroha::Numeric src(data, type);
     iroha::Numeric d;
-    iroha::Op::SelectBits(src, l + mem_width - 1, l,
+    iroha::Op::SelectBits(data, type, l + mem_width - 1, l,
 			  d.GetMutableArray(), &d.type_);
     WriteSingle(array_addr + i, d.type_, d.GetArray());
   }
@@ -102,7 +101,7 @@ iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
     *(d.GetMutableArray()) = ReadSingle(array_addr + i);
     d.type_ = data_width_;
     iroha::Numeric t;
-    iroha::Op::Concat(d, n, &t);
+    iroha::Op::Concat(d, n, t.GetMutableArray(), &t.type_);
     n = t;
   }
   return n;
