@@ -18,7 +18,7 @@ int ObjectUtil::GetAddressWidth(Object *obj) {
 void ObjectUtil::SetAddressWidth(Object *obj, int width) {
   Value *value = obj->LookupValue(sym_lookup("$address_width"), true);
   value->type_ = Value::NUM;
-  iroha::Op::MakeConst0(width, value->num_.GetMutableArray());
+  iroha::Op::MakeConst0(width, &value->num_);
 }
 
 string ObjectUtil::GetStringMember(Object *obj, const string &key) {

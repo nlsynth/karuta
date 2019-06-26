@@ -158,7 +158,7 @@ void ArrayWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
   Value value;
   value.type_ = Value::NUM;
   iroha::Op::MakeConst0(arr->ReadSingle(addr).GetValue0(),
-			value.num_.GetMutableArray());
+			&value.num_);
   thr->SetReturnValueFromNativeMethod(value);
 }
 

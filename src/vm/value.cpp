@@ -36,7 +36,7 @@ void Value::Dump(ostream &os) const {
       }
       os << "]";
     }
-    os << num_.Format();
+    os << iroha::Numeric(num_, num_type_).Format();
     break;
   case ENUM_TYPE:
     os << EnumTypeWrapper::GetName(object_) << " "
@@ -103,10 +103,10 @@ bool Value::IsObjectType() const {
 
 void Value::CopyDataFrom(const Value &src, const iroha::NumericWidth &width) {
   if (src.type_ == NUM) {
-    iroha::Numeric::CopyValueWithWidth(src.num_.GetArray(),
-				       width, num_.type_,
+    iroha::Numeric::CopyValueWithWidth(src.num_,
+				       width, num_type_,
 				       nullptr,
-				       num_.GetMutableArray());
+				       &num_);
   } else {
     *this = src;
   }

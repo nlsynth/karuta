@@ -41,7 +41,10 @@ public:
   enum ValueType type_;
   bool is_const_;
 
-  iroha::Numeric num_;
+  // for NUM
+  iroha::NumericValue num_;
+  iroha::NumericWidth num_type_;
+  // for METHOD
   Method *method_;
   // for ENUM_ITEM
   EnumVal enum_val_;

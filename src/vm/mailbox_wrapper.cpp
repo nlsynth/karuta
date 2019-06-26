@@ -16,7 +16,6 @@ class MailboxData : public ObjectSpecificData {
 public:
   MailboxData(int width, sym_t name, Annotation *an)
     : width_(width), name_(sym_cstr(name)), an_(an) {
-    number_.type_ = iroha::NumericWidth(false, width);
     has_value_ = false;
   }
 
@@ -30,7 +29,7 @@ public:
   set<Thread *> get_waiters_;
   set<Thread *> notify_waiters_;
   set<Thread *> notified_threads_;
-  iroha::Numeric number_;
+  iroha::NumericValue number_;
   bool has_value_;
   Annotation *an_;
 };

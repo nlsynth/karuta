@@ -41,7 +41,7 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 void DeclAnnotator::AnnotateByValue(Value *value, Register *reg) {
   reg->type_.value_type_ = value->type_;
   if (value->type_ == Value::NUM) {
-    reg->type_.width_ = value->num_.type_;
+    reg->type_.width_ = value->num_type_;
   }
   reg->type_.object_name_ = value->type_object_name_;
 }
@@ -56,7 +56,7 @@ void DeclAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
       value->type_ = Value::INT_ARRAY;
     }
   }
-  value->num_.type_ = decl->GetWidth();
+  value->num_type_ = decl->GetWidth();
   sym_t object_name = decl->GetObjectName();
   if (object_name != sym_null) {
     CHECK(!value->IsObjectType());
