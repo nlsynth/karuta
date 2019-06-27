@@ -80,8 +80,11 @@ private:
   Register *mreg(int id) const {
     return frame_->method_->method_regs_[id];
   }
-  Value &val(int v) const {
+  Value &VAL(int v) const {
     return frame_->reg_values_[v];
+  }
+  Value &VAL(Register *reg) const {
+    return frame_->reg_values_[reg->id_];
   }
   Register *sreg(int idx) {
     return insn_->src_regs_[idx];
