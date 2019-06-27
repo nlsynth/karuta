@@ -71,6 +71,9 @@ private:
 		       fe::ArrayInitializer *array_initializer);
   void PopulateArrayIndexes(int start, vector<uint64_t> *indexes);
 
+  bool IsTopLevel() const {
+    return frame_->method_->IsTopLevel();
+  }
   Method *m() const {
     return frame_->method_;
   }
