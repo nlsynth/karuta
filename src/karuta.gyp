@@ -27,6 +27,22 @@
       ],
     },
     {
+      'target_name': 'karuta_test',
+      'product_name': 'karuta_test',
+      'type': 'executable',
+      'include_dirs': [
+        './',
+        '../iroha/src/',
+      ],
+      'sources': [
+        'karuta/test_main.cpp',
+        'vm/int_array_test.cpp',
+      ],
+      'dependencies': [
+        ':libkaruta',
+      ],
+    },
+    {
       'target_name': 'libkaruta',
       'product_name': 'karuta',
       'type': 'static_library',
