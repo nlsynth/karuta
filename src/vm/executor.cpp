@@ -174,8 +174,6 @@ void Executor::ExecNum() {
   if (IsTopLevel()) {
     d->type_.value_type_ = Value::NUM;
     d->type_.width_ = sreg(0)->initial_num_.type_;
-    VAL(d).type_ = Value::NUM;
-    VAL(d).num_type_ = d->type_.width_;
   }
   iroha::Numeric::CopyValueWithWidth(sreg(0)->initial_num_.GetArray(),
 				     sreg(0)->initial_num_.type_,
@@ -211,7 +209,7 @@ void Executor::ExecBinop() {
       InsnAnnotator::AnnotateNumCalculationOp(insn_);
     }
     if (op() == OP_LSHIFT || op() == OP_RSHIFT) {
-      VAL(dst).num_type_ = lhs->type_.width_;
+      dst->type_.width_ = lhs->type_.width_;
     }
   }
   switch (op()) {
@@ -233,7 +231,7 @@ void Executor::ExecBinop() {
   case OP_MUL_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_MUL,
 			 VAL(lhs).num_, VAL(rhs).num_,
-			 VAL(rhs).num_type_,
+			 rhs->type_.width_,
 			 &VAL(dst).num_);
     iroha::Op::FixupValueWidth(dst->type_.width_,
 			       &VAL(dst).num_);
@@ -242,14 +240,14 @@ void Executor::ExecBinop() {
   case OP_DIV_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_DIV,
 			 VAL(lhs).num_, VAL(rhs).num_,
-			 VAL(rhs).num_type_,
+			 rhs->type_.width_,
 			 &VAL(dst).num_);
     iroha::Op::FixupValueWidth(dst->type_.width_,
 			       &VAL(dst).num_);
     break;
   case OP_ASSIGN:
     iroha::Numeric::CopyValueWithWidth(VAL(rhs).num_,
-				       VAL(rhs).num_type_,
+				       rhs->type_.width_,
 				       dst->type_.width_,
 				       nullptr,
 				       &VAL(dst).num_);
@@ -263,19 +261,19 @@ void Executor::ExecBinop() {
   case OP_AND:
     iroha::Op::CalcBinOp(iroha::BINOP_AND,
 			 VAL(lhs).num_, VAL(rhs).num_,
-			 VAL(lhs).num_type_,
+			 lhs->type_.width_,
 			 &VAL(dst).num_);
     break;
   case OP_OR:
     iroha::Op::CalcBinOp(iroha::BINOP_OR,
 			 VAL(lhs).num_, VAL(rhs).num_,
-			 VAL(lhs).num_type_,
+			 lhs->type_.width_,
 			 &VAL(dst).num_);
     break;
   case OP_XOR:
     iroha::Op::CalcBinOp(iroha::BINOP_XOR,
 			 VAL(lhs).num_, VAL(rhs).num_,
-			 VAL(lhs).num_type_,
+			 lhs->type_.width_,
 			 &VAL(dst).num_);
     break;
   case OP_CONCAT:
@@ -290,7 +288,7 @@ void Executor::ExecBinop() {
   case OP_LSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
 			 VAL(lhs).num_, VAL(rhs).num_,
-			 VAL(lhs).num_type_,
+			 lhs->type_.width_,
 			 &VAL(dst).num_);
     iroha::Op::FixupValueWidth(dst->type_.width_,
 			       &VAL(dst).num_);
@@ -298,7 +296,7 @@ void Executor::ExecBinop() {
   case OP_RSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
 			 VAL(lhs).num_, VAL(rhs).num_,
-			 VAL(lhs).num_type_,
+			 lhs->type_.width_,
 			 &VAL(dst).num_);
     iroha::Op::FixupValueWidth(dst->type_.width_,
 			       &VAL(dst).num_);
@@ -462,7 +460,6 @@ void Executor::ExecIncDec() {
     iroha::Op::Sub0(VAL(target).num_, n1, &res);
   }
   iroha::Op::FixupValueWidth(target->type_.width_, &res);
-  VAL(target).num_type_ = target->type_.width_;
   VAL(target).num_ = res;
 }
 
@@ -791,7 +788,7 @@ void Executor::ExecImport() {
     // import "foo.karuta" as v
     Register *dst = dreg(0);
     VAL(dst).object_ = thr_obj;
-    VAL(dst).type_ = Value::OBJECT;
+    dst->type_.value_type_ = Value::OBJECT;
   }
 }
 
@@ -865,7 +862,7 @@ void Executor::ExecMemberReadWithCheck() {
   // Annotate the type of the results now.
   CHECK(op() == OP_MEMBER_READ_WITH_CHECK);
   Value &obj_value = VAL(sreg(0));
-  CHECK(obj_value.type_ == Value::OBJECT);
+  CHECK(sreg(0)->type_.value_type_ == Value::OBJECT);
   Object *obj = obj_value.object_;
   Value *member = obj->LookupValue(insn_->label_, false);
   Register *dst_reg = dreg(0);
