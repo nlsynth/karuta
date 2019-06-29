@@ -61,7 +61,7 @@ private:
 
   void AddThreadEntry(const string &name, int num, bool is_soft);
   void ClearThreadEntry();
-  bool IsCustomOpCall(const Method *method);
+  bool IsCustomOpCall();
   Object *CreateMemoryObject(const iroha::NumericWidth &width,
 			     fe::ArrayShape *shape,
 			     fe::ArrayInitializer *array_initializer,
@@ -79,9 +79,6 @@ private:
   }
   enum OpCode op() const {
     return insn_->op_;
-  }
-  Register *mreg(int id) const {
-    return frame_->method_->method_regs_[id];
   }
   Value &VAL(int v) const {
     return frame_->reg_values_[v];

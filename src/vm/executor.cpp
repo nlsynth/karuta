@@ -192,113 +192,114 @@ void Executor::ExecStr() {
 }
 
 void Executor::ExecBinop() {
-  Register *d = dreg(0);
-  if (d->type_.value_type_ != Value::NUM) {
-    if (d->type_.value_type_ == Value::NONE) {
+  Register *dst = dreg(0);
+  Register *lhs = sreg(0);
+  Register *rhs = sreg(1);
+  if (dst->type_.value_type_ != Value::NUM) {
+    if (dst->type_.value_type_ == Value::NONE) {
+      CHECK(IsTopLevel());
       RetryBinopWithType();
     } else {
       ExecNonNumResultBinop();
     }
     return;
   }
-  int lhs = sreg(0)->id_;
-  int rhs = sreg(1)->id_;
   if (IsTopLevel()) {
     if (InsnType::IsNumCalculation(op())) {
       InsnAnnotator::AnnotateNumCalculationOp(insn_);
     }
     if (op() == OP_LSHIFT || op() == OP_RSHIFT) {
-      VAL(d).num_type_ = mreg(lhs)->type_.width_;
+      VAL(dst).num_type_ = lhs->type_.width_;
     }
   }
   switch (op()) {
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
     iroha::Op::Add0(VAL(lhs).num_, VAL(rhs).num_,
-		    &VAL(d).num_);
-    iroha::Op::FixupValueWidth(d->type_.width_,
-			       &VAL(d).num_);
+		    &VAL(dst).num_);
+    iroha::Op::FixupValueWidth(dst->type_.width_,
+			       &VAL(dst).num_);
     break;
   case OP_SUB:
   case OP_SUB_MAY_WITH_TYPE:
     iroha::Op::Sub0(VAL(lhs).num_, VAL(rhs).num_,
-		    &VAL(d).num_);
-    iroha::Op::FixupValueWidth(d->type_.width_,
-			       &VAL(d).num_);
+		    &VAL(dst).num_);
+    iroha::Op::FixupValueWidth(dst->type_.width_,
+			       &VAL(dst).num_);
     break;
   case OP_MUL:
   case OP_MUL_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_MUL,
 			 VAL(lhs).num_, VAL(rhs).num_,
 			 VAL(rhs).num_type_,
-			 &VAL(d).num_);
-    iroha::Op::FixupValueWidth(d->type_.width_,
-			       &VAL(d).num_);
+			 &VAL(dst).num_);
+    iroha::Op::FixupValueWidth(dst->type_.width_,
+			       &VAL(dst).num_);
     break;
   case OP_DIV:
   case OP_DIV_MAY_WITH_TYPE:
     iroha::Op::CalcBinOp(iroha::BINOP_DIV,
 			 VAL(lhs).num_, VAL(rhs).num_,
 			 VAL(rhs).num_type_,
-			 &VAL(d).num_);
-    iroha::Op::FixupValueWidth(d->type_.width_,
-			       &VAL(d).num_);
+			 &VAL(dst).num_);
+    iroha::Op::FixupValueWidth(dst->type_.width_,
+			       &VAL(dst).num_);
     break;
   case OP_ASSIGN:
     iroha::Numeric::CopyValueWithWidth(VAL(rhs).num_,
 				       VAL(rhs).num_type_,
-				       d->type_.width_,
+				       dst->type_.width_,
 				       nullptr,
-				       &VAL(d).num_);
-    iroha::Op::FixupValueWidth(d->type_.width_,
-			       &VAL(d).num_);
+				       &VAL(dst).num_);
+    iroha::Op::FixupValueWidth(dst->type_.width_,
+			       &VAL(dst).num_);
     if (IsTopLevel() &&
-	!d->GetIsDeclaredType()) {
-      d->type_ = mreg(rhs)->type_;
+	!dst->GetIsDeclaredType()) {
+      dst->type_ = rhs->type_;
     }
     break;
   case OP_AND:
     iroha::Op::CalcBinOp(iroha::BINOP_AND,
 			 VAL(lhs).num_, VAL(rhs).num_,
 			 VAL(lhs).num_type_,
-			 &VAL(d).num_);
+			 &VAL(dst).num_);
     break;
   case OP_OR:
     iroha::Op::CalcBinOp(iroha::BINOP_OR,
 			 VAL(lhs).num_, VAL(rhs).num_,
 			 VAL(lhs).num_type_,
-			 &VAL(d).num_);
+			 &VAL(dst).num_);
     break;
   case OP_XOR:
     iroha::Op::CalcBinOp(iroha::BINOP_XOR,
 			 VAL(lhs).num_, VAL(rhs).num_,
 			 VAL(lhs).num_type_,
-			 &VAL(d).num_);
+			 &VAL(dst).num_);
     break;
   case OP_CONCAT:
     {
-      iroha::NumericWidth &lt = mreg(lhs)->type_.width_;
-      iroha::NumericWidth &rt = mreg(rhs)->type_.width_;
+      iroha::NumericWidth &lt = lhs->type_.width_;
+      iroha::NumericWidth &rt = rhs->type_.width_;
       iroha::Op::Concat(VAL(lhs).num_, lt,
 			VAL(rhs).num_, rt,
-			&VAL(d).num_, nullptr);
+			&VAL(dst).num_, nullptr);
     }
     break;
   case OP_LSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
 			 VAL(lhs).num_, VAL(rhs).num_,
 			 VAL(lhs).num_type_,
-			 &VAL(d).num_);
-    iroha::Op::FixupValueWidth(d->type_.width_,
-			       &VAL(d).num_);
+			 &VAL(dst).num_);
+    iroha::Op::FixupValueWidth(dst->type_.width_,
+			       &VAL(dst).num_);
     break;
   case OP_RSHIFT:
     iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
 			 VAL(lhs).num_, VAL(rhs).num_,
 			 VAL(lhs).num_type_,
-			 &VAL(d).num_);
-    iroha::Op::FixupValueWidth(d->type_.width_,
-			       &VAL(d).num_);
+			 &VAL(dst).num_);
+    iroha::Op::FixupValueWidth(dst->type_.width_,
+			       &VAL(dst).num_);
     break;
   default:
     CHECK(false) << "unknown binop:" << vm::OpCodeName(op());
@@ -315,15 +316,14 @@ void Executor::RetryBinopWithType() {
 	  op() == OP_MUL_MAY_WITH_TYPE ||
 	  op() == OP_DIV_MAY_WITH_TYPE);
   }
-  int lhs = sreg(0)->id_;
-  int rhs = sreg(1)->id_;
-  CHECK(mreg(lhs)->type_.value_type_ ==
-	mreg(rhs)->type_.value_type_);
-  int dst = dreg(0)->id_;
-  if (mreg(lhs)->type_.value_type_ == Value::NUM) {
-    mreg(dst)->type_.value_type_ = Value::NUM;
-  } else if (mreg(lhs)->type_.value_type_ == Value::OBJECT) {
-    mreg(dst)->type_.value_type_ = Value::OBJECT;
+  Register *lhs = sreg(0);
+  Register *rhs = sreg(1);
+  CHECK(lhs->type_.value_type_ == rhs->type_.value_type_);
+  Register *dst = dreg(0);
+  if (lhs->type_.value_type_ == Value::NUM) {
+    dst->type_.value_type_ = Value::NUM;
+  } else if (lhs->type_.value_type_ == Value::OBJECT) {
+    dst->type_.value_type_ = Value::OBJECT;
   }
   ExecBinop();
 }
@@ -366,11 +366,11 @@ void Executor::ExecArrayWrite() {
     array->Write(indexes, n);
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
-    CHECK(mreg(sreg(0)->id_)->type_.value_type_
-	  == Value::OBJECT);
+    Register *vobj = sreg(0);
+    CHECK(vobj->type_.value_type_ == Value::OBJECT);
     int index = VAL(sreg(1)).num_.GetValue0();
     ArrayWrapper::Set(array_obj, index,
-		      VAL(sreg(0)).object_);
+		      VAL(vobj).object_);
   }
 }
 
@@ -424,8 +424,7 @@ void Executor::ExecNumUniop() {
     CHECK(false);
     break;
   }
-  iroha::Op::FixupValueWidth(mreg(dreg(0)->id_)->type_.width_,
-			     &res);
+  iroha::Op::FixupValueWidth(dreg(0)->type_.width_, &res);
   dst_value.num_ = res;
 }
 
@@ -451,7 +450,7 @@ void Executor::ExecLoadObj() {
 }
 
 void Executor::ExecIncDec() {
-  int target = dreg(0)->id_;
+  Register *target = dreg(0);
   iroha::NumericValue n1;
   n1.SetValue0(1);
   iroha::NumericValue res;
@@ -460,16 +459,15 @@ void Executor::ExecIncDec() {
   } else {
     iroha::Op::Sub0(VAL(target).num_, n1, &res);
   }
-  iroha::Op::FixupValueWidth(mreg(target)->type_.width_,
-			     &res);
-  VAL(target).num_type_ = mreg(target)->type_.width_;
+  iroha::Op::FixupValueWidth(target->type_.width_, &res);
+  VAL(target).num_type_ = target->type_.width_;
   VAL(target).num_ = res;
 }
 
 void Executor::ExecNonNumResultBinop() {
-  int dst = dreg(0)->id_;
-  int lhs = sreg(0)->id_;
-  int rhs = sreg(1)->id_;
+  Register *dst = dreg(0);
+  Register *lhs = sreg(0);
+  Register *rhs = sreg(1);
   switch (op()) {
   case OP_ASSIGN:
     VAL(lhs) = VAL(rhs);
@@ -491,14 +489,14 @@ void Executor::ExecNonNumResultBinop() {
   case OP_LTE:
     {
       // fall through.
-      CHECK(mreg(lhs)->type_.value_type_ == Value::NUM &&
-	    mreg(rhs)->type_.value_type_ == Value::NUM);
+      CHECK(lhs->type_.value_type_ == Value::NUM &&
+	    rhs->type_.value_type_ == Value::NUM);
     }
   case OP_EQ:
   case OP_NE:
     {
       bool r;
-      if (mreg(rhs)->type_.value_type_ == Value::NUM) {
+      if (rhs->type_.value_type_ == Value::NUM) {
 	iroha::CompareOp cmp_op;
 	switch (op()) {
 	case OP_LT:
@@ -520,7 +518,7 @@ void Executor::ExecNonNumResultBinop() {
 	}
 	r = iroha::Op::Compare0(cmp_op, VAL(lhs).num_,
 				VAL(rhs).num_);
-      } else if (mreg(rhs)->type_.value_type_ ==
+      } else if (rhs->type_.value_type_ ==
 		 Value::ENUM_ITEM) {
 	r = (VAL(lhs).enum_val_.val ==
 	     VAL(rhs).enum_val_.val);
@@ -537,9 +535,8 @@ void Executor::ExecNonNumResultBinop() {
   case OP_ADD:
   case OP_ADD_MAY_WITH_TYPE:
     {
-      CHECK(mreg(lhs)->type_.value_type_ ==
-	    mreg(rhs)->type_.value_type_);
-      CHECK(mreg(lhs)->type_.value_type_ == Value::OBJECT);
+      CHECK(lhs->type_.value_type_ == rhs->type_.value_type_);
+      CHECK(lhs->type_.value_type_ == Value::OBJECT);
       string r = VAL(lhs).object_->ToString() +
 	VAL(rhs).object_->ToString();
       VAL(dst).object_ =
@@ -672,17 +669,16 @@ void Executor::ExecMemberAccess() {
     CHECK(insn_->src_regs_.size() == 2);
     CHECK(sreg(0)->id_ == dreg(0)->id_);
     // src: value, obj
-    int id = sreg(0)->id_;
-    Value &src = VAL(id);
-    member->CopyDataFrom(src, mreg(id)->type_.width_);
-    member->type_ =
-      mreg(sreg(0)->id_)->type_.value_type_;
+    Register *src_reg = sreg(0);
+    Value &src = VAL(src_reg);
+    member->CopyDataFrom(src, src_reg->type_.width_);
+    member->type_ = src_reg->type_.value_type_;
   }
 }
 
 void Executor::ExecBitRange() {
-  int dst = dreg(0)->id_;
-  if (mreg(dst)->type_.value_type_ == Value::NONE) {
+  Register *dst = dreg(0);
+  if (dst->type_.value_type_ == Value::NONE) {
     InsnAnnotator::AnnotateBitRangeInsn(insn_);
   }
   int h = VAL(sreg(1)).num_.GetValue0();
@@ -870,8 +866,7 @@ void Executor::ExecMemberReadWithCheck() {
   CHECK(obj_value.type_ == Value::OBJECT);
   Object *obj = obj_value.object_;
   Value *member = obj->LookupValue(insn_->label_, false);
-  int dst_id = dreg(0)->id_;
-  Register *dst_reg = mreg(dst_id);
+  Register *dst_reg = dreg(0);
   dst_reg->type_.value_type_ = member->type_;
   dst_reg->type_.object_name_ = member->type_object_name_;
   dst_reg->type_object_ = NumericObject::Get(thr_->GetVM(),
@@ -912,24 +907,22 @@ void Executor::ExecArrayWriteWithCheck() {
     // Annotates the result value.
     // e.g. result = (a[i] = v)
     Object *array_obj = VAL(oreg()).object_;
+    Register *dst_reg = dreg(0);
     if (ArrayWrapper::IsIntArray(array_obj)) {
       IntArray *array = ArrayWrapper::GetIntArray(array_obj);
 
-      int dst_id = dreg(0)->id_;
-      mreg(dst_id)->type_.width_ = array->GetDataWidth();
-      mreg(dst_id)->type_.value_type_ = Value::NUM;
+      dst_reg->type_.width_ = array->GetDataWidth();
+      dst_reg->type_.value_type_ = Value::NUM;
     } else {
       CHECK(ArrayWrapper::IsObjectArray(array_obj));
-      int dst_id = dreg(0)->id_;
-      mreg(dst_id)->type_.value_type_ = Value::OBJECT;
+      dst_reg->type_.value_type_ = Value::OBJECT;
     }
   }
   ExecArrayWrite();
 }
 
 void Executor::ExecSetTypeObject() {
-  int dst_id = dreg(0)->id_;
-  Register *reg = mreg(dst_id);
+  Register *reg = dreg(0);
   reg->type_object_ = NumericObject::Get(thr_->GetVM(),
 					 reg->type_.object_name_);
   if (reg->type_object_ == nullptr) {
@@ -940,21 +933,21 @@ void Executor::ExecSetTypeObject() {
 }
 
 bool Executor::MayExecuteCustomOp() {
-  int lhs = sreg(0)->id_;
-  int rhs = sreg(1)->id_;
-  if (mreg(lhs)->type_.value_type_ != Value::NUM ||
-      mreg(rhs)->type_.value_type_ != Value::NUM) {
+  Register *lhs = sreg(0);
+  Register *rhs = sreg(1);
+  if (lhs->type_.value_type_ != Value::NUM ||
+      rhs->type_.value_type_ != Value::NUM) {
     return false;
   }
-  if (IsCustomOpCall(frame_->method_)) {
+  if (IsCustomOpCall()) {
     return ExecCustomOp();
   }
   return false;
 }
 
 bool Executor::ExecCustomOp() {
-  int lhs = sreg(0)->id_;
-  Object *type_obj = mreg(lhs)->type_object_;
+  Register *lhs = sreg(0);
+  Object *type_obj = lhs->type_object_;
   sym_t s = NumericObject::GetMethodName(type_obj, op());
   CHECK(s);
   Value *value = type_obj->LookupValue(s, false);
@@ -975,18 +968,17 @@ bool Executor::ExecCustomOp() {
 
 
 void Executor::ExecMayWithTypeDone() {
-  if (IsCustomOpCall(m())) {
+  if (IsCustomOpCall()) {
     dreg(0)->type_ = sreg(0)->type_;
     ExecFuncallDone();
   }
 }
 
-bool Executor::IsCustomOpCall(const Method *method) {
-  int lhs = sreg(0)->id_;
-  int rhs = sreg(1)->id_;
-  if (method->method_regs_[rhs]->type_object_ != nullptr &&
-      method->method_regs_[lhs]->type_object_ ==
-      method->method_regs_[rhs]->type_object_) {
+bool Executor::IsCustomOpCall() {
+  Register *lhs = sreg(0);
+  Register *rhs = sreg(1);
+  if (rhs->type_object_ != nullptr &&
+      lhs->type_object_ == rhs->type_object_) {
     return true;
   }
   return false;
@@ -1012,4 +1004,3 @@ Object *Executor::CreateObjectArray(fe::ArrayShape *shape) {
 }
 
 }  // namespace vm
-
