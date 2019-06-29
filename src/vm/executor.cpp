@@ -171,15 +171,17 @@ bool Executor::ExecInsn(Insn *insn) {
 
 void Executor::ExecNum() {
   Register *d = dreg(0);
+  if (IsTopLevel()) {
+    d->type_.value_type_ = Value::NUM;
+    d->type_.width_ = sreg(0)->initial_num_.type_;
+    VAL(d).type_ = Value::NUM;
+    VAL(d).num_type_ = d->type_.width_;
+  }
   iroha::Numeric::CopyValueWithWidth(sreg(0)->initial_num_.GetArray(),
 				     sreg(0)->initial_num_.type_,
 				     d->type_.width_,
 				     nullptr,
 				     &VAL(d).num_);
-  if (IsTopLevel()) {
-    VAL(d).type_ = Value::NUM;
-    VAL(d).num_type_ = d->type_.width_;
-  }
 }
 
 void Executor::ExecStr() {
@@ -580,8 +582,8 @@ bool Executor::ExecFuncall() {
     // Copy types of argument values too, since (most of) native methods
     // don't assume argument types.
     for (size_t i = 0; i < insn_->src_regs_.size(); ++i) {
-      args[i].type_ = insn_->src_regs_[i]->type_.value_type_;
-      args[i].num_type_ = insn_->src_regs_[i]->type_.width_;
+      args[i].type_ = sreg(i)->type_.value_type_;
+      args[i].num_type_ = sreg(i)->type_.width_;
     }
     fn(thr_, obj, args);
     if (!thr_->IsRunnable()) {
