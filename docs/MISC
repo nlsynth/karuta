@@ -32,3 +32,9 @@
 * $ snap remove karuta ; snap install karuta --candidate
 * $ snapcraft status karuta
 * $ snapcraft release karuta 99 stable # 99 is the actual build number
+
+## Commands
+
+$ ./src/out/Default/karuta_test # run tests
+
+$ karuta -dbc x.karuta # debug pre-exec toplevel byte code

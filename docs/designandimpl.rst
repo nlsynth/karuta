@@ -98,16 +98,20 @@ To synthesize HDL from a bytecode sequence, Karuta uses Iroha library. Karuta bu
 
 * src/
 
-  * Command and common utilities.
+  * main.cpp and build related files.
 * src/base
 
-  * Common code for other components.
+  * Basic utility code for other components.
 * src/compiler
 
   * Karuta Script to bytecode.
 * src/fe
 
   * Karuta Script parser.
+
+* src/karuta
+
+  * Common definitions for Karuta.
 * src/synth
 
   * Bytecode to Iroha IR.
