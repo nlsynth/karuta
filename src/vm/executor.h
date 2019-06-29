@@ -80,9 +80,6 @@ private:
   enum OpCode op() const {
     return insn_->op_;
   }
-  Value &VAL(int v) const {
-    return frame_->reg_values_[v];
-  }
   Value &VAL(Register *reg) const {
     return frame_->reg_values_[reg->id_];
   }

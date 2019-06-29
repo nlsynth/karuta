@@ -554,7 +554,7 @@ bool Executor::ExecGoto() {
 }
 
 void Executor::ExecIf() {
-  int cond = sreg(0)->id_;
+  Register *cond = sreg(0);
   Value &cond_val = VAL(cond);
   CHECK(cond_val.type_ == Value::ENUM_ITEM);
   if (cond_val.enum_val_.val) {
@@ -787,9 +787,9 @@ void Executor::ExecImport() {
 
   if (insn_->dst_regs_.size() > 0) {
     // import "foo.karuta" as v
-    int dst_id = dreg(0)->id_;
-    VAL(dst_id).object_ = thr_obj;
-    VAL(dst_id).type_ = Value::OBJECT;
+    Register *dst = dreg(0);
+    VAL(dst).object_ = thr_obj;
+    VAL(dst).type_ = Value::OBJECT;
   }
 }
 
