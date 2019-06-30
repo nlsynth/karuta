@@ -74,9 +74,6 @@ private:
   bool IsTopLevel() const {
     return frame_->method_->IsTopLevel();
   }
-  Method *m() const {
-    return frame_->method_;
-  }
   enum OpCode op() const {
     return insn_->op_;
   }

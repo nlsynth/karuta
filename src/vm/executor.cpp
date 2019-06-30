@@ -383,13 +383,14 @@ void Executor::PopulateArrayIndexes(int start, vector<uint64_t> *indexes) {
 
 void Executor::ExecLogicInv() {
   int v = 1;
-  Value &value = VAL(sreg(0));
-  if (value.type_ == Value::ENUM_ITEM) {
+  Register *src = sreg(0);
+  Value &value = VAL(src);
+  if (src->type_.value_type_ == Value::ENUM_ITEM) {
     if (value.enum_val_.val != 0) {
       v = 0;
     }
-  } else if (value.type_ == Value::NUM) {
-    if (!iroha::Op::IsZero(value.num_type_, value.num_)) {
+  } else if (src->type_.value_type_ == Value::NUM) {
+    if (!iroha::Op::IsZero(src->type_.width_, value.num_)) {
       v = 0;
     }
   }
@@ -954,7 +955,7 @@ bool Executor::ExecCustomOp() {
 	value->method_ != nullptr);
   Method *op_method = value->method_;
   compiler::Compiler::CompileMethod(thr_->GetVM(), type_obj, op_method);
-  CHECK(!m()->IsCompileFailure());
+  CHECK(!op_method->IsCompileFailure());
   vector<Value> args;
   for (size_t i = 0; i < insn_->src_regs_.size(); ++i) {
     args.push_back(VAL(insn_->src_regs_[i]));
