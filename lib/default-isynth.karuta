@@ -7,12 +7,12 @@ print("default-isynth.karuta loaded")
 // Alias for convenience
 shared Kernel.M object = Kernel
 
-def Kernel.setName(s object) {
+func Kernel.setName(s object) {
   setSynthParam("name", s)
 }
 
-def Kernel.compile() {
-  __compile("")
+func Kernel.compile() {
+  __compile()
   __compile("clean,alloc_resource,clean")
 }
 
@@ -20,27 +20,27 @@ def Kernel.compile() {
  verilog = "karuta_wait.v",
  file= "copy",
  module= "wait_cycles")
-def Kernel.__wait(cycles int) {
+func Kernel.__wait(cycles int) {
 }
 
 @embed(resource = "exit",
  verilog = "karuta_exit.v",
  file = "copy",
  module = "karuta_exit")
-def Kernel.__exit() {
+func Kernel.__exit() {
 }
 
 // Utility to create a vanilla object.
 shared Kernel.Kernel_ object = Kernel.clone()
 
-def Kernel.new() (object) {
+func Kernel.new() (object) {
   return Kernel_.clone()
 }
 
-def Array.load(maddr #64, len #32, aaddr #32) {
+func Array.load(maddr #64, len #32, aaddr #32) {
   axiLoad(maddr, len - 1, aaddr)
 }
 
-def Array.store(maddr #64, len #32, aaddr #32) {
+func Array.store(maddr #64, len #32, aaddr #32) {
   axiStore(maddr, len - 1, aaddr)
 }
