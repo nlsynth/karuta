@@ -180,7 +180,14 @@ vm::Method *FE::CompileFile(const string &file, bool with_run,
 			    vm::VM *vm, vm::Object *obj) {
   Method *parse_tree = ReadFile(file);
   if (parse_tree == nullptr) {
-    Status::os(Status::USER_ERROR) << "Failed to load: " << file;
+    string s;
+    if (file.substr(0, 5) == "/tmp/") {
+      // We might actually detect private /tmp somehow.
+      s = string() + " (Karuta can't see the file under /tmp/ if the " +
+	"installation using private /tmp. " +
+	"If so, please place your file under /home)";
+    }
+    Status::os(Status::USER_ERROR) << "Failed to load: " << file << s;
     return nullptr;
   }
   DumpStream ds(cout);
