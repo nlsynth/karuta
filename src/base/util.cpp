@@ -46,12 +46,20 @@ string Util::BaseNameWithoutSuffix(const string &fn) {
 }
 
 bool Util::IsHtmlFileName(const string &fn) {
-  const char *s = fn.c_str();
-  int len = fn.size();
-  if (len > 5 && !strcmp(&s[len-5], ".html")) {
-    return true;
+  static set<string> suffixes;
+  if (suffixes.size() == 0) {
+    suffixes.insert("html");
   }
-  return false;
+  return CheckFileSuffix(fn, suffixes);
+}
+
+bool Util::IsDotFileName(const string &fn) {
+  static set<string> suffixes;
+  if (suffixes.size() == 0) {
+    suffixes.insert("dot");
+    suffixes.insert("gv");
+  }
+  return CheckFileSuffix(fn, suffixes);
 }
 
 bool Util::IsIrFileName(const string &fn) {

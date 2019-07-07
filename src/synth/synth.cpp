@@ -88,6 +88,8 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
   string lang = "-v";
   if (::Util::IsHtmlFileName(fn)) {
     lang = "-h";
+  } else if (::Util::IsDotFileName(fn)) {
+    lang = "-dot";
   } else if (::Util::IsIrFileName(fn)) {
     lang = "";
   }
