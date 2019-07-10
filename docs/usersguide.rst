@@ -267,16 +267,22 @@ Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f
      return 0
    }
 
--------------------
-Combinational logic
--------------------
+----------------------------
+Embedded combinational logic
+----------------------------
+
+A combinational logic in a Verilog module can be embedded in a function of Karuta by spcifying the file name and module name by @ExtCombinational annotation.
 
 .. code-block:: none
 
    @ExtCombinational(resource = "a", verilog = "resource.v", file="copy", module="my_logic")
    func f(x #32) (#32) {
-     return x
+     // This code is used by the interpreter, but Verilog module in resource.v
+     // is used in synthesized code.
+     return x + 1
    }
+
+Embedded Verilog module has input arguments arg_0, arg_1,, arg_N and output arguments ret_0, ret_1,, ret_N. The number of inputs and outputs should match with the original function.
 
 .. code-block:: none
 
@@ -414,16 +420,20 @@ Type object
 Custom data type with Verilog
 -----------------------------
 
+Type object and embedded combinational logic can be used to build a custom type with staged operations (e.g. FP16, complex num, RGB and so on).
+
 .. code-block:: none
 
    func Numerics.MyType.Add(lhs, rhs #32) (#32) {
-     return st3(st2(st1(lhs, rhs)))
+     // 3 stage (clocks) operation.
+     return add_st3(add_st2(add_st1(lhs, rhs)))
    }
 
    @ExtCombinational(resource = "my_type", verilog = "my_type.v", file="copy", module="my_logic_st1")
-   func st1(lhs, rhs #32) (#32, #32) {
+   func add_st1(lhs, rhs #32) (#32, #32) {
      return rhs, lhs
    }
+   // add_st2 and add_st3 here.
 
 
 =================================
