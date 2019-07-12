@@ -31,6 +31,8 @@ public:
   static const string &GetIrohaBinPath();
   static long GetDuration();
   static void SetDuration(long duration);
+  static void EnableDotOutput(bool en);
+  static bool DotOutput();
 
 private:
   static const char *karuta_dir_;
@@ -42,6 +44,7 @@ private:
   static string iroha_bin_path_;
   static vector<string> source_dirs_;
   static long duration_;
+  static bool dot_output_;
 };
 
 #endif  // _karuta_env_h_

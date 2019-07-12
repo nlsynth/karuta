@@ -105,7 +105,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("iroha_binary", nullptr);
   parser->RegisterBoolFlag("compile", nullptr);
   parser->RegisterBoolFlag("run", nullptr);
-  parser->RegisterBoolFlag("z", nullptr);
+  parser->RegisterBoolFlag("dot", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
   }
@@ -157,6 +157,9 @@ int Main::main(int argc, char **argv) {
   if (args.GetFlagValue("duration", &arg)) {
     long d = iroha::Util::AtoULL(arg);
     Env::SetDuration(d);
+  }
+  if (args.GetBoolFlag("dot", false)) {
+    Env::EnableDotOutput(true);
   }
 
   if (timeout_) {

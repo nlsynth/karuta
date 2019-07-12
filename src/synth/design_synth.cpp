@@ -7,6 +7,7 @@
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "karuta/annotation.h"
+#include "synth/dot_output.h"
 #include "synth/shared_resource_set.h"
 #include "synth/object_attr_names.h"
 #include "synth/object_synth.h"
@@ -40,6 +41,10 @@ bool DesignSynth::Synth() {
   }
   if (Status::CheckAllErrors(false)) {
     return false;
+  }
+  if (Env::DotOutput()) {
+    DotOutput writer(obj_tree_.get());
+    writer.Write("design.dot");
   }
 
   DesignTool::Validate(i_design_.get());

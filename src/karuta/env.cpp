@@ -16,6 +16,7 @@ string Env::argv0_;
 string Env::iroha_bin_path_;
 vector<string> Env::source_dirs_;
 long Env::duration_ = 1000000;
+bool Env::dot_output_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -138,4 +139,12 @@ long Env::GetDuration() {
 
 void Env::SetDuration(long duration) {
   duration_ = duration;
+}
+
+void Env::EnableDotOutput(bool en) {
+  dot_output_ = en;
+}
+
+bool Env::DotOutput() {
+  return dot_output_;
 }

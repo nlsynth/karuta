@@ -108,6 +108,8 @@
         'karuta/karuta_main.cpp',
         'karuta/karuta_main.h',
         'synth/common.h',
+        'synth/dot_output.cpp',
+        'synth/dot_output.h',
         'synth/design_synth.cpp',
         'synth/design_synth.h',
         'synth/insn_walker.cpp',
