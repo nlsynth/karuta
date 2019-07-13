@@ -18,7 +18,7 @@ public:
 
   vm::VM *GetVM();
   IDesign *GetIDesign();
-  ObjectSynth *GetObjectSynth(vm::Object *obj);
+  ObjectSynth *GetObjectSynth(vm::Object *obj, bool cr);
   SharedResourceSet *GetSharedResourceSet();
   string GetObjectName(vm::Object *obj);
   int GetObjectDistance(vm::Object *src, vm::Object *dst);

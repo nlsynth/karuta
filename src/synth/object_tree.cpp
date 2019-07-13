@@ -20,6 +20,10 @@ ObjectTree::ObjectTree(vm::VM *vm, vm::Object *root_obj)
 ObjectTree::~ObjectTree() {
 }
 
+vm::Object *ObjectTree::GetRootObject() const {
+  return root_obj_;
+}
+
 void ObjectTree::Build() {
   list<vm::Object *> q;
   q.push_back(root_obj_);

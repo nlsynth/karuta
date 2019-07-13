@@ -43,7 +43,7 @@ bool DesignSynth::Synth() {
     return false;
   }
   if (Env::DotOutput()) {
-    DotOutput writer(obj_tree_.get());
+    DotOutput writer(this, obj_tree_.get());
     writer.Write("design.dot");
   }
 
@@ -57,7 +57,7 @@ bool DesignSynth::Synth() {
 bool DesignSynth::SynthObjects() {
   obj_tree_->Build();
   // Pass 1: Scan.
-  ObjectSynth *o = GetObjectSynth(root_obj_);
+  ObjectSynth *o = GetObjectSynth(root_obj_, true);
   CollectScanRootObjRec(root_obj_);
   if (!ScanObjs()) {
     return false;
@@ -85,10 +85,13 @@ IDesign *DesignSynth::GetIDesign() {
   return i_design_.get();
 }
 
-ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj) {
+ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj, bool cr) {
   auto it = obj_synth_map_.find(obj);
   if (it != obj_synth_map_.end()) {
     return it->second;
+  }
+  if (!cr) {
+    return nullptr;
   }
   bool is_root = (obj == root_obj_);
   string name = obj_tree_->GetObjectName(obj);
@@ -133,7 +136,7 @@ bool DesignSynth::ScanObjs() {
 void DesignSynth::CollectScanRootObjRec(vm::Object *obj) {
   if (obj_synth_map_.find(obj) == obj_synth_map_.end()) {
     if (ObjectSynth::HasSynthesizable(obj)) {
-      (void) GetObjectSynth(obj);
+      (void) GetObjectSynth(obj, true);
     }
   }
   auto m = obj_tree_->GetChildObjects(obj);

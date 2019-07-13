@@ -127,7 +127,7 @@ void ObjectSynth::ResolveTableCallsAll() {
 
 void ObjectSynth::ResolveTableCall(const TableCall &call) {
   ObjectSynth *callee_osynth =
-    design_synth_->GetObjectSynth(call.callee_obj);
+    design_synth_->GetObjectSynth(call.callee_obj, true);
   ThreadSynth *callee_thr = callee_osynth->GetThreadByName(call.callee_func);
   ITable *callee_table = nullptr;
   if (callee_thr != nullptr) {
@@ -181,6 +181,10 @@ IModule *ObjectSynth::GetIModule() {
 
 DesignSynth *ObjectSynth::GetDesignSynth() {
   return design_synth_;
+}
+
+const string &ObjectSynth::GetName() const {
+  return obj_name_;
 }
 
 void ObjectSynth::DeterminePrimaryThread() {

@@ -20,6 +20,7 @@ public:
 
   void Build();
 
+  vm::Object *GetRootObject() const;
   std::map<vm::Object *, string> GetChildObjects(vm::Object *o);
   string GetObjectName(vm::Object *o);
   int GetDistance(vm::Object *src, vm::Object *dst);
