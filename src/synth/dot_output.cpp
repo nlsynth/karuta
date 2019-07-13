@@ -41,13 +41,27 @@ iroha::Cluster *DotOutput::WriteObject(vm::Object *obj) {
 
 void DotOutput::WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl) {
   const auto &threads = osynth->GetAllThreads();
+  set<string> show_index;
   for (ThreadSynth *tsynth : threads) {
-    string name =
-      osynth->GetName() + tsynth->GetEntryMethodName() + "_" +
-      Util::Itoa(tsynth->GetIndex());
+    if (tsynth->GetIndex() > 0) {
+      show_index.insert(tsynth->GetEntryMethodName());
+    }
+  }
+  for (ThreadSynth *tsynth : threads) {
+    string index;
+    if (show_index.find(tsynth->GetEntryMethodName()) != show_index.end()) {
+      index = Util::Itoa(tsynth->GetIndex());
+    }
+    string name = osynth->GetName() + tsynth->GetEntryMethodName();
+    if (!index.empty()) {
+      name += "_" + index;
+    }
     Node *n = dot_->GetNode(name);
-    n->SetLabel(tsynth->GetEntryMethodName() + "@" +
-		Util::Itoa(tsynth->GetIndex()));
+    string label = tsynth->GetEntryMethodName();
+    if (!index.empty()) {
+      label += "@" + index;
+    }
+    n->SetLabel(label);
     n->SetCluster(cl);
   }
 }
