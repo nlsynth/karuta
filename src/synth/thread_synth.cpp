@@ -262,6 +262,10 @@ const string &ThreadSynth::GetEntryMethodName() {
   return entry_method_name_;
 }
 
+int ThreadSynth::GetIndex() const {
+  return index_;
+}
+
 IInsn *ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 					ITable *callee_tab) {
   ITable *caller_tab = st->GetTable();

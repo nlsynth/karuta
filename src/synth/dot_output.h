@@ -20,6 +20,7 @@ public:
 
 private:
   iroha::Cluster *WriteObject(vm::Object *obj);
+  void WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl);
 
   std::unique_ptr<iroha::Dot> dot_;
   DesignSynth *synth_;

@@ -29,6 +29,7 @@ public:
   IModule *GetIModule();
   ThreadSynth *GetThreadByName(const string &name);
   DesignSynth *GetDesignSynth();
+  const vector<ThreadSynth *> &GetAllThreads() const;
 
 private:
   void CollectThreads(IModule *mod);

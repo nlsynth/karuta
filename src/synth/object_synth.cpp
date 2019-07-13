@@ -183,6 +183,10 @@ DesignSynth *ObjectSynth::GetDesignSynth() {
   return design_synth_;
 }
 
+const vector<ThreadSynth *> &ObjectSynth::GetAllThreads() const {
+  return threads_;
+}
+
 const string &ObjectSynth::GetName() const {
   return obj_name_;
 }

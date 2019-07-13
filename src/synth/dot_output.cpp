@@ -4,6 +4,7 @@
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
+#include "synth/thread_synth.h"
 
 namespace synth {
 
@@ -27,8 +28,7 @@ iroha::Cluster *DotOutput::WriteObject(vm::Object *obj) {
   }
   string name = osynth->GetName();
   Cluster *c = dot_->GetCluster(name);
-  Node *n = dot_->GetNode(name);
-  n->SetCluster(c);
+  WriteObjectDetail(osynth, c);
   auto m = tree_->GetChildObjects(obj);
   for (auto it : m) {
     Cluster *cc = WriteObject(it.first);
@@ -37,6 +37,19 @@ iroha::Cluster *DotOutput::WriteObject(vm::Object *obj) {
     }
   }
   return c;
+}
+
+void DotOutput::WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl) {
+  const auto &threads = osynth->GetAllThreads();
+  for (ThreadSynth *tsynth : threads) {
+    string name =
+      osynth->GetName() + tsynth->GetEntryMethodName() + "_" +
+      Util::Itoa(tsynth->GetIndex());
+    Node *n = dot_->GetNode(name);
+    n->SetLabel(tsynth->GetEntryMethodName() + "@" +
+		Util::Itoa(tsynth->GetIndex()));
+    n->SetCluster(cl);
+  }
 }
 
 }  // namespace synth

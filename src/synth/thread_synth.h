@@ -41,6 +41,7 @@ public:
   vm::Object *GetThreadObject();
   vector<TableCall> &GetTableCalls();
   const string &GetEntryMethodName();
+  int GetIndex() const;
   static IInsn *InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
 				  ITable *callee_tab);
   static IInsn *InjectDataFlowCall(ThreadSynth *thr,
