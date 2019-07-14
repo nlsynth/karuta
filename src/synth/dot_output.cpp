@@ -1,6 +1,6 @@
 #include "synth/dot_output.h"
 
-#include "iroha/dot.h"
+#include "iroha/dot/dot.h"
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
@@ -9,11 +9,15 @@
 #include "vm/channel_wrapper.h"
 #include "vm/mailbox_wrapper.h"
 
+using iroha::dot::Dot;
+using iroha::dot::Cluster;
+using iroha::dot::Node;
+
 namespace synth {
 
 DotOutput::DotOutput(DesignSynth *synth, ObjectTree *tree)
   : synth_(synth), tree_(tree) {
-  dot_.reset(new iroha::Dot());
+  dot_.reset(new Dot());
 }
 
 DotOutput::~DotOutput() {
@@ -24,9 +28,9 @@ void DotOutput::Write(const string &fn) {
   dot_->Write(fn);
 }
 
-iroha::Cluster *DotOutput::WriteObject(const string &name,
-				       vm::Object *obj,
-				       iroha::Cluster *parent) {
+iroha::dot::Cluster *DotOutput::WriteObject(const string &name,
+					    vm::Object *obj,
+					    iroha::dot::Cluster *parent) {
   ObjectSynth *osynth = synth_->GetObjectSynth(obj, false);
   if (osynth == nullptr) {
     MayWriteMemberObject(name, obj, parent);
@@ -44,7 +48,8 @@ iroha::Cluster *DotOutput::WriteObject(const string &name,
   return c;
 }
 
-void DotOutput::WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl) {
+void DotOutput::WriteObjectDetail(ObjectSynth *osynth,
+				  iroha::dot::Cluster *cl) {
   const auto &threads = osynth->GetAllThreads();
   set<string> show_index;
   for (ThreadSynth *tsynth : threads) {
@@ -72,7 +77,7 @@ void DotOutput::WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl) {
 }
 
 void DotOutput::MayWriteMemberObject(const string &name,
-				     vm::Object *obj, iroha::Cluster *cl) {
+				     vm::Object *obj, iroha::dot::Cluster *cl) {
   if (vm::ArrayWrapper::IsIntArray(obj)) {
     if (name == "Memory") {
       // Excludes default memory.

@@ -7,8 +7,10 @@
 #include <map>
 
 namespace iroha {
+namespace dot {
 class Cluster;
 class Dot;
+}  // namespace dot
 }  // namespace iroha
 
 namespace synth {
@@ -21,14 +23,14 @@ public:
   void Write(const string &fn);
 
 private:
-  iroha::Cluster *WriteObject(const string &name, vm::Object *obj,
-			      iroha::Cluster *parent);
-  void WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl);
+  iroha::dot::Cluster *WriteObject(const string &name, vm::Object *obj,
+				   iroha::dot::Cluster *parent);
+  void WriteObjectDetail(ObjectSynth *osynth, iroha::dot::Cluster *cl);
   void MayWriteMemberObject(const string &name, vm::Object *obj,
-			    iroha::Cluster *cl);
+			    iroha::dot::Cluster *cl);
   string GetObjectName(vm::Object *obj);
 
-  std::unique_ptr<iroha::Dot> dot_;
+  std::unique_ptr<iroha::dot::Dot> dot_;
   DesignSynth *synth_;
   ObjectTree *tree_;
   std::map<vm::Object *, int> obj_seq_;
