@@ -4,6 +4,8 @@
 
 #include "synth/common.h"
 
+#include <map>
+
 namespace iroha {
 class Cluster;
 class Dot;
@@ -24,10 +26,12 @@ private:
   void WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl);
   void MayWriteMemberObject(const string &name, vm::Object *obj,
 			    iroha::Cluster *cl);
+  string GetObjectName(vm::Object *obj);
 
   std::unique_ptr<iroha::Dot> dot_;
   DesignSynth *synth_;
   ObjectTree *tree_;
+  std::map<vm::Object *, int> obj_seq_;
 };
 
 }  // namespace synth

@@ -32,6 +32,7 @@ void Main::PrintUsage() {
        << "   -l=[modules]\n"
        << "   --compile\n"
        << "   --duration\n"
+       << "   --dot\n"
        << "   --iroha_binary [iroha]\n"
        << "   --module_prefix [mod]\n"
        << "   --output_marker [marker]\n"

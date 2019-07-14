@@ -6,6 +6,8 @@
 #include "synth/object_tree.h"
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
+#include "vm/channel_wrapper.h"
+#include "vm/mailbox_wrapper.h"
 
 namespace synth {
 
@@ -30,8 +32,7 @@ iroha::Cluster *DotOutput::WriteObject(const string &name,
     MayWriteMemberObject(name, obj, parent);
     return nullptr;
   }
-  string obj_name = osynth->GetName();
-  Cluster *c = dot_->GetCluster(obj_name);
+  Cluster *c = dot_->GetCluster(GetObjectName(osynth->GetObject()));
   WriteObjectDetail(osynth, c);
   auto m = tree_->GetChildObjects(obj);
   for (auto it : m) {
@@ -60,7 +61,7 @@ void DotOutput::WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl) {
     if (!index.empty()) {
       name += "_" + index;
     }
-    Node *n = dot_->GetNode(name);
+    Node *n = dot_->GetNode(GetObjectName(osynth->GetObject()) + name);
     string label = tsynth->GetEntryMethodName();
     if (!index.empty()) {
       label += "@" + index;
@@ -77,10 +78,29 @@ void DotOutput::MayWriteMemberObject(const string &name,
       // Excludes default memory.
       return;
     }
-    Node *n = dot_->GetNode("memory_" + name);
+    Node *n = dot_->GetNode(GetObjectName(obj));
     n->SetLabel(name + "[]");
     n->SetCluster(cl);
   }
+  if (vm::ChannelWrapper::IsChannel(obj)) {
+    Node *n = dot_->GetNode(GetObjectName(obj));
+    n->SetLabel(name + "<->");
+    n->SetCluster(cl);
+  }
+  if (vm::MailboxWrapper::IsMailbox(obj)) {
+    Node *n = dot_->GetNode(GetObjectName(obj));
+    n->SetLabel(name + "|-|");
+    n->SetCluster(cl);
+  }
+}
+
+string DotOutput::GetObjectName(vm::Object *obj) {
+  auto it = obj_seq_.find(obj);
+  if (it != obj_seq_.end()) {
+    return "o" + Util::Itoa(it->second);
+  }
+  obj_seq_[obj] = obj_seq_.size();
+  return GetObjectName(obj);
 }
 
 }  // namespace synth
