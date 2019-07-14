@@ -5,6 +5,7 @@
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
 #include "synth/thread_synth.h"
+#include "vm/array_wrapper.h"
 
 namespace synth {
 
@@ -17,21 +18,24 @@ DotOutput::~DotOutput() {
 }
 
 void DotOutput::Write(const string &fn) {
-  WriteObject(tree_->GetRootObject());
+  WriteObject("", tree_->GetRootObject(), nullptr);
   dot_->Write(fn);
 }
 
-iroha::Cluster *DotOutput::WriteObject(vm::Object *obj) {
+iroha::Cluster *DotOutput::WriteObject(const string &name,
+				       vm::Object *obj,
+				       iroha::Cluster *parent) {
   ObjectSynth *osynth = synth_->GetObjectSynth(obj, false);
   if (osynth == nullptr) {
+    MayWriteMemberObject(name, obj, parent);
     return nullptr;
   }
-  string name = osynth->GetName();
-  Cluster *c = dot_->GetCluster(name);
+  string obj_name = osynth->GetName();
+  Cluster *c = dot_->GetCluster(obj_name);
   WriteObjectDetail(osynth, c);
   auto m = tree_->GetChildObjects(obj);
   for (auto it : m) {
-    Cluster *cc = WriteObject(it.first);
+    Cluster *cc = WriteObject(it.second, it.first, c);
     if (cc != nullptr) {
       cc->SetSink(c);
     }
@@ -62,6 +66,19 @@ void DotOutput::WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl) {
       label += "@" + index;
     }
     n->SetLabel(label);
+    n->SetCluster(cl);
+  }
+}
+
+void DotOutput::MayWriteMemberObject(const string &name,
+				     vm::Object *obj, iroha::Cluster *cl) {
+  if (vm::ArrayWrapper::IsIntArray(obj)) {
+    if (name == "Memory") {
+      // Excludes default memory.
+      return;
+    }
+    Node *n = dot_->GetNode("memory_" + name);
+    n->SetLabel(name + "[]");
     n->SetCluster(cl);
   }
 }

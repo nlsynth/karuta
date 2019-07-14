@@ -19,8 +19,11 @@ public:
   void Write(const string &fn);
 
 private:
-  iroha::Cluster *WriteObject(vm::Object *obj);
+  iroha::Cluster *WriteObject(const string &name, vm::Object *obj,
+			      iroha::Cluster *parent);
   void WriteObjectDetail(ObjectSynth *osynth, iroha::Cluster *cl);
+  void MayWriteMemberObject(const string &name, vm::Object *obj,
+			    iroha::Cluster *cl);
 
   std::unique_ptr<iroha::Dot> dot_;
   DesignSynth *synth_;
