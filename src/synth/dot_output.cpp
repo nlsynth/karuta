@@ -10,6 +10,7 @@
 #include "vm/mailbox_wrapper.h"
 
 using iroha::dot::Dot;
+using iroha::dot::Edge;
 using iroha::dot::Cluster;
 using iroha::dot::Node;
 
@@ -25,6 +26,7 @@ DotOutput::~DotOutput() {
 
 void DotOutput::Write(const string &fn) {
   WriteObject("", tree_->GetRootObject(), nullptr);
+  WriteDistance();
   dot_->Write(fn);
 }
 
@@ -37,6 +39,7 @@ iroha::dot::Cluster *DotOutput::WriteObject(const string &name,
     return nullptr;
   }
   Cluster *c = dot_->GetCluster(GetObjectName(osynth->GetObject()));
+  obj_cluster_map_[obj] = c;
   WriteObjectDetail(osynth, c);
   auto m = tree_->GetChildObjects(obj);
   for (auto it : m) {
@@ -106,6 +109,21 @@ string DotOutput::GetObjectName(vm::Object *obj) {
   }
   obj_seq_[obj] = obj_seq_.size();
   return GetObjectName(obj);
+}
+
+void DotOutput::WriteDistance() {
+  const auto &dists = tree_->GetDistanceMap();
+  for (auto it : dists) {
+    vm::Object *src_obj = it.first;
+    Cluster *src_cl = obj_cluster_map_[src_obj];
+    for (auto jt : it.second) {
+      vm::Object *dst_obj = jt.first;
+      Cluster *dst_cl = obj_cluster_map_[dst_obj];
+      int dist = jt.second;
+      Edge *e = src_cl->AddSink(dot_.get(), dst_cl);
+      e->SetLabel("distance=" + Util::Itoa(dist));
+    }
+  }
 }
 
 }  // namespace synth

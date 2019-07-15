@@ -72,6 +72,11 @@ int ObjectTree::GetDistance(vm::Object *src, vm::Object *dst) {
   return jt->second;
 }
 
+const std::map<vm::Object *, std::map<vm::Object *, int> >
+ObjectTree::GetDistanceMap() const {
+  return distance_map_;
+}
+
 void ObjectTree::CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
 			     std::list<vm::Object *> *q) {
   map<sym_t, vm::Object *> member_objs;

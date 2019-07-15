@@ -24,6 +24,7 @@ public:
   std::map<vm::Object *, string> GetChildObjects(vm::Object *o);
   string GetObjectName(vm::Object *o);
   int GetDistance(vm::Object *src, vm::Object *dst);
+  const std::map<vm::Object *, std::map<vm::Object *, int> > GetDistanceMap() const;
 
 private:
   void CheckObject(vm::Object *o, std::set<vm::Object *> &seen,

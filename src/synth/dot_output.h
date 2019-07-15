@@ -25,6 +25,7 @@ public:
 private:
   iroha::dot::Cluster *WriteObject(const string &name, vm::Object *obj,
 				   iroha::dot::Cluster *parent);
+  void WriteDistance();
   void WriteObjectDetail(ObjectSynth *osynth, iroha::dot::Cluster *cl);
   void MayWriteMemberObject(const string &name, vm::Object *obj,
 			    iroha::dot::Cluster *cl);
@@ -34,6 +35,7 @@ private:
   DesignSynth *synth_;
   ObjectTree *tree_;
   std::map<vm::Object *, int> obj_seq_;
+  std::map<vm::Object *, iroha::dot::Cluster *> obj_cluster_map_;
 };
 
 }  // namespace synth
