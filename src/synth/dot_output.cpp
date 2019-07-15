@@ -42,7 +42,7 @@ iroha::dot::Cluster *DotOutput::WriteObject(const string &name,
   for (auto it : m) {
     Cluster *cc = WriteObject(it.second, it.first, c);
     if (cc != nullptr) {
-      cc->SetSink(c);
+      cc->AddSink(dot_.get(), c);
     }
   }
   return c;
