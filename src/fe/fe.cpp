@@ -180,14 +180,7 @@ vm::Method *FE::CompileFile(const string &file, bool with_run,
 			    vm::VM *vm, vm::Object *obj) {
   Method *parse_tree = ReadFile(file);
   if (parse_tree == nullptr) {
-    string s;
-    if (file.substr(0, 5) == "/tmp/") {
-      // We might actually detect private /tmp somehow.
-      s = string() + " (Karuta can't see the file under /tmp/ if the " +
-	"installation using private /tmp. " +
-	"If so, please place your file under /home)";
-    }
-    Status::os(Status::USER_ERROR) << "Failed to load: " << file << s;
+    Status::os(Status::USER_ERROR) << "Failed to load: " << file;
     return nullptr;
   }
   DumpStream ds(cout);
@@ -254,6 +247,13 @@ FileImage *FE::GetFileImage(const string &fn) {
     }
   }
   if (!im) {
+    if (fn.substr(0, 5) == "/tmp/") {
+      // We might actually detect private /tmp somehow.
+      Status::os(Status::INFO)
+	<< "Karuta can't see the file under /tmp/ if the "
+	<< "installation using private /tmp. "
+	<< "If so, please place your file under /home";
+    }
     LOG(INFO) << "no image";
   }
   return im;
