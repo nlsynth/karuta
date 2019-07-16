@@ -25,7 +25,7 @@ DotOutput::~DotOutput() {
 }
 
 void DotOutput::Write(const string &fn) {
-  WriteObject("", tree_->GetRootObject(), nullptr);
+  WriteObject("main", tree_->GetRootObject(), nullptr);
   WriteDistance();
   dot_->Write(fn);
 }
@@ -39,6 +39,7 @@ iroha::dot::Cluster *DotOutput::WriteObject(const string &name,
     return nullptr;
   }
   Cluster *c = dot_->GetCluster(GetObjectName(osynth->GetObject()));
+  c->SetLabel(name);
   obj_cluster_map_[obj] = c;
   WriteObjectDetail(osynth, c);
   auto m = tree_->GetChildObjects(obj);
