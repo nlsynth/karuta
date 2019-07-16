@@ -116,9 +116,17 @@ void DotOutput::WriteDistance() {
   for (auto it : dists) {
     vm::Object *src_obj = it.first;
     Cluster *src_cl = obj_cluster_map_[src_obj];
+    if (src_cl == nullptr) {
+      // This can happen for an empty object.
+      continue;
+    }
     for (auto jt : it.second) {
       vm::Object *dst_obj = jt.first;
       Cluster *dst_cl = obj_cluster_map_[dst_obj];
+      if (dst_cl == nullptr) {
+	// Ditto. This can happen for an empty object.
+	continue;
+      }
       int dist = jt.second;
       Edge *e = src_cl->AddSink(dot_.get(), dst_cl);
       e->SetDotted(true);
