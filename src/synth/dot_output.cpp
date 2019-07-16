@@ -121,6 +121,7 @@ void DotOutput::WriteDistance() {
       Cluster *dst_cl = obj_cluster_map_[dst_obj];
       int dist = jt.second;
       Edge *e = src_cl->AddSink(dot_.get(), dst_cl);
+      e->SetDotted(true);
       e->SetLabel("distance=" + Util::Itoa(dist));
     }
   }
