@@ -49,6 +49,10 @@ bool DesignSynth::Synth() {
     string ofn;
     if (Env::GetOutputPath(fn, &ofn)) {
       writer.Write(ofn);
+      const string &marker = Env::GetOutputMarker();
+      if (!marker.empty()) {
+	cout << marker << fn << "\n";
+      }
     }
   }
 
