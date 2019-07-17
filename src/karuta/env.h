@@ -13,7 +13,7 @@ public:
   static const string &GetVersion();
   static const char *GetKarutaDir();
   static const char *GetIrohaDataDir();
-  static bool GetOutputPath(const char *fn, string *path);
+  static bool GetOutputPath(const string &fn, string *path);
   static const string &GetOutputMarker();
   static void SearchPathList(const char *fn,
 			     vector<string> *paths);
@@ -26,6 +26,7 @@ public:
   static void SetArgv0(const string &c);
   static const string &GetArgv0();
   static void SetCurrentFile(const string &fn);
+  static const string &GetCurrentFile();
   static bool IsSandboxMode();
   static void SetIrohaBinPath(const string &iroha);
   static const string &GetIrohaBinPath();
@@ -43,6 +44,7 @@ private:
   static string argv0_;
   static string iroha_bin_path_;
   static vector<string> source_dirs_;
+  static string current_file_;
   static long duration_;
   static bool dot_output_;
 };

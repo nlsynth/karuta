@@ -4,6 +4,7 @@
 
 #include "base/status.h"
 #include "base/stl_util.h"
+#include "base/util.h"
 #include "iroha/i_design.h"
 #include "iroha/iroha.h"
 #include "karuta/annotation.h"
@@ -44,7 +45,11 @@ bool DesignSynth::Synth() {
   }
   if (Env::DotOutput()) {
     DotOutput writer(this, obj_tree_.get());
-    writer.Write("design.dot");
+    string fn = ::Util::BaseNameWithoutSuffix(Env::GetCurrentFile()) + ".0.dot";
+    string ofn;
+    if (Env::GetOutputPath(fn, &ofn)) {
+      writer.Write(ofn);
+    }
   }
 
   DesignTool::Validate(i_design_.get());

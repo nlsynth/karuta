@@ -15,6 +15,7 @@ bool Env::sandbox_mode_;
 string Env::argv0_;
 string Env::iroha_bin_path_;
 vector<string> Env::source_dirs_;
+string Env::current_file_;
 long Env::duration_ = 1000000;
 bool Env::dot_output_;
 
@@ -62,16 +63,16 @@ vector<string> Env::SearchDirList() {
   return dirs;
 }
 
-bool Env::GetOutputPath(const char *fn, string *path) {
+bool Env::GetOutputPath(const string &fn, string *path) {
   if (output_root_.empty()) {
-    *path = string(fn);
+    *path = fn;
     return true;
   }
   if (sandbox_mode_) {
-    if (!strncmp(fn, "../", 3)) {
+    if (!strncmp(fn.c_str(), "../", 3)) {
       return false;
     }
-    if (strstr(fn, "/../")) {
+    if (strstr(fn.c_str(), "/../")) {
       return false;
     }
   }
@@ -109,6 +110,7 @@ const string &Env::GetArgv0() {
 }
 
 void Env::SetCurrentFile(const string &fn) {
+  current_file_ = fn;
   string dn = Util::DirName(fn);
   if (dn.empty()) {
     return;
@@ -119,6 +121,10 @@ void Env::SetCurrentFile(const string &fn) {
     }
   }
   source_dirs_.push_back(dn);
+}
+
+const string &Env::GetCurrentFile() {
+  return current_file_;
 }
 
 bool Env::IsSandboxMode() {
