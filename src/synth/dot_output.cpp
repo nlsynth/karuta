@@ -1,6 +1,7 @@
 #include "synth/dot_output.h"
 
 #include "iroha/dot/dot.h"
+#include "karuta/annotation.h"
 #include "synth/design_synth.h"
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
@@ -91,8 +92,15 @@ void DotOutput::MayWriteMemberObject(const string &name,
       return;
     }
     Node *n = dot_->GetNode(GetObjectName(obj));
-    n->SetLabel(name + "[]");
     n->SetCluster(cl);
+    string label = name + "[]";
+    Annotation *a = vm::ArrayWrapper::GetAnnotation(obj);
+    if (a != nullptr &&
+	(a->IsAxiMaster() || a->IsAxiSlave())) {
+      WriteAXIPortInfo(n, a);
+      label += " AXI";
+    }
+    n->SetLabel(label);
   }
   if (vm::ChannelWrapper::IsChannel(obj)) {
     Node *n = dot_->GetNode(GetObjectName(obj));
@@ -137,6 +145,18 @@ void DotOutput::WriteDistance() {
       e->SetLabel("distance=" + Util::Itoa(dist));
     }
   }
+}
+
+void DotOutput::WriteAXIPortInfo(Node *n, Annotation *an) {
+  Node *nn = dot_->GetNode("axi_" + n->GetName());
+  string label;
+  if (an->IsAxiMaster()) {
+    label = "AXI - Master";
+  } else {
+    label = "AXI - Slave";
+  }
+  nn->SetLabel(label);
+  n->SetSinkNode(nn);
 }
 
 }  // namespace synth
