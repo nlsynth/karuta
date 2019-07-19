@@ -38,6 +38,9 @@ iroha::dot::Cluster *DotOutput::WriteObject(const string &name,
     MayWriteMemberObject(name, obj, parent);
     return nullptr;
   }
+  if (obj_cluster_map_.find(obj) != obj_cluster_map_.end()) {
+    return nullptr;
+  }
   Cluster *c = dot_->GetCluster(GetObjectName(osynth->GetObject()));
   c->SetLabel(name);
   obj_cluster_map_[obj] = c;
