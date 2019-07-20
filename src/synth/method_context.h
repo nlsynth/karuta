@@ -30,7 +30,7 @@ public:
   MethodContext(MethodSynth *synth);
   ~MethodContext();
 
-  // Pseudo insn to represent the entory of this method.
+  // Pseudo insn to represent the entry of this method.
   // This insn holds args/rets information.
   IInsn *method_signature_insn_;
   vector<StateWrapper *> states_;

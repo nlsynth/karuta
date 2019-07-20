@@ -8,6 +8,7 @@
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
 #include "vm/channel_wrapper.h"
+#include "vm/int_array.h"
 #include "vm/mailbox_wrapper.h"
 
 using iroha::dot::Dot;
@@ -87,20 +88,7 @@ void DotOutput::WriteObjectDetail(ObjectSynth *osynth,
 void DotOutput::MayWriteMemberObject(const string &name,
 				     vm::Object *obj, iroha::dot::Cluster *cl) {
   if (vm::ArrayWrapper::IsIntArray(obj)) {
-    if (name == "Memory") {
-      // Excludes default memory.
-      return;
-    }
-    Node *n = dot_->GetNode(GetObjectName(obj));
-    n->SetCluster(cl);
-    string label = name + "[]";
-    Annotation *a = vm::ArrayWrapper::GetAnnotation(obj);
-    if (a != nullptr &&
-	(a->IsAxiMaster() || a->IsAxiSlave())) {
-      WriteAXIPortInfo(n, a);
-      label += " AXI";
-    }
-    n->SetLabel(label);
+    WriteArrayObject(name, obj, cl);
   }
   if (vm::ChannelWrapper::IsChannel(obj)) {
     Node *n = dot_->GetNode(GetObjectName(obj));
@@ -112,6 +100,26 @@ void DotOutput::MayWriteMemberObject(const string &name,
     n->SetLabel(name + "|-|");
     n->SetCluster(cl);
   }
+}
+
+void DotOutput::WriteArrayObject(const string &name, vm::Object *obj,
+				 iroha::dot::Cluster *cl) {
+  if (name == "Memory") {
+    // Excludes default memory.
+    return;
+  }
+  Node *n = dot_->GetNode(GetObjectName(obj));
+  n->SetCluster(cl);
+  uint64_t len = vm::ArrayWrapper::GetIntArray(obj)->GetLength();
+  string label = name + " #" +
+    Util::Itoa(vm::ArrayWrapper::GetDataWidth(obj)) +
+    "[" + Util::Itoa(len) + "]";
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(obj);
+  if (a != nullptr &&
+      (a->IsAxiMaster() || a->IsAxiSlave())) {
+    WriteAXIPortInfo(name, obj, n, a);
+  }
+  n->SetLabel(label);
 }
 
 string DotOutput::GetObjectName(vm::Object *obj) {
@@ -147,14 +155,16 @@ void DotOutput::WriteDistance() {
   }
 }
 
-void DotOutput::WriteAXIPortInfo(Node *n, Annotation *an) {
+void DotOutput::WriteAXIPortInfo(const string &name, vm::Object *obj,
+				 Node *n, Annotation *an) {
   Node *nn = dot_->GetNode("axi_" + n->GetName());
-  string label;
+  string label = name + " - AXI ";
   if (an->IsAxiMaster()) {
-    label = "AXI - Master";
+    label += "Master";
   } else {
-    label = "AXI - Slave";
+    label += "Slave";
   }
+  label += " #" + Util::Itoa(vm::ArrayWrapper::GetDataWidth(obj));
   nn->SetLabel(label);
   n->SetSinkNode(nn);
 }
