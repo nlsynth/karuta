@@ -527,9 +527,9 @@ Karuta's features for object oriented programming can be used to test designs as
 
    run()
 
-==================
-Visualizing design
-==================
+=================
+Visualize designs
+=================
 
 Karuta can visualize following 3 aspects of input designs.
 

@@ -176,6 +176,23 @@ This code has 2 thread entry points. One generates random numbers and the anothe
 When the code is compiled, generated Verilog code will have 2 state machines ('always' blocks).
 You can deploy the code to an FPGA board, connect the output to an LED and see it flickers randomly.
 
+Did this work well? I hope you got the idea of Karuta's approach to hardware design.
+
+--------------------
+Visualize the design
+--------------------
+
+Karuta has features to visualize designs. They will help you to understand or explain complex designs in Karuta.
+One is to visualize the structure of objects in Karuta language.
+
+.. image:: intro-obj.png
+
+Another one is to visualized the structure of modules and FSMs after synthesis.
+
+.. image:: intro-synth.png
+
+
+
 ==================
 Quick introduction
 ==================
