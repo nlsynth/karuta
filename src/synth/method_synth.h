@@ -36,7 +36,7 @@ public:
 
 private:
   bool SynthFromInsns();
-  void SynthAlternativeImplMethod(vm::Method *method);
+  bool SynthAlternativeImplMethod(vm::Method *method);
   void SynthEmbeddedMethod(vm::Method *method);
   void SynthExtIOMethod();
   void DoSynthExtIO(bool is_output);

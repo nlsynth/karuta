@@ -54,8 +54,7 @@ bool MethodSynth::Synth() {
     return false;
   }
   if (method_->GetParseTree() == nullptr && method_->GetSynthName() != kMain) {
-    SynthAlternativeImplMethod(method_);
-    return true;
+    return SynthAlternativeImplMethod(method_);
   }
   if (method_->GetAnnotation()->IsImportedModule()) {
     SynthEmbeddedMethod(method_);
@@ -261,15 +260,20 @@ bool MethodSynth::IsThreadEntry() const {
   return is_root_ && !is_task_entry_ && !IsExtEntry() && !IsDataFlowEntry();
 }
 
-void MethodSynth::SynthAlternativeImplMethod(vm::Method *method) {
+bool MethodSynth::SynthAlternativeImplMethod(vm::Method *method) {
   sym_t name = sym_lookup(method->AlternativeImplementation());
-  CHECK(name != sym_null);
+  if (name == sym_null) {
+    Status::os(Status::USER_ERROR) << "No native implementation for method: "
+				   << method_name_;
+    return false;
+  }
   vm::Value *value = obj_->LookupValue(name, false);
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(name);
   vm::Method *alt_method = value->method_;
   CHECK(alt_method->GetAnnotation()->IsImportedModule()) << sym_cstr(name);
 
   SynthEmbeddedMethod(alt_method);
+  return true;
 }
 
 void MethodSynth::SynthEmbeddedMethod(vm::Method *method) {
