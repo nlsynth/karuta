@@ -43,9 +43,12 @@ void NativeObjects::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "synth", &NativeMethods::Synth, rets);
   InstallNativeMethod(vm, obj, "setSynthParam",
 		      &NativeMethods::SetSynthParam, rets);
-  InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
   InstallNativeMethod(vm, obj, "writeHdl", &NativeMethods::WriteHdl, rets);
   InstallNativeMethod(vm, obj, "yield", &NativeMethods::Yield, rets);
+  rets.push_back(IntType(32));
+  InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
+  InstallNativeMethod(vm, obj, "getTickCount", &NativeMethods::GetTickCount,
+		      rets);
 }
 
 Method *NativeObjects::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,

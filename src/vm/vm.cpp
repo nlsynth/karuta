@@ -18,7 +18,7 @@
 
 namespace vm {
 
-VM::VM() {
+VM::VM() : tick_count_(0) {
   methods_.reset(new Pool<Method>());
   profile_.reset(new Profile());
 
@@ -170,6 +170,10 @@ Object *VM::NewEmptyObject() {
 
 Profile *VM::GetProfile() const {
   return profile_.get();
+}
+
+int VM::GetTickCount() {
+  return ++tick_count_;
 }
 
 }  // namespace vm

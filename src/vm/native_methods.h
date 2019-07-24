@@ -12,10 +12,11 @@ public:
   // Kernel.
   static void Assert(Thread *thr, Object *obj, const vector<Value> &args);
   static void Clone(Thread *thr, Object *obj, const vector<Value> &args);
+  static void Channel(Thread *thr, Object *obj, const vector<Value> &args);
   static void Compile(Thread *thr, Object *obj, const vector<Value> &args);
   static void Dump(Thread *thr, Object *obj, const vector<Value> &args);
   static void Exit(Thread *thr, Object *obj, const vector<Value> &args);
-  static void Channel(Thread *thr, Object *obj, const vector<Value> &args);
+  static void GetTickCount(Thread *thr, Object *obj, const vector<Value> &args);
   static void Print(Thread *thr, Object *obj, const vector<Value> &args);
   static void Run(Thread *thr, Object *obj, const vector<Value> &args);
   static void Main(Thread *thr, Object *obj, const vector<Value> &args);

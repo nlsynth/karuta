@@ -52,6 +52,14 @@ void NativeMethods::Exit(Thread *thr, Object *obj,
   thr->Exit();
 }
 
+void NativeMethods::GetTickCount(Thread *thr, Object *obj,
+				 const vector<Value> &args) {
+  Value value;
+  value.type_ = Value::NUM;
+  iroha::Op::MakeConst0(thr->GetVM()->GetTickCount(), &value.num_);
+  SetReturnValue(thr, value);
+}
+
 void NativeMethods::Main(Thread *thr, Object *obj,
 			 const vector<Value> &args) {
   // do nothing.
