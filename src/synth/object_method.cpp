@@ -39,6 +39,8 @@ void ObjectMethod::Synth() {
     iinsn = SynthAxiAccess(obj, false);
   } else if (name == kAxiStore) {
     iinsn = SynthAxiAccess(obj, true);
+  } else if (name == kGetTickCount) {
+    iinsn = SynthGetTickCount(obj);
   } else if (name == kSlaveWait) {
     iinsn = SynthAxiWait(obj);
   } else if (name == kMailboxWidth) {
@@ -85,7 +87,8 @@ void ObjectMethod::Scan() {
       name == kChannelWrite || name == kChannelNoWaitWrite ||
       name == kChannelRead) {
     vm::Object *parent_obj = walker_->GetParentObjByObj(obj);
-    sres->AddObjectAccessor(walker_->GetThreadSynth(), parent_obj, obj, insn_, name, false);
+    sres->AddObjectAccessor(walker_->GetThreadSynth(),
+			    parent_obj, obj, insn_, name, false);
   }
 }
 
@@ -190,14 +193,19 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   }
   IResource *accessor_res = rset->GetChannelResource(ch_obj, false, is_write,
 						     width, depth);
-  sres->AddAccessorResource(accessor_res,
-			    synth_->GetThreadSynth()->GetObjectSynth()->GetObject());
+  vm::Object *thr_obj = synth_->GetThreadSynth()->GetObjectSynth()->GetObject();
+  sres->AddAccessorResource(accessor_res, thr_obj);
   IInsn *iinsn = new IInsn(accessor_res);
   string name = GetSynthName(ch_obj);
   if (name == kChannelNoWaitWrite) {
     iinsn->SetOperand(iroha::operand::kNoWait);
   }
   return iinsn;
+}
+
+IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
+  IResource *res = synth_->GetResourceSet()->GetTicker();
+  return new IInsn(res);
 }
 
 }  // namespace synth

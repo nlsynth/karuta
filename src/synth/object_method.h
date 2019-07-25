@@ -23,6 +23,7 @@ private:
 			    bool is_blocking, bool is_put);
   IInsn *SynthMemoryAccess(vm::Object *mem, bool is_write);
   IInsn *SynthChannelAccess(vm::Object *ch_obj, bool is_write);
+  IInsn *SynthGetTickCount(vm::Object *obj);
 
   MethodSynth *synth_;
   InsnWalker *walker_;

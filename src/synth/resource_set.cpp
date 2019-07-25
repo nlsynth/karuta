@@ -28,6 +28,7 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   task_return_reg_writer_ = nullptr;
   ext_task_ = nullptr;
   ext_task_done_ = nullptr;
+  ticker_ = nullptr;
 }
 
 ResourceSet::~ResourceSet() {
@@ -245,6 +246,13 @@ IResource *ResourceSet::GetExtTaskDoneResource() {
     ext_task_done_ = DesignTool::GetOneResource(tab_, resource::kExtTaskDone);
   }
   return ext_task_done_;
+}
+
+IResource *ResourceSet::GetTicker() {
+  if (ticker_ == nullptr) {
+    ticker_ = DesignTool::GetOneResource(tab_, resource::kTicker);
+  }
+  return ticker_;
 }
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {

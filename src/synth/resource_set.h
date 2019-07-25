@@ -48,6 +48,7 @@ public:
   IResource *GetExtIO(const string &name, bool is_output, int width);
   IResource *GetExtTaskResource();
   IResource *GetExtTaskDoneResource();
+  IResource *GetTicker();
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -67,6 +68,7 @@ private:
   IResource *task_return_reg_writer_;
   IResource *ext_task_;
   IResource *ext_task_done_;
+  IResource *ticker_;
 
   class ResourceEntry {
   public:
