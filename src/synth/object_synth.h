@@ -38,10 +38,10 @@ private:
   void CollectExtEntries(vector<string> *entries);
 
   vm::Object *obj_;
-  string obj_name_;
   DesignSynth *design_synth_;
   IModule *mod_;
   bool is_root_;
+  string obj_name_;
   vector<ThreadSynth *> threads_;
   std::set<ThreadSynth *> scanned_threads_;
   std::set<string> task_entry_names_;
