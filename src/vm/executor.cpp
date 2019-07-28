@@ -836,7 +836,6 @@ void Executor::ExecFuncdecl() {
 }
 
 void Executor::AddThreadEntry(const string &name, int num, bool is_soft) {
-  Object *callee_obj;
   Object *obj = VAL(oreg()).object_;
   for (int i = 0; i < num; ++i) {
     Object *thread_obj =

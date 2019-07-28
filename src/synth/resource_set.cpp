@@ -277,7 +277,6 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
     res = DesignTool::CreateExtTaskCallResource(tab_,
 						dparams->GetModuleName(), fn);
   }
-  iroha::ResourceParams *iparams = res->GetParams();
 
   fe::VarDeclSet *a = method->GetParseTree()->GetArgs();
   PopulateIOTypes(a, false, res);
