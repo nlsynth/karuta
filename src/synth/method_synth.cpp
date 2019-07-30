@@ -515,7 +515,7 @@ void MethodSynth::AdjustArgWidth(vm::Insn *insn,
     const iroha::NumericWidth &actual_width = method->GetNthArgWidth(i);
     if (arg->value_type_.GetWidth() != actual_width.GetWidth()) {
       IResource *assign = res_set_->AssignResource();
-      IRegister *lhs = thr_synth_->AllocRegister("df_arg_");
+      IRegister *lhs = thr_synth_->AllocRegister("df_arg");
       lhs->value_type_.SetWidth(actual_width.GetWidth());
       IInsn *a = new IInsn(assign);
       a->inputs_.push_back(arg);
@@ -590,17 +590,19 @@ void MethodSynth::SynthBitInv(vm::Insn *insn) {
 }
 
 IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
-  IRegister *ireg = local_reg_map_[vreg];
-  if (ireg) {
-    return ireg;
+  auto it = local_reg_map_.find(vreg);
+  if (it != local_reg_map_.end()) {
+    return it->second;
   }
-  char name[10];
-  sprintf(name, "r%d_", vreg->id_);
+  string name = method_name_;
+  if (vreg->orig_name_ != sym_null) {
+    name = name + "_" + sym_str(vreg->orig_name_);
+  }
+  IRegister *ireg = thr_synth_->AllocRegister(name);
   int w = vreg->type_.width_.GetWidth();
   if (vreg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     w = 0;
   }
-  ireg = thr_synth_->AllocRegister(name + method_name_);
   ireg->value_type_.SetWidth(w);
   local_reg_map_[vreg] = ireg;
   return ireg;
@@ -707,7 +709,7 @@ void MethodSynth::SynthBinCalcExpr(vm::Insn *insn) {
   IRegister *res_reg = FindLocalVarRegister(insn->dst_regs_[0]);
   if (insn->op_ == vm::OP_LTE || insn->op_ == vm::OP_GTE ||
       insn->op_ == vm::OP_NE) {
-    IRegister *neg_reg = thr_synth_->AllocRegister("t_");
+    IRegister *neg_reg = thr_synth_->AllocRegister("t");
     neg_reg->value_type_.SetWidth(0);
     iinsn->outputs_.push_back(neg_reg);
     GenNeg(neg_reg, res_reg);
@@ -935,7 +937,7 @@ IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn, int
     return indexes[0];
   }
   vm::IntArray *array = vm::ArrayWrapper::GetIntArray(array_obj);
-  IRegister *reg = thr_synth_->AllocRegister("t_");
+  IRegister *reg = thr_synth_->AllocRegister("t");
   IValueType vt;
   IResource *concat = res_set_->GetOpResource(vm::OP_CONCAT, vt);
   IInsn *iinsn = new IInsn(concat);
@@ -948,7 +950,7 @@ IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn, int
     int w = Util::Log2(shape[i]);
     IRegister *idx_reg = indexes[i];
     if (idx_reg->value_type_.GetWidth() != w) {
-      IRegister *tmp_reg = thr_synth_->AllocRegister("t_");
+      IRegister *tmp_reg = thr_synth_->AllocRegister("t");
       tmp_reg->value_type_.SetWidth(w);
       IResource *assign = res_set_->AssignResource();
       IInsn *assign_insn = new IInsn(assign);
@@ -1007,7 +1009,7 @@ void MethodSynth::EmitSignatureInsn(vm::Method *method) {
     }
     // Adds a dummy return value.
     if (rets->decls.size() == 0) {
-      IRegister *ireg = thr_synth_->AllocRegister("r_");
+      IRegister *ireg = thr_synth_->AllocRegister("r");
       context_->method_signature_insn_->outputs_.push_back(ireg);
     }
   }

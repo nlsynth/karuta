@@ -20,7 +20,7 @@ public:
 
 class MethodExpander {
 public:
-  MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
+  MethodExpander(MethodContext *root, ThreadSynth *thr_synth,
 		 vector<TableCall> *table_calls);
 
   bool Expand();
@@ -44,7 +44,7 @@ private:
 			 map<IState *, IState *> &st_map);
 
   MethodContext *root_method_;
-  ThreadSynth *thread_;
+  ThreadSynth *thr_synth_;
   ITable *tab_;
   vector<TableCall> *table_calls_;
 };

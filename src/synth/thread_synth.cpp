@@ -250,8 +250,7 @@ IRegister *ThreadSynth::AllocRegister(const string &prefix) {
     ++reg_name_index_;
   } while (used_reg_names_.find(n) != used_reg_names_.end());
   used_reg_names_.insert(n);
-  IRegister *reg = new IRegister(tab_, n);
-  return reg;
+  return new IRegister(tab_, n);
 }
 
 vector<TableCall> &ThreadSynth::GetTableCalls() {

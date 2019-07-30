@@ -11,16 +11,16 @@
 
 namespace synth {
 
-MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thread_synth,
+MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thr_synth,
 			       vector<TableCall> *table_calls)
-  : root_method_(root), thread_(thread_synth),
-    tab_(thread_synth->GetITable()),
+  : root_method_(root), thr_synth_(thr_synth),
+    tab_(thr_synth->GetITable()),
     table_calls_(table_calls) {
 }
 
 bool MethodExpander::Expand() {
   for (IRegister *reg : tab_->registers_) {
-    thread_->AddName(reg->GetName());
+    thr_synth_->AddName(reg->GetName());
   }
   CalleeInfo ci = ExpandMethod(root_method_);
   tab_->SetInitialState(ci.initial);
@@ -73,7 +73,7 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
 void MethodExpander::CollectTableCalls(MethodContext *method,
 				       map<IState *, IState *> &st_map) {
   // sub obj call resource.
-  IResource *pseudo = thread_->GetResourceSet()->PseudoCallResource();
+  IResource *pseudo = thr_synth_->GetResourceSet()->PseudoCallResource();
   for (StateWrapper *sw : method->states_) {
     if (!(sw->is_sub_obj_call_ || sw->is_data_flow_call_ ||
 	  sw->is_ext_stub_call_)) {
@@ -83,7 +83,7 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
     IState *st = st_map[sw->state_];
     call.call_insn = DesignUtil::FindInsnByResource(st, pseudo);
     call.call_state = st;
-    call.caller_thread = thread_;
+    call.caller_thread = thr_synth_;
     call.callee_obj = sw->callee_vm_obj_;
     call.callee_func = sw->callee_func_name_;
     vm::Value *value =
@@ -109,7 +109,7 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
 					map<IState *, IState *> &st_map,
 					map<IRegister *, IRegister *> &reg_map) {
   // call resource.
-  IResource *pseudo = thread_->GetResourceSet()->PseudoCallResource();
+  IResource *pseudo = thr_synth_->GetResourceSet()->PseudoCallResource();
   for (StateWrapper *sw : method->states_) {
     if (sw->callee_func_name_.empty()) {
       continue;
@@ -118,15 +118,15 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
       continue;
     }
     MethodContext *callee =
-      thread_->GetMethodContext(sw->callee_vm_obj_,
-				sw->callee_func_name_);
+      thr_synth_->GetMethodContext(sw->callee_vm_obj_,
+				   sw->callee_func_name_);
     CalleeInfo ci = ExpandMethod(callee);
     IState *rs = Tool::GetNextState(sw->state_);
     Tool::SetNextState(st_map[sw->state_], ci.initial);
     Tool::SetNextState(ci.final, st_map[rs]);
     IInsn *call_insn = DesignUtil::FindInsnByResource(sw->state_, pseudo);
     CHECK(call_insn->inputs_.size() == ci.args.size());
-    IResource *assign = thread_->GetResourceSet()->AssignResource();
+    IResource *assign = thr_synth_->GetResourceSet()->AssignResource();
     // Set up call arguments.
     for (size_t i = 0; i < call_insn->inputs_.size(); ++i) {
       IInsn *assign_insn = new IInsn(assign);
@@ -204,7 +204,7 @@ void MethodExpander::BuildRegCopy(IRegister *reg,
   if (reg_map.find(reg) != reg_map.end()) {
     return;
   }
-  IRegister *nreg = thread_->AllocRegister(reg->GetName());
+  IRegister *nreg = thr_synth_->AllocRegister(reg->GetName());
   if (reg->HasInitialValue()) {
     iroha::Numeric v = reg->GetInitialValue();
     nreg->SetInitialValue(v);
