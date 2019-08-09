@@ -7,13 +7,20 @@ print("default-isynth.karuta loaded")
 // Alias for convenience
 shared Kernel.M object = Kernel
 
+// SSA is exprimental for now.
+shared Kernel._use_ssa bool = false
+
 func Kernel.setName(s object) {
   setSynthParam("name", s)
 }
 
 func Kernel.compile() {
   __compile()
-  __compile("clean,alloc_resource,clean")
+  if _use_ssa {
+    __compile("clean,ssa_convert,phi_cleaner,clean")
+  } else {
+    __compile("clean,alloc_resource,clean")
+  }
 }
 
 @embed(resource = "wait_cycles",
