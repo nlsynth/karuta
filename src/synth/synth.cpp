@@ -95,7 +95,13 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
   }
   string ofn;
   Env::GetOutputPath(fn.c_str(), &ofn);
-  string arg = lang + " -s -o " + ofn;
+  string arg = lang + " ";
+  if (Env::GetWithSelfShell()) {
+    arg += "-S";
+  } else {
+    arg += "-s";
+  }
+  arg += " -o " + ofn;
   RunIroha(obj, arg);
   const string &marker = Env::GetOutputMarker();
   if (!marker.empty()) {

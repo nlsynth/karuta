@@ -34,6 +34,8 @@ public:
   static void SetDuration(long duration);
   static void EnableDotOutput(bool en);
   static bool DotOutput();
+  static bool GetWithSelfShell();
+  static void SetWithSelfShell(bool with_self_shell);
 
 private:
   static const char *karuta_dir_;
@@ -47,6 +49,7 @@ private:
   static string current_file_;
   static long duration_;
   static bool dot_output_;
+  static bool with_self_shell_;
 };
 
 #endif  // _karuta_env_h_

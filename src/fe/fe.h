@@ -11,7 +11,7 @@ class FE {
  public:
   FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode);
 
-  void Run(bool with_run, bool with_compile, bool vanilla,
+  void Run(bool with_run, bool with_compile, bool with_shell, bool vanilla,
 	   const vector<string> &files);
 
   static vm::Method *CompileFile(const string &file,
