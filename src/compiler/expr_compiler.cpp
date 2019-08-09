@@ -285,6 +285,7 @@ vm::OpCode ExprCompiler::MayRewriteToOpWithType(vm::OpCode op) {
     case vm::OP_SUB: return vm::OP_SUB_MAY_WITH_TYPE;
     case vm::OP_MUL: return vm::OP_MUL_MAY_WITH_TYPE;
     case vm::OP_DIV: return vm::OP_DIV_MAY_WITH_TYPE;
+    default: break;
     }
   }
   return op;
@@ -320,7 +321,6 @@ vm::Register *ExprCompiler::CompileTriTerm(fe::Expr *expr) {
 RegisterTuple ExprCompiler::CompileComma(fe::Expr *expr) {
   vector<fe::Expr*> value_exprs;
   FlattenCommas(expr, &value_exprs);
-  vm::Register *reg = nullptr;
   RegisterTuple rt;
   for (size_t i = 0; i < value_exprs.size(); ++i) {
     rt.regs.push_back(CompileExprToOneReg(value_exprs[i]));
@@ -576,7 +576,6 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   // index
   vector<vm::Register *> indexes;
   fe::Expr *array_expr = ResolveArray(lhs, &indexes);
-  vm::Register *index_reg = indexes[0];
   insn->insn_expr_ = array_expr;
 
   // rhs
