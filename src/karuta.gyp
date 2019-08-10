@@ -3,7 +3,7 @@
   'make_global_settings': [
   ],
   'target_defaults': {
-    'cflags': [ '-std=c++11', ],
+    'cflags': [ '-std=c++11', '-Wall', '-Wno-sign-compare'],
     'defines': ['PACKAGE="karuta"', 'VERSION="0.4.4wip"'],
     'xcode_settings': {
       'OTHER_CFLAGS': [
