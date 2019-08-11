@@ -30,7 +30,7 @@ void Main::PrintUsage() {
   cout << " karuta [-d[spb]] scanner,parser,byte code compiler\n"
        << "   -l\n"
        << "   -l=[modules]\n"
-       << "   --compile (or --compile_with_shell)\n"
+       << "   --compile\n"
        << "   --duration\n"
        << "   --dot\n"
        << "   --iroha_binary [iroha]\n"
@@ -41,7 +41,8 @@ void Main::PrintUsage() {
        << "   --run\n"
        << "   --timeout [ms]\n"
        << "   --vanilla\n"
-       << "   --version\n";
+       << "   --version\n"
+       << "   --with_shell\n";
   exit(0);
 }
 
@@ -106,7 +107,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("iroha_bin", nullptr);
   parser->RegisterValueFlag("iroha_binary", nullptr);
   parser->RegisterBoolFlag("compile", nullptr);
-  parser->RegisterBoolFlag("compile_with_shell", nullptr);
+  parser->RegisterBoolFlag("with_shell", nullptr);
   parser->RegisterBoolFlag("run", nullptr);
   parser->RegisterBoolFlag("dot", nullptr);
   if (!parser->Parse(argc, argv)) {
@@ -173,8 +174,8 @@ int Main::main(int argc, char **argv) {
   ProcDebugArgs(args.debug_flags);
   string exit_status;
   LOG(INFO) << "KARUTA-" << Env::GetVersion();
-  bool with_shell = args.GetBoolFlag("compile_with_shell", false);
-  bool with_compile = args.GetBoolFlag("compile", false) || with_shell;
+  bool with_shell = args.GetBoolFlag("with_shell", false);
+  bool with_compile = args.GetBoolFlag("compile", false);
   bool with_run = args.GetBoolFlag("run", false);
   RunFiles(with_run, with_compile, with_shell, args.source_files);
   if (Status::CheckAllErrors(true)) {
