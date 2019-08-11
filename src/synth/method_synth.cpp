@@ -873,14 +873,23 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {
   IInsn *iinsn = new IInsn(res);
   if (is_write) {
     // index, value
+    iinsn->SetOperand(iroha::operand::kSramWrite);
     iinsn->inputs_.push_back(GetArrayIndex(array_obj, insn, 1));
     iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
   } else {
+    iinsn->SetOperand(iroha::operand::kSramReadAddress);
     iinsn->inputs_.push_back(GetArrayIndex(array_obj, insn, 0));
-    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
   }
   StateWrapper *w = AllocState();
   w->state_->insns_.push_back(iinsn);
+  // Read data
+  if (!is_write) {
+    iinsn = new IInsn(res);
+    iinsn->SetOperand(iroha::operand::kSramReadData);
+    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+    w = AllocState();
+    w->state_->insns_.push_back(iinsn);
+  }
 }
 
 bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
