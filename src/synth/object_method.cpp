@@ -73,6 +73,16 @@ void ObjectMethod::Synth() {
     IRegister *iarg = synth_->FindLocalVarRegister(arg);
     iinsn->inputs_.push_back(iarg);
   }
+  if (name == kSramWrite) {
+    iinsn->SetOperand(iroha::operand::kSramWrite);
+  }
+  if (name == kSramRead) {
+    iinsn->SetOperand(iroha::operand::kSramReadAddress);
+    iinsn = new IInsn(iinsn->GetResource());
+    iinsn->SetOperand(iroha::operand::kSramReadData);
+    sw = synth_->AllocState();
+    sw->state_->insns_.push_back(iinsn);
+  }
 }
 
 void ObjectMethod::Scan() {

@@ -1,4 +1,5 @@
 // VERILOG_OUTPUT: a.v
+// EXTERNAL_RAM
 
 def main() {
     Memory.write(0, 100)
