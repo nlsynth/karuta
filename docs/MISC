@@ -28,8 +28,9 @@
 * $ make clean; CXXFLAGS="-Werror" make; make pkg
 * $ snapcraft --debug
  * in case of failure, multipass delete --all; multipass purge; snapcraft clean; reboot ...
+* $ snap remove karuta; snap install --dangerous karuta_0.4.4_amd64.snap
 * $ snapcraft login
-* $ snapcraft push --release=candidate karuta_0.4.2_amd64.snap
+* $ snapcraft push --release=candidate karuta_0.4.4_amd64.snap
 * $ snap remove karuta ; snap install karuta --candidate
 * $ snapcraft status karuta
 * $ snapcraft release karuta 99 stable # 99 is the actual build number
