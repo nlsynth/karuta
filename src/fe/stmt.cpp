@@ -11,8 +11,8 @@
 namespace fe {
 
 Stmt::Stmt(enum NodeCode type)
-  : type_(type), expr_(nullptr), sym_(sym_null), decl_(nullptr),
-    enum_(nullptr), annotation_(nullptr), method_def_(nullptr) {
+  : type_(type), expr_(nullptr), sym_(sym_null), method_def_(nullptr),
+    decl_(nullptr), enum_(nullptr), annotation_(nullptr) {
   label_t_ = sym_null;
   label_f_ = sym_null;
   label_join_ = sym_null;
