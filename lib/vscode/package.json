@@ -1,0 +1,25 @@
+{
+    "name": "karuta",
+    "displayName": "Karuta",
+    "description": "Karuta syntax support",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.37.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "karuta",
+            "aliases": ["Karuta", "karuta"],
+            "extensions": [".karuta"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "karuta",
+            "scopeName": "source.karuta",
+            "path": "./syntaxes/karuta.tmLanguage.json"
+        }]
+    }
+}
