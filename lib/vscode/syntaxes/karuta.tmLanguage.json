@@ -2,12 +2,11 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Karuta",
 	"patterns": [
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#strings"
-		}
+		{"include": "#keywords"},
+		{"include": "#strings"},
+		{"include": "#comments"},
+		{"include": "#vardecls"},
+		{"include": "#funcdecls"}
 	],
 	"repository": {
 		"keywords": {
@@ -24,6 +23,43 @@
 				{
 					"name": "constant.character.escape.karuta",
 					"match": "\\\\."
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-slash",
+					"match": "//.*$"
+				},
+				{
+					"name": "comment.block",
+					"begin": "/\\*",
+					"end": "\\*/"
+				}
+			]
+
+		},
+		"vardecls": {
+			"patterns": [
+				{
+					"match": "(var|shared)\\s+(\\S+)\\s+(\\S+)",
+					"captures": {
+						"1": {"name": "storage.modfier"},
+						"2": {"name": "variable.other"},
+						"3": {"name": "storage.type"}
+					}
+				}
+			]
+		},
+		"funcdecls": {
+			"patterns": [
+				{
+					"match": "(func|def)\\s+(\\w+)",
+					"captures": {
+						"1": {"name": "storage.type"},
+						"2": {"name": "variable.other"}
+					}
 				}
 			]
 		}
