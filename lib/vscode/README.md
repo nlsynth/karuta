@@ -1,4 +1,4 @@
-# karuta README
+# karuta
 
 This extension supports syntax of Karuta language.
 Karuta is a language to design logic circuits typically for FPGAs (it is so called HLS or High level synthesis).

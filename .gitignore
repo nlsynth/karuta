@@ -6,6 +6,7 @@
 *.pyc
 *.deps/
 *.snap
+*.vsix
 .dirstamp
 .libs/
 src/Makefile
