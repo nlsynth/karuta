@@ -27,7 +27,8 @@
 
 void Main::PrintUsage() {
   cout << "karuta-" << Env::GetVersion() << "\n";
-  cout << " karuta [-d[spb]] scanner,parser,byte code compiler\n"
+  cout << " karuta [FILE]...\n"
+       << "   -d[spb] scanner,parser,byte code compiler\n"
        << "   -l\n"
        << "   -l=[modules]\n"
        << "   --compile\n"
