@@ -93,24 +93,22 @@ void Main::InstallTimeout() {
 }
 
 void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
-  parser->RegisterValueFlag("duration", nullptr);
+  parser->RegisterBoolFlag("compile", nullptr);
+  parser->RegisterBoolFlag("dot", nullptr);
   parser->RegisterBoolFlag("h", "help");
   parser->RegisterBoolFlag("help", nullptr);
-  parser->RegisterBoolFlag("version", "help");
   parser->RegisterBoolFlag("iroha", nullptr);
-  parser->RegisterBoolFlag("vanilla", nullptr);
   parser->RegisterBoolFlag("print_exit_status", nullptr);
-  parser->RegisterValueFlag("timeout", nullptr);
-  parser->RegisterValueFlag("root", nullptr);
-  parser->RegisterValueFlag("output_marker", nullptr);
-  parser->RegisterValueFlag("module_prefix", nullptr);
-  // for compatibility.
-  parser->RegisterValueFlag("iroha_bin", nullptr);
-  parser->RegisterValueFlag("iroha_binary", nullptr);
-  parser->RegisterBoolFlag("compile", nullptr);
-  parser->RegisterBoolFlag("with_shell", nullptr);
   parser->RegisterBoolFlag("run", nullptr);
-  parser->RegisterBoolFlag("dot", nullptr);
+  parser->RegisterBoolFlag("with_shell", nullptr);
+  parser->RegisterBoolFlag("vanilla", nullptr);
+  parser->RegisterBoolFlag("version", "help");
+  parser->RegisterValueFlag("duration", nullptr);
+  parser->RegisterValueFlag("iroha_binary", nullptr);
+  parser->RegisterValueFlag("module_prefix", nullptr);
+  parser->RegisterValueFlag("output_marker", nullptr);
+  parser->RegisterValueFlag("root", nullptr);
+  parser->RegisterValueFlag("timeout", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
   }
