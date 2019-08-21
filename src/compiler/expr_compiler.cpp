@@ -829,11 +829,12 @@ void ExprCompiler::EmitRun() {
   EmitFuncallForEpilogue("run", obj_reg, nullptr);
 }
 
-void ExprCompiler::EmitCompileAndWriteHdl(const string &fn) {
+void ExprCompiler::EmitCompile() {
   vm::Register *obj_reg = compiler_->EmitLoadObj(nullptr);
-
   EmitFuncallForEpilogue("compile", obj_reg, nullptr);
+}
 
+void ExprCompiler::EmitWriteHdl(const string &fn) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_STR;
   insn->label_ = sym_lookup(fn.c_str());
@@ -843,6 +844,7 @@ void ExprCompiler::EmitCompileAndWriteHdl(const string &fn) {
   insn->dst_regs_.push_back(fn_reg);
   compiler_->EmitInsn(insn);
 
+  vm::Register *obj_reg = compiler_->EmitLoadObj(nullptr);
   EmitFuncallForEpilogue("writeHdl", obj_reg, fn_reg);
 }
 
