@@ -193,7 +193,9 @@ vm::Method *FE::CompileFile(const string &file, bool with_run,
 
   compiler::CompileOptions opts;
   if (with_compile) {
-    opts.output = Util::BaseNameWithoutSuffix(file) + ".v";
+    string base = Util::BaseNameWithoutSuffix(file);
+    opts.outputs.push_back(base + ".v");
+    opts.outputs.push_back(base + ".iroha");
   }
   if (with_run) {
     opts.run = true;

@@ -592,8 +592,8 @@ void MethodCompiler::MayEmitEpilogueCode() {
   if (opts_.run) {
     exc_->EmitRun();
   }
-  if (!opts_.output.empty()) {
-    exc_->EmitCompileAndWriteHdl(opts_.output);
+  for (const string &s : opts_.outputs) {
+    exc_->EmitCompileAndWriteHdl(s);
   }
 }
 

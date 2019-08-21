@@ -12,7 +12,7 @@ struct CompileOptions {
   // Calls run() at the end.
   bool run;
   // Calls compile() and writeHdl(output).
-  string output;
+  vector<string> outputs;
 };
 
 class Compiler {
