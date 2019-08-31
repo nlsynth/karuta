@@ -18,6 +18,9 @@
 
 namespace compiler {
 
+VarScope::VarScope() : obj_expr_(nullptr) {
+}
+
 string MethodCompiler::dbg_bytecode_;
 
 void MethodCompiler::SetByteCodeDebug(string flags) {
@@ -47,7 +50,7 @@ void MethodCompiler::Compile() {
     return;
   }
 
-  PushScope();
+  PushScope(nullptr);
   method_->SetParseTree(tree_);
 
   SetupArgumentRegisters();
@@ -206,13 +209,28 @@ vm::Register *MethodCompiler::GetNthReturnRegister(int nth) {
   return method_->method_regs_[nth];
 }
 
-void MethodCompiler::PushScope() {
+void MethodCompiler::PushScope(fe::Stmt *stmt) {
   VarScope *scope = new VarScope;
+  if (stmt != nullptr) {
+    scope->obj_expr_ = stmt->GetExpr();
+    if (scope->obj_expr_ != nullptr) {
+      vm::Insn *insn = new vm::Insn;
+      insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
+      RegisterTuple rt = exc_->CompileExpr(scope->obj_expr_);
+      insn->obj_reg_ = rt.GetOne();
+      EmitInsn(insn);
+    }
+  }
   bindings_.push_back(scope);
 }
 
 void MethodCompiler::PopScope() {
   VarScope *scope = *(bindings_.rbegin());
+  if (scope->obj_expr_ != nullptr) {
+    vm::Insn *insn = new vm::Insn;
+    insn->op_ = vm::OP_POP_CURRENT_OBJECT;
+    EmitInsn(insn);
+  }
   delete scope;
   bindings_.pop_back();
 }
@@ -255,7 +273,7 @@ void MethodCompiler::CompileStmt(fe::Stmt *stmt) {
     CompileLabel(stmt);
     break;
   case fe::STMT_PUSH_BINDING:
-    PushScope();
+    PushScope(stmt);
     break;
   case fe::STMT_POP_BINDING:
     PopScope();

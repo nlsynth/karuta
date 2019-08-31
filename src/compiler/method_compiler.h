@@ -16,8 +16,10 @@ class VarScope;
 
 class VarScope {
 public:
+  VarScope();
   // local name -> Register.
   std::map<sym_t, vm::Register*> local_regs_;
+  fe::Expr *obj_expr_;
 };
 
 class MethodCompiler {
@@ -62,7 +64,7 @@ private:
   void CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr, vm::OpCode op,
 			     vm::Register *initial_val);
   vm::Register *CompileSymExpr(fe::Expr *expr);
-  void PushScope();
+  void PushScope(fe::Stmt *stmt);
   void PopScope();
   void EmitNop();
   void ResolveLabels();

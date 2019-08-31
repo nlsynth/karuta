@@ -15,6 +15,7 @@ public:
   vector<Value> reg_values_;
   // callee writes here.
   vector<Value> returns_;
+  vector<Object *> objs_;
 };
 
 }  // namespace vm
