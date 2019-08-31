@@ -83,7 +83,8 @@ ThreadWrapperData *ThreadWrapper::GetData(Value &value) {
     return nullptr;
   }
   Object *member_obj = value.object_;
-  if (member_obj->ObjectTypeKey() != kThreadObjectKey) {
+  if (member_obj == nullptr ||
+      member_obj->ObjectTypeKey() != kThreadObjectKey) {
     return nullptr;
   }
   return (ThreadWrapperData *)member_obj->object_specific_.get();
