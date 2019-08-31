@@ -105,6 +105,12 @@ void Stmt::Dump(DumpStream &ds) {
     }
     break;
   case STMT_PUSH_BINDING:
+    if (expr_ != nullptr) {
+      ds.os << "with\n";
+      ds.push_indent();
+      expr_->Dump();
+      ds.pop_indent();
+    }
     ds.os << "{\n";
     break;
   case STMT_POP_BINDING:

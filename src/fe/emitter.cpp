@@ -16,6 +16,7 @@ namespace fe {
 vector<MethodDecl> Emitter::method_stack_;
 Annotation *Emitter::annotation_;
 Annotation *Emitter::func_annotation_;
+Expr *Emitter::block_var_;
 
 void Emitter::BeginFunction(Expr *name) {
   string formatted_name = FormatMethodName(name);
@@ -85,8 +86,14 @@ void Emitter::SetCurrentFunctionAnnotation(Annotation *an) {
   func_annotation_ = an;
 }
 
+void Emitter::SetBlockVar(Expr *var_expr) {
+  block_var_ = var_expr;
+}
+
 void Emitter::BeginBlock() {
   Stmt *stmt = NewStmt(STMT_PUSH_BINDING);
+  stmt->SetExpr(block_var_);
+  block_var_ = nullptr;
   EmitStmt(stmt);
 }
 

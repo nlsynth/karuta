@@ -134,6 +134,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
     {"thread", K_THREAD},
     {"var", K_VAR},
     {"while", K_WHILE},
+    {"with", K_WITH},
   };
   auto it = kw.find(sym_str(sym));
   if (it != kw.end()) {

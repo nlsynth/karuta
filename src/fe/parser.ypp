@@ -68,7 +68,7 @@ extern void yyerror(const char *msg);
 %token K_DEF K_DEFAULT K_DO K_ELSE K_ENUM K_EQ_COMPARE K_FUNC K_FOR K_GOTO
 %token K_IF K_IMPORT K_INC_DEC K_INT K_LG_COMPARE K_MAILBOX
 %token K_OBJECT K_RETURN K_SHARED K_SHIFT K_STRING K_SWITCH K_THREAD
-%token K_VAR K_WHILE
+%token K_VAR K_WHILE K_WITH
 
 %token NUM
 %token SYM
@@ -94,10 +94,14 @@ extern void yyerror(const char *msg);
 %left '.' '[' ']'
 
 %%
-input : {
-} | input FUNC_DECL {
-} | input STMT {
-}
+input : FUNC_DECL_OR_STMT_LIST
+
+FUNC_DECL_OR_STMT_LIST : | FUNC_DECL_OR_STMT_LIST FUNC_DECL_OR_STMT
+
+FUNC_DECL_OR_STMT : FUNC_DECL |
+  STMT |
+  K_WITH VAR '{' { Emitter::SetBlockVar($2); Emitter::BeginBlock(); } FUNC_DECL_OR_STMT_LIST '}' { Emitter::EndBlock(); }
+
 
 IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
   $$ = AnnotationBuilder::BuildStrParam($1, $4);

@@ -78,14 +78,15 @@ extern int yydebug;
     K_THREAD = 288,
     K_VAR = 289,
     K_WHILE = 290,
-    NUM = 291,
-    SYM = 292,
-    STR = 293,
-    K_LOGIC_OR = 294,
-    K_LOGIC_AND = 295,
-    K_BIT_CONCAT = 296,
-    SIGN = 297,
-    ADDRESS = 298
+    K_WITH = 291,
+    NUM = 292,
+    SYM = 293,
+    STR = 294,
+    K_LOGIC_OR = 295,
+    K_LOGIC_AND = 296,
+    K_BIT_CONCAT = 297,
+    SIGN = 298,
+    ADDRESS = 299
   };
 #endif
 /* Tokens.  */
@@ -122,14 +123,15 @@ extern int yydebug;
 #define K_THREAD 288
 #define K_VAR 289
 #define K_WHILE 290
-#define NUM 291
-#define SYM 292
-#define STR 293
-#define K_LOGIC_OR 294
-#define K_LOGIC_AND 295
-#define K_BIT_CONCAT 296
-#define SIGN 297
-#define ADDRESS 298
+#define K_WITH 291
+#define NUM 292
+#define SYM 293
+#define STR 294
+#define K_LOGIC_OR 295
+#define K_LOGIC_AND 296
+#define K_BIT_CONCAT 297
+#define SIGN 298
+#define ADDRESS 299
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -157,7 +159,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 161 "src/fe/parser.h" /* yacc.c:1909  */
+#line 163 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
