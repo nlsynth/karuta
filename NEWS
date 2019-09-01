@@ -1,4 +1,5 @@
-0.4.5 WIP
+2019/09/01 0.4.5
+ Shell module for AXI. with obj { ... } syntax.
 2019/08/12 0.4.4
  Fix a array related bug in previous release. Improved self test.
 2019/07/27 0.4.3
