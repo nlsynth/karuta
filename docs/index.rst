@@ -1,7 +1,7 @@
-Welcome to Karuta's documentation! (WIP)
-========================================
+Welcome to Karuta's documentation!
+==================================
 
-Karuta is an object-oriented scripting language and its compiler to design logic circuits. The main objective of Karuta is to improve the productivity of logic circuit design. This kind of software is usually known as HLS (High Level Synthesis).
+Karuta is an object-oriented scripting language and its compiler to design logic circuits. The main objective of Karuta is to make logic circuit design more productive. This kind of software is usually known as HLS (High Level Synthesis).
 
 Author: Yusuke Tabata (tabata.yusuke@gmail.com)
 

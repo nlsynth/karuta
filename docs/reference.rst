@@ -69,6 +69,10 @@ Command line flags
 
   * Print version number.
 
+* --with_shell
+
+  * Generates a top level module to feed clock and reset.
+
 =================
 Program structure
 =================
@@ -239,7 +243,26 @@ Control
    }
 
 TODO: switch/case statement
-		
+
+with block
+
+.. code-block:: none
+
+   shared obj object = new()
+   with obj {
+     // same as obj.foo()
+     func foo() {
+     }
+     // same as obj.x
+     shared x int[16]
+   }
+   
+   func bar() {
+     obj.x[0] = 0
+     obj.foo()
+   }
+
+
 ================
 Built in methods
 ================
