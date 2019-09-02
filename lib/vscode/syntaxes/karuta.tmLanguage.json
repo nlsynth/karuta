@@ -6,7 +6,8 @@
 		{"include": "#strings"},
 		{"include": "#comments"},
 		{"include": "#vardecls"},
-		{"include": "#funcdecls"}
+		{"include": "#funcdecls"},
+		{"include": "#scopedecls"}
 	],
 	"repository": {
 		"keywords": {
@@ -59,6 +60,16 @@
 					"captures": {
 						"1": {"name": "storage.type"},
 						"2": {"name": "variable.other"}
+					}
+				}
+			]
+		},
+		"scopedecls": {
+			"patterns": [
+				{
+					"match": "with\\s+(\\w+)",
+					"captures": {
+						"1": {"name": "variable.other"}
 					}
 				}
 			]

@@ -35,6 +35,14 @@
 * $ snapcraft status karuta
 * $ snapcraft release karuta 99 stable # 99 is the actual build number
 
+
+## Releasing vscode extension
+
+* $ cd lib/vscode ; code .
+* press f5 to launch vscode with new code
+* $ edit package.json README.md
+* $ vsce publish
+
 ## Commands
 
 $ ./src/out/Default/karuta_test # run tests
