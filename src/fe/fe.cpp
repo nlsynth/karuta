@@ -153,12 +153,9 @@ FE::FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode)
   vm::Thread::SetByteCodeDebug(dbg_bytecode);
 }
 
-void FE::Run(bool with_run, bool with_compile, bool with_shell, bool vanilla,
+void FE::Run(bool with_run, bool with_compile, bool vanilla,
 	     const vector<string>& files) {
   NodePool::Init();
-  if (with_shell) {
-    Env::SetWithSelfShell(true);
-  }
 
   vm::VM vm;
   bool ok = true;

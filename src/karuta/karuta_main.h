@@ -14,7 +14,7 @@ private:
   void InstallTimeout();
   void ParseArgs(int argc, char **argv, ArgParser *arg_parser);
   void ProcDebugArgs(vector<char *> &dbg_flags);
-  void RunFiles(bool with_run, bool with_compile, bool with_shell,
+  void RunFiles(bool with_run, bool with_compile,
 		vector<string> &files);
   void PrintUsage();
 

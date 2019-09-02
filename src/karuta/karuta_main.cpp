@@ -47,11 +47,11 @@ void Main::PrintUsage() {
   exit(0);
 }
 
-void Main::RunFiles(bool with_run, bool with_compile, bool with_shell,
+void Main::RunFiles(bool with_run, bool with_compile,
 		    vector<string> &files) {
   fe::FE fe(dbg_parser_, dbg_scanner_, dbg_bytecode_);
 
-  fe.Run(with_run, with_compile, with_shell, vanilla_, files);
+  fe.Run(with_run, with_compile, vanilla_, files);
 }
 
 void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
@@ -164,6 +164,9 @@ int Main::main(int argc, char **argv) {
   if (args.GetBoolFlag("dot", false)) {
     Env::EnableDotOutput(true);
   }
+  if (args.GetBoolFlag("with_shell", false)) {
+    Env::SetWithSelfShell(true);
+  }
 
   if (timeout_) {
     InstallTimeout();
@@ -173,10 +176,9 @@ int Main::main(int argc, char **argv) {
   ProcDebugArgs(args.debug_flags);
   string exit_status;
   LOG(INFO) << "KARUTA-" << Env::GetVersion();
-  bool with_shell = args.GetBoolFlag("with_shell", false);
   bool with_compile = args.GetBoolFlag("compile", false);
   bool with_run = args.GetBoolFlag("run", false);
-  RunFiles(with_run, with_compile, with_shell, args.source_files);
+  RunFiles(with_run, with_compile, args.source_files);
   if (Status::CheckAllErrors(true)) {
     exit_status = "error";
   }
