@@ -81,8 +81,13 @@ void ObjectTree::CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
 			     std::list<vm::Object *> *q) {
   map<sym_t, vm::Object *> member_objs;
   o->GetAllMemberObjs(&member_objs);
+  sym_t parent = sym_lookup("parent");
   for (auto it : member_objs) {
     if (it.second == o) {
+      continue;
+    }
+    if (it.first == parent) {
+      // Suppress to traverse enclosing objects (beyond root_obj_).
       continue;
     }
     auto &m = obj_children_map_[o];
