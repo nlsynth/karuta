@@ -1,5 +1,5 @@
-// NLI_TIMEOUT: 100
-// NLI_EXPECT_ABORT:
+// KARUTA_TIMEOUT: 100
+// KARUTA_EXPECT_ABORT:
 
 while (true) {
 }

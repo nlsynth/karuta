@@ -12,7 +12,7 @@ import test_files
 
 print("Running tests")
 os.putenv("KARUTA_DIR", "../lib/")
-nli_binary="../karuta-bin"
+karuta_binary="../karuta-bin"
 iroha_binary=""
 verilog_compiler="iverilog"
 default_tb="test_tb.v"
@@ -94,7 +94,7 @@ class KarutaTest():
     def ReadTestInfo(self, fn):
         test_info = {"exp_fails":0,
                      "vl_exp_fails":0,
-                     "nli_ignore_errors":0,
+                     "karuta_ignore_errors":0,
                      "exp_abort":0}
         dn = os.path.dirname(fn)
         if dn != "":
@@ -102,7 +102,7 @@ class KarutaTest():
         test_info["dirname"] = dn
         ifh = open(fn, "r")
         for line in ifh:
-            m = re.search("NLI_EXPECTED_ERRORS: (\d+)", line)
+            m = re.search("KARUTA_EXPECTED_ERRORS: (\d+)", line)
             if m:
                 test_info["exp_fails"] = int(m.group(1))
             m = re.search("VERILOG_EXPECTED_ERRORS: (\d+)", line)
@@ -114,16 +114,16 @@ class KarutaTest():
             m = re.search("VERILOG_TB: (\S+)", line)
             if m:
                 test_info["verilog_tb"] = m.group(1)
-            m = re.search("NLI_IGNORE_ERRORS:", line)
+            m = re.search("KARUTA_IGNORE_ERRORS:", line)
             if m:
-                test_info["nli_ignore_errors"] = 1
-            m = re.search("NLI_TIMEOUT: (\d+)", line)
+                test_info["karuta_ignore_errors"] = 1
+            m = re.search("KARUTA_TIMEOUT: (\d+)", line)
             if m:
-                test_info["nli_timeout"] = int(m.group(1))
-            m = re.search("NLI_EXPECT_ABORT:", line)
+                test_info["karuta_timeout"] = int(m.group(1))
+            m = re.search("KARUTA_EXPECT_ABORT:", line)
             if m:
                 test_info["exp_abort"] = 1
-            m = re.search("NLI_SPLIT_TEST: (\S+)", line)
+            m = re.search("KARUTA_SPLIT_TEST: (\S+)", line)
             if m:
                 test_info["split_info"] = m.group(1)
         return test_info
@@ -176,7 +176,7 @@ class KarutaTest():
         num_fails = res["num_fails"]
         exp_fails = test_info["vl_exp_fails"]
         summary.AddVerilogResult(self.source_fn, num_fails,
-                                 test_info["nli_ignore_errors"],
+                                 test_info["karuta_ignore_errors"],
                                  exp_fails)
         try:
             os.unlink(test_bin_fn)
@@ -190,10 +190,10 @@ class KarutaTest():
             # verilog tests requires imported modules.
             vanilla = ""
         timeout = "1000"
-        if "nli_timeout" in test_info:
-            timeout = str(test_info["nli_timeout"])
+        if "karuta_timeout" in test_info:
+            timeout = str(test_info["karuta_timeout"])
         cmd = "KARUTA_DIR=../lib "
-        cmd += nli_binary + " " + self.source_fn + " " + vanilla
+        cmd += karuta_binary + " " + self.source_fn + " " + vanilla
         if iroha_binary != "":
             cmd += " --iroha_binary " + iroha_binary
         cmd += " --root " + tmp_prefix
@@ -229,7 +229,7 @@ class KarutaTest():
         exp_abort = test_info["exp_abort"]
         summary.AddResult(self.source_fn,
                           num_fails,
-                          test_info["nli_ignore_errors"],
+                          test_info["karuta_ignore_errors"],
                           done_stat, exp_abort, exp_fails)
         os.unlink(tf)
 
@@ -241,7 +241,7 @@ class TestManager:
     def IsCompoundTest(self, source):
         ifh = open(source, "r")
         for line in ifh:
-            if re.search("NLI_COMPOUND_TEST", line):
+            if re.search("KARUTA_COMPOUND_TEST", line):
                 return True
         return False
 
@@ -254,8 +254,8 @@ class TestManager:
         lnstr = ""
         for line in ifh:
             ln = ln + 1
-            lnstr = "\n// NLI_SPLIT_TEST: " + source + ":" + str(ln) + "\n"
-            if re.search("NLI_NEXT_TEST", line):
+            lnstr = "\n// KARUTA_SPLIT_TEST: " + source + ":" + str(ln) + "\n"
+            if re.search("KARUTA_NEXT_TEST", line):
                 files.append(of)
                 ofh.write(lnstr)
                 ofh.close()
