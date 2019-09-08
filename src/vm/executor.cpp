@@ -456,6 +456,9 @@ void Executor::ExecLoadObj() {
     dst_value.object_ = frame_->obj_;
     dst_value.type_ = Value::OBJECT;
   }
+  if (IsTopLevel()) {
+    dreg(0)->type_.value_type_ = Value::OBJECT;
+  }
 }
 
 void Executor::ExecIncDec() {
