@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# Copyright Yusuke Tabata 2007-2018
+# Copyright Yusuke Tabata 2007-2019
 
 
 import os
@@ -71,7 +71,7 @@ class TestSummary():
         self.num_aborts += 1;
 
 
-class NLITest():
+class KarutaTest():
     def __init__(self, source_fn):
         self.source_fn = source_fn
 
@@ -184,7 +184,7 @@ class NLITest():
         except:
             pass
 
-    def GetNliCommand(self, tf, test_info, use_zfe):
+    def GetKarutaCommand(self, tf, test_info):
         vanilla = "--vanilla"
         if "verilog" in test_info:
             # verilog tests requires imported modules.
@@ -194,8 +194,6 @@ class NLITest():
             timeout = str(test_info["nli_timeout"])
         cmd = "KARUTA_DIR=../lib "
         cmd += nli_binary + " " + self.source_fn + " " + vanilla
-        if use_zfe:
-            cmd += " -z"
         if iroha_binary != "":
             cmd += " --iroha_binary " + iroha_binary
         cmd += " --root " + tmp_prefix
@@ -205,10 +203,10 @@ class NLITest():
         cmd += " > " + tf
         return cmd
 
-    def RunTest(self, summary, use_zfe):
+    def RunTest(self, summary):
         test_info = self.ReadTestInfo(self.source_fn)
         tf = tempfile.mktemp()
-        cmd = self.GetNliCommand(tf, test_info, use_zfe)
+        cmd = self.GetKarutaCommand(tf, test_info)
         if "verilog" in test_info:
             try:
                 os.unlink(tmp_prefix + "/" + test_info["verilog"])
@@ -237,9 +235,8 @@ class NLITest():
 
 
 class TestManager:
-    def __init__(self, sources, use_zfe):
+    def __init__(self, sources):
         self.sources = sources
-        self.use_zfe = use_zfe
 
     def IsCompoundTest(self, source):
         ifh = open(source, "r")
@@ -279,25 +276,21 @@ class TestManager:
                 print (" Split into " + str(len(tests)) + "compound tests" +
                        " from " + source)
                 for fract in tests:
-                    t = NLITest(fract)
-                    t.RunTest(summary, self.use_zfe)
+                    t = KarutaTest(fract)
+                    t.RunTest(summary)
                     os.unlink(fract)
             else:
-                t = NLITest(source)
-                t.RunTest(summary, self.use_zfe)
+                t = KarutaTest(source)
+                t.RunTest(summary)
         summary.PrintSummary()
 
 test_sources = []
-use_zfe = False
 
 if len(sys.argv) > 1:
     args = sys.argv[1:]
     while len(args) > 0:
         arg = args[0]
         args = args[1:]
-        if arg == "-z":
-            use_zfe = True
-            continue
         if arg == "--iroha_binary":
             iroha_binary = args[0]
             args = args[1:]
@@ -307,5 +300,5 @@ if len(sys.argv) > 1:
 if not test_sources:
     test_sources = test_files.default_tests
 
-tm = TestManager(test_sources, use_zfe)
+tm = TestManager(test_sources)
 tm.Run()
