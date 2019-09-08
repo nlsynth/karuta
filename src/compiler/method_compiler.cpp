@@ -367,7 +367,6 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     is_member_decl = true;
   }
   if (IsTopLevel() && vdd->GetIsShared()) {
-    CHECK(bindings_.size() == 1);
     is_member_decl = true;
   }
 
