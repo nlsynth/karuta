@@ -270,6 +270,9 @@ IInsn *ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   ITable *caller_tab = st->GetTable();
   IResource *call_res = Tool::FindOrCreateTaskCallResource(caller_tab,
 							   callee_tab);
+  if (call_res == nullptr) {
+    return nullptr;
+  }
   // Argument values.
   IInsn *iinsn = new IInsn(call_res);
   st->insns_.push_back(iinsn);

@@ -151,6 +151,12 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
     insn = ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn,
 					  name, call.is_ext_flow_stub_call);
   }
+  if (insn == nullptr) {
+    Status::os(Status::USER_ERROR)
+      << "Failed to synthesize function call: " << call.callee_func;
+    MessageFlush::Get(Status::USER_ERROR);
+    return;
+  }
   int d = design_synth_->GetObjectDistance(obj_, call.callee_obj);
   if (d > 0) {
     // Sets distance to every related resources.

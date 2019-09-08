@@ -32,6 +32,9 @@ IResource *Tool::FindOrCreateTaskCallResource(ITable *caller,
   }
   IResource *res = DesignTool::CreateTaskCallResource(caller, callee);
   IInsn *task_entry = DesignUtil::FindTaskEntryInsn(callee);
+  if (task_entry == nullptr) {
+    return nullptr;
+  }
   IResource *entry = task_entry->GetResource();
   // copy arg types
   for (auto &iv : entry->output_types_) {
