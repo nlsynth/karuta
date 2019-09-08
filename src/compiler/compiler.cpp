@@ -43,6 +43,7 @@ void Compiler::CompileMethodWithOpts(vm::VM *vm, vm::Object *obj,
     Status::os(Status::USER_ERROR)
       << "Failed in compilation of method: "
       << parse_tree->GetName();
+    MessageFlush::Get(Status::USER_ERROR);
   }
 }
 
