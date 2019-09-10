@@ -37,12 +37,8 @@ func Kernel.__wait(cycles int) {
 func Kernel.__exit() {
 }
 
-// Utility to create a vanilla object.
+// Save this to create a vanilla object.
 shared Kernel.Kernel_ object = Kernel.clone()
-
-func Kernel.new() (object) {
-  return Kernel_.clone()
-}
 
 func Array.load(maddr #64, len #32, aaddr #32) {
   axiLoad(maddr, len - 1, aaddr)

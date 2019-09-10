@@ -65,6 +65,17 @@ void NativeMethods::Main(Thread *thr, Object *obj,
   // do nothing.
 }
 
+void NativeMethods::New(Thread *thr, Object *obj,
+			const vector<Value> &args) {
+  // Saved in default-isynth.karuta
+  Value *v = thr->GetVM()->kernel_object_
+    ->LookupValue(sym_lookup("Kernel_"), true);
+  Value value;
+  value.type_ = Value::OBJECT;
+  value.object_ = v->object_->Clone();
+  SetReturnValue(thr, value);
+}
+
 void NativeMethods::Print(Thread *thr, Object *obj,
 			  const vector<Value> &args) {
   cout << "print: ";
