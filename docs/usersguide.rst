@@ -436,6 +436,59 @@ Type object and embedded combinational logic can be used to build a custom type 
    // add_st2 and add_st3 here.
 
 
+=========================
+Building object hierarchy
+=========================
+
+The basic way to build an object hierarcy is to declare member
+
+.. code-block:: none
+
+   shared x object = new()
+   shared x.y object = new()
+   func x.f() {
+     y.g()
+   }
+   func x.y.g() {
+     print(1)
+   }
+   func main() {
+     x.f()
+   }
+
+This structure can be a more cleanly described with `with` block.
+
+.. code-block:: none
+
+   shared x object = new()
+   shared x.y object = new()
+   with x {
+     with y {
+       func g() {
+         print(1)
+       }
+     }
+     func f() {
+       y.g()
+     }
+   }
+   func main() {
+     x.f()
+   }
+
+When `with` block is used, the member object can access its enclosing object by `parent` keyword.
+
+.. code-block:: none
+
+   shared x object = new()
+   with x {
+     func f() {
+       parent.g()
+     }
+   }
+   func g() {
+   }
+
 =================================
 Profile Guided Optimization (PGO)
 =================================
