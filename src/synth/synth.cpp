@@ -95,12 +95,16 @@ void Synth::WriteHdl(const string &fn, vm::Object *obj) {
   }
   string ofn;
   Env::GetOutputPath(fn.c_str(), &ofn);
-  string arg = lang + " ";
+  string arg = lang;
   if (Env::GetWithSelfShell()) {
-    arg += "-S";
+    arg += " -S";
   } else {
-    arg += "-s";
+    arg += " -s";
   }
+  if (Env::GetVcdOutput()) {
+    arg += " -vcd";
+  }
+
   arg += " -o " + ofn;
   RunIroha(obj, arg);
   const string &marker = Env::GetOutputMarker();

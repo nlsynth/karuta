@@ -36,6 +36,8 @@ public:
   static bool DotOutput();
   static bool GetWithSelfShell();
   static void SetWithSelfShell(bool with_self_shell);
+  static void EnableVcdOutput(bool en);
+  static bool GetVcdOutput();
 
 private:
   static const char *karuta_dir_;
@@ -50,6 +52,7 @@ private:
   static long duration_;
   static bool dot_output_;
   static bool with_self_shell_;
+  static bool vcd_output_;
 };
 
 #endif  // _karuta_env_h_

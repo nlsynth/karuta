@@ -42,6 +42,7 @@ void Main::PrintUsage() {
        << "   --run\n"
        << "   --timeout [ms]\n"
        << "   --vanilla\n"
+       << "   --vcd\n"
        << "   --version\n"
        << "   --with_shell\n";
   exit(0);
@@ -102,6 +103,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterBoolFlag("run", nullptr);
   parser->RegisterBoolFlag("with_shell", nullptr);
   parser->RegisterBoolFlag("vanilla", nullptr);
+  parser->RegisterBoolFlag("vcd", nullptr);
   parser->RegisterBoolFlag("version", "help");
   parser->RegisterValueFlag("duration", nullptr);
   parser->RegisterValueFlag("iroha_binary", nullptr);
@@ -150,10 +152,6 @@ int Main::main(int argc, char **argv) {
   if (args.GetFlagValue("module_prefix", &arg)) {
     Env::SetModulePrefix(arg);
   }
-  // For compatibility.
-  if (args.GetFlagValue("iroha_bin", &arg)) {
-    Env::SetIrohaBinPath(arg);
-  }
   if (args.GetFlagValue("iroha_binary", &arg)) {
     Env::SetIrohaBinPath(arg);
   }
@@ -166,6 +164,9 @@ int Main::main(int argc, char **argv) {
   }
   if (args.GetBoolFlag("with_shell", false)) {
     Env::SetWithSelfShell(true);
+  }
+  if (args.GetBoolFlag("vcd", false)) {
+    Env::EnableVcdOutput(true);
   }
 
   if (timeout_) {

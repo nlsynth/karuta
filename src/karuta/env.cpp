@@ -19,6 +19,7 @@ string Env::current_file_;
 long Env::duration_ = 1000000;
 bool Env::dot_output_;
 bool Env::with_self_shell_;
+bool Env::vcd_output_;
 
 const string &Env::GetVersion() {
   static string v(VERSION);
@@ -162,4 +163,12 @@ bool Env::GetWithSelfShell() {
 
 void Env::SetWithSelfShell(bool with_self_shell) {
   with_self_shell_ = with_self_shell;
+}
+
+void Env::EnableVcdOutput(bool en) {
+  vcd_output_ = en;
+}
+
+bool Env::GetVcdOutput() {
+  return vcd_output_;
 }
