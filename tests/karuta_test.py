@@ -9,6 +9,12 @@ default_tb="test_tb.v"
 verilog_compiler="iverilog"
 
 
+def FileBase(fn):
+    bn = os.path.basename(fn)
+    # assumes .karuta
+    return bn[:-7]
+
+
 def CheckLog(fn):
     num_fails = 0
     done_stat = 0
@@ -61,6 +67,10 @@ def ReadTestInfo(fn):
         m = re.search("KARUTA_SPLIT_TEST: (\S+)", line)
         if m:
             test_info["split_info"] = m.group(1)
+        m = re.search("SELF_SHELL:", line)
+        if m:
+            test_info["self_shell"] = 1
+            test_info["verilog"] = FileBase(fn) + ".v"
     return test_info
 
 
@@ -92,15 +102,17 @@ def GetVerilogCompileCommand(dut_fn, tb_fn, test_bin_fn):
     return cmd
 
 
-def CheckVerilog(fn, source_fn, summary, test_info):
+def CheckVerilog(dut_fn, source_fn, summary, test_info):
     test_bin_fn = tempfile.mktemp()
     test_log_fn = tempfile.mktemp()
-    if "verilog_tb" in test_info:
+    if "self_shell" in test_info:
+        tb_fn = ""
+    elif "verilog_tb" in test_info:
         tb_fn = test_info["dirname"] + test_info["verilog_tb"]
     else:
         tb_fn = default_tb
-    cmd = GetVerilogCompileCommand(fn, tb_fn, test_bin_fn)
-    print("  compiling " + fn + "(" + cmd + ")")
+    cmd = GetVerilogCompileCommand(dut_fn, tb_fn, test_bin_fn)
+    print("  compiling " + dut_fn + "(" + cmd + ")")
     os.system(cmd)
     if not os.path.isfile(test_bin_fn):
         summary.AddVerilogCompileFailure(source_fn)
@@ -137,7 +149,10 @@ def GetKarutaCommand(source_fn, tf, test_info):
     cmd += " --root " + tmp_prefix
     cmd += " --timeout " + timeout + " "
     cmd += " --print_exit_status "
-    cmd += " --module_prefix=mod "
+    if "self_shell" in test_info:
+        cmd += " --compile --with_shell "
+    else:
+        cmd += " --module_prefix=mod "
     cmd += " > " + tf
     return cmd
 
