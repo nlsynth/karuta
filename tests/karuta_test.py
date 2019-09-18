@@ -15,9 +15,10 @@ def FileBase(fn):
     return bn[:-7]
 
 
-def CheckLog(fn):
+def CheckLog(fn, exp):
     num_fails = 0
     done_stat = 0
+    has_exp = False
     ifh = open(fn, "r")
     for line in ifh:
         if re.search("ASSERTION FAILURE", line):
@@ -28,6 +29,10 @@ def CheckLog(fn):
             done_stat = 1
             if re.search("error", line):
                 num_fails = num_fails + 1
+        if exp and re.search(exp, line):
+            has_exp = True
+    if exp and not has_exp:
+        num_fails = num_fails + 1
     return {"num_fails":num_fails,
             "done_stat":done_stat}
 
@@ -49,6 +54,9 @@ def ReadTestInfo(fn):
         m = re.search("VERILOG_EXPECTED_ERRORS: (\d+)", line)
         if m:
             test_info["vl_exp_fails"] = int(m.group(1))
+        m = re.search("VERILOG_EXPECTED_OUTPUT: (\S+)", line)
+        if m:
+            test_info["vl_exp_output"] = m.group(1)
         m = re.search("VERILOG_OUTPUT: (\S+)", line)
         if m:
             test_info["verilog"] = m.group(1)
@@ -121,7 +129,10 @@ def CheckVerilog(dut_fn, source_fn, summary, test_info):
     print ("  running verilog executable " + test_bin_fn +
            "(" + test_cmd + ")")
     os.system(test_cmd)
-    res = CheckLog(test_log_fn)
+    exp = None
+    if "vl_exp_output" in test_info:
+        exp = test_info["vl_exp_output"]
+    res = CheckLog(test_log_fn, exp)
     num_fails = res["num_fails"]
     exp_fails = test_info["vl_exp_fails"]
     summary.AddVerilogResult(source_fn, num_fails,
@@ -181,7 +192,7 @@ class KarutaTest():
             CheckVerilog(tmp_prefix + "/" + test_info["verilog"],
                          self.source_fn,
                          summary, test_info)
-        res = CheckLog(tf)
+        res = CheckLog(tf, None)
         num_fails = res["num_fails"]
         done_stat = res["done_stat"]
         exp_fails = test_info["exp_fails"]
