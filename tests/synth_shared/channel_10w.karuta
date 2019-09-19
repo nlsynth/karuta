@@ -1,0 +1,17 @@
+// SELF_SHELL:
+// VERILOG_EXPECTED_OUTPUT: 45
+channel ch int
+
+@ThreadEntry(num=10)
+func f1(idx int) {
+  ch.write(idx)
+}
+
+@ThreadEntry()
+func f2() {
+  var t int = 0
+  while true {
+    t += ch.read()
+    print(t)
+  }
+}
