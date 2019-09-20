@@ -1,0 +1,20 @@
+// SELF_SHELL:
+// VERILOG_EXPECTED_OUTPUT: 45
+mailbox mb int
+
+shared a int[4]
+
+@ThreadEntry(num=10)
+func fn(idx int) {
+  if (idx == 0) {
+    a[1] = 0
+    mb.put(0)
+  } else {
+    mb.get()
+    a[1] += idx
+    print(a[1])
+    mb.put(0)
+  }
+}
+
+run()
