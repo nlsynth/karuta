@@ -26,7 +26,7 @@ For example, you have a design like this and save to a file my_design.karuta
      // Does interesting computation.
    }
 
-You can get synthesizable Verilog file with --compile flag.
+Karuta generates synthesizable Verilog file, if --compile flag is specified.
 
 .. code-block:: none
 

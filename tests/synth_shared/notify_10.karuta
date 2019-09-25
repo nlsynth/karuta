@@ -1,0 +1,18 @@
+// SELF_SHELL:
+// VERILOG_EXPECTED_OUTPUT: 45
+mailbox n int
+mailbox mb int
+
+@ThreadEntry(num=10)
+func fn(idx int) {
+  if idx == 0 {
+    n.notify(1)
+    mb.put(0)
+    return
+  }
+  if n.wait() == 1 {
+    var x int = mb.get()
+    mb.put(x + idx)
+    print(x + idx)
+  }
+}
