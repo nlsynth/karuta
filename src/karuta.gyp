@@ -4,7 +4,7 @@
   ],
   'target_defaults': {
     'cflags': [ '-std=c++11', '-Wall', '-Wno-sign-compare'],
-    'defines': ['PACKAGE="karuta"', 'VERSION="0.4.6wip"'],
+    'defines': ['PACKAGE="karuta"', 'VERSION="0.4.6"'],
     'xcode_settings': {
       'OTHER_CFLAGS': [
           '-std=c++11',
