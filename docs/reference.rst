@@ -65,6 +65,10 @@ Command line flags
 
   * Doesn't read lib/default-isynth.karuta.
 
+* --vcd
+
+  * Generates vcd from generated verilog file.
+
 * --version
 
   * Print version number.
