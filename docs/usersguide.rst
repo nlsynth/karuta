@@ -220,7 +220,7 @@ AXI master
 
 .. code-block:: none
 
-   // @AxiMaster(addrWidth = "64") // or "32" to specify the width.
+   // @AxiMaster(addrWidth = 64) // or 32 (default) to specify the width.
    // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
    @AxiMaster()
    shared m int[16]
