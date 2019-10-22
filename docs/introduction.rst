@@ -1,8 +1,8 @@
-Introduction
-============
+Quick Introduction
+==================
 
 ==================
-Quick installation
+Installation
 ==================
 
 If you are using Ubuntu, just do
@@ -13,9 +13,9 @@ If you are using Ubuntu, just do
 
 Otherwise please see User's guide to build the binary.
 
-==============
-Quick tutorial
-==============
+========
+Tutorial
+========
 
 This section illustrates some of Karuta's features using Xorshift32 method.
 Simplest Xorshift32 in Karuta is like this:
@@ -60,10 +60,17 @@ So you can the run same karuta command again and will get xorshift32.v! The cont
    endmodule
 
 Then you can run this on a Verilog simulator with a test bench file to feed the clock and reset.
+However, the tedious coding can be avoided by *--with_shell* option.
 
 .. code-block:: none
 
-   $ iverilog tb.v xorshift32.v
+   $ karuta xorshift32.karuta --compile --with_shell
+
+The output contains an enclosing module to generate clock and reset. So you can simply run iverilog (or your simulator) to see the results.
+
+.. code-block:: none
+
+   $ iverilog xorshift32.v
    $ ./a.out
     268476417
    1157628417
@@ -71,7 +78,7 @@ Then you can run this on a Verilog simulator with a test bench file to feed the 
     269814307
    ...
 
-OK. Looks good? But there is a big problem. The code uses $display() which is useless on real FPGAs. The next step is to generate an output port from this design.
+OK. Looks good? But there is a big problem. The code uses *$display()* which is useless on real FPGAs. The next step is to generate an output port from this design.
 With Karuta, you can annotate a method to make it an output port. The output value is updated when the method is called. For example,
 
 .. code-block:: none
@@ -89,10 +96,7 @@ With Karuta, you can annotate a method to make it an output port. The output val
      }
    }
 
-   compile()
-   writeHdl("xorshift32.v")
-
-The code above will generate a Verilog file like as follows. The top module xorshift32 has an output port 'o', so you can connect the port to other parts of your design.
+The code above will generate a Verilog file like as follows. The top module xorshift32 has an output port *'o'*, so you can connect the port to other parts of your design.
 
 .. code-block:: none
 
@@ -173,7 +177,7 @@ The last example here illustrates some of the most important features of Karuta 
    }
 
 This code has 2 thread entry points. One generates random numbers and the another reads the numbers via the channel.
-When the code is compiled, generated Verilog code will have 2 state machines ('always' blocks).
+When the code is compiled, generated Verilog code will have 2 state machines (*'always'* blocks).
 You can deploy the code to an FPGA board, connect the output to an LED and see it flickers randomly.
 
 Did this work well? I hope you got the idea of Karuta's approach to hardware design.
@@ -193,11 +197,11 @@ Another one is to visualized the structure of modules and FSMs after synthesis.
 
 
 
-==================
-Quick introduction
-==================
+========
+Features
+========
 
-10 language features you might like... (selected as of 2019 May)
+Karuta's 10 language features you might like... (selected as of 2019 May)
 
 * New scripting language with contemporary syntax designed only for this purpose
 * Prototype based OOP
