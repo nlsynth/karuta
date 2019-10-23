@@ -6,6 +6,7 @@
 #include "vm/common.h"
 
 #include <map>
+#include <stdio.h>
 
 namespace vm {
 
@@ -39,11 +40,13 @@ public:
   const iroha::NumericWidth &GetDataWidth() const;
   const vector<uint64_t> &GetShape() const;
 
-  bool ImageIO(const string &fn, bool save);
+  bool ImageIO(const string &fn, const string &format, bool save);
 
 private:
   IntArrayPage *FindPage(uint64_t addr);
   uint64_t GetIndex(const vector<uint64_t> &indexes);
+  bool BinaryIO(FILE *fp, bool save);
+  bool TextIO(FILE *fp, bool save);
 
   const vector<uint64_t> shape_;
   uint64_t size_;

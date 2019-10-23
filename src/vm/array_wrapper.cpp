@@ -267,7 +267,13 @@ void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
   CHECK(StringWrapper::IsString(arg.object_));
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = data->int_array_.get();
-  arr->ImageIO(StringWrapper::String(arg.object_), save);
+  string format;
+  if (args.size() >= 2) {
+    const Value& fmt = args[1];
+    CHECK(StringWrapper::IsString(fmt.object_));
+    format = StringWrapper::String(fmt.object_);
+  }
+  arr->ImageIO(StringWrapper::String(arg.object_), format, save);
 }
 
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {

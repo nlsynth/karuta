@@ -3,6 +3,8 @@
 
 #include "numeric/numeric_op.h"  // from iroha
 
+#include <stdlib.h>
+
 namespace vm {
 
 static const int PAGE_SIZE = 1024;
@@ -118,7 +120,7 @@ const vector<uint64_t> &IntArray::GetShape() const {
   return shape_;
 }
 
-bool IntArray::ImageIO(const string &fn, bool save) {
+bool IntArray::ImageIO(const string &fn, const string &format, bool save) {
   string raw_fn;
   if (!Env::GetOutputPath(fn.c_str(), &raw_fn)) {
     return false;
@@ -132,6 +134,17 @@ bool IntArray::ImageIO(const string &fn, bool save) {
   if (fp == nullptr) {
     return false;
   }
+    bool r;
+  if (format.empty()) {
+    r = BinaryIO(fp, save);
+  } else {
+    r = TextIO(fp, save);
+  }
+  fclose(fp);
+  return r;
+}
+
+bool IntArray::BinaryIO(FILE *fp, bool save) {
   int num_bytes = (data_width_.GetWidth() + 1) / 8;
   for (int i = 0; i < GetLength(); ++i) {
     if (save) {
@@ -144,7 +157,24 @@ bool IntArray::ImageIO(const string &fn, bool save) {
       WriteSingle(i, n.type_, n.GetArray());
     }
   }
-  fclose(fp);
+  return true;
+}
+
+bool IntArray::TextIO(FILE *fp, bool save) {
+  // WIP. Probably use some standard format.
+  for (int i = 0; i < GetLength(); ++i) {
+    if (save) {
+      iroha::NumericValue nv = ReadSingle(i);
+      fprintf(fp, "%ld\n", nv.GetValue0());
+    } else {
+      char buf[16];
+      fgets(buf, 16, fp);
+      iroha::Numeric n;
+      iroha::NumericValue *nv = n.GetMutableArray();
+      nv->SetValue0(atoll(buf));
+      WriteSingle(i, n.type_, n.GetArray());
+    }
+  }
   return true;
 }
 
