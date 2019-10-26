@@ -1,3 +1,4 @@
+0.5.1 WIP
 2019/10/26 0.5.0
  Fixed scalability for multiple accessors to a resource by using staged mux by iroha.
 2019/09/28 0.4.6
