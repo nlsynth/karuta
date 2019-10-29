@@ -6,6 +6,7 @@
 #include "fe/fe.h"
 #include "fe/expr.h"
 #include "fe/stmt.h"
+#include "fe/method.h"
 #include "fe/nodecode.h"
 #include "fe/var_decl.h"
 #include "karuta/annotation.h"
@@ -18,7 +19,6 @@
 #include "vm/insn_annotator.h"
 #include "vm/int_array.h"
 #include "vm/mailbox_wrapper.h"
-#include "vm/method.h"
 #include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
@@ -825,9 +825,9 @@ void Executor::ExecFuncdecl() {
   Annotation *an = new_method->GetAnnotation();
   if (an != nullptr) {
     thr_name = an->GetName();
-    is_thread_entry = an->IsThreadEntry();
     is_soft_thread = an->IsSoftThreadEntry();
   }
+  is_thread_entry = new_method->IsThreadEntry();
   if (sym_str(insn_->label_) == "main") {
     is_thread_entry = true;
   }

@@ -129,4 +129,15 @@ bool Method::IsCompileFailure() const {
   return compile_failed_;
 }
 
+bool Method::IsThreadEntry() const {
+  auto *an = GetAnnotation();
+  if (an->IsThreadEntry()) {
+    return true;
+  }
+  if (parse_tree_ != nullptr) {
+    return parse_tree_->GetIsAlways();
+  }
+  return false;
+}
+
 }  // namespace vm

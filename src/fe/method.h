@@ -22,6 +22,8 @@ public:
   void SetReturns(VarDeclSet *returns);
   Annotation *GetAnnotation() const;
   void SetAnnotation(Annotation *an);
+  bool GetIsAlways() const;
+  void SetIsAlways(bool is_always);
 
 private:
   const string name_;
@@ -29,6 +31,7 @@ private:
   VarDeclSet *args_;
   VarDeclSet *returns_;
   Annotation *annotation_;
+  bool is_always_;
 };
 
 }  // namespace fe

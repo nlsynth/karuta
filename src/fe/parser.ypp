@@ -61,9 +61,9 @@ extern void yyerror(const char *msg);
 %type <annotation> ANNOTATION_OR_EMPTY
 %type <annotation_value> ANNOTATION_VALUE IMPORT_PARAM_HEAD
 %type <annotation_value_set> ANNOTATION_VALUE_LIST
-%type <id> VAR_OR_SHARED
+%type <id> VAR_OR_SHARED FUNC_DECL_KW
 
-%token K_ADD_SUB K_AS K_ASSIGN K_BOOL K_BREAK
+%token K_ADD_SUB K_AS K_ASSIGN K_ALWAYS K_BOOL K_BREAK
 %token K_CASE K_CHANNEL K_CONST K_CONTINUE
 %token K_DEF K_DEFAULT K_DO K_ELSE K_ENUM K_EQ_COMPARE K_FUNC K_FOR K_GOTO
 %token K_IF K_IMPORT K_INC_DEC K_INT K_LG_COMPARE K_MAILBOX
@@ -159,10 +159,10 @@ FUNC_DECL_HEAD : FUNC_DECL_NAME ARG_DECL ')' RETURN_SPEC {
 }
 
 // K_DEF is for compatibility.
-FUNC_DECL_HEAD : K_DEF | K_FUNC
+FUNC_DECL_KW : K_DEF { $$ = K_DEF; } | K_FUNC { $$ = K_FUNC; }| K_ALWAYS { $$ = K_ALWAYS; }
 
-FUNC_DECL_NAME : FUNC_DECL_HEAD VAR '(' {
-  Emitter::BeginFunction($2);
+FUNC_DECL_NAME : FUNC_DECL_KW VAR '(' {
+  Emitter::BeginFunction($2, ($1 == K_ALWAYS));
 }
 
 STMT_LIST : {

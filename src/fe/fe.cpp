@@ -108,6 +108,7 @@ std::unique_ptr<fe::ScannerInfo> FE::scanner_info_;
 int ScannerInfo::LookupKeyword(sym_t sym) const {
   static map<string, int> kw = {
     {"as", K_AS},
+    {"always", K_ALWAYS},
     {"bool", K_BOOL},
     {"break", K_BREAK},
     {"case", K_CASE},
@@ -224,7 +225,7 @@ Method *FE::ReadFile(const string &file) {
   std::unique_ptr<Scanner> scanner(ScannerInterface::CreateScanner());
   scanner->SetFileImage(im);
 
-  Emitter::BeginFunction(nullptr);
+  Emitter::BeginFunction(nullptr, false);
   
   int r = ::yyparse();
   scanner->ReleaseFileImage();

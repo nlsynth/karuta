@@ -34,6 +34,7 @@ public:
   Annotation *GetAnnotation() const;
   void SetCompileFailure();
   bool IsCompileFailure() const;
+  bool IsThreadEntry() const;
 
   vector<Insn*> insns_;
   // Args. Returns. Locals.

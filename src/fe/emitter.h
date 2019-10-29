@@ -14,7 +14,7 @@ struct MethodDecl {
 
 class Emitter {
 public:
-  static void BeginFunction(Expr *name);
+  static void BeginFunction(Expr *name, bool is_always);
   static MethodDecl EndFunction();
   static string GetFunctionName();
   static void SetCurrentFunctionParams();

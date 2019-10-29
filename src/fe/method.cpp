@@ -7,7 +7,8 @@
 namespace fe {
 
 Method::Method(const string &name)
-  : name_(name), args_(nullptr), returns_(nullptr), annotation_(nullptr) {
+  : name_(name), args_(nullptr), returns_(nullptr), annotation_(nullptr),
+    is_always_(false) {
 }
 
 void Method::Dump() const {
@@ -69,6 +70,14 @@ void Method::SetAnnotation(Annotation *an) {
 
 Annotation *Method::GetAnnotation() const {
   return annotation_;
+}
+
+bool Method::GetIsAlways() const {
+  return is_always_;
+}
+
+void Method::SetIsAlways(bool is_always) {
+  is_always_ = is_always;
 }
 
 }  // namespace fe
