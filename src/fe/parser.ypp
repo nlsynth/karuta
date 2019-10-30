@@ -52,7 +52,7 @@ extern void yyerror(const char *msg);
 %type <var_decl_set> RETURN_SPEC RETURN_TYPE_LIST
 %type <enum_decl> ENUM_DECL ENUM_ITEM_LIST
 %type <str> STR
-%type <sym> SYM TYPE_NAME IMPORT_SPEC_OR_EMPTY
+%type <sym> SYM TYPE_NAME IMPORT_SPEC_OR_EMPTY SYM_OR_EMPTY
 %type <num> NUM NUM_EXPR ARRAY_ELM K_BIT_CONCAT
 %type <sub_op> K_ASSIGN K_LG_COMPARE K_EQ_COMPARE
 %type <sub_op> K_ADD_SUB K_INC_DEC K_SHIFT
@@ -128,8 +128,14 @@ ANNOTATION_VALUE_LIST : {
 
 ANNOTATION_OR_EMPTY : {
   $$ = Emitter::SetAnnotation(sym_null, nullptr);
-} | '@' SYM '(' ANNOTATION_VALUE_LIST ')' {
+} | '@' SYM_OR_EMPTY '(' ANNOTATION_VALUE_LIST ')' {
   $$ = Emitter::SetAnnotation($2, $4);
+}
+
+SYM_OR_EMPTY : {
+  $$ = sym_lookup("");
+} | SYM {
+  $$ = $1;
 }
 
 RETURN_TYPE : WIDTH_SPEC {

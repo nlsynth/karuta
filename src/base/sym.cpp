@@ -43,7 +43,7 @@ sym_t sym_logic_or, sym_logic_and;
 sym_t sym_bit_concat;
 sym_t sym_bit_or, sym_bit_and, sym_bit_xor, sym_bit_inv;
 sym_t sym_if, sym_else, sym_branch;
-sym_t sym_for, sym_do, sym_while, sym_do_while, sym_return, sym_as;
+sym_t sym_for, sym_do, sym_while, sym_return, sym_as;
 sym_t sym_switch, sym_case, sym_default;
 sym_t sym_break, sym_continue, sym_goto;
 sym_t sym_logic_inv, sym_tri_term;
@@ -166,7 +166,6 @@ void sym_table_init(void) {
   sym_for = sym_lookup("for");
   sym_do = sym_lookup("do");
   sym_while = sym_lookup("while");
-  sym_do_while = sym_lookup("do_while");
   sym_switch = sym_lookup("switch");
   sym_case = sym_lookup("case");
   sym_default = sym_lookup("default");

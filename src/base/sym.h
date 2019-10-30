@@ -27,7 +27,7 @@ extern sym_t sym_logic_or, sym_logic_and;
 extern sym_t sym_bit_concat;
 extern sym_t sym_if, sym_else;
 extern sym_t sym_branch;
-extern sym_t sym_for, sym_do, sym_while, sym_do_while;
+extern sym_t sym_for, sym_do, sym_while;
 extern sym_t sym_switch, sym_case, sym_default;
 extern sym_t sym_break, sym_continue, sym_goto;
 extern sym_t sym_return, sym_as;
