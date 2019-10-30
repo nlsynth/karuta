@@ -8,7 +8,7 @@ namespace fe {
 
 Method::Method(const string &name)
   : name_(name), args_(nullptr), returns_(nullptr), annotation_(nullptr),
-    is_always_(false) {
+    is_process_(false) {
 }
 
 void Method::Dump() const {
@@ -72,12 +72,12 @@ Annotation *Method::GetAnnotation() const {
   return annotation_;
 }
 
-bool Method::GetIsAlways() const {
-  return is_always_;
+bool Method::GetIsProcess() const {
+  return is_process_;
 }
 
-void Method::SetIsAlways(bool is_always) {
-  is_always_ = is_always;
+void Method::SetIsProcess(bool is_process) {
+  is_process_ = is_process;
 }
 
 }  // namespace fe

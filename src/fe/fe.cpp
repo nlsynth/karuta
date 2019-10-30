@@ -108,7 +108,6 @@ std::unique_ptr<fe::ScannerInfo> FE::scanner_info_;
 int ScannerInfo::LookupKeyword(sym_t sym) const {
   static map<string, int> kw = {
     {"as", K_AS},
-    {"always", K_ALWAYS},
     {"bool", K_BOOL},
     {"break", K_BREAK},
     {"case", K_CASE},
@@ -128,6 +127,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
     {"int", K_INT},
     {"mailbox", K_MAILBOX},
     {"object", K_OBJECT},
+    {"process", K_PROCESS},
     {"return", K_RETURN},
     {"shared", K_SHARED},
     {"string", K_STRING},

@@ -135,7 +135,7 @@ bool Method::IsThreadEntry() const {
     return true;
   }
   if (parse_tree_ != nullptr) {
-    return parse_tree_->GetIsAlways();
+    return parse_tree_->GetIsProcess();
   }
   return false;
 }

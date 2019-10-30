@@ -48,29 +48,29 @@ extern int yydebug;
     K_ADD_SUB = 258,
     K_AS = 259,
     K_ASSIGN = 260,
-    K_ALWAYS = 261,
-    K_BOOL = 262,
-    K_BREAK = 263,
-    K_CASE = 264,
-    K_CHANNEL = 265,
-    K_CONST = 266,
-    K_CONTINUE = 267,
-    K_DEF = 268,
-    K_DEFAULT = 269,
-    K_DO = 270,
-    K_ELSE = 271,
-    K_ENUM = 272,
-    K_EQ_COMPARE = 273,
-    K_FUNC = 274,
-    K_FOR = 275,
-    K_GOTO = 276,
-    K_IF = 277,
-    K_IMPORT = 278,
-    K_INC_DEC = 279,
-    K_INT = 280,
-    K_LG_COMPARE = 281,
-    K_MAILBOX = 282,
-    K_OBJECT = 283,
+    K_BOOL = 261,
+    K_BREAK = 262,
+    K_CASE = 263,
+    K_CHANNEL = 264,
+    K_CONST = 265,
+    K_CONTINUE = 266,
+    K_DEF = 267,
+    K_DEFAULT = 268,
+    K_DO = 269,
+    K_ELSE = 270,
+    K_ENUM = 271,
+    K_EQ_COMPARE = 272,
+    K_FUNC = 273,
+    K_FOR = 274,
+    K_GOTO = 275,
+    K_IF = 276,
+    K_IMPORT = 277,
+    K_INC_DEC = 278,
+    K_INT = 279,
+    K_LG_COMPARE = 280,
+    K_MAILBOX = 281,
+    K_OBJECT = 282,
+    K_PROCESS = 283,
     K_RETURN = 284,
     K_SHARED = 285,
     K_SHIFT = 286,
@@ -94,29 +94,29 @@ extern int yydebug;
 #define K_ADD_SUB 258
 #define K_AS 259
 #define K_ASSIGN 260
-#define K_ALWAYS 261
-#define K_BOOL 262
-#define K_BREAK 263
-#define K_CASE 264
-#define K_CHANNEL 265
-#define K_CONST 266
-#define K_CONTINUE 267
-#define K_DEF 268
-#define K_DEFAULT 269
-#define K_DO 270
-#define K_ELSE 271
-#define K_ENUM 272
-#define K_EQ_COMPARE 273
-#define K_FUNC 274
-#define K_FOR 275
-#define K_GOTO 276
-#define K_IF 277
-#define K_IMPORT 278
-#define K_INC_DEC 279
-#define K_INT 280
-#define K_LG_COMPARE 281
-#define K_MAILBOX 282
-#define K_OBJECT 283
+#define K_BOOL 261
+#define K_BREAK 262
+#define K_CASE 263
+#define K_CHANNEL 264
+#define K_CONST 265
+#define K_CONTINUE 266
+#define K_DEF 267
+#define K_DEFAULT 268
+#define K_DO 269
+#define K_ELSE 270
+#define K_ENUM 271
+#define K_EQ_COMPARE 272
+#define K_FUNC 273
+#define K_FOR 274
+#define K_GOTO 275
+#define K_IF 276
+#define K_IMPORT 277
+#define K_INC_DEC 278
+#define K_INT 279
+#define K_LG_COMPARE 280
+#define K_MAILBOX 281
+#define K_OBJECT 282
+#define K_PROCESS 283
 #define K_RETURN 284
 #define K_SHARED 285
 #define K_SHIFT 286

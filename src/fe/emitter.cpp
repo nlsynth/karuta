@@ -18,10 +18,10 @@ Annotation *Emitter::annotation_;
 Annotation *Emitter::func_annotation_;
 Expr *Emitter::block_var_;
 
-void Emitter::BeginFunction(Expr *name, bool is_always) {
+void Emitter::BeginFunction(Expr *name, bool is_process) {
   string formatted_name = FormatMethodName(name);
   Method *method = new Method(formatted_name);
-  method->SetIsAlways(is_always);
+  method->SetIsProcess(is_process);
   MethodDecl decl;
   decl.method_ = method;
   decl.name_expr_ = name;
