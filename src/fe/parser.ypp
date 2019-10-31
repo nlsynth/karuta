@@ -130,6 +130,8 @@ ANNOTATION_OR_EMPTY : {
   $$ = Emitter::SetAnnotation(sym_null, nullptr);
 } | '@' SYM_OR_EMPTY '(' ANNOTATION_VALUE_LIST ')' {
   $$ = Emitter::SetAnnotation($2, $4);
+} | '@' SYM {
+  $$ = Emitter::SetAnnotation($2, nullptr);
 }
 
 SYM_OR_EMPTY : {
