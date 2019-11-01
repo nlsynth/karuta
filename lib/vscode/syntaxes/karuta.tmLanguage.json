@@ -56,7 +56,7 @@
 		"funcdecls": {
 			"patterns": [
 				{
-					"match": "(func|def)\\s+(\\w+)",
+					"match": "(func|def|process)\\s+(\\w+)",
 					"captures": {
 						"1": {"name": "storage.type"},
 						"2": {"name": "variable.other"}

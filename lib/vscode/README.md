@@ -18,7 +18,12 @@ This is a preliminary version and doesn't fully support all of Karuta grammar.
 
 ## Release Notes
 
+### 0.5.1wip
+
+Add "process" keyword.
+
 ### 0.4.6wip
+
 
 Add "with obj { ... }" syntax
 
