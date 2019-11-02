@@ -1,6 +1,7 @@
 #include "synth/shared_resource_set.h"
 
 #include "base/stl_util.h"
+#include "base/status.h"
 #include "iroha/iroha.h"
 #include "synth/design_synth.h"
 #include "synth/object_method_names.h"
@@ -70,7 +71,10 @@ void SharedResourceSet::ResolveAccessorDistance(DesignSynth *design_synth,
 }
 
 void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
-  CHECK(res->axi_ctrl_thrs_.size() <= 1);
+  if (res->axi_ctrl_thrs_.size() > 1) {
+    Status::os(Status::USER_ERROR) << "AXI memory can't have multiple accessor threads";
+    return;
+  }
   if (res->axi_ctrl_thrs_.size() == 1) {
     res->owner_thr_ = *(res->axi_ctrl_thrs_.begin());
   }
