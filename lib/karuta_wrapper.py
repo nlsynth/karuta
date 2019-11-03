@@ -32,6 +32,7 @@ class KarutaWrapper(object):
             form = cgi.FieldStorage()
         else:
             form = {}
+        withShell = 'sh' in form
         if 's' in form:
             src = form['s'].value
         elif prev_runid:
@@ -71,6 +72,7 @@ class KarutaWrapper(object):
 %s
 </textarea><br/>
 <input type="submit" value="Run">
+(Generates shell module for standalone simulation. <input type="checkbox" name="sh">)
 </form>
 ''' % html.escape(src))
 
@@ -87,7 +89,7 @@ class KarutaWrapper(object):
             self.ShowPreviousOutput(prev_runid)
 
         if self.isCgi:
-            self.RunKaruta(src)
+            self.RunKaruta(src, withShell)
         self.Write('</body></html>')
 
         self.ofh.flush()
@@ -99,7 +101,7 @@ class KarutaWrapper(object):
             # writes to network
             self.ofh.write(bytes(s, 'utf-8'))
 
-    def RunKaruta(self, src):
+    def RunKaruta(self, src, withShell):
         bin = os.getenv('KARUTA_BINARY')
         runid = self.GetRunID()
         rundir = self.GetRunDir(runid)
@@ -123,8 +125,10 @@ class KarutaWrapper(object):
         cmd = (bin + ' --root=' + rundir + ' ' +
                '--output_marker=' + marker + ' ' +
                '--timeout=3000 ' +
-               srcf +
-               ' > ' + outputfn + ' 2>&1')
+               srcf)
+        if withShell:
+            cmd += (' --with_shell --vcd ')
+        cmd += (' > ' + outputfn + ' 2>&1')
         os.system(cmd)
         logfh.write('Cmd: ' + cmd + '\n')
         logfh.write('End: ' + str(datetime.now()) + '\n')
