@@ -33,6 +33,7 @@ class KarutaWrapper(object):
         else:
             form = {}
         withShell = 'sh' in form
+        withCompile = 'c' in form
         if 's' in form:
             src = form['s'].value
         elif prev_runid:
@@ -59,12 +60,12 @@ class KarutaWrapper(object):
 </head>
 <body>
 <div>
-  <h1 style="color: #888844">Karuta Playground</h1>\n
+  <a href="." style="text-decoration: none"><h1 style="color: #888844">Karuta Playground</h1></a>\n
   %s
 </div>
 <img src="nl.jpg" style="float:right">
 ''' % version)
-        self.Write('''(<a href="https://github.com/nlsynth/karuta">Source code on github</a>)<br/><br/>\n''')
+        self.Write('''(<a href="https://github.com/nlsynth/karuta">Source code on GitHub</a>. <a href="https://karuta.readthedocs.io/en/latest/">Documents on Read the Docs</a>)<br/><br/>\n''')
 
         self.Write(
 '''<form id="src" method="POST" action="">
@@ -72,7 +73,8 @@ class KarutaWrapper(object):
 %s
 </textarea><br/>
 <input type="submit" value="Run">
-(Generates shell module for standalone simulation. <input type="checkbox" name="sh">)
+(Generates shell module for standalone simulation <input type="checkbox" name="sh">.
+Executes karuta with --compile option <input type="checkbox" name="c">.)
 </form>
 ''' % html.escape(src))
 
@@ -89,7 +91,7 @@ class KarutaWrapper(object):
             self.ShowPreviousOutput(prev_runid)
 
         if self.isCgi:
-            self.RunKaruta(src, withShell)
+            self.RunKaruta(src, withShell, withCompile)
         self.Write('</body></html>')
 
         self.ofh.flush()
@@ -101,7 +103,7 @@ class KarutaWrapper(object):
             # writes to network
             self.ofh.write(bytes(s, 'utf-8'))
 
-    def RunKaruta(self, src, withShell):
+    def RunKaruta(self, src, withShell, withCompile):
         bin = os.getenv('KARUTA_BINARY')
         runid = self.GetRunID()
         rundir = self.GetRunDir(runid)
@@ -128,6 +130,8 @@ class KarutaWrapper(object):
                srcf)
         if withShell:
             cmd += (' --with_shell --vcd ')
+        if withCompile:
+            cmd += (' --compile ')
         cmd += (' > ' + outputfn + ' 2>&1')
         os.system(cmd)
         logfh.write('Cmd: ' + cmd + '\n')
@@ -186,7 +190,7 @@ class KarutaWrapper(object):
 
     def GetSourceFn(self, runid):
         rundir = self.GetRunDir(runid)
-        return rundir + '/' + runid + '.src'
+        return rundir + '/my_design.karuta'
 
     def GetLogFn(self, runid):
         rundir = self.GetRunDir(runid)
