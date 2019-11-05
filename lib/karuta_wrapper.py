@@ -33,7 +33,7 @@ class KarutaWrapper(object):
         else:
             form = {}
         withShell = 'sh' in form
-        withCompile = 'c' in form
+        noCompile = 'nc' in form
         if 's' in form:
             src = form['s'].value
         elif prev_runid:
@@ -74,7 +74,7 @@ class KarutaWrapper(object):
 </textarea><br/>
 <input type="submit" value="Run">
 (Generates shell module for standalone simulation <input type="checkbox" name="sh">.
-Executes karuta with --compile option <input type="checkbox" name="c">.)
+Executes karuta without --compile option <input type="checkbox" name="nc">.)
 </form>
 ''' % html.escape(src))
 
@@ -91,7 +91,7 @@ Executes karuta with --compile option <input type="checkbox" name="c">.)
             self.ShowPreviousOutput(prev_runid)
 
         if self.isCgi:
-            self.RunKaruta(src, withShell, withCompile)
+            self.RunKaruta(src, withShell, noCompile)
         self.Write('</body></html>')
 
         self.ofh.flush()
@@ -103,7 +103,7 @@ Executes karuta with --compile option <input type="checkbox" name="c">.)
             # writes to network
             self.ofh.write(bytes(s, 'utf-8'))
 
-    def RunKaruta(self, src, withShell, withCompile):
+    def RunKaruta(self, src, withShell, noCompile):
         bin = os.getenv('KARUTA_BINARY')
         runid = self.GetRunID()
         rundir = self.GetRunDir(runid)
@@ -130,7 +130,7 @@ Executes karuta with --compile option <input type="checkbox" name="c">.)
                srcf)
         if withShell:
             cmd += (' --with_shell --vcd ')
-        if withCompile:
+        if not noCompile:
             cmd += (' --compile ')
         cmd += (' > ' + outputfn + ' 2>&1')
         os.system(cmd)
