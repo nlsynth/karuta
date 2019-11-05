@@ -33,13 +33,16 @@ class KarutaWrapper(object):
         else:
             form = {}
         withShell = 'sh' in form
-        noCompile = 'nc' in form
+        noCompile = False
         if 's' in form:
             src = form['s'].value
         elif prev_runid:
             src = self.GetSourceFromRun(prev_runid)
         else:
-            src = self.GetExampleSource(qs)
+            (src, doCompile) = self.GetExampleSource(qs)
+            noCompile = not doCompile
+        if 'nc' in form:
+            noCompile = True
 
         version = os.getenv('KARUTA_VERSION')
 
@@ -71,12 +74,16 @@ class KarutaWrapper(object):
 '''<form id="src" method="POST" action="">
 <textarea name="s" rows=20 class=codearea>
 %s
-</textarea><br/>
-<input type="submit" value="Run">
+</textarea><br/>''' % html.escape(src))
+        check = ''
+        if noCompile:
+            check = 'checked'
+        self.Write(
+'''<input type="submit" value="Run">
 (Generates shell module for standalone simulation <input type="checkbox" name="sh">.
-Executes karuta without --compile option <input type="checkbox" name="nc">.)
+Executes karuta without --compile option <input type="checkbox" name="nc" %s>.)
 </form>
-''' % html.escape(src))
+''' % check)
 
         self.Write(
 '''<form id="example" method="GET" action="">
@@ -221,7 +228,11 @@ Executes karuta without --compile option <input type="checkbox" name="nc">.)
             e = karuta_examples.EXAMPLES[tmpl]
         else:
             e = karuta_examples.EXAMPLES['default']
-        return e['s']
+        c = False
+        if 'c' in e:
+            c = e['c']
+        # (source, default to compile)
+        return (e['s'], c)
 
 if __name__ == '__main__':
     # For POST method.

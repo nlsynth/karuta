@@ -14,6 +14,7 @@ def proc(fn):
     src = ""
     k = os.path.basename(fn)
     index = -1
+    doCompile = True
     for line in open(fn):
         if line.startswith("##"):
             line = line[:-1]
@@ -24,6 +25,10 @@ def proc(fn):
             t = line.find("index:")
             if t > -1:
                 index = int(line[t + 6:])
+                continue
+            t = line.find("compile:")
+            if t > -1:
+                doCompile = bool(int(line[t + 8:]))
                 continue
             desc = line
             continue
@@ -38,6 +43,10 @@ def proc(fn):
         v['n'] = ''
     if index > -1:
         v['i'] = str(index)
+    if doCompile:
+        v['c'] = True
+    else:
+        v['c'] = False
     return (k, v)
 
 index = 100
