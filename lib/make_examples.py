@@ -16,7 +16,7 @@ def proc(fn):
     index = -1
     doCompile = True
     for line in open(fn):
-        if line.startswith("##"):
+        if line.startswith("##") or line.startswith("//#"):
             line = line[:-1]
             t = line.find("key:")
             if t > -1:
