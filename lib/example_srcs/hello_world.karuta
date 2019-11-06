@@ -1,0 +1,7 @@
+## Simply Hello World!
+## key:default
+## index:0
+## compile:0
+// Just prints "Hello World!"
+
+print("Hello World!")
