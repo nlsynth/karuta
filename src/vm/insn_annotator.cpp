@@ -238,6 +238,9 @@ void InsnAnnotator::TypeMemberAccess(Insn *insn) {
       CHECK(value->object_ != nullptr);
       objs_[insn->dst_regs_[0]] = value->object_;
     }
+    if (value->type_ == Value::NUM) {
+      insn->dst_regs_[0]->type_.width_ = value->num_type_;
+    }
   } else {
     if (!method_->IsTopLevel()) {
       Status::os(Status::USER_ERROR) << "Failed to find object: "
