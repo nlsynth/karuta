@@ -1,0 +1,25 @@
+//# Xorshift32 random generator with RPC like interface.
+//# key:xorshift32
+//# index: 2
+// XORSHIFT32 random generator.
+// This design has 2 handshake based interfaces setSeed() and get().
+// Both can be accessed from out side of the design.
+
+shared y int
+
+@ExtEntry()
+func setSeed(s #32) {
+  y = s
+}
+
+@ExtEntry()
+func get() (#32) {
+  y = y ^ (y << 13)
+  y = y ^ (y >> 17)
+  y = y ^ (y << 15)
+  return y
+}
+
+setSeed(10)
+print(get())
+print(get())
