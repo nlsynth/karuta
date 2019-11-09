@@ -203,6 +203,15 @@ void Executor::ExecBinop() {
   Register *dst = dreg(0);
   Register *lhs = sreg(0);
   Register *rhs = sreg(1);
+  if (IsTopLevel()) {
+    if (InsnType::IsNumCalculation(op())) {
+      InsnAnnotator::AnnotateNumCalculationOp(insn_);
+    }
+    if (op() == OP_LSHIFT || op() == OP_RSHIFT) {
+      dst->type_.width_ = lhs->type_.width_;
+      dst->type_.value_type_ = Value::NUM;
+    }
+  }
   if (dst->type_.value_type_ != Value::NUM) {
     if (dst->type_.value_type_ == Value::NONE) {
       CHECK(IsTopLevel());
@@ -211,14 +220,6 @@ void Executor::ExecBinop() {
       ExecNonNumResultBinop();
     }
     return;
-  }
-  if (IsTopLevel()) {
-    if (InsnType::IsNumCalculation(op())) {
-      InsnAnnotator::AnnotateNumCalculationOp(insn_);
-    }
-    if (op() == OP_LSHIFT || op() == OP_RSHIFT) {
-      dst->type_.width_ = lhs->type_.width_;
-    }
   }
   switch (op()) {
   case OP_ADD:
