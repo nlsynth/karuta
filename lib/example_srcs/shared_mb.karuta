@@ -1,0 +1,18 @@
+//# Shared mailbox resource by 10 threads.
+//# key:shared_mb
+//# index:4
+// The mailbox is accessed from 10 threads.
+mailbox mb int
+
+@(num=10)
+process fn(idx int) {
+  if (idx == 0) {
+    mb.put(0)
+  } else {
+    var n int = mb.get() + idx
+    print(n)
+    mb.put(n)
+  }
+}
+
+run()
