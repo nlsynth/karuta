@@ -1,5 +1,5 @@
 //# Xorshift32 random generator with RPC like interface.
-//# key:xorshift32
+//# key:rpc_xorshift32
 //# index: 2
 // XORSHIFT32 random generator.
 // This design has 2 handshake based interfaces setSeed() and get().

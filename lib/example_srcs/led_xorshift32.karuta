@@ -1,0 +1,36 @@
+//# LED blinker with Xorshift32.
+//# key:led_xorshift32
+//# index: 3
+// This design invokes 2 threads (=FSMs). One generates random numbers and the another blinks the output by the numbers.
+// 2 threads are connected with a channel.
+
+channel ch int
+
+func update(t int) (int) {
+  t = t ^ (t << 13); t = t ^ (t >> 17); t = t ^ (t << 15)
+  return t
+}
+
+@ExtIO(output = "o")
+func output(y #0) {
+  print(y)
+}
+
+process main() {
+  var y int = 1
+  while true {
+    y = update(y)
+    ch.write(y)
+  }
+}
+
+process thr() {
+  var b #0 = 0
+  while true {
+    var v int = ch.read()
+    if v < 10000 {
+      b = ~b
+      output(b)
+    }
+  }
+}
