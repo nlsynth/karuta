@@ -1,0 +1,44 @@
+//# AXI interfaces like AWS F1 platform.
+//# key:f1
+//# index:10
+// AWS DMA controllers correspond to AWS F1 platform.
+// Reference: https://github.com/aws/aws-fpga/blob/master/hdk/docs/AWS_Shell_Interface_Specification.md
+//
+// TODO: Investigate better language design to utilize concurrency and illustrate it here. Of course, I also have to test it on real AWS F1.
+
+@AxiMaster shared ddr_a #512[16]
+@AxiMaster shared ddr_b #512[16]
+@AxiMaster shared ddr_c #512[16]
+@AxiMaster shared ddr_d #512[16]
+
+@AxiSlave shared dma_pcis #512[16]
+@AxiMaster shared dma_pcim #512[16]
+
+@AxiSlave shared bar1 #32[16]
+@AxiSlave shared ocl #32[16]
+@AxiSlave shared sda #32[16]
+
+shared buf int[16]
+
+// TODO: MISC IOs like int, status, vLED, vDIP
+
+channel ch int
+
+process main_a() {
+  bar1.waitAccess()
+  ddr_a.load(0x80000000, 16, 0)
+
+  for var i int = 0; i < 16; ++i {
+    buf[i] = ddr_a[i]
+  }
+  ch.write(1)
+}
+
+process main_b() {
+  ch.read()
+  for var i int = 0; i < 16; ++i {
+    ddr_b[i] = buf[i]
+  }
+
+  ddr_b.store(0x80001000, 16, 0)
+}
