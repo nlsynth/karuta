@@ -1,0 +1,12 @@
+//# Custom numeric data type (fp16).
+//# key:fp16
+//# index:5
+// Custom data types like fp16 can be defined, imported and used.
+import "fp/fp16r"
+
+process main() {
+  var x #FP16R = Numerics.FP16R.Build(0, 15, 0)
+  print(x * x)
+  print(x + x)
+  print(x - x)
+}
