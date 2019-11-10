@@ -71,6 +71,19 @@ bool Util::IsIrFileName(const string &fn) {
   return CheckFileSuffix(fn, suffixes);
 }
 
+bool Util::HasSuffix(const string &fn) {
+  const char *p = strrchr(fn.c_str(), '.');
+  if (p == nullptr) {
+    return false;
+  }
+  const char *q = strrchr(fn.c_str(), '/');
+  if (p < q) {
+    // xx.yy/zz
+    return false;
+  }
+  return true;
+}
+
 bool Util::RewriteFile(const char *fn, const char *tag,
 		       const char *content) {
   std::unique_ptr<std::ifstream> ifs;

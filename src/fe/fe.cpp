@@ -161,11 +161,11 @@ void FE::Run(bool with_run, bool with_compile, bool vanilla,
   vm::VM vm;
   bool ok = true;
   if (!vanilla) {
-    ok = RunFile(false, false, "default-isynth.karuta", &vm);
+    ok = RunFile(true, false, false, "default-isynth.karuta", &vm);
   }
   if (ok) {
     for (size_t i = 0; i < files.size(); ++i) {
-      ok = RunFile(with_run, with_compile, files[i], &vm);
+      ok = RunFile(false, with_run, with_compile, files[i], &vm);
       if (!ok) {
 	break;
       }
@@ -176,11 +176,16 @@ void FE::Run(bool with_run, bool with_compile, bool vanilla,
   NodePool::Release();
 }
 
-vm::Method *FE::CompileFile(const string &file, bool with_run,
-			    bool with_compile,
+vm::Method *FE::ImportFile(const string &file,
+			   vm::VM *vm, vm::Object *thr_obj) {
+  return CompileFile(file, true, false, false, false, vm, thr_obj);
+}
+
+vm::Method *FE::CompileFile(const string &file, bool is_import,
+			    bool with_run, bool with_compile,
 			    bool dbg_parser,
 			    vm::VM *vm, vm::Object *obj) {
-  Method *parse_tree = ReadFile(file);
+  Method *parse_tree = ReadFile(file, is_import);
   if (parse_tree == nullptr) {
     Status::os(Status::USER_ERROR) << "Failed to load: " << file;
     return nullptr;
@@ -203,11 +208,14 @@ vm::Method *FE::CompileFile(const string &file, bool with_run,
     compiler::Compiler::CompileParseTree(vm, obj, opts, parse_tree);
 }
 
-bool FE::RunFile(bool with_run, bool with_compile, const string &file,
+bool FE::RunFile(bool is_import ,bool with_run, bool with_compile,
+		 const string &file,
 		 vm::VM *vm) {
   Env::SetCurrentFile(file);
   vm::Object *thr_obj = vm->kernel_object_->Clone();
-  vm::Method *method = CompileFile(file, with_run, with_compile, dbg_parser_,
+  vm::Method *method = CompileFile(file, is_import,
+				   with_run, with_compile,
+				   dbg_parser_,
 				   vm, thr_obj);
   if (method == nullptr || method->IsCompileFailure()) {
     return false;
@@ -217,8 +225,8 @@ bool FE::RunFile(bool with_run, bool with_compile, const string &file,
   return true;
 }
 
-Method *FE::ReadFile(const string &file) {
-  FileImage *im = GetFileImage(file);
+Method *FE::ReadFile(const string &file, bool import) {
+  FileImage *im = GetFileImage(file, import);
   if (!im) {
     return nullptr;
   }
@@ -240,19 +248,29 @@ Method *FE::ReadFile(const string &file) {
   return decl.method_;
 }
 
-FileImage *FE::GetFileImage(const string &fn) {
+FileImage *FE::GetFileImage(const string &fn, bool is_import) {
   vector<string> paths;
-  Env::SearchPathList(fn.c_str(), &paths);
+  if (is_import) {
+    string sfn = fn;
+    if (Util::HasSuffix(fn)) {
+      sfn = fn;
+    } else {
+      sfn = fn + ".karuta";
+    }
+    Env::SearchPathList(sfn.c_str(), &paths);
+  } else {
+    paths.push_back(fn);
+  }
   FileImage *im = nullptr;
   for (const string &path : paths) {
     im = Scanner::CreateFileImage(path.c_str());
-    if (im) {
+    if (im != nullptr) {
       break;
     }
   }
-  if (!im) {
+  if (im == nullptr) {
     if (fn.substr(0, 5) == "/tmp/") {
-      // We might actually detect private /tmp somehow.
+      // We should actually detect private /tmp somehow.
       Status::os(Status::INFO)
 	<< "Karuta can't see the file under /tmp/ if the "
 	<< "installation using private /tmp. "

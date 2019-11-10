@@ -788,7 +788,7 @@ void Executor::ExecImport() {
   VM *vm = thr_->GetVM();
   vm::Object *thr_obj = vm->kernel_object_->Clone();
   compiler::CompileOptions opts;
-  Method *method = fe::FE::CompileFile(fn, false, false, false, vm, thr_obj);
+  Method *method = fe::FE::ImportFile(fn, vm, thr_obj);
   if (method == nullptr) {
     Status::os(Status::USER_ERROR) << "Failed to import: " << fn;
     thr_->UserError();
