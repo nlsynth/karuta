@@ -72,11 +72,13 @@ void SharedResourceSet::ResolveAccessorDistance(DesignSynth *design_synth,
 
 void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
   if (res->axi_ctrl_thrs_.size() > 1) {
-    Status::os(Status::USER_ERROR) << "AXI memory can't have multiple accessor threads";
+    Status::os(Status::USER_ERROR)
+      << "AXI memory can't have multiple accessor threads";
     return;
   }
   if (res->axi_ctrl_thrs_.size() == 1) {
     res->owner_thr_ = *(res->axi_ctrl_thrs_.begin());
+    return;
   }
   // Prefers threads belong to the same object of the resource.
   ThreadSynth *first_thr = nullptr;
@@ -104,7 +106,8 @@ void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
   }
 }
 
-void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, vm::Object *owner_obj, sym_t name,
+void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr,
+					  vm::Object *owner_obj, sym_t name,
 					  vm::Insn *insn, bool is_tls) {
   ThreadSynth *tls_thr = nullptr;
   if (is_tls) {
@@ -122,7 +125,8 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr, vm::Object *owner_ob
   }
 }
 
-void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr, vm::Object *owner_obj,
+void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr,
+					  vm::Object *owner_obj,
 					  vm::Object *obj,
 					  vm::Insn *insn,
 					  const string &synth_name,

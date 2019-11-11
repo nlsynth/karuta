@@ -111,8 +111,14 @@ void MethodScanner::MemberAccess(vm::Insn *insn) {
   }
   vm::Value *value = obj->LookupValue(insn->label_, false);
   CHECK(value) << sym_cstr(insn->label_);
-  shared_resource_set_->AddMemberAccessor(thr_synth_, obj, insn->label_, insn,
-					  vm::TlsWrapper::IsTlsValue(value));
+  if (value->IsObjectType()) {
+    shared_resource_set_->AddObjectAccessor(thr_synth_, obj, value->object_,
+					    insn, "",
+					    vm::TlsWrapper::IsTlsValue(value));
+  } else {
+    shared_resource_set_->AddMemberAccessor(thr_synth_, obj, insn->label_, insn,
+					    vm::TlsWrapper::IsTlsValue(value));
+  }
 }
 
 void MethodScanner::ArrayAccess(vm::Insn *insn) {
@@ -121,8 +127,8 @@ void MethodScanner::ArrayAccess(vm::Insn *insn) {
   CHECK(array_obj);
   auto it = thread_local_objs_.find(array_obj);
   bool is_tls = (it != thread_local_objs_.end());
-  shared_resource_set_->AddObjectAccessor(thr_synth_, owner_obj, array_obj, insn, "",
-					  is_tls);
+  shared_resource_set_->AddObjectAccessor(thr_synth_, owner_obj, array_obj,
+					  insn, /* synth_name */ "", is_tls);
 }
 
 void MethodScanner::NativeFuncall(vm::Insn *insn) {
