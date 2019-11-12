@@ -21,20 +21,20 @@ public:
   SharedResource();
   ~SharedResource();
 
-  void AddOwnerResource(IResource *res);
-  void AddAccessorResource(IResource *res, vm::Object *object);
+  void SetOwnerIResource(IResource *res);
+  void AddAccessorResource(IResource *res, ThreadSynth *acc_thr);
 
   set<ThreadSynth *> readers_;
   set<ThreadSynth *> writers_;
   set<ThreadSynth *> axi_ctrl_thrs_;
   vector<ThreadSynth *> ordered_accessors_;
   set<ThreadSynth *> accessors_;
-  // Assigned at last.
   ThreadSynth *owner_thr_;
-  IResource *owner_res_;
   // Owner object of this (either object or sym) member.
   vm::Object *owner_obj_;
   map<IResource *, vm::Object *> accessor_resources_;
+  // Actual resource for this instance.
+  IResource *i_res_;
 };
 
 // Per DesignSynth object to manage every shared resources.
@@ -51,11 +51,13 @@ public:
 
   // Declares @thr accesses this.name/obj.
   // NUM
-  void AddMemberAccessor(ThreadSynth *thr, vm::Object *owner_obj, sym_t name, vm::Insn *insn,
+  void AddMemberAccessor(ThreadSynth *thr, vm::Object *owner_obj, sym_t name,
+			 vm::Insn *insn,
 			 bool is_tls);
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
-  void AddObjectAccessor(ThreadSynth *thr, vm::Object *owner_obj, vm::Object *obj,
-			 vm::Insn *insn, const string &synth_name, bool is_tls);
+  void AddObjectAccessor(ThreadSynth *thr, vm::Object *owner_obj,
+			 vm::Object *obj, vm::Insn *insn,
+			 const string &synth_name, bool is_tls);
   // ExtIO is not shareable, so this keeps track of the accessor thread.
   bool AddExtIOMethodAccessor(ThreadSynth *thr, vm::Method *method);
 

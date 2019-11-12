@@ -830,7 +830,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
   IResource *res;
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
-    sres->AddOwnerResource(res);
+    sres->SetOwnerIResource(res);
     int w = value->num_type_.GetWidth();
     auto *params = res->GetParams();
     params->SetWidth(w);
@@ -838,7 +838,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
     params->SetInitialValue(value->num_.GetValue0());
   } else {
     res = res_set_->GetMemberSharedReg(insn->label_, false, is_store);
-    sres->AddAccessorResource(res, thr_synth_->GetObjectSynth()->GetObject());
+    sres->AddAccessorResource(res, thr_synth_);
   }
   IInsn *iinsn = new IInsn(res);
   vm::Register *vm_reg;
@@ -912,17 +912,17 @@ bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
 
 void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
   vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
-  SharedResource *sres =
+  SharedResource *array_sres =
     shared_resource_set_->GetByObj(array_obj, nullptr);
   IResource *res = nullptr;
-  if (sres->owner_thr_ == thr_synth_) {
+  if (array_sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetSharedArray(array_obj, true, false);
-    sres->AddOwnerResource(res);
+    array_sres->SetOwnerIResource(res);
     rsynth_->MayAddAxiMasterPort(obj_, array_obj);
     rsynth_->MayAddAxiSlavePort(obj_, array_obj);
   } else {
     res = res_set_->GetSharedArray(array_obj, false, is_write);
-    sres->AddAccessorResource(res, thr_synth_->GetObjectSynth()->GetObject());
+    array_sres->AddAccessorResource(res, thr_synth_);
   }
   IInsn *iinsn = new IInsn(res);
   if (is_write) {

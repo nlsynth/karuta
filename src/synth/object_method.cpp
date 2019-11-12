@@ -109,9 +109,12 @@ IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
       << "AXI access methods are allowed on for a master (add @AxiMaster() annotation).";
     return nullptr;
   }
-  IResource *res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
+  IResource *axim_res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
+  SharedResource *array_sres =
+    synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
+  array_sres->SetOwnerIResource(axim_res->GetParentResource());
   rsynth_->MayAddAxiMasterPort(synth_->GetObject(), array_obj);
-  IInsn *iinsn = new IInsn(res);
+  IInsn *iinsn = new IInsn(axim_res);
   if (is_store) {
     iinsn->SetOperand("write");
   } else {
@@ -124,12 +127,16 @@ IInsn *ObjectMethod::SynthAxiWait(vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
   if (a == nullptr || !a->IsAxiSlave()) {
     Status::os(Status::USER_ERROR)
-      << "AXI wait method is allowed on for a slave (add @AxiSlave() annotation).";
+      << "AXI wait method is allowed on for a slave "
+      << "(add @AxiSlave() annotation).";
     return nullptr;
   }
-  IResource *res = synth_->GetResourceSet()->GetAxiSlavePort(array_obj);
+  IResource *axis_res = synth_->GetResourceSet()->GetAxiSlavePort(array_obj);
+  SharedResource *array_sres =
+    synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
+  array_sres->SetOwnerIResource(axis_res->GetParentResource());
   rsynth_->MayAddAxiSlavePort(synth_->GetObject(), array_obj);
-  IInsn *iinsn = new IInsn(res);
+  IInsn *iinsn = new IInsn(axis_res);
   return iinsn;
 }
 
@@ -154,10 +161,10 @@ IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj,
   ResourceSet *rset = synth_->GetResourceSet();
   if (sres->owner_thr_ == synth_->GetThreadSynth()) {
     res = rset->GetMailbox(mailbox_obj, true, false);
-    sres->AddOwnerResource(res);
+    sres->SetOwnerIResource(res);
   }
   res = rset->GetMailbox(mailbox_obj, false, is_put);
-  sres->AddAccessorResource(res, synth_->GetThreadSynth()->GetObjectSynth()->GetObject());
+  sres->AddAccessorResource(res, synth_->GetThreadSynth());
   IInsn *iinsn = new IInsn(res);
   if (is_blocking) {
     if (is_put) {
@@ -199,12 +206,11 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   if (sres->owner_thr_ == synth_->GetThreadSynth()) {
     IResource *channel_res =
       rset->GetChannelResource(ch_obj, true, false, width, depth);
-    sres->AddOwnerResource(channel_res);
+    sres->SetOwnerIResource(channel_res);
   }
   IResource *accessor_res = rset->GetChannelResource(ch_obj, false, is_write,
 						     width, depth);
-  vm::Object *thr_obj = synth_->GetThreadSynth()->GetObjectSynth()->GetObject();
-  sres->AddAccessorResource(accessor_res, thr_obj);
+  sres->AddAccessorResource(accessor_res, synth_->GetThreadSynth());
   IInsn *iinsn = new IInsn(accessor_res);
   string name = GetSynthName(ch_obj);
   if (name == kChannelNoWaitWrite) {

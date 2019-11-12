@@ -12,17 +12,18 @@
 namespace synth {
 
 SharedResource::SharedResource()
-  : owner_thr_(nullptr), owner_res_(nullptr), owner_obj_(nullptr) {
+  : owner_thr_(nullptr), owner_obj_(nullptr), i_res_(nullptr) {
 }
 
 SharedResource::~SharedResource() {
 }
 
-void SharedResource::AddOwnerResource(IResource *res) {
-  owner_res_ = res;
+void SharedResource::SetOwnerIResource(IResource *res) {
+  i_res_ = res;
 }
 
-void SharedResource::AddAccessorResource(IResource *res, vm::Object *object) {
+void SharedResource::AddAccessorResource(IResource *res, ThreadSynth *acc_thr) {
+  vm::Object *object = acc_thr->GetObjectSynth()->GetObject();
   accessor_resources_[res] = object;
 }
 
@@ -102,7 +103,7 @@ void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
 void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
   for (auto it : sres->accessor_resources_) {
     IResource *res = it.first;
-    res->SetParentResource(sres->owner_res_);
+    res->SetParentResource(sres->i_res_);
   }
 }
 
