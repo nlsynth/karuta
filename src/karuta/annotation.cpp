@@ -170,7 +170,7 @@ int Annotation::GetDistance() {
 
 bool Annotation::IsSoftThreadEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "SoftThreadEntry");
+  return (s == "SoftThreadEntry" || s == "SoftProcess" || s == "Soft");
 }
 
 string Annotation::GetName() {
