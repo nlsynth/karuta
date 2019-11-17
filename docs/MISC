@@ -2,8 +2,6 @@
 
 ## TODOs.
 
-* Test!
- * sub module hierarchy.
 * Language features
  * Wide number
  * Width inference
@@ -12,12 +10,6 @@
  * goto f();
  * switch
  * select
-* Maturity
- * Better error reporting
- * More documents
-* More examples
- * Basic functionalities
- * Well known algorithms
 * Small features
  * GC on memory pressure
  * Pass object as an argument or return value
