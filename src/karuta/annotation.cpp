@@ -161,7 +161,7 @@ int Annotation::GetDepth() {
 
 bool Annotation::IsThreadEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "ThreadEntry");
+  return (s == "ThreadEntry" || s == "ProcessEntry" || s == "Process");
 }
 
 int Annotation::GetDistance() {
@@ -183,7 +183,7 @@ int Annotation::GetNum() {
 
 bool Annotation::IsThreadLocal() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "ThreadLocal");
+  return (s == "ThreadLocal" || s == "ProcessLocal" || s == "Local");
 }
 
 bool Annotation::IsNoWait() {
