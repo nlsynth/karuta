@@ -161,9 +161,8 @@ The last example here illustrates some of the most important features of Karuta 
      print(y)
    }
 
-   // @ThreadEntry() annotation makes this method as an entry point of a thread.
-   @ThreadEntry()
-   func thr() {
+   // process declaration makes this method as an entry point of a thread.
+   process thr() {
      var b #0 = 0
      while true {
        var v int = ch.read()

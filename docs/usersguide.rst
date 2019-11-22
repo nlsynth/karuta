@@ -11,18 +11,21 @@ For example, you have a design like this and save to a file my_design.karuta
 
 .. code-block:: none
 
-   @ThreadEntry()
-   func thr() {
+   process thr() {
      // Possibly communicate with main() and other threads.
    }
-
-   @SoftThreadEntry()
-   func testThr() {
+   
+   @Soft
+   process testThr() {
      // Code to generate stimulus to other threads.
-     // (NOTE: a thread with @SoftThreadEntry() will not be synthesized)
+     // (NOTE: a thread with @Soft will not be synthesized)
    }
    
-   func main() {
+   func f() {
+     // Code which can be called from other methods or processes.
+   }
+   
+   process main() {
      // Does interesting computation.
    }
 
@@ -129,13 +132,12 @@ Karuta is an object oriented language, so a design can be described as objects a
    // This declares a member of a member `o`.
    shared self.o.v int
 
-   func self.main() {
+   process self.main() {
      // Accesses a member of a member.
      o.v++
    }
 
-   @ThreadEntry()
-   func self.o.f() {
+   process self.o.f() {
      v = 0
    }
 
@@ -168,6 +170,31 @@ Array images can be written to a file or read from a file.
 
    arr.saveImage("arr.image")
    arr.loadImage("arr.image")
+
+=======
+Threads
+=======
+
+Method can be declared as a thread entry. A thread will be created when the code is executed or synthesized.
+
+.. code-block:: none
+
+   func f() {
+     // Just a method.
+   }
+
+   func main() {
+     // main() is automatically treated as a thread entry.
+   }
+
+   process m1() {
+     // This method will run as a thread.
+   }
+
+   @ThreadEntry
+   func m2() {
+     // @ThreadEntry annotation starts the method as a thread entry.
+   }
 
 ============
 Thread local
@@ -303,20 +330,17 @@ This example this just write values and read them from other threads.
 
    channel ch int
 
-   @ThreadEntry()
-   func th1() {
+   process th1() {
      ch.write(1)
      ch.write(1)
    }
 
-   @ThreadEntry()
-   func th2() {
+   process th2() {
      ch.read()
    }
 
    // channel can be written or read by arbitrary number of threads.
-   @ThreadEntry()
-   func th3() {
+   process th3() {
      ch.read()
    }
 
@@ -326,13 +350,11 @@ A mailbox is just a channel with one value.
 
    mailbox mb int
 
-   @ThreadEntry()
-   func th1() {
+   process th1() {
      mb.put(1)
    }
 
-   @ThreadEntry()
-   func th2() {
+   process th2() {
      mb.get()
    }
 
@@ -342,13 +364,11 @@ But it can notify waiting threads.
 
    mailbox mb int
 
-   @ThreadEntry()
-   func th1() {
+   process th1() {
      mb.notify(10)
    }
 
-   @ThreadEntry()
-   func th2() {
+   process th2() {
      print(mb.wait())
    }
 
@@ -366,16 +386,14 @@ Method call
    func g() {
    }
 
-   @ThreadEntry()
-   func th1() {
+   process th1() {
      // Does handshake and arbitration
      m.f()
      // Inlined for this thread.
      g()
    }
 
-   @ThreadEntry()
-   func th2() {
+   process th2() {
      // Does handshake and arbitration
      m.f()
      // Different inlined instance for this thread.
