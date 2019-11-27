@@ -5,12 +5,12 @@
 #include "fe/method.h"
 #include "fe/var_decl.h"
 #include "karuta/env.h"
-#include "vm/value.h"
-#include "vm/executor.h"
+#include "vm/executor/executor.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/profile.h"
+#include "vm/value.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -52,7 +52,7 @@ void Thread::Run() {
 void Thread::RunMethod() {
   MethodFrame *frame = CurrentMethodFrame();
   Method *method = frame->method_;
-  Executor executor(this, frame);
+  executor::Executor executor(this, frame);
   Profile *profile = vm_->GetProfile();
   bool profile_enabled = profile->IsEnabled();
   while (frame->pc_ < method->insns_.size()) {

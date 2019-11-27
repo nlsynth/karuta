@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _vm_executor_h_
-#define _vm_executor_h_
+#ifndef _vm_executor_executor_h_
+#define _vm_executor_executor_h_
 
 // Mostly for inline methods.
 #include "vm/common.h"
@@ -11,6 +11,7 @@
 #include "vm/value.h"
 
 namespace vm {
+namespace executor {
 
 class Executor {
 public:
@@ -97,6 +98,7 @@ private:
   MethodFrame *frame_;
 };
 
+}  // namespace executor
 }  // namespace vm
 
-#endif  // _vm_executor_h_
+#endif  // _vm_executor_executor_h_

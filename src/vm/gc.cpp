@@ -1,6 +1,6 @@
 #include "vm/gc.h"
 
-#include "vm/executor.h"
+#include "vm/method_frame.h"
 #include "vm/object.h"
 #include "vm/thread.h"
 #include "vm/vm.h"

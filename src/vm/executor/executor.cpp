@@ -1,4 +1,4 @@
-#include "vm/executor.h"
+#include "vm/executor/executor.h"
 
 #include "base/dump_stream.h"
 #include "base/status.h"
@@ -29,6 +29,7 @@
 #include "vm/vm.h"
 
 namespace vm {
+namespace executor {
 
 bool Executor::ExecInsn(Insn *insn) {
   insn_ = insn;
@@ -1014,4 +1015,5 @@ Object *Executor::CreateObjectArray(fe::ArrayShape *shape) {
   return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), shape->length[0]);
 }
 
+}  // namespace executor
 }  // namespace vm
