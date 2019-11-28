@@ -151,6 +151,8 @@
         'vm/decl_annotator.h',
 	'vm/distance_wrapper.cpp',
 	'vm/distance_wrapper.h',
+        'vm/executor/base.cpp',
+        'vm/executor/base.h',
         'vm/executor/executor.cpp',
         'vm/executor/executor.h',
         'vm/gc.cpp',
