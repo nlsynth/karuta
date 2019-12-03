@@ -41,15 +41,7 @@ protected:
   void ExecIf();
   bool ExecGoto();
   void ExecBitRange();
-
-  // for toplevel
-  void ExecVardecl();
-  void ExecThreadDecl();
-  void ExecChannelDecl();
-  void ExecMailboxDecl();
   
-  void ExecImport();
-  void ExecFuncdecl();
   void ExecMemberReadWithCheck();
   bool ExecFuncallWithCheck();
   void ExecFuncallDoneWithCheck();
@@ -60,16 +52,8 @@ protected:
   bool ExecCustomOp();
   void RetryBinopWithType();
 
-  void AddThreadEntry(const string &name, int num, bool is_soft);
-  void ClearThreadEntry();
   bool IsCustomOpCall();
-  Object *CreateMemoryObject(const iroha::NumericWidth &width,
-			     fe::ArrayShape *shape,
-			     fe::ArrayInitializer *array_initializer,
-			     Annotation *an);
-  Object *CreateObjectArray(fe::ArrayShape *shape);
-  void InitializeArray(IntArray *array,
-		       fe::ArrayInitializer *array_initializer);
+
   void PopulateArrayIndexes(int start, vector<uint64_t> *indexes);
 
   bool IsTopLevel() const {

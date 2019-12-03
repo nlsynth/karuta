@@ -153,6 +153,8 @@
 	'vm/distance_wrapper.h',
         'vm/executor/base.cpp',
         'vm/executor/base.h',
+        'vm/executor/decl.cpp',
+        'vm/executor/decl.h',
         'vm/executor/executor.cpp',
         'vm/executor/executor.h',
         'vm/gc.cpp',
