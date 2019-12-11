@@ -29,7 +29,7 @@ class InsnType {
 public:
   // (int or enum), (int or enum) -> bool
   static bool IsComparison(int op);
-  // int, int -> int
+  // int, int -> int (same width)
   static bool IsNumCalculation(int op);
 };
 
