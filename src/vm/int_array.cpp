@@ -93,11 +93,12 @@ iroha::NumericValue IntArray::ReadSingle(uint64_t addr) {
 }
 
 iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
-  int mw = data_width_.GetWidth();
-  uint64_t array_addr = byte_addr / (mw / 8);
+  int data_bits = data_width_.GetWidth();
+  int data_bytes = data_bits / 8;
+  uint64_t array_addr = byte_addr / data_bytes;
   iroha::Numeric n;
   n.type_.SetWidth(0);
-  int c = width / mw;
+  int c = width / data_bits;
   for (int i = 0; i < c; ++i) {
     iroha::NumericValue a = ReadSingle(array_addr + i);
     iroha::Numeric t;

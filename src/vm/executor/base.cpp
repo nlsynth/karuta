@@ -138,9 +138,10 @@ void Base::ExecBinop() {
     {
       iroha::NumericWidth &lt = lhs->type_.width_;
       iroha::NumericWidth &rt = rhs->type_.width_;
-      iroha::Op::Concat(VAL(lhs).num_, lt,
-			VAL(rhs).num_, rt,
-			&VAL(dst).num_, nullptr);
+      iroha::Op::ConcatWithStorage(VAL(lhs).num_, lt,
+				   VAL(rhs).num_, rt,
+				   nullptr,
+				   &VAL(dst).num_, nullptr);
     }
     break;
   case OP_LSHIFT:
