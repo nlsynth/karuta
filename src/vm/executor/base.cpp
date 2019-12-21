@@ -547,8 +547,8 @@ void Base::ExecBitRange() {
   int l = VAL(sreg(2)).num_.GetValue0();
   Value &value = VAL(sreg(0));
   Value &res = VAL(dst);
-  iroha::Op::SelectBits(value.num_, value.num_type_,
-			h, l, &res.num_, nullptr);
+  iroha::Op::SelectBitsWithStorage(value.num_, value.num_type_,
+				   h, l, nullptr, &res.num_, nullptr);
 }
 
 void Base::ExecMemberReadWithCheck() {
