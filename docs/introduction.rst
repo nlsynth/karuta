@@ -22,7 +22,7 @@ Simplest Xorshift32 in Karuta is like this:
 
 .. code-block:: none
 
-   func main() {
+   process main() {
      var y int = 1
      for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13)
@@ -59,8 +59,8 @@ So you can the run same karuta command again and will get xorshift32.v! The cont
      xorshift32_main xorshift32_main_inst(.clk(clk), .rst(rst));
    endmodule
 
-Then you can run this on a Verilog simulator with a test bench file to feed the clock and reset.
-However, the tedious coding can be avoided by *--with_shell* option.
+Then you can run this on a Verilog simulator with a testbench file to feed the clock and reset.
+If you think it is tedious, *--with_shell* option will do most of the work;
 
 .. code-block:: none
 
@@ -88,7 +88,7 @@ With Karuta, you can annotate a method to make it an output port. The output val
      print(v)
    }
 
-   func main() {
+   process main() {
      var y int = 1
      for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
@@ -96,7 +96,7 @@ With Karuta, you can annotate a method to make it an output port. The output val
      }
    }
 
-The code above will generate a Verilog file like as follows. The top module xorshift32 has an output port *'o'*, so you can connect the port to other parts of your design.
+The code above will be converted to a Verilog file like as follows. The top module xorshift32 has an output port *'o'*, so you can connect the port to other parts of your design.
 
 .. code-block:: none
 
