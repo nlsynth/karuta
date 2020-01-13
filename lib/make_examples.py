@@ -5,10 +5,7 @@
 import glob
 import os
 
-files = glob.glob("example_srcs/*.karuta")
-
-m = {}
-
+# Returns (basename, info{})
 def proc(fn):
     desc = ""
     src = ""
@@ -49,7 +46,11 @@ def proc(fn):
         v['c'] = False
     return (k, v)
 
+files = glob.glob("example_srcs/*.karuta")
+
 index = 100
+
+m = {}
 
 for fn in files:
     (k, v) = proc(fn)
@@ -61,5 +62,6 @@ for fn in files:
     index = index + 1
 
 
-print("# built with make_examples.py")
+print("# Built with make_examples.py")
+print("# This file is .gitignore-ed.")
 print("EXAMPLES =" + str(m))
