@@ -1,4 +1,4 @@
-// Copyright Yusuke Tabata 2007-2019
+// Copyright Yusuke Tabata 2007-2020
 
 #include "fe/scanner.h"
 
