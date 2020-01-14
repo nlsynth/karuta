@@ -98,6 +98,7 @@ if __name__ == '__main__':
     os.environ['KARUTA_VERSION'] = scrape_version()
     os.environ['KARUTA_BINARY'] = karuta_interpreter
     os.environ['KARUTA_WORK'] = workdir
-    print(os.getenv('KARUTA_VERSION'))
-    httpd = ThreadingServer(("0.0.0.0", 8000), KarutaServerHandler)
+    port = 8000
+    print(os.getenv('KARUTA_VERSION') + " :" + str(port))
+    httpd = ThreadingServer(("0.0.0.0", port), KarutaServerHandler)
     httpd.serve_forever()

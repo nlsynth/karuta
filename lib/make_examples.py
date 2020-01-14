@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # collects files under examples
+#
+# $ python make_examples.py > karuta_examples.py
 
 import glob
 import os
