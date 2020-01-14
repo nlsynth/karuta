@@ -12,6 +12,31 @@ namespace vm {
 
 static const char *kMailboxObjectKey = "mailbox";
 
+struct WaitQueue {
+  set<Thread *> waiters;
+
+  void AddThread(Thread *thr) {
+    waiters.insert(thr);
+  }
+
+  void ResumeOne() {
+    if (waiters.size() == 0) {
+      return;
+    }
+    Thread *t = *(waiters.begin());
+    waiters.erase(t);
+    t->Resume();
+  }
+
+  void ResumeAll(set<Thread *> *resumed) {
+    for (Thread *t : waiters) {
+      t->Resume();
+      resumed->insert(t);
+    }
+    waiters.clear();
+  }
+};
+
 class MailboxData : public ObjectSpecificData {
 public:
   MailboxData(int width, sym_t name, Annotation *an)
@@ -25,9 +50,9 @@ public:
 
   int width_;
   string name_;
-  set<Thread *> put_waiters_;
-  set<Thread *> get_waiters_;
-  set<Thread *> notify_waiters_;
+  WaitQueue put_waiters_;
+  WaitQueue get_waiters_;
+  WaitQueue notify_waiters_;
   set<Thread *> notified_threads_;
   iroha::NumericValue number_;
   bool has_value_;
@@ -101,9 +126,9 @@ void MailboxWrapper::Get(Thread *thr, Object *obj,
     value.type_ = Value::NUM;
     value.num_ = data->number_;
     thr->SetReturnValueFromNativeMethod(value);
-    Wake(true, data);
+    WakeOne(true, data);
   } else {
-    data->get_waiters_.insert(thr);
+    data->get_waiters_.AddThread(thr);
     thr->Suspend();
   }
 }
@@ -112,12 +137,12 @@ void MailboxWrapper::Put(Thread *thr, Object *obj,
 			 const vector<Value> &args) {
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   if (data->has_value_) {
-    data->put_waiters_.insert(thr);
+    data->put_waiters_.AddThread(thr);
     thr->Suspend();
   } else {
     data->has_value_ = true;
     data->number_ = args[0].num_;
-    Wake(false, data);
+    WakeOne(false, data);
   }
 }
 
@@ -130,40 +155,32 @@ void MailboxWrapper::Notify(Thread *thr, Object *obj,
   }
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   data->number_ = args[0].num_;
-  for (Thread *t : data->notify_waiters_) {
-    t->Resume();
-    data->notified_threads_.insert(t);
-  }
-  data->notify_waiters_.clear();
+  data->notify_waiters_.ResumeAll(&data->notified_threads_);
 }
 
 void MailboxWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   if (data->notified_threads_.find(thr) != data->notified_threads_.end()) {
+    // Already notified at the same time (in execution event order).
     data->notified_threads_.erase(thr);
     Value value;
     value.type_ = Value::NUM;
     value.num_ = data->number_;
     thr->SetReturnValueFromNativeMethod(value);
   } else {
-    data->notify_waiters_.insert(thr);
+    data->notify_waiters_.AddThread(thr);
     thr->Suspend();
   }
 }
 
-void MailboxWrapper::Wake(bool wake_put, MailboxData *data) {
-  set<Thread *> *s;
+void MailboxWrapper::WakeOne(bool wake_put, MailboxData *data) {
+  WaitQueue *q;
   if (wake_put) {
-    s = &data->put_waiters_;
+    q = &data->put_waiters_;
   } else {
-    s = &data->get_waiters_;
+    q = &data->get_waiters_;
   }
-  if (s->size() == 0) {
-    return;
-  }
-  Thread *t = *(s->begin());
-  s->erase(t);
-  t->Resume();
+  q->ResumeOne();
 }
 
 }  // namespace vm

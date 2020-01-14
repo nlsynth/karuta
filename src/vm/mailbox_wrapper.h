@@ -24,7 +24,7 @@ private:
   static void Notify(Thread *thr, Object *obj, const vector<Value> &args);
   static void Wait(Thread *thr, Object *obj, const vector<Value> &args);
 
-  static void Wake(bool wake_put, MailboxData *data);
+  static void WakeOne(bool wake_put, MailboxData *data);
 };
 
 }  // namespace vm
