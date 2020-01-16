@@ -14,6 +14,7 @@ static const char *kMailboxObjectKey = "mailbox";
 
 struct WaitQueue {
   set<Thread *> waiters;
+  set<Thread *> notified;
 
   void AddThread(Thread *thr) {
     waiters.insert(thr);
@@ -28,12 +29,20 @@ struct WaitQueue {
     t->Resume();
   }
 
-  void ResumeAll(set<Thread *> *resumed) {
+  void ResumeAll() {
     for (Thread *t : waiters) {
       t->Resume();
-      resumed->insert(t);
+      notified.insert(t);
     }
     waiters.clear();
+  }
+
+  bool ClearIfNotified(Thread *thr) {
+    if (notified.find(thr) != notified.end()) {
+      notified.erase(thr);
+      return true;
+    }
+    return false;
   }
 };
 
@@ -53,7 +62,6 @@ public:
   WaitQueue put_waiters_;
   WaitQueue get_waiters_;
   WaitQueue notify_waiters_;
-  set<Thread *> notified_threads_;
   iroha::NumericValue number_;
   bool has_value_;
   Annotation *an_;
@@ -155,14 +163,13 @@ void MailboxWrapper::Notify(Thread *thr, Object *obj,
   }
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   data->number_ = args[0].num_;
-  data->notify_waiters_.ResumeAll(&data->notified_threads_);
+  data->notify_waiters_.ResumeAll();
 }
 
 void MailboxWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
-  if (data->notified_threads_.find(thr) != data->notified_threads_.end()) {
+  if (data->notify_waiters_.ClearIfNotified(thr)) {
     // Already notified at the same time (in execution event order).
-    data->notified_threads_.erase(thr);
     Value value;
     value.type_ = Value::NUM;
     value.num_ = data->number_;
