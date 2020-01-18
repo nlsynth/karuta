@@ -28,8 +28,8 @@ public:
 private:
   static void AxiLoad(Thread *thr, Object *obj, const vector<Value> &args);
   static void AxiStore(Thread *thr, Object *obj, const vector<Value> &args);
-  static void Wait(Thread *thr, Object *obj, const vector<Value> &args);
-  static void Notify(Thread *thr, Object *obj, const vector<Value> &args);
+  static void WaitAccess(Thread *thr, Object *obj, const vector<Value> &args);
+  static void NotifyAccess(Thread *thr, Object *obj, const vector<Value> &args);
   static void Read(Thread *thr, Object *obj, const vector<Value> &args);
   static void Write(Thread *thr, Object *obj, const vector<Value> &args);
   static void MemBurstAccess(Thread *thr, Object *obj,

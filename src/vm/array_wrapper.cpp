@@ -188,15 +188,12 @@ void ArrayWrapper::AxiStore(Thread *thr, Object *obj,
 }
 
 void ArrayWrapper::MayNotifyWaiters(Object *obj) {
-  Annotation *an = GetAnnotation(obj);
-  if (an == nullptr || !an->IsAxiSlave()) {
-    return;
-  }
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
   ad->waiters_.ResumeAll();
 }
 
-void ArrayWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
+void ArrayWrapper::WaitAccess(Thread *thr, Object *obj,
+			      const vector<Value> &args) {
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
   if (ad->waiters_.ClearIfNotified(thr)) {
     return;
@@ -205,7 +202,8 @@ void ArrayWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
   thr->Suspend();
 }
 
-void ArrayWrapper::Notify(Thread *thr, Object *obj, const vector<Value> &args) {
+void ArrayWrapper::NotifyAccess(Thread *thr, Object *obj,
+				const vector<Value> &args) {
   MayNotifyWaiters(obj);
 }
 
@@ -281,11 +279,11 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
 					 &ArrayWrapper::AxiStore, rets);
   m->SetSynthName(synth::kAxiStore);
   m = NativeObjects::InstallNativeMethod(vm, obj, "waitAccess",
-					 &ArrayWrapper::Wait,
+					 &ArrayWrapper::WaitAccess,
 					 rets);
   m->SetSynthName(synth::kSlaveWait);
   m = NativeObjects::InstallNativeMethod(vm, obj, "notifyAccess",
-					 &ArrayWrapper::Notify,
+					 &ArrayWrapper::NotifyAccess,
 					 rets);
   NativeObjects::InstallNativeMethod(vm, obj, "saveImage",
 				     &ArrayWrapper::SaveImage, rets);
