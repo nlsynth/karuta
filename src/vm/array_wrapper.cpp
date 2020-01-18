@@ -12,6 +12,7 @@
 #include "vm/object.h"
 #include "vm/string_wrapper.h"
 #include "vm/thread.h"
+#include "vm/thread_queue.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -57,8 +58,7 @@ public:
   vector<Object *> objs_;
   std::unique_ptr<IntArray> int_array_;
   Annotation *an_;
-  set<Thread *> waiters_;
-  set<Thread *> notified_threads_;
+  ThreadQueue waiters_;
   vector<uint64_t> shape_;
 
   virtual const char *ObjectTypeKey() {
@@ -193,20 +193,15 @@ void ArrayWrapper::MayNotifyWaiters(Object *obj) {
     return;
   }
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
-  for (Thread *t : ad->waiters_) {
-    t->Resume();
-    ad->notified_threads_.insert(t);
-  }
-  ad->waiters_.clear();
+  ad->waiters_.ResumeAll();
 }
 
 void ArrayWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
-  if (ad->notified_threads_.find(thr) != ad->notified_threads_.end()) {
-    ad->notified_threads_.erase(thr);
+  if (ad->waiters_.ClearIfNotified(thr)) {
     return;
   }
-  ad->waiters_.insert(thr);
+  ad->waiters_.AddThread(thr);
   thr->Suspend();
 }
 

@@ -18,6 +18,7 @@ void ThreadQueue::ResumeOne() {
 }
 
 void ThreadQueue::ResumeAll() {
+  notified.clear();
   for (Thread *t : waiters) {
     t->Resume();
     notified.insert(t);
