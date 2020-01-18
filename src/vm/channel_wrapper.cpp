@@ -6,6 +6,7 @@
 #include "synth/object_method_names.h"
 #include "vm/object.h"
 #include "vm/thread.h"
+#include "vm/thread_queue.h"
 #include "vm/method.h"
 #include "vm/native_methods.h"
 #include "vm/native_objects.h"
@@ -40,8 +41,8 @@ public:
   list<iroha::NumericValue> values_;
   int depth_;
 
-  set<Thread *> read_waiters_;
-  set<Thread *> write_waiters_;
+  ThreadQueue read_waiters_;
+  ThreadQueue write_waiters_;
   Annotation *an_;
 };
 
@@ -112,12 +113,7 @@ bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
   value->num_type_ = iroha::NumericWidth(false, pipe_data->width_);
   pipe_data->values_.pop_front();
   // Wake writers.
-  if (pipe_data->write_waiters_.size() > 0) {
-    for (Thread *t : pipe_data->write_waiters_) {
-      t->Resume();
-    }
-    pipe_data->write_waiters_.clear();
-  }
+  pipe_data->write_waiters_.ResumeAll();
   return true;
 }
 
@@ -141,22 +137,17 @@ void ChannelWrapper::WriteValue(const Value &value, Thread *thr, Object *obj) {
   const iroha::NumericValue &v = value.num_;
   pipe_data->values_.push_back(v);
   // Wake readers.
-  if (pipe_data->read_waiters_.size() > 0) {
-    for (Thread *t : pipe_data->read_waiters_) {
-      t->Resume();
-    }
-    pipe_data->read_waiters_.clear();
-  }
+  pipe_data->read_waiters_.ResumeAll();
 }
 
 void ChannelWrapper::BlockOnRead(Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
-  pipe_data->read_waiters_.insert(thr);
+  pipe_data->read_waiters_.AddThread(thr);
 }
 
 void ChannelWrapper::BlockOnWrite(Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
-  pipe_data->write_waiters_.insert(thr);
+  pipe_data->write_waiters_.AddThread(thr);
 }
 
 }  // namespace vm
