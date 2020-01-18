@@ -192,6 +192,8 @@
         'vm/string_wrapper.h',
         'vm/thread.cpp',
         'vm/thread.h',
+        'vm/thread_queue.cpp',
+        'vm/thread_queue.h',
         'vm/thread_wrapper.cpp',
         'vm/thread_wrapper.h',
         'vm/tls_wrapper.cpp',

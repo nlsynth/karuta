@@ -6,45 +6,12 @@
 #include "vm/native_objects.h"
 #include "vm/object.h"
 #include "vm/thread.h"
+#include "vm/thread_queue.h"
 #include "vm/vm.h"
 
 namespace vm {
 
 static const char *kMailboxObjectKey = "mailbox";
-
-struct WaitQueue {
-  set<Thread *> waiters;
-  set<Thread *> notified;
-
-  void AddThread(Thread *thr) {
-    waiters.insert(thr);
-  }
-
-  void ResumeOne() {
-    if (waiters.size() == 0) {
-      return;
-    }
-    Thread *t = *(waiters.begin());
-    waiters.erase(t);
-    t->Resume();
-  }
-
-  void ResumeAll() {
-    for (Thread *t : waiters) {
-      t->Resume();
-      notified.insert(t);
-    }
-    waiters.clear();
-  }
-
-  bool ClearIfNotified(Thread *thr) {
-    if (notified.find(thr) != notified.end()) {
-      notified.erase(thr);
-      return true;
-    }
-    return false;
-  }
-};
 
 class MailboxData : public ObjectSpecificData {
 public:
@@ -59,9 +26,9 @@ public:
 
   int width_;
   string name_;
-  WaitQueue put_waiters_;
-  WaitQueue get_waiters_;
-  WaitQueue notify_waiters_;
+  ThreadQueue put_waiters_;
+  ThreadQueue get_waiters_;
+  ThreadQueue notify_waiters_;
   iroha::NumericValue number_;
   bool has_value_;
   Annotation *an_;
@@ -181,7 +148,7 @@ void MailboxWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
 }
 
 void MailboxWrapper::WakeOne(bool wake_put, MailboxData *data) {
-  WaitQueue *q;
+  ThreadQueue *q;
   if (wake_put) {
     q = &data->put_waiters_;
   } else {
