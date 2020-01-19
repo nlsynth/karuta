@@ -415,14 +415,16 @@ bool Base::ExecGoto() {
   return thr_->OnJump();
 }
 
-void Base::ExecIf() {
+bool Base::ExecIf() {
   Register *cond = sreg(0);
   Value &cond_val = VAL(cond);
   CHECK(cond_val.type_ == Value::ENUM_ITEM);
   if (cond_val.enum_val_.val) {
     ++frame_->pc_;
+    return false;
   } else {
     frame_->pc_ = insn_->jump_target_;
+    return thr_->OnJump();
   }
 }
 

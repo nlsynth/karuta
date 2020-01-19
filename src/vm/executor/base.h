@@ -38,7 +38,7 @@ protected:
   void ExecNumUniop();
   void ExecLogicInv();
   void ExecNonNumResultBinop();
-  void ExecIf();
+  bool ExecIf();
   bool ExecGoto();
   void ExecBitRange();
   

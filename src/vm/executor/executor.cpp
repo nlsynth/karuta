@@ -61,9 +61,11 @@ bool Executor::ExecInsn(Insn *insn) {
     ExecLoadObj();
     break;
   case OP_IF:
-    ExecIf();
-    // do not increment pc.
-    return false;
+    {
+      bool v = ExecIf();
+      // do not increment pc.
+      return v;
+    }
   case OP_GOTO:
     {
       bool v = ExecGoto();
