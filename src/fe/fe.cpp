@@ -128,6 +128,10 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
     {"mailbox", K_MAILBOX},
     {"object", K_OBJECT},
     {"process", K_PROCESS},
+    // ram and reg are experimental syntax sugar.
+    // We'll make these separate keywords, if users like them.
+    {"ram", K_SHARED},
+    {"reg", K_SHARED},
     {"return", K_RETURN},
     {"shared", K_SHARED},
     {"string", K_STRING},
