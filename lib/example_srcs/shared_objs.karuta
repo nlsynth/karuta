@@ -1,0 +1,27 @@
+//# Basic shared objects between threads.
+//# index:6
+// Shared objects between threads. They can be used for communication.
+// Generated Verilog contains arbitration logics.
+
+reg a int
+ram b int[16]
+channel ch int
+mailbox mb int
+// This one is not shared, represents a ram per each thread.
+@ThreadLocal ram c int[16]
+
+process p1() {
+  print(mb.put(1))
+  a += 1
+  b[0] = a
+  ch.write(1)
+  c[0] = 1
+}
+
+process p2() {
+  print(mb.get())
+  print(a)
+  print(b[0])
+  print(ch.read())
+  print(c[0])
+}
