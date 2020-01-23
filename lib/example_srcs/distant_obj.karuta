@@ -1,0 +1,22 @@
+//# Object distance.
+//# index:7
+// Distance to a member object can be specified by the number of clocks.
+// Generated Verilog code will contain stages of registers.
+
+// *self* -reg1-> -reg2-> -reg3-> -reg4-> -reg5-> *robj*
+@(distance=5)
+shared robj object = new()
+
+// Members of *robj* can be accessed in 5 clocks from *self* (or 10 clocks if roud trip is neccessary)
+reg robj.r int
+ram robj.a int[16]
+
+func robj.f(x int) (int) {
+  return x
+}
+
+process p1() {
+  print(robj.f(10))
+  print(robj.r)
+  print(robj.a[0])
+}
