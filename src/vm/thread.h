@@ -18,8 +18,7 @@ public:
   void Suspend();
   void Exit();
   void Resume();
-  void SetInYield(bool in_yield);
-  bool GetInYield();
+  void Yield();
 
   VM *GetVM();
   static void SetByteCodeDebug(string flags);

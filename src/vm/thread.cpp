@@ -102,12 +102,14 @@ void Thread::Resume() {
   stat_ = RUNNABLE;
 }
 
-void Thread::SetInYield(bool in_yield) {
-  in_yield_ = in_yield;
-}
-
-bool Thread::GetInYield() {
-  return in_yield_;
+void Thread::Yield() {
+  if (!in_yield_) {
+    GetVM()->Yield(this);
+    in_yield_ = true;
+  } else {
+    // proceed to the next insn.
+    in_yield_ = false;
+  }
 }
 
 VM *Thread::GetVM() {

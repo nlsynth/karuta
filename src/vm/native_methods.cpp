@@ -253,13 +253,7 @@ void NativeMethods::WriteHdl(Thread *thr, Object *obj,
 
 void NativeMethods::Yield(Thread *thr, Object *obj,
 			  const vector<Value> &args) {
-  if (!thr->GetInYield()) {
-    thr->GetVM()->Yield(thr);
-    thr->SetInYield(true);
-  } else {
-    // proceed to the next insn.
-    thr->SetInYield(false);
-  }
+  thr->Yield();
 }
 
 void NativeMethods::IsMain(Thread *thr, Object *obj,
