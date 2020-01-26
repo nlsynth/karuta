@@ -553,6 +553,10 @@ void Base::ExecBitRange() {
 				   h, l, nullptr, &res.num_, nullptr);
 }
 
+void Base::ExecYield() {
+  thr_->Yield();
+}
+
 void Base::ExecMemberReadWithCheck() {
   ExecMemberAccess();
   // Annotate the type of the results now.

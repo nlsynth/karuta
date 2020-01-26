@@ -44,6 +44,7 @@ enum OpCode {
   OP_IF,
   OP_GOTO,
   OP_NOP,
+  OP_YIELD,
 
   // Read/Write.
   OP_ARRAY_READ,

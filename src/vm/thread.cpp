@@ -103,12 +103,12 @@ void Thread::Resume() {
 }
 
 void Thread::Yield() {
-  if (!in_yield_) {
+  if (in_yield_) {
+    // This insn already issued yield. Proceed to the next insn.
+    in_yield_ = false;
+  } else {
     GetVM()->Yield(this);
     in_yield_ = true;
-  } else {
-    // proceed to the next insn.
-    in_yield_ = false;
   }
 }
 

@@ -46,6 +46,7 @@ const char *OpCodeName(enum OpCode node) {
     {vm::OP_IF, "if"},
     {vm::OP_GOTO, "goto"},
     {vm::OP_NOP, "nop"},
+    {vm::OP_YIELD, "yield"},
     // Read/Write.
     {vm::OP_ARRAY_READ, "array_read"},
     {vm::OP_ARRAY_WRITE, "array_write"},

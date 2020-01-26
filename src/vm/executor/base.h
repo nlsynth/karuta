@@ -41,6 +41,7 @@ protected:
   bool ExecIf();
   bool ExecGoto();
   void ExecBitRange();
+  void ExecYield();
   
   void ExecMemberReadWithCheck();
   bool ExecFuncallWithCheck();

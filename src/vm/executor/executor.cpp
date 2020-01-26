@@ -74,6 +74,9 @@ bool Executor::ExecInsn(Insn *insn) {
     }
   case OP_NOP:
     break;
+  case OP_YIELD:
+    ExecYield();
+    break;
   case OP_PRE_INC:
   case OP_PRE_DEC:
     ExecIncDec();
