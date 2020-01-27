@@ -335,6 +335,7 @@ void MethodSynth::LinkStates() {
 void MethodSynth::SynthInsn(vm::Insn *insn) {
   switch (insn->op_) {
   case vm::OP_NOP:
+  case vm::OP_YIELD:
     SynthNop(insn);
     break;
   case vm::OP_NUM:

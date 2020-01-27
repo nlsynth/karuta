@@ -67,6 +67,7 @@ private:
   void PushScope(fe::Stmt *stmt);
   void PopScope();
   void EmitNop();
+  void EmitYield();
   void ResolveLabels();
   VarScope *CurrentScope();
   void CompilePreIncDec();

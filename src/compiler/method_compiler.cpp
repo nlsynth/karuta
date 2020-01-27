@@ -137,6 +137,12 @@ void MethodCompiler::EmitNop() {
   EmitInsn(insn);
 }
 
+void MethodCompiler::EmitYield() {
+  vm::Insn *insn = new vm::Insn;
+  insn->op_ = vm::OP_YIELD;
+  EmitInsn(insn);
+}
+
 void MethodCompiler::CompilePreIncDec() {
   DoCompilePrePostIncDec(false, &pre_inc_dec_exprs_);
 }
