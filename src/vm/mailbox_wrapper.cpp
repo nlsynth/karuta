@@ -104,7 +104,6 @@ void MailboxWrapper::Get(Thread *thr, Object *obj,
     WakeOne(true, data);
   } else {
     data->get_waiters_.AddThread(thr);
-    thr->Suspend();
   }
 }
 
@@ -113,7 +112,6 @@ void MailboxWrapper::Put(Thread *thr, Object *obj,
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   if (data->has_value_) {
     data->put_waiters_.AddThread(thr);
-    thr->Suspend();
   } else {
     data->has_value_ = true;
     data->number_ = args[0].num_;
@@ -143,7 +141,6 @@ void MailboxWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
     thr->SetReturnValueFromNativeMethod(value);
   } else {
     data->notify_waiters_.AddThread(thr);
-    thr->Suspend();
   }
 }
 

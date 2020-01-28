@@ -103,7 +103,6 @@ bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   if (pipe_data->values_.size() == 0) {
     BlockOnRead(thr, obj);
-    thr->Suspend();
     return false;
   }
 
@@ -131,7 +130,6 @@ void ChannelWrapper::WriteValue(const Value &value, Thread *thr, Object *obj) {
   ChannelData *pipe_data = (ChannelData *)obj->object_specific_.get();
   if (pipe_data->values_.size() == pipe_data->depth_) {
     BlockOnWrite(thr, obj);
-    thr->Suspend();
     return;
   }
   const iroha::NumericValue &v = value.num_;

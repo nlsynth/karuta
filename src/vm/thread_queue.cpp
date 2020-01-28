@@ -5,16 +5,18 @@
 namespace vm {
 
 void ThreadQueue::AddThread(Thread *thr) {
+  CHECK(thr->IsRunnable());
   waiters.insert(thr);
+  thr->Suspend();
 }
 
 void ThreadQueue::ResumeOne() {
   if (waiters.size() == 0) {
     return;
   }
-  Thread *t = *(waiters.begin());
-  waiters.erase(t);
-  t->Resume();
+  Thread *thr = *(waiters.begin());
+  waiters.erase(thr);
+  thr->Resume();
 }
 
 void ThreadQueue::ResumeAll() {
