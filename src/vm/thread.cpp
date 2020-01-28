@@ -110,7 +110,7 @@ void Thread::Resume() {
   stat_ = RUNNABLE;
 }
 
-void Thread::Yield() {
+bool Thread::Yield() {
   if (in_yield_) {
     // This insn already issued yield. Proceed to the next insn.
     CHECK(IsRunnable());
@@ -120,6 +120,7 @@ void Thread::Yield() {
     GetVM()->Yield(this);
     in_yield_ = true;
   }
+  return in_yield_; // need suspend.
 }
 
 VM *Thread::GetVM() {

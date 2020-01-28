@@ -19,7 +19,7 @@ public:
   void Suspend();
   void Exit();
   void Resume();
-  void Yield();
+  bool Yield();
 
   VM *GetVM();
   static void SetByteCodeDebug(string flags);
