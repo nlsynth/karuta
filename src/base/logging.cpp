@@ -55,6 +55,7 @@ void Logger::Finalize(LogSeverity sev, const char *fn, int line) {
   }
   os_.str("");
   if (sev == FATAL) {
+    std::cout << std::flush;
     abort();
   }
 }
