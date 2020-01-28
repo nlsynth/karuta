@@ -12,6 +12,7 @@ public:
   ~Thread();
 
   void Run();
+  void Dump() const;
   void Dump(DumpStream &ds) const;
   bool IsRunnable() const;
   bool IsDone() const;

@@ -15,6 +15,7 @@ void ThreadQueue::ResumeOne() {
     return;
   }
   Thread *thr = *(waiters.begin());
+  CHECK(!thr->IsRunnable());
   waiters.erase(thr);
   thr->Resume();
 }

@@ -77,7 +77,15 @@ void Thread::RunMethod() {
   PopMethodFrame();
 }
 
+void Thread::Dump() const {
+  DumpStream ds(cout);
+  Dump(ds);
+}
+
 void Thread::Dump(DumpStream &ds) const {
+  MethodFrame *frame = CurrentMethodFrame();
+  ds.os << "thread[" << index_ << "] stat=" << stat_
+	<< " yield=" << in_yield_ << " pc=" << frame->pc_ << "\n";
 }
 
 bool Thread::IsRunnable() const {
@@ -105,8 +113,10 @@ void Thread::Resume() {
 void Thread::Yield() {
   if (in_yield_) {
     // This insn already issued yield. Proceed to the next insn.
+    CHECK(IsRunnable());
     in_yield_ = false;
   } else {
+    CHECK(IsRunnable());
     GetVM()->Yield(this);
     in_yield_ = true;
   }
