@@ -315,6 +315,7 @@ void MethodCompiler::CompileGoto(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_GOTO;
   insn->insn_stmt_ = stmt;
+  EmitYield();
   EmitInsn(insn);
 }
 
@@ -355,6 +356,7 @@ void MethodCompiler::CompileIfStmt(fe::Stmt *stmt) {
   RegisterTuple rt = exc_->CompileExpr(stmt->GetExpr());
   insn->src_regs_.push_back(rt.GetOne());
   insn->insn_stmt_ = stmt;
+  EmitYield();
   EmitInsn(insn);
 }
 
