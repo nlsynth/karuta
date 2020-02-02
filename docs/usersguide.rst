@@ -91,8 +91,8 @@ Karuta allocates an object for each file and the object is used as the default o
 .. code-block:: none
 
    // All self. are optional in this example.
-   shared self.m int
-   func self.main() {
+   reg self.m int
+   process self.main() {
    }
    self.compile()
    self.writeHdl("my_design.v")
@@ -122,7 +122,7 @@ Bit width of data is important to use FPGAs efficiently while it is not cared so
 Member variables
 ================
 
-Karuta is an object oriented language, so a design can be described as objects and their members. `shared` keyword is used to declare an member value of an in teger, array or object (other kinds of member has different syntax).
+Karuta is an object oriented language, so a design can be described as objects and their members. `shared`, `reg` and `ram` keyword is used to declare an member value of an object, integer or array (other kinds of member has different syntax).
 
 
 .. code-block:: none
@@ -130,7 +130,7 @@ Karuta is an object oriented language, so a design can be described as objects a
    // `self.` part can be omitted. Just `shared o object` is also ok.
    shared self.o object = new()
    // This declares a member of a member `o`.
-   shared self.o.v int
+   reg self.o.v int
 
    process self.main() {
      // Accesses a member of a member.
@@ -149,7 +149,7 @@ Arrays are really important to utilize FPGA, so Karuta has features to use array
 
 .. code-block:: none
 
-   shared arr int[16]
+   ram arr int[16]
 
    func f(idx int) (int) {
      // This index wraps around by 16.
@@ -166,7 +166,7 @@ Array images can be written to a file or read from a file.
 
 .. code-block:: none
 
-   shared arr int[16]
+   ram arr int[16]
 
    arr.saveImage("arr.image")
    arr.loadImage("arr.image")
@@ -196,9 +196,9 @@ Method can be declared as a thread entry. A thread will be created when the code
      // @ThreadEntry annotation starts the method as a thread entry.
    }
 
-============
-Thread local
-============
+=====================
+Thread local variable
+=====================
 
 Karuta can create multiple threads from one @ThreadEntry() by specifying num= parameter.
 
@@ -250,9 +250,9 @@ AXI master
    // @AxiMaster(addrWidth = 64) // or 32 (default) to specify the width.
    // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
    @AxiMaster()
-   shared m int[16]
+   ram m int[16]
 
-   def f() {
+   func f() {
      m.load(mem_addr, count, array_addr)
      m.store(mem_addr, count, array_addr)
    }
@@ -264,7 +264,7 @@ AXI slave
 .. code-block:: none
 
    @AxiSlave()
-   shared s int[16]
+   ram s int[16]
 
    func f() {
      while true {
@@ -404,6 +404,8 @@ Method call
 Type object
 ===========
 
+Karuta allows to implement user defined numeric types. An object describes user define numeric operations can be attached to each numeric declaration.
+
 .. code-block:: none
 
    shared Numerics.Int32 object = Object.clone()
@@ -511,7 +513,7 @@ When `with` block is used, the member object can access its enclosing object by 
 Profile Guided Optimization (PGO)
 =================================
 
-One of the most important points of opitmization is to know which part of the design is a good target of optimization. Karuta uses a technique called PGO (Profile Guided Optimization) to obtain the information.
+One of the most important points of optimization is to know which part of the design is a good target of optimization. Karuta uses a technique called PGO (Profile Guided Optimization) to obtain the information.
 
 Following example illustrates how to enable profiling. Profiling is enabled between the calls of Env.enableProfile() and Env.disableProfile(), so the profile information will be collected while running main().
 compile() takes the profile information into account and does optimization.
@@ -552,14 +554,14 @@ Importing file
 Object distance
 ===============
 
-Elements of designs are placed onto the physical area of FPGAs and there are distances between them. So Karuta has a feature to specify number of clocks to propagete signals for communication.
+Elements of designs are placed onto the physical area of an FPGA and there are distances between them. So Karuta has a feature to specify number of clocks to propagete signals for communication.
 
 .. code-block:: none
 
    // Object distance between `self` and `m` is 10 clocks.
    @_(distance=10)
    shared self.m object = new()
-   shared self.m.v int
+   reg self.m.v int
 
    func self.m.f() {
      v = v + 1
@@ -641,6 +643,14 @@ Details of each FSM           HTML   writeHdl() with file name .html
 ====================
 Platform description
 ====================
+
+Karuta can specify the name of target hardware to use its specific parameters.
+
+.. code-block:: none
+
+   // Default parameters. Platform defintion for actual chips will be available.
+   setSynthParam("platformFamily", "generic-platform")
+   setSynthParam("platformName", "default")
 
 ============
 Installation

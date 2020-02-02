@@ -123,8 +123,8 @@ Variable declaration
    // top level local variable.
    var x int
    // member variable.
-   shared y int
-   shared self.z int
+   reg y int
+   reg self.z int
 
    func f() {
      // method local variable
@@ -321,8 +321,8 @@ Annotations
 .. code-block:: none
 
    // Annotation for a method
-   @ThreadEntry()
-   @SoftThreadEntry()
+   @ThreadEntry() @ProcessEntry() @Process()
+   @SoftThreadEntry() @SoftProcess() @Soft()
    @ExtEntry()
    @ExtStub()
    @ExtIO()
@@ -330,13 +330,15 @@ Annotations
    @DataFlowEntry()  // Might be removed
    @ExtFlowStub()  // Might be removed
    // Annotation for an array
-   @AxiMaster()
-   @AxiSlave()
-   @ThreadLocal()
+   @AxiMaster() @AxiMaster64() @AxiMaster32()
+   @AxiSlave() @AxiSlave64() @AxiSlave32()
+   @ThreadLocal() @ProcessLocal() @Local()
    // channel parameters
    depth=
    // object parameters
    distance=
+   // thread number
+   num=
 
 ========
 Glossary
