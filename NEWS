@@ -1,4 +1,5 @@
-0.5.4 WIP
+2020/02/08 0.5.4
+ Make interpreter busy wait friendly.
 2020/01/11 0.5.3
  Bug fix on SRAM, bit ops.
 2019/11/23 0.5.2
