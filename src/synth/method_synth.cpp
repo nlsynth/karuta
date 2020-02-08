@@ -895,7 +895,7 @@ void MethodSynth::SynthArrayAccess(vm::Insn *insn, bool is_write) {
 
 bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
-  if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave())) {
+  if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
     return true;
   }
   ThreadSynth *tls_thr = nullptr;

@@ -133,6 +133,11 @@ bool Annotation::IsAxiExclusive() {
   return (LookupStrParam("sramConnection", "exclusive") == "exclusive");
 }
 
+bool Annotation::IsSramIf() {
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "SramIf");
+}
+
 int Annotation::GetAddrWidth() {
   string k = LookupStrParam(annotation::kAnnotationKey, "");
   if (k == "AxiMaster64" || k == "AxiSlave64") {

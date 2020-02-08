@@ -54,7 +54,8 @@ bool ThreadSynth::HasExtVisibleResource(vm::Object *obj) {
     }
     if (vm::ArrayWrapper::IsIntArray(member_obj)) {
       Annotation *a = vm::ArrayWrapper::GetAnnotation(member_obj);
-      if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave())) {
+      if (a != nullptr &&
+	  (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
 	return true;
       }
     }

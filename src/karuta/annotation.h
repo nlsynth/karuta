@@ -82,6 +82,8 @@ public:
   // 64 or 32.
   int GetAddrWidth();
   bool IsAxiExclusive();
+  // For ram.
+  bool IsSramIf();
   // For fifo.
   int GetDepth();
   bool IsNoWait();
