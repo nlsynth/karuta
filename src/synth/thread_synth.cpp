@@ -172,6 +172,7 @@ void ThreadSynth::CollectUnclaimedMembers() {
       }
       rsynth_->MayAddAxiMasterPort(obj_synth_->GetObject(), member_obj);
       rsynth_->MayAddAxiSlavePort(obj_synth_->GetObject(), member_obj);
+      rsynth_->MayAddSramIfPort(obj_synth_->GetObject(), member_obj);
     }
     if (vm::MailboxWrapper::IsMailbox(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {

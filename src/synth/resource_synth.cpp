@@ -40,15 +40,28 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
     return;
   }
   IResource *slave_port = rset_->GetAxiSlavePort(array_obj);
-  if (slave_port->GetParams()->GetWidth() > 0) {
+  ConfigureSlavePort(owner_obj, array_obj, a, slave_port);
+}
+
+void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj, vm::Object *array_obj) {
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
+  if (a == nullptr || !a->IsSramIf()) {
+    return;
+  }
+  IResource *sram_if_port = rset_->GetSramIfPort(array_obj);
+  ConfigureSlavePort(owner_obj, array_obj, a, sram_if_port);
+}
+
+void ResourceSynth::ConfigureSlavePort(vm::Object *owner_obj, vm::Object *array_obj, Annotation *an, IResource *if_port) {
+  if (if_port->GetParams()->GetWidth() > 0) {
     // already configured.
     return;
   }
-  slave_port->GetParams()->SetWidth(vm::ArrayWrapper::GetDataWidth(array_obj));
-  slave_port->GetParams()->SetAddrWidth(a->GetAddrWidth());
-  SetArrayName(owner_obj, array_obj, slave_port);
-  if (!a->IsAxiExclusive()) {
-    slave_port->GetParams()->SetSramPortIndex("0");
+  if_port->GetParams()->SetWidth(vm::ArrayWrapper::GetDataWidth(array_obj));
+  if_port->GetParams()->SetAddrWidth(an->GetAddrWidth());
+  SetArrayName(owner_obj, array_obj, if_port);
+  if (!an->IsAxiExclusive()) {
+    if_port->GetParams()->SetSramPortIndex("0");
   }
 }
 

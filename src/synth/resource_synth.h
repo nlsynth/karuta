@@ -12,11 +12,13 @@ public:
 
   void MayAddAxiMasterPort(vm::Object *owner_obj, vm::Object *array_obj);
   void MayAddAxiSlavePort(vm::Object *owner_obj, vm::Object *array_obj);
+  void MayAddSramIfPort(vm::Object *owner_obj, vm::Object *array_obj);
   IResource *MayAddExtIO(vm::Method *method, bool is_output);
   void MayAddSharedRegExtWriter(vm::Object *mailbox_obj);
 
 private:
   void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj, IResource *res);
+  void ConfigureSlavePort(vm::Object *owner_obj, vm::Object *array_obj, Annotation *an, IResource *if_port);
 
   ResourceSet *rset_;
   ThreadSynth *thr_synth_;

@@ -125,34 +125,30 @@ IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
 }
 
 IResource *ResourceSet::GetAxiMasterPort(vm::Object *obj) {
-  IResource *array_res = GetSharedArray(obj, true, true);
-  auto it = axi_master_ports_.find(obj);
-  if (it != axi_master_ports_.end()) {
-    return it->second;
-  }
-  IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  resource::kAxiMasterPort);
-  IResource *res = new IResource(tab_, rc);
-  res->SetParentResource(array_res);
-  tab_->resources_.push_back(res);
-  axi_master_ports_[obj] = res;
-  return res;
+  return GetPortResource(obj, resource::kAxiMasterPort, &axi_master_ports_);
 }
 
 IResource *ResourceSet::GetAxiSlavePort(vm::Object *obj) {
+  return GetPortResource(obj, resource::kAxiSlavePort, &axi_slave_ports_);
+}
+
+IResource *ResourceSet::GetSramIfPort(vm::Object *obj) {
+  return GetPortResource(obj, resource::kSramIf, &sram_if_ports_);
+}
+
+IResource *ResourceSet::GetPortResource(vm::Object *obj, const string &name,
+					map<vm::Object *, IResource *> *resources) {
   IResource *array_res = GetSharedArray(obj, true, true);
-  auto it = axi_slave_ports_.find(obj);
-  if (it != axi_slave_ports_.end()) {
+  auto it = resources->find(obj);
+  if (it != resources->end()) {
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  resource::kAxiSlavePort);
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), name);
   IResource *res = new IResource(tab_, rc);
   res->SetParentResource(array_res);
   tab_->resources_.push_back(res);
-  axi_slave_ports_[obj] = res;
+  (*resources)[obj] = res;
   return res;
 }
 

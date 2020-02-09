@@ -921,6 +921,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write) {
     array_sres->SetOwnerIResource(res);
     rsynth_->MayAddAxiMasterPort(obj_, array_obj);
     rsynth_->MayAddAxiSlavePort(obj_, array_obj);
+    rsynth_->MayAddSramIfPort(obj_, array_obj);
   } else {
     res = res_set_->GetSharedArray(array_obj, false, is_write);
     array_sres->AddAccessorResource(res, thr_synth_);

@@ -42,6 +42,7 @@ public:
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
   IResource *GetAxiMasterPort(vm::Object *obj);
   IResource *GetAxiSlavePort(vm::Object *obj);
+  IResource *GetSramIfPort(vm::Object *obj);
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
   IResource *GetMailboxExtWriter(vm::Object *obj);
   IResource *GetTaskReturnRegWriter(int width);
@@ -54,6 +55,8 @@ private:
   string GetResourceClassName(vm::OpCode op);
   void PopulateResourceDataType(int op, IValueType &vt, IResource *res);
   void PopulateIOTypes(fe::VarDeclSet *vds, bool is_output, IResource *res);
+  IResource *GetPortResource(vm::Object *obj, const string &name,
+			     map<vm::Object *, IResource *> *resources);
 
   ITable *tab_;
   IResource *assert_;
@@ -91,6 +94,7 @@ private:
   map<vm::Object *, IResource *> shared_array_reader_;
   map<vm::Object *, IResource *> axi_master_ports_;
   map<vm::Object *, IResource *> axi_slave_ports_;
+  map<vm::Object *, IResource *> sram_if_ports_;
   map<vm::Object *, IResource *> mailbox_shared_reg_;
   map<vm::Object *, IResource *> mailbox_putters_;
   map<vm::Object *, IResource *> mailbox_getters_;
