@@ -33,8 +33,8 @@ private:
   string GetObjectName(vm::Object *obj);
   void WriteArrayObject(const string &name, vm::Object *obj,
 			iroha::dot::Cluster *cl);
-  void WriteAXIPortInfo(const string &name, vm::Object *obj,
-			iroha::dot::Node *node, Annotation *an);
+  void WriteAXIorSramPortInfo(const string &name, vm::Object *obj,
+			      iroha::dot::Node *node, Annotation *an);
 
   std::unique_ptr<iroha::dot::Dot> dot_;
   DesignSynth *synth_;
