@@ -42,7 +42,7 @@ void ObjectMethod::Synth() {
   } else if (name == kGetTickCount) {
     iinsn = SynthGetTickCount(obj);
   } else if (name == kSlaveWait) {
-    iinsn = SynthAxiWait(obj);
+    iinsn = SynthWait(obj);
   } else if (name == kMailboxWidth) {
     iinsn = SynthMailboxWidth(obj);
   } else if (name == kMailboxGet) {
@@ -123,20 +123,39 @@ IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   return iinsn;
 }
 
-IInsn *ObjectMethod::SynthAxiWait(vm::Object *array_obj) {
+IInsn *ObjectMethod::SynthWait(vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
-  if (a == nullptr || !a->IsAxiSlave()) {
-    Status::os(Status::USER_ERROR)
-      << "AXI wait method is allowed on for a slave "
-      << "(add @AxiSlave() annotation).";
-    return nullptr;
+  if (a != nullptr) {
+    if (a->IsAxiSlave()) {
+      return SynthAxiWait(array_obj);
+    }
+    if (a->IsSramIf()) {
+      return SynthSramWait(array_obj);
+    }
   }
+  Status::os(Status::USER_ERROR)
+    << "wait method is allowed on for a slave "
+      << "(add @AxiSlave() or @SramIf() annotation).";
+  return nullptr;
+}
+
+IInsn *ObjectMethod::SynthAxiWait(vm::Object *array_obj) {
   IResource *axis_res = synth_->GetResourceSet()->GetAxiSlavePort(array_obj);
   SharedResource *array_sres =
     synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
   array_sres->SetOwnerIResource(axis_res->GetParentResource());
   rsynth_->MayAddAxiSlavePort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(axis_res);
+  return iinsn;
+}
+
+IInsn *ObjectMethod::SynthSramWait(vm::Object *array_obj) {
+  IResource *sramif_res = synth_->GetResourceSet()->GetSramIfPort(array_obj);
+  SharedResource *array_sres =
+    synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
+  array_sres->SetOwnerIResource(sramif_res->GetParentResource());
+  rsynth_->MayAddSramIfPort(synth_->GetObject(), array_obj);
+  IInsn *iinsn = new IInsn(sramif_res);
   return iinsn;
 }
 
