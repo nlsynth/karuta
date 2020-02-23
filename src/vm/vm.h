@@ -33,7 +33,7 @@ public:
   // Kernel.
   Object *kernel_object_;
   Object *numerics_object_;
-  Object *array_object_;
+  Object *array_prototype_object_;
   Object *bool_type_;
   Object *default_mem_;
 

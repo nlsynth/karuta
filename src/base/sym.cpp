@@ -34,19 +34,10 @@ private:
 } SymTable;
 
 sym_t sym_null, sym_string;
-sym_t sym_assign;
-sym_t sym_memory, sym_add, sym_sub, sym_mul, sym_div;
-sym_t sym_add_eq, sym_sub_eq;
-sym_t sym_incr, sym_decr;
-sym_t sym_lshift, sym_rshift;
-sym_t sym_logic_or, sym_logic_and;
-sym_t sym_bit_concat;
-sym_t sym_bit_or, sym_bit_and, sym_bit_xor, sym_bit_inv;
-sym_t sym_if, sym_else, sym_branch;
+sym_t sym_if, sym_else;
 sym_t sym_for, sym_do, sym_while, sym_return, sym_as;
 sym_t sym_switch, sym_case, sym_default;
 sym_t sym_break, sym_continue, sym_goto;
-sym_t sym_logic_inv, sym_tri_term;
 sym_t sym_int, sym_bool, sym_object;
 sym_t sym_output, sym_input;
 
@@ -141,28 +132,8 @@ sym_t sym_append_idx(sym_t sym, int idx) {
 
 void sym_table_init(void) {
   sym_string = sym_lookup("string");
-  sym_assign = sym_lookup("assign");
-  sym_memory = sym_lookup("memory");
-  sym_add = sym_lookup("add");
-  sym_sub = sym_lookup("sub");
-  sym_mul = sym_lookup("mul");
-  sym_div = sym_lookup("div");
-  sym_add_eq = sym_lookup("sym_add_eq");
-  sym_sub_eq = sym_lookup("sym_sub_eq");
-  sym_incr = sym_lookup("incr");
-  sym_decr = sym_lookup("decr");
-  sym_lshift = sym_lookup("lshift");
-  sym_rshift = sym_lookup("rshift");
-  sym_bit_or = sym_lookup("bit_or");
-  sym_bit_and = sym_lookup("bit_and");
-  sym_bit_xor = sym_lookup("bit_xor");
-  sym_bit_inv = sym_lookup("bit_inv");
-  sym_logic_or = sym_lookup("logic_or");
-  sym_logic_and = sym_lookup("logic_and");
-  sym_bit_concat = sym_lookup("concat");
   sym_if = sym_lookup("if");
   sym_else = sym_lookup("else");
-  sym_branch = sym_lookup("branch");
   sym_for = sym_lookup("for");
   sym_do = sym_lookup("do");
   sym_while = sym_lookup("while");
@@ -174,8 +145,6 @@ void sym_table_init(void) {
   sym_goto = sym_lookup("goto");
   sym_as = sym_lookup("as");
   sym_return = sym_lookup("return");
-  sym_logic_inv = sym_lookup("inv");
-  sym_tri_term = sym_lookup("tri_term");
   sym_int = sym_lookup("int");
   sym_bool = sym_lookup("bool");
   sym_object = sym_lookup("object");
