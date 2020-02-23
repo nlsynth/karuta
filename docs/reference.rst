@@ -1,6 +1,8 @@
 Reference
 =========
 
+.. contents::
+
 ==================
 Command line flags
 ==================
@@ -112,11 +114,36 @@ If no object name is given in the declaration, the method will belong to the cur
      return (0, 0)
    }
 
-A method declaration can have an argument list and return value list.
+A declaration can have an argument list and return value list.
+A declaration begin with a keyword either *func* or *process*.
 
 --------------------
 Variable declaration
 --------------------
+
+Syntax to declare a variable is:
+  [variable type] [name] [data type]
+  e.g. ram a int[16]
+
+============= ================ ========================
+Variable type Data type        Note
+============= ================ ========================
+shared        scalar or array  Equivalent to ram or reg
+ram           array            BRAM/SRAM
+reg           scalar           reg
+mailbox       scalar           mailbox
+channel       scalar           channel
+var           scalar           Local variable
+============= ================ ========================
+
+Data types of a scalar variable are:
+
+* int - 32 bits
+* #0  - boolean
+* #10 - 10 bits
+* #T - User define type T
+
+A vector type is declared by [scalar type][length] like int[16].
 
 .. code-block:: none
 
@@ -132,9 +159,9 @@ Variable declaration
      a = y + z
    }
 
-------
-Syntax
-------
+------------
+Basic Syntax
+------------
 
 Comments
 
@@ -267,30 +294,76 @@ with block
    }
 
 
-================
-Built in methods
-================
+============================
+Built in objects and methods
+============================
+
+-------
+Objects
+-------
 
 * Object
 
-  * Kernel
+  * Array - Internal SRAM
+  * Env - Profiling
+  * Global - Placeholder for global variables
+  * Kernel - Base object for user's design
+  * Memory - External SRAM
+  * Numerics - Registry for user defined types.
 
-    * Module
+
+-------
+Methods
+-------
 
 * Object.clone()
 * Object.dump()
-* Object.setDump()
-* Object.assert()
-* Object.Kernel()
+* Object.run()
+* Object.bool
+* Object.false
+* Object.true
+* Object.Object
 
+* Kernel.assert()
 * Kernel.abort()
 * Kernel.compile()
 * Kernel.exit()
+* Kernel.getTickCount()
+* Kernel.new()
 * Kernel.print()
+* Kernel.runIroha()
+* Kernel.setAddressWitdh()
+* Kernel.setDump()
+* Kernel.setIROutput()
+* Kernel.setIrohaPath()
+* Kernel.setSynthParam()
+* Kernel.synth()
+* Kernel.wait()
+* Kernel.widthof()
 * Kernel.writeHdl()
-* Kernel.bool()
-* Kernel.Object()
-* Kernel.Module ()
+* Kernel.yield()
+
+* Kernel.Kernel\_
+* Kernel.Object
+* Kernel.Module
+* Kernel.parent
+* Kernel.self
+
+* Kernel.Array
+* Kernel.Env
+* Kernel.Global
+* Kernel.Memory
+* Kernel.Numerics
+
+* Env.gc()
+* Env.clearProfile()
+* Env.disableProfile()
+* Env.enableProfile()
+* Env.isMain()
+
+* Array axiLoad, axiStore, waitAccess, notifyAccess, saveImage, loadImage, read, write
+* Channel write, writeFast, read
+* Mailbox width, put, notify, get, wait
 
 * .$compiled_module
 * .$dump_file_name

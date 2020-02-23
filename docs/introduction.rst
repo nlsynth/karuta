@@ -18,7 +18,7 @@ Tutorial
 ========
 
 This section illustrates some of Karuta's features using Xorshift32 method.
-Simplest Xorshift32 in Karuta is like this:
+A simple Xorshift32 code in Karuta is like this:
 
 .. code-block:: none
 
@@ -44,7 +44,7 @@ Save this to a file named xorshift32.karuta, then you can run this program like
     ...
 
 I guess this looks pretty mundane to you, so let's start hardware design.
-So you can the run same karuta command again and will get xorshift32.v! The content should look like this.
+So you can the run same *karuta* command again and will get xorshift32.v. The content should look like this.
 
 .. code-block:: none
 
@@ -127,7 +127,7 @@ This can be tidied up a bit by factoring out update formulas.
      return t
    }
 
-   func main() {
+   process main() {
      y = 1
      while true {
        y = update(y)
@@ -147,8 +147,8 @@ The last example here illustrates some of the most important features of Karuta 
      return t
    }
 
-   // main() will be compiled to be an entry point of a thread.
-   func main() {
+   // Thread entry method.
+   process main() {
      var y int = 1
      while true {
        y = update(y)
@@ -161,7 +161,7 @@ The last example here illustrates some of the most important features of Karuta 
      print(y)
    }
 
-   // process declaration makes this method as an entry point of a thread.
+   // Thread entry method.
    process thr() {
      var b #0 = 0
      while true {
@@ -175,7 +175,7 @@ The last example here illustrates some of the most important features of Karuta 
      }
    }
 
-This code has 2 thread entry points. One generates random numbers and the another reads the numbers via the channel.
+This code has 2 thread entry methods. One generates random numbers and the another reads the numbers via a channel.
 When the code is compiled, generated Verilog code will have 2 state machines (*'always'* blocks).
 You can deploy the code to an FPGA board, connect the output to an LED and see it flickers randomly.
 
@@ -200,9 +200,9 @@ Another one is to visualized the structure of modules and FSMs after synthesis.
 Features
 ========
 
-Karuta's 10 language features you might like... (selected as of 2019 May)
+Karuta's 10 important features you might like...
 
-* New scripting language with contemporary syntax designed only for this purpose
+* New scripting language with contemporary syntax designed primarily for hardware design
 * Prototype based OOP
 * Data width for each variable
 * Static thread concurrency

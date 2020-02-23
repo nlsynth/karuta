@@ -7,7 +7,7 @@ User's guide
 Run or Compile
 ==============
 
-For example, you have a design like this and save to a file my_design.karuta
+Assuming that you have a design like this and save to a file my_design.karuta
 
 .. code-block:: none
 
@@ -52,7 +52,7 @@ This is equivalent to call *run()* at the end of the code.
 Prototype-based object system
 =============================
 
-Karuta adopts prototype-base object oriented programming style. So, a new object can be created by cloning a base object and User's design is described by modifying object(s).
+Karuta adopts prototype-base object oriented programming style. A new object can be created by cloning an existing base object and user's design is described by modifying object(s).
 
 .. code-block:: none
 
@@ -86,7 +86,7 @@ Karuta adopts prototype-base object oriented programming style. So, a new object
 Default file object
 ===================
 
-Karuta allocates an object for each file and the object is used as the default object while executing the code. The default object can be ommitted or explicitly denoted as *self*.
+Karuta allocates an object for each source file and the object is used as the default object while executing the code. The default object can be ommitted or explicitly denoted as *self*.
 
 .. code-block:: none
 
@@ -100,8 +100,6 @@ Karuta allocates an object for each file and the object is used as the default o
 =============
 Integer width
 =============
-
-(Karuta also has features for user defined types (e.g. bfloat16). Document will be added later.)
 
 Bit width of data is important to use FPGAs efficiently while it is not cared so much for CPUs. Karuta allows arbitrary bit width.
 
@@ -118,6 +116,8 @@ Bit width of data is important to use FPGAs efficiently while it is not cared so
      return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
    }
 
+(Karuta also has features for user defined types (e.g. bfloat16). Document will be added later.)
+
 ================
 Member variables
 ================
@@ -127,7 +127,7 @@ Karuta is an object oriented language, so a design can be described as objects a
 
 .. code-block:: none
 
-   // `self.` part can be omitted. Just `shared o object` is also ok.
+   // Just `shared o object` without `self.` is also ok.
    shared self.o object = new()
    // This declares a member of a member `o`.
    reg self.o.v int
@@ -200,15 +200,15 @@ Method can be declared as a thread entry. A thread will be created when the code
 Thread local variable
 =====================
 
-Karuta can create multiple threads from one @ThreadEntry() by specifying num= parameter.
+Multiple threads can be created from an entry method by specifying *num=* parameter.
 
 .. code-block:: none
 
    @ThreadLocal()
    shared M.x int
 
-   @ThreadEntry(num=2)
-   func M.thr(idx int) {
+   @(num=2)
+   process M.thr(idx int) {
      // 2 copies of this thread runs and the index is given as the method
      // argument. idx = 0, 1.
 
@@ -235,15 +235,17 @@ I/O from/to external
      return true
    }
 
----------------------
-AXI interface support
----------------------
+-------------
+AXI interface
+-------------
 
-Karuta supports AXI master/slave interface. Karuta attaches a DMA controller to an SRAM to use an AXI interface.
+Either AXI master or slave interface can be attached to each array.
 
 ^^^^^^^^^^
 AXI master
 ^^^^^^^^^^
+
+When an array is declared with AXI master annotation, we can transfer data to/from external memory from/to the array by calling methods of the array.
 
 .. code-block:: none
 
@@ -261,6 +263,8 @@ AXI master
 AXI slave
 ^^^^^^^^^
 
+When an array declared with AXI slave annotation, an AXI slave interface to outside of the design is generated and we can access the array from outside.
+
 .. code-block:: none
 
    @AxiSlave()
@@ -269,10 +273,22 @@ AXI slave
    func f() {
      while true {
        s.waitAccess()
+       // Do something on access.
      }
    }
 
 `notifyAccess()` method can be used for testing.
+
+--------------
+SRAM interface
+--------------
+
+Similar to AXI slave interface, SRAM interface which can be accessed from outside of the design can be attached to a RAM.
+
+.. code-block:: none
+
+   @SramIf
+   ram s int[16]
 
 ----------------
 Method interface
@@ -417,7 +433,7 @@ Karuta allows to implement user defined numeric types. An object describes user 
      return lhs + rhs
    }
 
-   // Type class can't be accessed from top level environment.
+   // NOTE: Type object can't be accessed from top level environment.
    func f() {
      var x #Int32
      x = Numerics.Int32.Build(1)
@@ -460,7 +476,7 @@ Type object and embedded combinational logic can be used to build a custom type 
 Building object hierarchy
 =========================
 
-The basic way to build an object hierarcy is to declare member
+The basic way to build an object hierarcy is to add new member objects and modify them.
 
 .. code-block:: none
 
@@ -513,21 +529,21 @@ When `with` block is used, the member object can access its enclosing object by 
 Profile Guided Optimization (PGO)
 =================================
 
-One of the most important points of optimization is to know which part of the design is a good target of optimization. Karuta uses a technique called PGO (Profile Guided Optimization) to obtain the information.
+One of the most important points of optimization is to know which part of the design is a good target of optimization. A technique called PGO (Profile Guided Optimization) can be used to obtain the information.
 
-Following example illustrates how to enable profiling. Profiling is enabled between the calls of Env.enableProfile() and Env.disableProfile(), so the profile information will be collected while running main().
-compile() takes the profile information into account and does optimization.
+Following example illustrates how to enable profiling. Profiling is enabled between the calls of *Env.enableProfile()* and *Env.disableProfile()*, so the profile information will be collected while running main().
+compile() takes the profile information into account to perform optimization.
 
 .. code-block:: none
 
-   func main() {
-     // Does some stuff.
+   process main() {
+     // Does some computation and I/O.
    }
 
    Env.clearProfile()
    Env.enableProfile()
 
-   // Run actual code here.
+   // Run actual code here on the interpreter.
    main()
 
    Env.disableProfile()
@@ -554,7 +570,7 @@ Importing file
 Object distance
 ===============
 
-Elements of designs are placed onto the physical area of an FPGA and there are distances between them. So Karuta has a feature to specify number of clocks to propagete signals for communication.
+Elements of designs are placed onto the physical area of an FPGA and there are physical distances between them. So Karuta has a feature to specify number of clocks to propagete signals for communication.
 
 .. code-block:: none
 
@@ -568,6 +584,7 @@ Elements of designs are placed onto the physical area of an FPGA and there are d
    }
 
    func self.f() {
+     // These takes 10(+basic overhead) clocks.
      m.v = 1
      m.f()
    }
@@ -576,7 +593,7 @@ Elements of designs are placed onto the physical area of an FPGA and there are d
 Testing
 =======
 
-Karuta's features for object oriented programming can be used to test designs as well. One key idea is to create an enclosing tester object for the design (There may be other ways).
+Features for object oriented programming can be used to test designs as well. One key idea is to create an enclosing tester object for the design (There may be other ways).
 
 .. code-block:: none
 
