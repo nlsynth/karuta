@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Karuta'
-copyright = '2019, Yusuke Tabata'
+copyright = '2020, Yusuke Tabata'
 author = 'Yusuke Tabata'
 
 # The short X.Y version
