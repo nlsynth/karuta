@@ -11,6 +11,10 @@ As readers might know, there have been a good amount of efforts to improve effic
 
 Karuta is one of the efforts to make some of circuit designs more efficient. Karuta is a new programming designed for this purpose and its compiler. The language introduces higher level abstraction than RTL (so called HLS).
 
+-----------------
+Why new language?
+-----------------
+
 While most of other attempts to introduce higher level abstraction adopt existing programming languages for software, Karuta project designs a new language. This is because I believe following things:
 
 1. Different assumptions on underlying hardware.
@@ -23,6 +27,10 @@ While most of other attempts to introduce higher level abstraction adopt existin
 3. Own language will make it easy to experiment new ideas and features.
 
    * It is also fun!
+
+--------------
+Considerations
+--------------
 
 With above hypotheses, Karuta's design took following considerations.
 
@@ -37,7 +45,7 @@ On the other hand, Karuta assumes a thread is a piece of computation and corresp
 
 * Object system
 
-To choose features to support object oriented programming, language designers usually have to consider two issues; (1) Users' convenience and (2) Runtime efficiency. So we have to be careful about the differences of these conditions from software design.
+To choose features to support object oriented programming, language designers usually have to consider two issues; (1) Users' convenience and (2) Runtime efficiency. So we have to be careful about the differences of these conditions for hardware design from software design.
 
 Most of software languages uses class based object oriented programming. It works really well by assigning each class to code and each instance to data. On the other hand, Karuta's hypothesis is prototype based object oriented programming seems to fit better for hardware design.
 Karuta assumes it is more intuitive to place code as an FSM and make member variables as registers or RAMs.
@@ -45,15 +53,15 @@ Karuta assumes it is more intuitive to place code as an FSM and make member vari
 
 * Arrays
 
-Efficient use of RAM is also crucial for programs on FPGAs. While most of software runtime assumes one shared memory between threads, FPGAs allow to put RAMs near the place where the actual computation is done. This is important to achieve higher performance and energy efficiency.
+Efficient use of RAM is also crucial for programs on FPGAs. While most of software runtime assumes one globally shared memory among threads, FPGAs allow to put RAMs near the place where the actual computation is done. This is important to achieve higher performance and energy efficiency.
 
 Karuta allows to add arrays as member of an object and maps them to RAMs at synthesis.
 
 
 * Data types
 
-CPUs, GPUs and most of accelerators have fixed set of data types and operators for them. It can be inefficient if narrow data type is enough for the purpose.
-So Karuta is designed to allow arbitrary data width.
+CPUs, GPUs and most of accelerators have fixed set of data width and operators. On the other hand, FPGAs can allow arbitrary set of data width and operators.
+Fixed data types can be inefficient if narrow data width or subset of operators are enough for the purpose. So Karuta is aiming to design to allow flexible data types.
 
 In addition to allow arbitrary width, Karuta allows to define custom operators to variables. This makes it easy to implement data types like narrower/wider precision floating/fixed points or vector-ish data types like complex numbers, RGB or so on.
 
@@ -79,7 +87,7 @@ Karuta also takes some syntax from HDLs so bits can be sliced like `x[15:8]` and
 Use of IR
 ---------
 
-Karuta adopts Iroha (Intermediate Representation Of Hardware Abstraction) as its IR and backend which borrowed concepts from LLVM. Karuta generates Iroha based IR and Iroha takes it as its input, optimize and write out HDL files.
+Karuta adopts Iroha (Intermediate Representation Of Hardware Abstraction) as its IR and backend which borrowed concepts from LLVM. Karuta generates Iroha based IR and Iroha takes it as its input, optimizes and writes out HDL files.
 
 -------------
 HDL embedding
