@@ -36,7 +36,7 @@ With above hypotheses, Karuta's design took following considerations.
 
 * Concurrency and communication
 
-Use of concurrency is an essential issue for hardware designs. A whole design is placed over the area of an FPGA and computation can happen anywhare on it. So Karuta aims to make it easy to describe such a behavior by threads.
+Use of concurrency is an essential issue for hardware designs. A whole design is placed over the area of an FPGA and computation can happen anywhere on it. So Karuta aims to make it easy to describe such a behavior by threads.
 
 A thread on software is typically a natural unit of computation from its beginning to end and can be assigned to a CPU when it is available. This also means any thread with any computation can be assigned to a CPU.
 
