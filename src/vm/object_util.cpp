@@ -30,7 +30,8 @@ string ObjectUtil::GetStringMember(Object *obj, const string &key) {
   return StringWrapper::String(value->object_);
 }
 
-void ObjectUtil::SetStringMember(Object *obj, const string &key, const string &str) {
+void ObjectUtil::SetStringMember(Object *obj, const string &key,
+				 const string &str) {
   Value *value = obj->LookupValue(sym_lookup(key.c_str()), true);
   value->type_ = Value::OBJECT;
   value->object_ = StringWrapper::NewStringWrapper(obj->GetVM(), str);

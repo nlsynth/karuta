@@ -6,6 +6,7 @@
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
 #include "karuta/annotation.h"
+#include "synth/object_attr_names.h"
 #include "vm/array_wrapper.h"
 #include "vm/channel_wrapper.h"
 #include "vm/insn.h"
@@ -308,6 +309,10 @@ IResource *ResourceSet::GetExternalArrayResource(vm::Object *obj) {
   }
   int aw = vm::ObjectUtil::GetAddressWidth(obj);
   auto *mem_if = DesignTool::CreateArrayResource(tab_, aw, 32, true, true);
+  string n = vm::ObjectUtil::GetStringMember(obj, synth::kSramName);
+  if (!n.empty()) {
+    mem_if->GetParams()->SetPortNamePrefix(n);
+  }
   ext_sram_if_[obj] = mem_if;
   return mem_if;
 }

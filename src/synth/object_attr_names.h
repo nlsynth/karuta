@@ -8,6 +8,7 @@ const char kIrFileName[] = "$ir_file_name";
 const char kDumpFileName[] = "$dump_file_name";
 const char kIrohaPath[] = "$iroha_path";
 const char kSynthParams[] = "$synth_params";
+const char kSramName[] = "$sram_name";
 
 }  // namespace synth
 

@@ -6,6 +6,7 @@
 #include "base/util.h"
 #include "karuta/annotation.h"
 #include "numeric/numeric_op.h"  // from iroha
+#include "synth/object_attr_names.h"
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
 #include "vm/native_objects.h"
@@ -287,6 +288,17 @@ void ArrayWrapper::SetAddressWidth(Thread *thr, Object *obj,
   }
 }
 
+void ArrayWrapper::SetName(Thread *thr, Object *obj,
+			   const vector<Value> &args) {
+  if (args.size() != 1 || !StringWrapper::IsString(args[0].object_)) {
+    Status::os(Status::USER_ERROR) << "SetName should be take a string";
+    thr->UserError();
+    return;
+  }
+  ObjectUtil::SetStringMember(obj, synth::kSramName,
+			      StringWrapper::String(args[0].object_));
+}
+
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m;
@@ -309,6 +321,8 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
 				     &ArrayWrapper::LoadImage, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "setAddressWidth",
 				     &ArrayWrapper::SetAddressWidth, rets);
+  NativeObjects::InstallNativeMethod(vm, obj, "setName",
+				     &ArrayWrapper::SetName, rets);
 }
 
 void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {
