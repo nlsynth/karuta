@@ -209,6 +209,6 @@ Karuta's 10 important features you might like...
 * Channels and mailboxes
 * Attach AXI DMA controller to arrays
 * Custom data types
-* Distance between objects can be speficied
+* Distance between objects can be specified
 * Interfaces circuits outside
 * HDL embedding

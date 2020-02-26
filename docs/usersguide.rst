@@ -86,7 +86,7 @@ Karuta adopts prototype-base object oriented programming style. A new object can
 Default file object
 ===================
 
-Karuta allocates an object for each source file and the object is used as the default object while executing the code. The default object can be ommitted or explicitly denoted as *self*.
+Karuta allocates an object for each source file and the object is used as the default object while executing the code. The default object can be omitted or explicitly denoted as *self*.
 
 .. code-block:: none
 
@@ -156,7 +156,7 @@ Arrays are really important to utilize FPGA, so Karuta has features to use array
      return arr[idx - 1] + arr[idx] + arr[idx + 1]
    }
 
-One important diffrence from Karuta and other languages is that an array index wraps around by the length of the array.
+One important difference from Karuta and other languages is that an array index wraps around by the length of the array.
 
 ------------
 Array images
@@ -314,7 +314,7 @@ Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f
 Embedded combinational logic
 ----------------------------
 
-A combinational logic in a Verilog module can be embedded in a function of Karuta by spcifying the file name and module name by @ExtCombinational annotation.
+A combinational logic in a Verilog module can be embedded in a function of Karuta by specifying the file name and module name by @ExtCombinational annotation.
 
 .. code-block:: none
 
@@ -338,7 +338,7 @@ Channel and mailbox
 ===================
 
 Communication between threads is really important for circuit design.
-While one simple way of communication is just to use shared registers or arrrays, Karuta also supports channel and mailbox to communicate between threads.
+While one simple way of communication is just to use shared registers or arrays, Karuta also supports channel and mailbox to communicate between threads.
 
 This example this just write values and read them from other threads.
 
@@ -476,7 +476,7 @@ Type object and embedded combinational logic can be used to build a custom type 
 Building object hierarchy
 =========================
 
-The basic way to build an object hierarcy is to add new member objects and modify them.
+The basic way to build an object hierarchy is to add new member objects and modify them.
 
 .. code-block:: none
 
@@ -570,7 +570,7 @@ Importing file
 Object distance
 ===============
 
-Elements of designs are placed onto the physical area of an FPGA and there are physical distances between them. So Karuta has a feature to specify number of clocks to propagete signals for communication.
+Elements of designs are placed onto the physical area of an FPGA and there are physical distances between them. So Karuta has a feature to specify number of clocks to propagate signals for communication.
 
 .. code-block:: none
 

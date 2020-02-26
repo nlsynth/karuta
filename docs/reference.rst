@@ -30,7 +30,7 @@ Command line flags
 
 * --iroha_binary [binary]
 
-  * Specifies annalternative iroha binary.
+  * Specifies an alternative iroha binary.
 
 * --module_prefix=[mod]
 
@@ -423,7 +423,7 @@ Glossary
 
 * Bytecode
 
-  * Compiled fron Karuta Light Script and can be executed or synthesized
+  * Compiled from Karuta Light Script and can be executed or synthesized
 
 * Iroha
 
