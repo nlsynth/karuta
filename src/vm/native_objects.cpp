@@ -35,8 +35,6 @@ void NativeObjects::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   rets.push_back(ObjectType());
   InstallNativeMethod(vm, obj, "new", &NativeMethods::New, rets);
   rets.clear();
-  InstallNativeMethod(vm, obj, "setAddressWidth",
-		      &NativeMethods::SetAddressWidth, rets);
   InstallNativeMethod(vm, obj, "setDump", &NativeMethods::SetDump, rets);
   InstallNativeMethod(vm, obj, "setIROutput",
 		      &NativeMethods::SetIROutput, rets);

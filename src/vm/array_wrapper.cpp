@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "base/status.h"
 #include "base/util.h"
 #include "karuta/annotation.h"
 #include "numeric/numeric_op.h"  // from iroha
@@ -10,6 +11,7 @@
 #include "vm/native_objects.h"
 #include "vm/method.h"
 #include "vm/object.h"
+#include "vm/object_util.h"
 #include "vm/string_wrapper.h"
 #include "vm/thread.h"
 #include "vm/thread_queue.h"
@@ -269,6 +271,22 @@ void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
   arr->ImageIO(StringWrapper::String(arg.object_), format, save);
 }
 
+void ArrayWrapper::SetAddressWidth(Thread *thr, Object *obj,
+				   const vector<Value> &args) {
+  if (args.size() != 1 || args[0].type_ != Value::NUM) {
+    Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
+    thr->UserError();
+    return;
+  }
+  int w = args[0].num_.GetValue0();
+  if (w > 0 && w <= 64) {
+    ObjectUtil::SetAddressWidth(obj, w);
+  } else {
+    Status::os(Status::USER_ERROR) << w << " is invalid address width.";
+    thr->UserError();
+  }
+}
+
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m;
@@ -289,6 +307,8 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
 				     &ArrayWrapper::SaveImage, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "loadImage",
 				     &ArrayWrapper::LoadImage, rets);
+  NativeObjects::InstallNativeMethod(vm, obj, "setAddressWidth",
+				     &ArrayWrapper::SetAddressWidth, rets);
 }
 
 void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {

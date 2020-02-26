@@ -12,6 +12,7 @@
 #include "vm/int_array.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
+#include "vm/object_util.h"
 
 namespace synth {
 
@@ -19,7 +20,6 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   assign_ = nullptr;
   assert_ = nullptr;
   pseudo_call_ = nullptr;
-  mem_if_ = nullptr;
   task_entry_ = nullptr;
   br_ = DesignTool::GetOneResource(tab, resource::kTransition);
   print_ = nullptr;
@@ -301,11 +301,15 @@ void ResourceSet::PopulateIOTypes(fe::VarDeclSet *vds, bool is_output,
   }
 }
 
-IResource *ResourceSet::GetExternalArrayResource() {
-  if (mem_if_ == nullptr) {
-    mem_if_ = DesignTool::CreateArrayResource(tab_, 32, 32, true, true);
+IResource *ResourceSet::GetExternalArrayResource(vm::Object *obj) {
+  auto it = ext_sram_if_.find(obj);
+  if (it != ext_sram_if_.end()) {
+    return it->second;
   }
-  return mem_if_;
+  int aw = vm::ObjectUtil::GetAddressWidth(obj);
+  auto *mem_if = DesignTool::CreateArrayResource(tab_, aw, 32, true, true);
+  ext_sram_if_[obj] = mem_if;
+  return mem_if;
 }
 
 IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {

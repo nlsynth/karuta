@@ -30,7 +30,7 @@ public:
   IResource *GetOpResource(vm::OpCode op, IValueType &vt);
 
   IResource *GetImportedResource(vm::Method *method);
-  IResource *GetExternalArrayResource();
+  IResource *GetExternalArrayResource(vm::Object *obj);
   IResource *GetInternalArrayResource(vm::Object *obj);
   IResource *GetChannelResource(vm::Object *ch, bool is_owner,
 				bool is_write,
@@ -63,7 +63,6 @@ private:
   IResource *assign_;
   IResource *br_;
   IResource *print_;
-  IResource *mem_if_;
   IResource *pseudo_call_;
   IResource *task_entry_;
   IResource *dataflow_in_;
@@ -83,6 +82,7 @@ private:
 
   vector<IResource *> imported_resources_;
   map<vm::Object *, IResource *> array_resources_;
+  map<vm::Object *, IResource *> ext_sram_if_;
   map<vm::Object *, IResource *> fifo_resources_;
   map<vm::Object *, IResource *> fifo_writers_;
   map<vm::Object *, IResource *> fifo_readers_;

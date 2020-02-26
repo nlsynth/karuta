@@ -91,22 +91,6 @@ void NativeMethods::Run(Thread *thr, Object *obj,
   ThreadWrapper::Run(thr->GetVM(), obj);
 }
 
-void NativeMethods::SetAddressWidth(Thread *thr, Object *obj,
-				    const vector<Value> &args) {
-  if (args.size() != 1 || args[0].type_ != Value::NUM) {
-    Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
-    thr->UserError();
-    return;
-  }
-  int w = args[0].num_.GetValue0();
-  if (w == 32 || w == 64) {
-    ObjectUtil::SetAddressWidth(obj, w);
-  } else {
-    Status::os(Status::USER_ERROR) << w << " is invalid address width.";
-    thr->UserError();
-  }
-}
-
 void NativeMethods::SetDump(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   SetMemberString(thr, synth::kDumpFileName, obj, args);

@@ -21,8 +21,6 @@ public:
   static void Run(Thread *thr, Object *obj, const vector<Value> &args);
   static void Main(Thread *thr, Object *obj, const vector<Value> &args);
   static void New(Thread *thr, Object *obj, const vector<Value> &args);
-  static void SetAddressWidth(Thread *thr, Object *obj,
-			      const vector<Value> &args);
   static void SetDump(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetSynthParam(Thread *thr, Object *obj,
 			    const vector<Value> &args);

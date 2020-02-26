@@ -210,7 +210,7 @@ string ObjectMethod::GetSynthName(vm::Object *obj) {
 
 IInsn *ObjectMethod::SynthMemoryAccess(vm::Object *obj, bool is_write) {
   ResourceSet *rset = synth_->GetResourceSet();
-  IResource *res = rset->GetExternalArrayResource();
+  IResource *res = rset->GetExternalArrayResource(obj);
   IInsn *iinsn = new IInsn(res);
   return iinsn;
 }

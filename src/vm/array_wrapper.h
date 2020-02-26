@@ -36,6 +36,8 @@ private:
 			     const vector<Value> &args, bool is_load);
   static void SaveImage(Thread *thr, Object *obj, const vector<Value> &args);
   static void LoadImage(Thread *thr, Object *obj, const vector<Value> &args);
+  static void SetAddressWidth(Thread *thr, Object *obj,
+			      const vector<Value> &args);
   static void ImageIO(bool save, Thread *thr, Object *obj, const vector<Value> &args);
   static void InstallMethods(VM *vm ,Object *obj);
   static void MayNotifyWaiters(Object *obj);
