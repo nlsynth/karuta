@@ -90,6 +90,16 @@ void NativeObjects::InstallEnvNativeMethods(VM *vm, Object *env) {
   InstallNativeMethod(vm, env, "isMain", &NativeMethods::IsMain, rets);
 }
 
+Method *NativeObjects::FindMethod(Object *obj, Method::method_func func) {
+  for (auto it : obj->members_) {
+    Value &v = it.second;
+    if (v.type_ == Value::METHOD && v.method_->GetMethodFunc() == func) {
+      return v.method_;
+    }
+  }
+  return nullptr;
+}
+
 RegisterType NativeObjects::ObjectType() {
   iroha::NumericWidth dw;
   return RegisterType(Value::OBJECT, nullptr, dw, sym_null, false);

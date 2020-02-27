@@ -297,7 +297,11 @@ void ArrayWrapper::SetDataWidth(Thread *thr, Object *obj,
   }
   int w = args[0].num_.GetValue0();
   if (w > 0 && w <= 64) {
-    // TODO: Change return value type.
+    // Updates the return value type.
+    Method *m = NativeObjects::FindMethod(obj, &ArrayWrapper::Read);
+    if (m != nullptr && m->return_types_.size() == 1) {
+      m->return_types_[0] = NativeObjects::IntType(w);
+    }
     ObjectUtil::SetDataWidth(obj, w);
   } else {
     Status::os(Status::USER_ERROR) << w << " is invalid data width.";

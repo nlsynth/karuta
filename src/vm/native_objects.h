@@ -21,6 +21,7 @@ public:
 						const vector<RegisterType> &ret_types,
 						const char *alt);
   static void InstallEnvNativeMethods(VM *vm, Object *obj);
+  static Method *FindMethod(Object *obj, Method::method_func func);
 
   static RegisterType ObjectType();
   static RegisterType BoolType(VM *vm);
