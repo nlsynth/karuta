@@ -332,7 +332,6 @@ Methods
 * Kernel.new()
 * Kernel.print()
 * Kernel.runIroha()
-* Kernel.setAddressWitdh()
 * Kernel.setDump()
 * Kernel.setIROutput()
 * Kernel.setIrohaPath()
@@ -362,6 +361,7 @@ Methods
 * Env.isMain()
 
 * Array axiLoad, axiStore, waitAccess, notifyAccess, saveImage, loadImage, read, write
+* Memory setWidth
 * Channel write, writeFast, read
 * Mailbox width, put, notify, get, wait
 

@@ -36,10 +36,7 @@ private:
 			     const vector<Value> &args, bool is_load);
   static void SaveImage(Thread *thr, Object *obj, const vector<Value> &args);
   static void LoadImage(Thread *thr, Object *obj, const vector<Value> &args);
-  static void SetAddressWidth(Thread *thr, Object *obj,
-			      const vector<Value> &args);
-  static void SetDataWidth(Thread *thr, Object *obj,
-			   const vector<Value> &args);
+  static void SetWidth(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetName(Thread *thr, Object *obj, const vector<Value> &args);
   static void ImageIO(bool save, Thread *thr, Object *obj,
 		      const vector<Value> &args);

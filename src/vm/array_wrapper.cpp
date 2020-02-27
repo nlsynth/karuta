@@ -272,39 +272,32 @@ void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
   arr->ImageIO(StringWrapper::String(arg.object_), format, save);
 }
 
-void ArrayWrapper::SetAddressWidth(Thread *thr, Object *obj,
-				   const vector<Value> &args) {
-  if (args.size() != 1 || args[0].type_ != Value::NUM) {
-    Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
+void ArrayWrapper::SetWidth(Thread *thr, Object *obj,
+			    const vector<Value> &args) {
+  if (args.size() != 2 || args[0].type_ != Value::NUM ||
+      args[1].type_ != Value::NUM) {
+    Status::os(Status::USER_ERROR) << "Only 2 int arguments are allowed";
     thr->UserError();
     return;
   }
-  int w = args[0].num_.GetValue0();
-  if (w > 0 && w <= 64) {
-    ObjectUtil::SetAddressWidth(obj, w);
+  int aw = args[0].num_.GetValue0();
+  if (aw > 0 && aw <= 64) {
+    ObjectUtil::SetAddressWidth(obj, aw);
   } else {
-    Status::os(Status::USER_ERROR) << w << " is invalid address width.";
-    thr->UserError();
-  }
-}
-
-void ArrayWrapper::SetDataWidth(Thread *thr, Object *obj,
-				const vector<Value> &args) {
-  if (args.size() != 1 || args[0].type_ != Value::NUM) {
-    Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
+    Status::os(Status::USER_ERROR) << aw << " is invalid address width.";
     thr->UserError();
     return;
   }
-  int w = args[0].num_.GetValue0();
-  if (w > 0 && w <= 64) {
+  int dw = args[1].num_.GetValue0();
+  if (dw > 0 && dw <= 64) {
     // Updates the return value type.
     Method *m = NativeObjects::FindMethod(obj, &ArrayWrapper::Read);
     if (m != nullptr && m->return_types_.size() == 1) {
-      m->return_types_[0] = NativeObjects::IntType(w);
+      m->return_types_[0] = NativeObjects::IntType(dw);
     }
-    ObjectUtil::SetDataWidth(obj, w);
+    ObjectUtil::SetDataWidth(obj, dw);
   } else {
-    Status::os(Status::USER_ERROR) << w << " is invalid data width.";
+    Status::os(Status::USER_ERROR) << dw << " is invalid data width.";
     thr->UserError();
   }
 }
@@ -340,10 +333,8 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
 				     &ArrayWrapper::SaveImage, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "loadImage",
 				     &ArrayWrapper::LoadImage, rets);
-  NativeObjects::InstallNativeMethod(vm, obj, "setAddressWidth",
-				     &ArrayWrapper::SetAddressWidth, rets);
-  NativeObjects::InstallNativeMethod(vm, obj, "setDataWidth",
-				     &ArrayWrapper::SetDataWidth, rets);
+  NativeObjects::InstallNativeMethod(vm, obj, "setWidth",
+				     &ArrayWrapper::SetWidth, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "setName",
 				     &ArrayWrapper::SetName, rets);
 }
