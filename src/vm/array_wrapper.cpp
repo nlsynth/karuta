@@ -288,6 +288,23 @@ void ArrayWrapper::SetAddressWidth(Thread *thr, Object *obj,
   }
 }
 
+void ArrayWrapper::SetDataWidth(Thread *thr, Object *obj,
+				const vector<Value> &args) {
+  if (args.size() != 1 || args[0].type_ != Value::NUM) {
+    Status::os(Status::USER_ERROR) << "Only 1 int argument is allowed";
+    thr->UserError();
+    return;
+  }
+  int w = args[0].num_.GetValue0();
+  if (w > 0 && w <= 64) {
+    // TODO: Change return value type.
+    ObjectUtil::SetDataWidth(obj, w);
+  } else {
+    Status::os(Status::USER_ERROR) << w << " is invalid data width.";
+    thr->UserError();
+  }
+}
+
 void ArrayWrapper::SetName(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
   if (args.size() != 1 || !StringWrapper::IsString(args[0].object_)) {
@@ -321,6 +338,8 @@ void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
 				     &ArrayWrapper::LoadImage, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "setAddressWidth",
 				     &ArrayWrapper::SetAddressWidth, rets);
+  NativeObjects::InstallNativeMethod(vm, obj, "setDataWidth",
+				     &ArrayWrapper::SetDataWidth, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "setName",
 				     &ArrayWrapper::SetName, rets);
 }

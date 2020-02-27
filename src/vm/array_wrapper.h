@@ -38,6 +38,8 @@ private:
   static void LoadImage(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetAddressWidth(Thread *thr, Object *obj,
 			      const vector<Value> &args);
+  static void SetDataWidth(Thread *thr, Object *obj,
+			   const vector<Value> &args);
   static void SetName(Thread *thr, Object *obj, const vector<Value> &args);
   static void ImageIO(bool save, Thread *thr, Object *obj,
 		      const vector<Value> &args);

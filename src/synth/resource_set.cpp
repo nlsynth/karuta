@@ -308,7 +308,8 @@ IResource *ResourceSet::GetExternalArrayResource(vm::Object *obj) {
     return it->second;
   }
   int aw = vm::ObjectUtil::GetAddressWidth(obj);
-  auto *mem_if = DesignTool::CreateArrayResource(tab_, aw, 32, true, true);
+  int dw = vm::ObjectUtil::GetDataWidth(obj);
+  auto *mem_if = DesignTool::CreateArrayResource(tab_, aw, dw, true, true);
   string n = vm::ObjectUtil::GetStringMember(obj, kSramName);
   if (!n.empty()) {
     mem_if->GetParams()->SetPortNamePrefix(n);

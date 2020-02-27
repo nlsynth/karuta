@@ -10,6 +10,8 @@ class ObjectUtil {
 public:
   static int GetAddressWidth(Object *obj);
   static void SetAddressWidth(Object *obj, int width);
+  static int GetDataWidth(Object *obj);
+  static void SetDataWidth(Object *obj, int width);
   static string GetStringMember(Object *obj, const string &key);
   static void SetStringMember(Object *obj, const string &key,
 			      const string &str);

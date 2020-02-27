@@ -15,6 +15,14 @@ void ObjectUtil::SetAddressWidth(Object *obj, int width) {
   SetIntMember(obj, "$address_width", width);
 }
 
+int ObjectUtil::GetDataWidth(Object *obj) {
+  return GetIntMember(obj, "$data_width", 32);
+}
+
+void ObjectUtil::SetDataWidth(Object *obj, int width) {
+  SetIntMember(obj, "$data_width", width);
+}
+
 string ObjectUtil::GetStringMember(Object *obj, const string &key) {
   Value *value = obj->LookupValue(sym_lookup(key.c_str()), false);
   if (value == nullptr || value->type_ != Value::OBJECT ||
