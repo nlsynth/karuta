@@ -9,6 +9,7 @@
 #include "synth/method_expander.h"
 #include "synth/method_scanner.h"
 #include "synth/method_synth.h"
+#include "synth/object_attr_names.h"
 #include "synth/object_synth.h"
 #include "synth/shared_resource_set.h"
 #include "synth/resource_set.h"
@@ -16,6 +17,7 @@
 #include "synth/tool.h"
 #include "vm/array_wrapper.h"
 #include "vm/object.h"
+#include "vm/object_util.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 
@@ -179,6 +181,11 @@ void ThreadSynth::CollectUnclaimedMembers() {
 	continue;
       }
       rsynth_->MayAddSharedRegExtWriter(member_obj);
+    }
+    // Named Memory member should be kept.
+    string n = vm::ObjectUtil::GetStringMember(member_obj, kSramName);
+    if (!n.empty()) {
+      resource_->GetExternalArrayResource(member_obj);
     }
   }
   map<sym_t, vm::Method *> member_methods;

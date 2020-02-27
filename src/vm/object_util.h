@@ -13,6 +13,8 @@ public:
   static string GetStringMember(Object *obj, const string &key);
   static void SetStringMember(Object *obj, const string &key,
 			      const string &str);
+  static int GetIntMember(Object *obj, const string &key, int dflt);
+  static void SetIntMember(Object *obj, const string &key, int val);
 };
 
 }  // namespace vm
