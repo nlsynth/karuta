@@ -1,4 +1,5 @@
-0.5.5wip
+2020/02/29 0.5.5
+ Improve internal/external SRAM features.
 2020/02/08 0.5.4
  Make interpreter busy wait friendly.
 2020/01/11 0.5.3
