@@ -290,6 +290,29 @@ Similar to AXI slave interface, SRAM interface which can be accessed from outsid
    @SramIf
    ram s int[16]
 
+-------------
+External SRAM
+-------------
+
+.. code-block:: none
+
+   shared s object = Memory.clone()
+   s.setName("s")
+   s.setWidth(8, 32)
+
+   process main() {
+     s.write(16, s.read(32))
+   }
+
+The code above will generate sram interface ports
+
+.. code-block:: none
+
+   output reg [7:0] sram_s_addr,
+   input [31:0] sram_s_rdata,
+   output reg [31:0] sram_s_wdata,
+   output reg sram_s_wdata_en,
+
 ----------------
 Method interface
 ----------------
