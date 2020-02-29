@@ -6,7 +6,7 @@ import test_files
 sys.path.append("lib/")
 import lib_files
 
-VERSION = "0.5.5"
+VERSION = "0.5.6wip"
 
 EXTRA = ["README.md", "NEWS", "configure", "Makefile", "config.mk", "karuta", "src/karuta.gyp", "iroha/src/iroha.gyp", "src/fe/parser.ypp", "genparser.py", "karuta_files.py", "examples/top.karuta", "examples/fp16r.karuta"]
 
