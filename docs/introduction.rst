@@ -204,11 +204,11 @@ Karuta's 10 important features you might like...
 
 * New scripting language with contemporary syntax designed primarily for hardware design
 * Prototype based OOP
-* Data width for each variable
 * Static thread concurrency
 * Channels and mailboxes
 * Attach AXI DMA controller to arrays
-* Custom data types
 * Distance between objects can be specified
-* Interfaces circuits outside
+* Custom data width and numeric operations
+* Interfaces to/from circuits outside
 * HDL embedding
+* Optimization techniques like PGO and SSA
