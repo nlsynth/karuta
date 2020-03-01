@@ -63,7 +63,8 @@ private:
   void SynthArrayAccess(vm::Insn *insn, bool is_write);
   IRegister *GetArrayIndex(vm::Object *array_obj, vm::Insn *insn, int start);
   bool UseSharedArray(vm::Object *array_obj);
-  void SynthSharedArrayAccess(vm::Insn *insn, bool is_write);
+  void SynthSharedArrayAccess(vm::Insn *insn, bool is_write, IRegister *index);
+  void SynthLocalArrayAccess(vm::Insn *insn, bool is_write, IRegister *index);
   void SynthBitRange(vm::Insn *insn);
   void SynthConcat(vm::Insn *insn);
   void SynthPreIncDec(vm::Insn *insn);
