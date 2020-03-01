@@ -1,7 +1,15 @@
 //# Simply Hello World!
 //# key:default
 //# index:0
-//# compile:0
-// Just prints "Hello World!"
+// Just prints "Hello World!" and writes a greeting message to the memory.
 
 print("Hello World!")
+
+
+// 8bit address and 32bit data.
+Memory.setWidth(8, 32)
+
+process main() {
+  // Writes to external SRAM.
+  Memory.write(0x10, 0x00216948) // Hi!\0 to address 0x10
+}
