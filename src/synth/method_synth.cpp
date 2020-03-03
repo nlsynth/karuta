@@ -902,7 +902,12 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
     shared_resource_set_->GetByObj(array_obj, nullptr);
   IResource *res = nullptr;
   if (array_sres->owner_thr_ == thr_synth_) {
-    res = res_set_->GetSharedArray(array_obj, true, false);
+    int ridx = GetArrayReplicaIndex(array_obj, insn);
+    if (ridx > -1) {
+      res = res_set_->GetSharedArrayReplica(array_obj, ridx);
+    } else {
+      res = res_set_->GetSharedArray(array_obj, true, false);
+    }
     array_sres->SetOwnerIResource(res);
     rsynth_->MayAddAxiMasterPort(obj_, array_obj);
     rsynth_->MayAddAxiSlavePort(obj_, array_obj);
@@ -988,6 +993,11 @@ IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn,
   StateWrapper *sw = AllocState();
   sw->state_->insns_.push_back(iinsn);
   return reg;
+}
+
+int MethodSynth::GetArrayReplicaIndex(vm::Object *array_obj, vm::Insn *insn) {
+  // WIP: No replica for now.
+  return -1;
 }
 
 void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {

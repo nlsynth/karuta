@@ -62,6 +62,7 @@ private:
 				  vm::Value *value, bool is_store);
   void SynthArrayAccess(vm::Insn *insn, bool is_write);
   IRegister *GetArrayIndex(vm::Object *array_obj, vm::Insn *insn, int start);
+  int GetArrayReplicaIndex(vm::Object *array_obj, vm::Insn *insn);
   bool UseSharedArray(vm::Object *array_obj);
   void SynthSharedArrayAccess(vm::Insn *insn, bool is_write, IRegister *index);
   void SynthLocalArrayAccess(vm::Insn *insn, bool is_write, IRegister *index);

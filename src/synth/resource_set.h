@@ -40,6 +40,7 @@ public:
   IResource *GetMemberSharedReg(sym_t name, bool is_owner,
 				bool is_write);
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
+  IResource *GetSharedArrayReplica(vm::Object *obj, int index);
   IResource *GetAxiMasterPort(vm::Object *obj);
   IResource *GetAxiSlavePort(vm::Object *obj);
   IResource *GetSramIfPort(vm::Object *obj);
@@ -92,6 +93,7 @@ private:
   map<vm::Object *, IResource *> shared_array_;
   map<vm::Object *, IResource *> shared_array_writer_;
   map<vm::Object *, IResource *> shared_array_reader_;
+  map<IResource *, map<int, IResource *> > shared_array_replicas_;
   map<vm::Object *, IResource *> axi_master_ports_;
   map<vm::Object *, IResource *> axi_slave_ports_;
   map<vm::Object *, IResource *> sram_if_ports_;

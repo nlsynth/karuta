@@ -125,6 +125,23 @@ IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
   return res;
 }
 
+IResource *ResourceSet::GetSharedArrayReplica(vm::Object *obj, int index) {
+  IResource *master = GetSharedArray(obj, true, false);
+  auto &m = shared_array_replicas_[master];
+  auto it = m.find(index);
+  if (it != m.end()) {
+    return it->second;
+  }
+  IResourceClass *rc =
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				  resource::kSharedMemoryReplica);
+  IResource *res = new IResource(tab_, rc);
+  res->SetParentResource(master);
+  tab_->resources_.push_back(res);
+  m[index] = res;
+  return res;
+}
+
 IResource *ResourceSet::GetAxiMasterPort(vm::Object *obj) {
   return GetPortResource(obj, resource::kAxiMasterPort, &axi_master_ports_);
 }
