@@ -66,6 +66,7 @@ private:
   bool UseSharedArray(vm::Object *array_obj);
   void SynthSharedArrayAccess(vm::Insn *insn, bool is_write, IRegister *index);
   void SynthLocalArrayAccess(vm::Insn *insn, bool is_write, IRegister *index);
+  void SynthSramRead(vm::Insn *insn, IInsn *iinsn, IRegister *index);
   void SynthBitRange(vm::Insn *insn);
   void SynthConcat(vm::Insn *insn);
   void SynthPreIncDec(vm::Insn *insn);

@@ -882,6 +882,9 @@ bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
   if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
     return true;
   }
+  if (a != nullptr && a->GetNum() > 1) {
+    return true;
+  }
   ThreadSynth *tls_thr = nullptr;
   if (thread_local_objs_.find(array_obj) != thread_local_objs_.end()) {
     tls_thr = thr_synth_;
@@ -901,9 +904,14 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
   SharedResource *array_sres =
     shared_resource_set_->GetByObj(array_obj, nullptr);
   IResource *res = nullptr;
+  bool use_replica = false;
   if (array_sres->owner_thr_ == thr_synth_) {
-    int ridx = GetArrayReplicaIndex(array_obj, insn);
+    int ridx = -1;
+    if (!is_write) {
+      ridx = GetArrayReplicaIndex(array_obj, insn);
+    }
     if (ridx > -1) {
+      use_replica = true;
       res = res_set_->GetSharedArrayReplica(array_obj, ridx);
     } else {
       res = res_set_->GetSharedArray(array_obj, true, false);
@@ -917,6 +925,10 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
     array_sres->AddAccessorResource(res, thr_synth_);
   }
   IInsn *iinsn = new IInsn(res);
+  if (!is_write && use_replica) {
+    SynthSramRead(insn, iinsn, index);
+    return;
+  }
   if (is_write) {
     // index, value
     iinsn->inputs_.push_back(index);
@@ -934,25 +946,31 @@ void MethodSynth::SynthLocalArrayAccess(vm::Insn *insn, bool is_write,
   vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
   IResource *res = res_set_->GetInternalArrayResource(array_obj);
   IInsn *iinsn = new IInsn(res);
-  if (is_write) {
-    // index, value
-    iinsn->SetOperand(iroha::operand::kSramWrite);
-    iinsn->inputs_.push_back(index);
-    iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
-  } else {
-    iinsn->SetOperand(iroha::operand::kSramReadAddress);
-    iinsn->inputs_.push_back(index);
+  if (!is_write) {
+    SynthSramRead(insn, iinsn, index);
+    return;
   }
+  // index, value
+  iinsn->SetOperand(iroha::operand::kSramWrite);
+  iinsn->inputs_.push_back(index);
+  iinsn->inputs_.push_back(FindLocalVarRegister(insn->src_regs_[0]));
+  StateWrapper *w = AllocState();
+  w->state_->insns_.push_back(iinsn);
+}
+
+void MethodSynth::SynthSramRead(vm::Insn *insn, IInsn *iinsn,
+				IRegister *index) {
+  // Output address.
+  iinsn->SetOperand(iroha::operand::kSramReadAddress);
+  iinsn->inputs_.push_back(index);
   StateWrapper *w = AllocState();
   w->state_->insns_.push_back(iinsn);
   // Read data
-  if (!is_write) {
-    iinsn = new IInsn(res);
-    iinsn->SetOperand(iroha::operand::kSramReadData);
-    iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
-    w = AllocState();
-    w->state_->insns_.push_back(iinsn);
-  }
+  iinsn = new IInsn(iinsn->GetResource());
+  iinsn->SetOperand(iroha::operand::kSramReadData);
+  iinsn->outputs_.push_back(FindLocalVarRegister(insn->dst_regs_[0]));
+  w = AllocState();
+  w->state_->insns_.push_back(iinsn);
 }
 
 IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn,
@@ -996,8 +1014,14 @@ IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn,
 }
 
 int MethodSynth::GetArrayReplicaIndex(vm::Object *array_obj, vm::Insn *insn) {
-  // WIP: No replica for now.
-  return -1;
+  vm::IntArray *array = vm::ArrayWrapper::GetIntArray(array_obj);
+  const vector<uint64_t> &shape = array->GetShape();
+  if (insn->src_regs_.size() != shape.size() + 1) {
+    return -1;
+  }
+  vm::Register *rep = insn->src_regs_[shape.size()];
+  CHECK(rep->type_.value_type_ == vm::Value::NUM);
+  return rep->initial_num_.GetValue0();
 }
 
 void MethodSynth::GenNeg(IRegister *src, IRegister *dst) {
