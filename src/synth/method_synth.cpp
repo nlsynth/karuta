@@ -979,17 +979,17 @@ IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn,
   for (int i = start; i < insn->src_regs_.size(); i++) {
     indexes.push_back(FindLocalVarRegister(insn->src_regs_[i]));
   }
-  if (indexes.size() == 1) {
+  vm::IntArray *array = vm::ArrayWrapper::GetIntArray(array_obj);
+  const vector<uint64_t> &shape = array->GetShape();
+  if (indexes.size() == 1 || shape.size() == 1) {
     return indexes[0];
   }
-  vm::IntArray *array = vm::ArrayWrapper::GetIntArray(array_obj);
   IRegister *reg = thr_synth_->AllocRegister("t");
   IValueType vt;
   IResource *concat = res_set_->GetOpResource(vm::OP_CONCAT, vt);
   IInsn *iinsn = new IInsn(concat);
   iinsn->outputs_.push_back(reg);
   reg->value_type_.SetWidth(array->GetAddressWidth());
-  const vector<uint64_t> &shape = array->GetShape();
   // Shape and indexes are low to high, on the other hand
   // concat insn takes input from high to low.
   for (int i = indexes.size() - 1; i >= 0; --i) {
