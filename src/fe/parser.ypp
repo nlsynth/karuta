@@ -498,6 +498,9 @@ ENUM_ITEM_LIST : SYM {
 EXPR : SYM {
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::SymExpr($1);
+} | SYM '@' NUM {
+  ScannerInterface::InSemiColonStatement();
+  $$ = Builder::ArrayRefExpr(Builder::SymExpr($1), Builder::NumExpr($3));
 } | '(' EXPR ')' {
   $$ = $2;
 } | EXPR '[' EXPR ']' {
