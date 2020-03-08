@@ -976,11 +976,12 @@ void MethodSynth::SynthSramRead(vm::Insn *insn, IInsn *iinsn,
 IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn,
 				      int start) {
   vector<IRegister *> indexes;
-  for (int i = start; i < insn->src_regs_.size(); i++) {
-    indexes.push_back(FindLocalVarRegister(insn->src_regs_[i]));
-  }
   vm::IntArray *array = vm::ArrayWrapper::GetIntArray(array_obj);
   const vector<uint64_t> &shape = array->GetShape();
+  for (int i = start; i < insn->src_regs_.size() &&
+	 indexes.size() < shape.size(); i++) {
+    indexes.push_back(FindLocalVarRegister(insn->src_regs_[i]));
+  }
   if (indexes.size() == 1 || shape.size() == 1) {
     return indexes[0];
   }
