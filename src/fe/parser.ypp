@@ -100,7 +100,7 @@ FUNC_DECL_OR_STMT_LIST : | FUNC_DECL_OR_STMT_LIST FUNC_DECL_OR_STMT
 
 FUNC_DECL_OR_STMT : FUNC_DECL |
   STMT |
-  K_WITH VAR '{' { Emitter::SetBlockVar($2); Emitter::BeginBlock(); } FUNC_DECL_OR_STMT_LIST '}' { Emitter::EndBlock(); }
+  K_WITH VAR '{' { Emitter::SetBlockVar($2); Emitter::BeginBlock(nullptr); } FUNC_DECL_OR_STMT_LIST '}' { Emitter::EndBlock(); }
 
 
 IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
@@ -127,11 +127,11 @@ ANNOTATION_VALUE_LIST : {
 }
 
 ANNOTATION_OR_EMPTY : {
-  $$ = Emitter::SetAnnotation(sym_null, nullptr);
+  $$ = Emitter::SetCurrentAnnotation(sym_null, nullptr);
 } | '@' SYM_OR_EMPTY '(' ANNOTATION_VALUE_LIST ')' {
-  $$ = Emitter::SetAnnotation($2, $4);
+  $$ = Emitter::SetCurrentAnnotation($2, $4);
 } | '@' SYM {
-  $$ = Emitter::SetAnnotation($2, nullptr);
+  $$ = Emitter::SetCurrentAnnotation($2, nullptr);
 }
 
 SYM_OR_EMPTY : {
@@ -402,8 +402,8 @@ IF_STMT : IF_COND_PART BLOCK {
   Emitter::EmitLabel($1->GetLabel(true, false));
 }
 
-FOR_HEAD : K_FOR {
-  Emitter::BeginBlock();
+FOR_HEAD : ANNOTATION_OR_EMPTY K_FOR {
+  Emitter::BeginBlock($1);
 }
 
 FOR_HEAD_PART : FOR_HEAD EXPR ';' {
@@ -433,7 +433,7 @@ FOR_STMT : FOR_COND_PART ';' EXPR BLOCK {
 }
 
 WHILE_COND_PART : K_WHILE EXPR {
-  Emitter::BeginBlock();
+  Emitter::BeginBlock(nullptr);
   // Emit a dummy insn before label_join so that compiler can
   // find a insn after the label.
   Emitter::EmitNop();
@@ -448,7 +448,7 @@ WHILE_STMT : WHILE_COND_PART BLOCK {
 }
 
 DO_WHILE_HEAD : K_DO {
-  Emitter::BeginBlock();
+  Emitter::BeginBlock(nullptr);
   Emitter::EmitNop();
   $$ = Builder::DoWhileStmt();
   Emitter::EmitLabel($$->GetLabel(true, false));
@@ -482,7 +482,7 @@ BLOCK : BLOCK_HEAD STMT_LIST '}' {
 
 BLOCK_HEAD : '{' {
   /* open new bindings */
-  Emitter::BeginBlock();
+  Emitter::BeginBlock(nullptr);
 }
 
 ENUM_DECL : K_ENUM VAR '{' ENUM_ITEM_LIST '}' {

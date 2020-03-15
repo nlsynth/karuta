@@ -14,7 +14,7 @@
 namespace fe {
 
 vector<MethodDecl> Emitter::method_stack_;
-Annotation *Emitter::annotation_;
+Annotation *Emitter::current_annotation_;
 Annotation *Emitter::func_annotation_;
 Expr *Emitter::block_var_;
 
@@ -78,9 +78,10 @@ void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
   decl.method_->SetReturns(returns);
 }
 
-Annotation *Emitter::SetAnnotation(sym_t key, AnnotationKeyValueSet *values) {
-  annotation_ = AnnotationBuilder::Build(key, values);
-  return annotation_;
+Annotation *Emitter::SetCurrentAnnotation(sym_t key,
+					  AnnotationKeyValueSet *values) {
+  current_annotation_ = AnnotationBuilder::Build(key, values);
+  return current_annotation_;
 }
 
 void Emitter::SetCurrentFunctionAnnotation(Annotation *an) {
@@ -91,10 +92,11 @@ void Emitter::SetBlockVar(Expr *var_expr) {
   block_var_ = var_expr;
 }
 
-void Emitter::BeginBlock() {
+void Emitter::BeginBlock(Annotation *an) {
   Stmt *stmt = NewStmt(STMT_PUSH_BINDING);
   stmt->SetExpr(block_var_);
   block_var_ = nullptr;
+  stmt->SetAnnotation(an);
   EmitStmt(stmt);
 }
 
@@ -221,7 +223,7 @@ void Emitter::EmitChannelDeclStmt(Expr *var, bool is_primitive,
 				  sym_t name,
 				  const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);
-  stmt->SetAnnotation(annotation_);
+  stmt->SetAnnotation(current_annotation_);
   EmitTypedObjStmt(stmt, var, is_primitive, name, width);
 }
 
@@ -229,7 +231,7 @@ void Emitter::EmitMailboxDeclStmt(Expr *var, bool is_primitive,
 				  sym_t name,
 				  const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
-  stmt->SetAnnotation(annotation_);
+  stmt->SetAnnotation(current_annotation_);
   EmitTypedObjStmt(stmt, var, is_primitive, name, width);
 }
 

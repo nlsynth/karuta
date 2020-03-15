@@ -20,10 +20,11 @@ public:
   static void SetCurrentFunctionParams();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
-  static Annotation *SetAnnotation(sym_t key, AnnotationKeyValueSet *values);
+  static Annotation *SetCurrentAnnotation(sym_t key,
+					  AnnotationKeyValueSet *values);
   static void SetCurrentFunctionAnnotation(Annotation *an);
   static void SetBlockVar(Expr *var_expr);
-  static void BeginBlock();
+  static void BeginBlock(Annotation *an);
   static void EndBlock();
   static void EmitNop();
   static void EmitExprStmt(Expr *expr);
@@ -49,8 +50,8 @@ public:
 
 private:
   static vector<MethodDecl> method_stack_;
-  // For var decl (set at each ANNOTATION_OR_EMPTY).
-  static Annotation *annotation_;
+  // For any decl (set at each ANNOTATION_OR_EMPTY).
+  static Annotation *current_annotation_;
   // For func decl (set at each FUNC_DECL. may have var decls inside).
   static Annotation *func_annotation_;
   // May set before BeginBlock() and cleared in BeginBlock().
