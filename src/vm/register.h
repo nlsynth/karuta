@@ -40,6 +40,9 @@ public:
   void SetIsDeclaredType(bool is_declared_type);
   bool GetIsDeclaredType() const;
 
+  void SetAnnotation(Annotation *an);
+  Annotation *GetAnnotation();
+
   int id_;
   RegisterType type_;
   iroha::Numeric initial_num_;
@@ -48,6 +51,7 @@ public:
 
 private:
   bool is_declared_type_;
+  Annotation *annotation_;
 };
 
 }  // namespace vm

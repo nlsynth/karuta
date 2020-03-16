@@ -235,6 +235,7 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
       insn->obj_reg_ = rt.GetOne();
       EmitInsn(insn);
     }
+    MaySetUnrollAnnotation(stmt, scope);
   }
   bindings_.push_back(scope);
 }
@@ -248,6 +249,14 @@ void MethodCompiler::PopScope() {
   }
   delete scope;
   bindings_.pop_back();
+}
+
+void MethodCompiler::MaySetUnrollAnnotation(fe::Stmt *stmt, VarScope *scope) {
+  auto *an = stmt->GetAnnotation();
+  if (an == nullptr) {
+    return;
+  }
+  // WIP: Finds matching pattern.
 }
 
 VarScope *MethodCompiler::CurrentScope() {

@@ -66,6 +66,7 @@ private:
   vm::Register *CompileSymExpr(fe::Expr *expr);
   void PushScope(fe::Stmt *stmt);
   void PopScope();
+  void MaySetUnrollAnnotation(fe::Stmt *stmt, VarScope *scope);
   void EmitNop();
   void EmitYield();
   void ResolveLabels();

@@ -1,6 +1,7 @@
 #include "vm/register.h"
 
 #include "base/dump_stream.h"
+#include "karuta/annotation.h"
 #include "vm/enum_type_wrapper.h"
 #include "vm/value.h"
 
@@ -37,7 +38,7 @@ void RegisterType::Dump(DumpStream &ds) {
 Register::Register() : type_(Value::NONE, nullptr,
 			     iroha::NumericWidth(false, 32), sym_null, false),
 		       orig_name_(nullptr), type_object_(nullptr),
-		       is_declared_type_(false) {
+		       is_declared_type_(false), annotation_(nullptr) {
 }
 
 void Register::Dump() {
@@ -63,6 +64,9 @@ void Register::Dump(DumpStream &ds) {
   if (is_declared_type_) {
     ds.os << "!";
   }
+  if (annotation_ != nullptr) {
+    annotation_->Dump(ds.os);
+  }
 }
 
 void Register::SetIsDeclaredType(bool is_declared_type) {
@@ -71,6 +75,14 @@ void Register::SetIsDeclaredType(bool is_declared_type) {
 
 bool Register::GetIsDeclaredType() const {
   return is_declared_type_;
+}
+
+void Register::SetAnnotation(Annotation *an) {
+  annotation_ = an;
+}
+
+Annotation *Register::GetAnnotation() {
+  return annotation_;
 }
 
 }  // namespace vm
