@@ -20,6 +20,7 @@ public:
   // local name -> Register.
   std::map<sym_t, vm::Register*> local_regs_;
   fe::Expr *obj_expr_;
+  fe::VarDecl *loop_var_;
 };
 
 class MethodCompiler {

@@ -6,18 +6,29 @@
 namespace compiler {
 
 LoopMarker::LoopMarker(const fe::Method *method, LoopMarker *parent, int start)
-  : method_(method), parent_(parent), start_(start), end_(-1) {
+  : method_(method), parent_(parent), start_(start), end_(-1),
+    var_decl_(nullptr) {
 }
 
 LoopMarker::~LoopMarker() {
+  for (auto *m : children_) {
+    delete m;
+  }
 }
 
 LoopMarker *LoopMarker::Scan(const fe::Method *tree) {
-  LoopMarker *m = new LoopMarker(tree, nullptr, 0);
-  m->ScanOne();
-  auto &loops = m->GetLoops();
-  m->CollectLoops(&loops);
-  return m;
+  LoopMarker *rootMarker = new LoopMarker(tree, nullptr, 0);
+  rootMarker->ScanOne();
+  rootMarker->CollectLoops(nullptr);
+  return rootMarker;
+}
+
+LoopMarker *LoopMarker::LookUp(const fe::Stmt *stmt) {
+  auto it = loop_map_.find(stmt);
+  if (it == loop_map_.end()) {
+    return nullptr;
+  }
+  return it->second;
 }
 
 void LoopMarker::ScanOne() {
@@ -38,11 +49,18 @@ void LoopMarker::ScanOne() {
   }
 }
 
+int LoopMarker::GetStart() {
+  return start_;
+}
+
 int LoopMarker::GetEnd() {
   return end_;
 }
 
 bool LoopMarker::CollectLoops(vector<LoopMarker *> *loops) {
+  if (loops == nullptr) {
+    loops = &loops_;
+  }
   bool hasInner = false;
   if (children_.size() > 0) {
     for (auto *c : children_) {
@@ -50,23 +68,37 @@ bool LoopMarker::CollectLoops(vector<LoopMarker *> *loops) {
     }
   }
   if (start_ == 0) {
+    BuildMap();
     return hasInner;
   }
   if (hasInner) {
     return true;
   }
   auto &stmts = method_->GetStmts();
-  auto &push = stmts[start_ - 1];
+  auto *push = stmts[start_ - 1];
   auto *an = push->GetAnnotation();
-  if (an != nullptr) {
-    loops->push_back(this);
-    hasInner = true;
+  if (an == nullptr) {
+    return hasInner;
   }
-  return hasInner;
+  auto *vd = stmts[start_];
+  if (vd->GetType() != fe::STMT_VARDECL) {
+    return hasInner;
+  }
+  var_decl_ = vd->GetVarDecl();
+  loops->push_back(this);
+  return true;
 }
 
-vector<LoopMarker *> &LoopMarker::GetLoops() {
-  return loops_;
+void LoopMarker::BuildMap() {
+  for (auto *m : loops_) {
+    auto &stmts = method_->GetStmts();
+    fe::Stmt *stmt = stmts[m->GetStart() - 1];
+    loop_map_[stmt] = m;
+  }
+}
+
+fe::VarDecl *LoopMarker::GetVarDecl() {
+  return var_decl_;
 }
 
 }  // namespace compiler

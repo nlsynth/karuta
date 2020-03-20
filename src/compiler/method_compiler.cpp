@@ -19,7 +19,7 @@
 
 namespace compiler {
 
-VarScope::VarScope() : obj_expr_(nullptr) {
+VarScope::VarScope() : obj_expr_(nullptr), loop_var_(nullptr) {
 }
 
 string MethodCompiler::dbg_bytecode_;
@@ -51,13 +51,12 @@ void MethodCompiler::Compile() {
     return;
   }
 
-  PushScope(nullptr);
+  loop_marker_.reset(LoopMarker::Scan(tree_));
   method_->SetParseTree(tree_);
+  PushScope(nullptr);
 
   SetupArgumentRegisters();
   SetupReturnRegisters();
-
-  loop_marker_.reset(LoopMarker::Scan(tree_));
 
   // For a label at the beginning.
   EmitNop();
@@ -239,6 +238,11 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
       EmitInsn(insn);
     }
     MaySetUnrollAnnotation(stmt, scope);
+  }
+  LoopMarker *m = loop_marker_->LookUp(stmt);
+  if (m != nullptr) {
+    // WIP.
+    scope->loop_var_ = m->GetVarDecl();
   }
   bindings_.push_back(scope);
 }
