@@ -4,6 +4,7 @@
 #include "compiler/compiler.h"
 #include "compiler/expr_compiler.h"
 #include "compiler/reg_checker.h"
+#include "compiler/loop_marker.h"
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/stmt.h"
@@ -55,6 +56,8 @@ void MethodCompiler::Compile() {
 
   SetupArgumentRegisters();
   SetupReturnRegisters();
+
+  loop_marker_.reset(LoopMarker::Scan(tree_));
 
   // For a label at the beginning.
   EmitNop();

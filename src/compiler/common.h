@@ -23,9 +23,11 @@ class Value;
 }  // namespace vm
 
 namespace compiler {
+
 class Compiler;
 class CompileOptions;
 class ExprCompiler;
+class LoopMarker;
 class MethodCompiler;
 
 class RegisterTuple {

@@ -70,6 +70,8 @@
         'compiler/common.h',
         'compiler/expr_compiler.cpp',
         'compiler/expr_compiler.h',
+        'compiler/loop_marker.cpp',
+        'compiler/loop_marker.h',
 	'compiler/method_compiler.cpp',
 	'compiler/method_compiler.h',
         'compiler/reg_checker.cpp',

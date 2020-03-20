@@ -103,6 +103,7 @@ private:
   map<vm::Register *, vm::Object *> reg_obj_map_;
 
   std::unique_ptr<ExprCompiler> exc_;
+  std::unique_ptr<LoopMarker> loop_marker_;
 };
 
 }  // namespace compiler
