@@ -4,6 +4,8 @@
 
 #include "karuta/karuta.h"
 
+class Annotation;
+
 namespace fe {
 class Expr;
 class Method;

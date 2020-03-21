@@ -24,6 +24,7 @@ public:
   bool CollectLoops(vector<LoopMarker *> *loops);
 
   fe::VarDecl *GetVarDecl();
+  Annotation *GetAnnotation();
 
 private:
   void BuildMap();
@@ -38,6 +39,7 @@ private:
   std::map<const fe::Stmt *, LoopMarker *> loop_map_;
   // loop description.
   fe::VarDecl *var_decl_;
+  Annotation *annotation_;
 };
 
 }  // namespace compiler

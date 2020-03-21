@@ -19,7 +19,8 @@
 
 namespace compiler {
 
-VarScope::VarScope() : obj_expr_(nullptr), loop_var_(nullptr) {
+VarScope::VarScope()
+  : obj_expr_(nullptr), loop_var_(nullptr), loop_annotation_(nullptr) {
 }
 
 string MethodCompiler::dbg_bytecode_;
@@ -237,13 +238,8 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
       insn->obj_reg_ = rt.GetOne();
       EmitInsn(insn);
     }
-    MaySetUnrollAnnotation(stmt, scope);
   }
-  LoopMarker *m = loop_marker_->LookUp(stmt);
-  if (m != nullptr) {
-    // WIP.
-    scope->loop_var_ = m->GetVarDecl();
-  }
+  MaySetUnrollAnnotation(stmt, scope);
   bindings_.push_back(scope);
 }
 
@@ -259,11 +255,11 @@ void MethodCompiler::PopScope() {
 }
 
 void MethodCompiler::MaySetUnrollAnnotation(fe::Stmt *stmt, VarScope *scope) {
-  auto *an = stmt->GetAnnotation();
-  if (an == nullptr) {
-    return;
+  LoopMarker *m = loop_marker_->LookUp(stmt);
+  if (m != nullptr) {
+    scope->loop_var_ = m->GetVarDecl();
+    scope->loop_annotation_ = m->GetAnnotation();
   }
-  // WIP: Finds matching pattern.
 }
 
 VarScope *MethodCompiler::CurrentScope() {
@@ -423,6 +419,10 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 	return;
       }
     }
+  }
+  VarScope *scope = CurrentScope();
+  if (vdd == scope->loop_var_) {
+    reg->SetAnnotation(scope->loop_annotation_);
   }
 
   if (rhs_val) {

@@ -7,7 +7,7 @@ namespace compiler {
 
 LoopMarker::LoopMarker(const fe::Method *method, LoopMarker *parent, int start)
   : method_(method), parent_(parent), start_(start), end_(-1),
-    var_decl_(nullptr) {
+    var_decl_(nullptr), annotation_(nullptr) {
 }
 
 LoopMarker::~LoopMarker() {
@@ -85,6 +85,7 @@ bool LoopMarker::CollectLoops(vector<LoopMarker *> *loops) {
     return hasInner;
   }
   var_decl_ = vd->GetVarDecl();
+  annotation_ = an;
   loops->push_back(this);
   return true;
 }
@@ -99,6 +100,10 @@ void LoopMarker::BuildMap() {
 
 fe::VarDecl *LoopMarker::GetVarDecl() {
   return var_decl_;
+}
+
+Annotation *LoopMarker::GetAnnotation() {
+  return annotation_;
 }
 
 }  // namespace compiler

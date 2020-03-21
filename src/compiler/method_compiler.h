@@ -21,6 +21,7 @@ public:
   std::map<sym_t, vm::Register*> local_regs_;
   fe::Expr *obj_expr_;
   fe::VarDecl *loop_var_;
+  Annotation *loop_annotation_;
 };
 
 class MethodCompiler {
