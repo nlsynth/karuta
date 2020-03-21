@@ -606,6 +606,11 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   }
   ireg->value_type_.SetWidth(w);
   local_reg_map_[vreg] = ireg;
+  Annotation *an = vreg->GetAnnotation();
+  if (an != nullptr) {
+    auto *params = ireg->GetParams(true);
+    params->SetLoopUnroll(an->GetNum());
+  }
   return ireg;
 }
 
