@@ -216,6 +216,19 @@ Multiple threads can be created from an entry method by specifying *num=* parame
      x = x + idx
    }
 
+==============
+Loop Unrolling
+==============
+
+A *for* loop with fixed loop count can be unrolled by specifying the number of copies.
+
+.. code-block:: none
+
+   @(num=2)
+   for var i int = 0; i < 8; ++i {
+     // does computation
+   }
+
 =========================
 Communication to external
 =========================
