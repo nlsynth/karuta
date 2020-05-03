@@ -44,7 +44,7 @@
 		"vardecls": {
 			"patterns": [
 				{
-					"match": "(var|shared)\\s+(\\S+)\\s+(\\S+)",
+					"match": "(var|shared|ram|reg)\\s+(\\S+)\\s+(\\S+)",
 					"captures": {
 						"1": {"name": "storage.modfier"},
 						"2": {"name": "variable.other"},

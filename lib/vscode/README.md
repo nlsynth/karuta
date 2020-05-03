@@ -18,6 +18,10 @@ This is a preliminary version and doesn't fully support all of Karuta grammar.
 
 ## Release Notes
 
+### 0.5.8wip
+
+Add "ram" and "reg" keyword.
+
 ### 0.5.1wip
 
 Add "process" keyword.
