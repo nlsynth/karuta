@@ -2,7 +2,7 @@
 
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
-#include "fe/method.h"
+#include "fe/fe_method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 

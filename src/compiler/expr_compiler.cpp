@@ -3,7 +3,7 @@
 #include "base/status.h"
 #include "compiler/method_compiler.h"
 #include "fe/expr.h"
-#include "fe/method.h"
+#include "fe/fe_method.h"
 #include "fe/var_decl.h"
 #include "numeric/numeric_op.h"  // from iroha
 #include "vm/array_wrapper.h"

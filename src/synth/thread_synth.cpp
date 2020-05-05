@@ -2,7 +2,6 @@
 
 #include "base/status.h"
 #include "compiler/compiler.h"
-#include "fe/method.h"
 #include "iroha/iroha.h"
 #include "karuta/annotation.h"
 #include "synth/design_synth.h"

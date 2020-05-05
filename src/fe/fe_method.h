@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef _fe_method_h_
-#define _fe_method_h_
+#ifndef _fe_fe_method_h_
+#define _fe_fe_method_h_
 
 #include "fe/common.h"
 
@@ -36,4 +36,4 @@ private:
 
 }  // namespace fe
 
-#endif  // _fe_method_h_
+#endif  // _fe_fe_method_h_

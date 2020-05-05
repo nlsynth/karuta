@@ -2,7 +2,7 @@
 
 #include "base/dump_stream.h"
 #include "base/status.h"
-#include "fe/method.h"
+#include "fe/fe_method.h"
 #include "fe/var_decl.h"
 #include "karuta/env.h"
 #include "vm/executor/executor.h"

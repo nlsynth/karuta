@@ -2,7 +2,7 @@
 
 #include "base/status.h"
 #include "fe/expr.h"
-#include "fe/method.h"
+#include "fe/fe_method.h"
 #include "fe/var_decl.h"
 #include "iroha/iroha.h"
 #include "karuta/annotation.h"

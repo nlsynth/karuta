@@ -5,7 +5,6 @@
 #include "compiler/compiler.h"
 #include "fe/expr.h"
 #include "fe/stmt.h"
-#include "fe/method.h"
 #include "fe/nodecode.h"
 #include "fe/var_decl.h"
 #include "karuta/annotation.h"

@@ -1,7 +1,7 @@
 #include "vm/numeric_object.h"
 
 #include "base/status.h"
-#include "fe/method.h"
+#include "fe/fe_method.h"
 #include "fe/var_decl.h"
 #include "vm/method.h"
 #include "vm/object.h"
