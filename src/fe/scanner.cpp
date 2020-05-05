@@ -37,7 +37,7 @@ int Scanner::GetToken(int *sub) {
     return ReadNum();
   }
   // operator.
-  struct OperatorTableEntry *op = lookup_op();
+  struct OperatorTableEntry *op = LookupOp();
   if (op) {
     int r;
     r = ReadOp(op);
@@ -256,13 +256,13 @@ int Scanner::ReadOp(struct OperatorTableEntry *op) {
   return op->op;
 }
 
-struct OperatorTableEntry *Scanner::lookup_op() {
+struct OperatorTableEntry *Scanner::LookupOp() {
   char buf[4];
   buf[0] = CurChar();
   buf[1] = NextChar();
   buf[2] = ReadAhead(2);
   buf[3] = 0;
-  if (UseReturnAsSep() && buf[0] == '\n') {
+  if (UseReturnAsSep() && (buf[0] == '\n' || IsEof())) {
     buf[0] = ';';
   }
   for (struct OperatorTableEntry *op = op_tab; op->str; op++) {
@@ -275,6 +275,9 @@ struct OperatorTableEntry *Scanner::lookup_op() {
 }
 
 void Scanner::GoAhead() {
+  if (IsEof()) {
+    return;
+  }
   if (CurChar()) {
     cur_pos_++;
   }

@@ -98,7 +98,7 @@ private:
   int ReadStr();
   int ReadOp(struct OperatorTableEntry *s);
 
-  struct OperatorTableEntry *lookup_op();
+  struct OperatorTableEntry *LookupOp();
 
   bool IsDec(char c);
   bool IsHexDec(char c);
