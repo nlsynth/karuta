@@ -7,7 +7,8 @@
 		{"include": "#comments"},
 		{"include": "#vardecls"},
 		{"include": "#funcdecls"},
-		{"include": "#scopedecls"}
+		{"include": "#scopedecls"},
+		{"include": "#annotations"}
 	],
 	"repository": {
 		"keywords": {
@@ -70,6 +71,24 @@
 					"match": "with\\s+(\\w+)",
 					"captures": {
 						"1": {"name": "variable.other"}
+					}
+				}
+			]
+		},
+		"annotations": {
+			"patterns": [
+				{
+					"match": "(@)(\\w+)",
+					"captures": {
+						"1": {"name": "storage.type"},
+						"2": {"name": "variable.other"}
+					}
+				},
+				{
+					"match": "(@)(\\w*)\\([^\\)]*\\)",
+					"captures": {
+						"1": {"name": "storage.type"},
+						"2": {"name": "variable.other"}
 					}
 				}
 			]

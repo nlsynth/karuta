@@ -21,9 +21,7 @@ This is a preliminary version and doesn't fully support all of Karuta grammar.
 ### 0.5.8wip
 
 Add "channel" and "mailbox" keyword.
-
-### 0.5.8wip
-
+Highlight annotation
 Add "ram" and "reg" keyword.
 
 ### 0.5.1wip
