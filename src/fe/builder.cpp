@@ -7,7 +7,7 @@
 #include "fe/nodecode.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
-#include "numeric/numeric_op.h"  // from iroha
+#include "iroha/numeric.h"
 
 namespace fe {
 

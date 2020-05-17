@@ -3,7 +3,7 @@
 #define _fe_var_decl_h_
 
 #include "fe/common.h"
-#include "numeric/numeric_type.h"  // from iroha
+#include "iroha/numeric.h"
 
 namespace fe {
 

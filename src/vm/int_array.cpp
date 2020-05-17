@@ -1,7 +1,7 @@
 // Memory model for interpreted Karuta
 #include "vm/int_array.h"
 
-#include "numeric/numeric_op.h"  // from iroha
+#include "iroha/numeric.h"
 
 #include <stdlib.h>
 

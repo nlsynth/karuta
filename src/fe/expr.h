@@ -4,7 +4,7 @@
 
 #include "fe/common.h"
 #include "fe/nodecode.h"
-#include "numeric/numeric_type.h"  // from iroha
+#include "iroha/numeric.h"
 
 namespace fe {
 

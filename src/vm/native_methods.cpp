@@ -4,9 +4,9 @@
 
 #include "base/pool.h"
 #include "base/status.h"
+#include "iroha/numeric.h"
 #include "karuta/annotation.h"
 #include "karuta/annotation_builder.h"
-#include "numeric/numeric_op.h"  // from iroha
 #include "synth/synth.h"
 #include "synth/object_attr_names.h"
 #include "synth/object_method_names.h"

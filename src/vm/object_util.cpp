@@ -1,6 +1,6 @@
 #include "vm/object_util.h"
 
-#include "numeric/numeric_op.h"  // from iroha
+#include "iroha/numeric.h"
 #include "vm/object.h"
 #include "vm/string_wrapper.h"
 #include "vm/value.h"

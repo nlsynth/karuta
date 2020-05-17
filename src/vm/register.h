@@ -2,7 +2,7 @@
 #ifndef _vm_register_h_
 #define _vm_register_h_
 
-#include "numeric/numeric_type.h"  // from iroha
+#include "iroha/numeric.h"
 #include "vm/common.h"
 #include "vm/value.h"
 

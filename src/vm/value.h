@@ -2,8 +2,8 @@
 #ifndef _vm_value_h_
 #define _vm_value_h_
 
+#include "iroha/numeric.h"
 #include "vm/common.h"
-#include "numeric/numeric_type.h"  // from iroha
 
 namespace vm {
 

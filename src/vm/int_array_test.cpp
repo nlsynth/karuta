@@ -1,7 +1,7 @@
 #include "vm/int_array.h"
 
+#include "iroha/numeric.h"
 #include "iroha/test_util.h"
-#include "numeric/numeric_type.h"  // from iroha
 
 namespace vm {
 

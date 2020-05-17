@@ -2,7 +2,7 @@
 #ifndef _vm_int_array_h_
 #define _vm_int_array_h_
 
-#include "numeric/numeric_type.h"  // from iroha
+#include "iroha/numeric.h"
 #include "vm/common.h"
 
 #include <map>

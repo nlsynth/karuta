@@ -5,7 +5,7 @@
 #include "base/status.h"
 #include "base/util.h"
 #include "karuta/annotation.h"
-#include "numeric/numeric_op.h"  // from iroha
+#include "iroha/numeric.h"
 #include "synth/object_attr_names.h"
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
