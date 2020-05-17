@@ -718,6 +718,8 @@ Each output Verilog file also contains placeholder code to instantiate the desig
    // NOTE: Please copy the follwoing line to your design.
    // abc abc_inst(.clk(), .rst(), ... other ports ...);
 
+If the design is an AXI IP on Vivado, --flavor=vivado-axi option to karuta command can be used to add corresponding wire names like .s00_AWSIZE(s00_axi_awsize).
+
 ============
 Installation
 ============
