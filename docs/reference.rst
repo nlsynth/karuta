@@ -43,6 +43,11 @@ Command line flags
   * Marker string to be output before output file name.
   * Karuta server uses this to generate links from output log.
 
+* --flavor=[flavor]
+
+  * Sets a specific flavor to the generated HDL files.
+  * e.g. --flavor=vivado-axi
+
 * --print_exit_status
 
   * Shows exit status at the end of execution.

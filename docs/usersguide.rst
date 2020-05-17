@@ -705,6 +705,19 @@ Karuta can specify the name of target hardware to use its specific parameters.
    setSynthParam("platformFamily", "generic-platform")
    setSynthParam("platformName", "default")
 
+============================
+Using generated Verilog file
+============================
+
+Each output Verilog file will have one top module with the basename of the output file name (e.g. *abc* for *abc.v*).
+
+Each output Verilog file also contains placeholder code to instantiate the design for users' convenience.
+
+.. code-block:: none
+
+   // NOTE: Please copy the follwoing line to your design.
+   // abc abc_inst(.clk(), .rst(), ... other ports ...);
+
 ============
 Installation
 ============
