@@ -18,6 +18,7 @@ vector<string> Env::source_dirs_;
 string Env::current_file_;
 long Env::duration_ = 1000000;
 bool Env::dot_output_;
+string Env::flavor_;
 bool Env::with_self_shell_;
 bool Env::vcd_output_;
 
@@ -155,6 +156,14 @@ void Env::EnableDotOutput(bool en) {
 
 bool Env::DotOutput() {
   return dot_output_;
+}
+
+const string &Env::GetFlavor() {
+  return flavor_;
+}
+
+void Env::SetFlavor(const string &flavor) {
+  flavor_ = flavor;
 }
 
 bool Env::GetWithSelfShell() {

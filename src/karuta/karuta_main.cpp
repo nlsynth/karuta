@@ -37,6 +37,7 @@ void Main::PrintUsage() {
        << "   --iroha_binary [iroha]\n"
        << "   --module_prefix [mod]\n"
        << "   --output_marker [marker]\n"
+       << "   --flavor [flavor]\n"
        << "   --print_exit_status\n"
        << "   --root [path]\n"
        << "   --run\n"
@@ -109,12 +110,14 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("iroha_binary", nullptr);
   parser->RegisterValueFlag("module_prefix", nullptr);
   parser->RegisterValueFlag("output_marker", nullptr);
+  parser->RegisterValueFlag("flavor", nullptr);
   parser->RegisterValueFlag("root", nullptr);
   parser->RegisterValueFlag("timeout", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
   }
 }
+
 int Main::main(int argc, char **argv) {
   dbg_scanner_ = false;
   dbg_parser_ = false;
@@ -145,6 +148,9 @@ int Main::main(int argc, char **argv) {
   Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {
     Env::SetOutputRootPath(arg);
+  }
+  if (args.GetFlagValue("flavor", &arg)) {
+    Env::SetFlavor(arg);
   }
   if (args.GetFlagValue("output_marker", &arg)) {
     Env::SetOutputMarker(arg);

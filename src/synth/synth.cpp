@@ -75,6 +75,10 @@ int Synth::RunIroha(vm::Object *obj, const string &args) {
   if (!d.empty()) {
     iopt += " -d " + d;
   }
+  string f = Env::GetFlavor();
+  if (!f.empty()) {
+    iopt += " --flavor=" + f;
+  }
   string e = cmd + " " + iopt + " " +
     path + " " + args;
   cout << "command=" << e << "\n";
