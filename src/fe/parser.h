@@ -153,7 +153,7 @@ union YYSTYPE
   class NstBlock *block;
   const char *str;
   sym_t sym;
-  NumericLiteral num;
+  iroha::NumericLiteral num;
   int id;
   int sub_op;
   struct WidthSpec width_spec;

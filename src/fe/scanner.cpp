@@ -10,7 +10,6 @@
 
 #include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 namespace fe {
@@ -63,35 +62,8 @@ int Scanner::GetToken(int *sub) {
   return c;
 }
 
-NumericLiteral Scanner::GetNum() {
-  NumericLiteral nl;
-  nl.width = -1;
-  if (token_[0] == '0') {
-    if (token_[1] == 'x') {
-      uint64_t num;
-      sscanf(token_, "%llx", (long long unsigned int *)&num);
-      nl.value = num;
-      return nl;
-    }
-    if (token_[1] == 'b') {
-      nl.value = Parse0b();
-      nl.width = token_len_ - 2;
-      return nl;
-    }
-  }
-  nl.value = atoll(token_);
-  return nl;
-}
-
-uint64_t Scanner::Parse0b() {
-  uint64_t u = 0;
-  for (int i = 2; i < token_len_; ++i) {
-    u <<= 1;
-    if (token_[i] == '1') {
-      u += 1;
-    }
-  }
-  return u;
+iroha::NumericLiteral Scanner::GetNum() {
+  return iroha::NumericLiteral::Parse(string(token_, token_len_));
 }
 
 sym_t Scanner::GetSym() {

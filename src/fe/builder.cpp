@@ -83,7 +83,7 @@ Expr *Builder::SymExpr(sym_t sym) {
   return expr;
 }
 
-Expr *Builder::NumExpr(NumericLiteral num) {
+Expr *Builder::NumExpr(iroha::NumericLiteral num) {
   Expr *expr = NewExpr(EXPR_NUM);
   iroha::Numeric n;
   iroha::Op::MakeConst0(num.value, n.GetMutableArray());

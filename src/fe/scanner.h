@@ -3,6 +3,7 @@
 #define _fe_scanner_h_
 
 #include "fe/common.h"
+#include "iroha/numeric.h"
 
 namespace fe {
 
@@ -17,14 +18,6 @@ struct OperatorTableEntry {
   int op;
   int sub_op;
 };
-
-// This struct can be a part of YYSTYPE union.
-struct NumericLiteral {
-  uint64_t value;
-  // non negative if defined.
-  int width;
-};
-
 
 // This is passed to the Scannar's constructor.
 // Passing this on Scanner's construction time to avoid static dependency on
@@ -41,7 +34,7 @@ public:
 
 struct ScannerToken {
   sym_t sym;
-  NumericLiteral num;
+  iroha::NumericLiteral num;
   int sub_op;
   const string *str;
 };
@@ -65,7 +58,7 @@ public:
   void ReleaseFileImage();
 
   int GetToken(int *sub);
-  NumericLiteral GetNum();
+  iroha::NumericLiteral GetNum();
   sym_t GetSym();
   const string *GetStr();
   void GetPosition(ScannerPos *pos);
@@ -105,7 +98,6 @@ private:
   bool IsSpace(char c);
   bool IsSymHead(char c);
   bool IsSymBody(char c);
-  uint64_t Parse0b();
 
 private:
   static const int MAX_TOKEN = 256;
