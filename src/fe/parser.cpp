@@ -562,11 +562,11 @@ static const yytype_uint16 yyrline[] =
      351,   355,   355,   359,   361,   365,   365,   369,   369,   373,
      373,   377,   378,   382,   387,   393,   397,   400,   405,   409,
      411,   415,   420,   435,   444,   450,   457,   461,   469,   472,
-     473,   476,   479,   483,   488,   492,   494,   498,   501,   504,
-     506,   508,   510,   512,   514,   516,   518,   520,   522,   524,
-     526,   528,   530,   532,   534,   536,   538,   540,   542,   544,
-     546,   548,   550,   552,   554,   557,   562,   564,   569,   571,
-     575,   577,   581,   585,   590,   592
+     473,   476,   479,   483,   488,   492,   494,   498,   501,   508,
+     510,   512,   514,   516,   518,   520,   522,   524,   526,   528,
+     530,   532,   534,   536,   538,   540,   542,   544,   546,   548,
+     550,   552,   554,   556,   558,   561,   569,   571,   576,   578,
+     582,   584,   588,   592,   597,   599
 };
 #endif
 
@@ -2667,313 +2667,320 @@ yyreduce:
 #line 501 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   ScannerInterface::InSemiColonStatement();
-  (yyval.expr) = Builder::ArrayRefExpr(Builder::SymExpr((yyvsp[-2].sym)), Builder::NumExpr((yyvsp[0].num)));
+  Expr *num = Builder::NumExpr((yyvsp[0].num));
+  if (num == nullptr) {
+    YYABORT;
+  }
+  (yyval.expr) = Builder::ArrayRefExpr(Builder::SymExpr((yyvsp[-2].sym)), num);
 }
-#line 2673 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2677 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 129:
-#line 504 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 508 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = (yyvsp[-1].expr);
 }
-#line 2681 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2685 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 130:
-#line 506 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 510 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::ArrayRefExpr((yyvsp[-3].expr), (yyvsp[-1].expr));
 }
-#line 2689 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2693 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 131:
-#line 508 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 512 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BitRangeRefExpr((yyvsp[-5].expr), (yyvsp[-3].expr), (yyvsp[-1].expr));
 }
-#line 2697 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2701 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 132:
-#line 510 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 514 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_COMMA);
 }
-#line 2705 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2709 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 133:
-#line 512 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 516 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_ELM_REF);
 }
-#line 2713 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2717 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 134:
-#line 514 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 518 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = (yyvsp[0].expr);
 }
-#line 2721 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2725 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 135:
-#line 516 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 520 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::LogicInvertExpr((yyvsp[0].expr));
 }
-#line 2729 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2733 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 136:
-#line 518 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 522 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BitInvertExpr((yyvsp[0].expr));
 }
-#line 2737 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2741 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 137:
-#line 520 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 524 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2745 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2749 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 138:
-#line 522 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 526 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_MUL);
 }
-#line 2753 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2757 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 139:
-#line 524 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 528 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_DIV);
 }
-#line 2761 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2765 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 140:
-#line 526 "src/fe/parser.ypp" /* yacc.c:1646  */
-    {
-  (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
-}
-#line 2769 "src/fe/parser.cpp" /* yacc.c:1646  */
-    break;
-
-  case 141:
-#line 528 "src/fe/parser.ypp" /* yacc.c:1646  */
-    {
-  (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
-}
-#line 2777 "src/fe/parser.cpp" /* yacc.c:1646  */
-    break;
-
-  case 142:
 #line 530 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2785 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2773 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
-  case 143:
+  case 141:
 #line 532 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2793 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2781 "src/fe/parser.cpp" /* yacc.c:1646  */
+    break;
+
+  case 142:
+#line 534 "src/fe/parser.ypp" /* yacc.c:1646  */
+    {
+  (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
+}
+#line 2789 "src/fe/parser.cpp" /* yacc.c:1646  */
+    break;
+
+  case 143:
+#line 536 "src/fe/parser.ypp" /* yacc.c:1646  */
+    {
+  (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
+}
+#line 2797 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 144:
-#line 534 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 538 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_CONCAT);
 }
-#line 2801 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2805 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 145:
-#line 536 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 540 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_AND);
 }
-#line 2809 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2813 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 146:
-#line 538 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 542 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_OR);
 }
-#line 2817 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2821 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 147:
-#line 540 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 544 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_XOR);
 }
-#line 2825 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2829 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 148:
-#line 542 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 546 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_LOR);
 }
-#line 2833 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2837 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 149:
-#line 544 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 548 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_LAND);
 }
-#line 2841 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2845 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 150:
-#line 546 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 550 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::IncDecExpr((yyvsp[-1].expr), (yyvsp[0].sub_op), true);
 }
-#line 2849 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2853 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 151:
-#line 548 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 552 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::IncDecExpr((yyvsp[0].expr), (yyvsp[-1].sub_op), false);
 }
-#line 2857 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2861 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 152:
-#line 550 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 554 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::SignedExpr((yyvsp[-1].sub_op), (yyvsp[0].expr));
 }
-#line 2865 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2869 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 153:
-#line 552 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 556 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::TriTerm((yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].expr));
 }
-#line 2873 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2877 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 154:
-#line 554 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 558 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   ScannerInterface::InSemiColonStatement();
   (yyval.expr) = Builder::StrExpr((yyvsp[0].str));
 }
-#line 2882 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2886 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 155:
-#line 557 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 561 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   ScannerInterface::InSemiColonStatement();
   (yyval.expr) = Builder::NumExpr((yyvsp[0].num));
+  if ((yyval.expr) == nullptr) {
+    YYABORT;
+  }
 }
-#line 2891 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2898 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 156:
-#line 562 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 569 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.num) = (yyvsp[0].num);
 }
-#line 2899 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2906 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 157:
-#line 564 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 571 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.num) = (yyvsp[-2].num);
   (yyval.num).width = (yyvsp[0].num).value;
 }
-#line 2908 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2915 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 158:
-#line 569 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 576 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::SymExpr((yyvsp[0].sym));
 }
-#line 2916 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2923 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 159:
-#line 571 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 578 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::ElmSymRefExpr((yyvsp[-2].expr), (yyvsp[0].sym));
 }
-#line 2924 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2931 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 160:
-#line 575 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 582 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr_set) = Builder::ExprList(nullptr, (yyvsp[0].expr));
 }
-#line 2932 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2939 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 161:
-#line 577 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 584 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr_set) = Builder::ExprList((yyvsp[-2].expr_set), (yyvsp[0].expr));
 }
-#line 2940 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2947 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 162:
-#line 581 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 588 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = Builder::SymExpr((yyvsp[-1].sym));
 }
-#line 2948 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2955 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 163:
-#line 585 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 592 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   ScannerInterface::InSemiColonStatement();
   (yyval.expr) = Builder::FuncallExpr((yyvsp[-2].expr), (yyvsp[-1].expr));
 }
-#line 2957 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2964 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 164:
-#line 590 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 597 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = nullptr;
 }
-#line 2965 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2972 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
   case 165:
-#line 592 "src/fe/parser.ypp" /* yacc.c:1646  */
+#line 599 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
   (yyval.expr) = (yyvsp[0].expr);
 }
-#line 2973 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2980 "src/fe/parser.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 2977 "src/fe/parser.cpp" /* yacc.c:1646  */
+#line 2984 "src/fe/parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3201,5 +3208,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 596 "src/fe/parser.ypp" /* yacc.c:1906  */
+#line 603 "src/fe/parser.ypp" /* yacc.c:1906  */
 

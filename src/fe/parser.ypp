@@ -500,7 +500,11 @@ EXPR : SYM {
   $$ = Builder::SymExpr($1);
 } | SYM '@' NUM {
   ScannerInterface::InSemiColonStatement();
-  $$ = Builder::ArrayRefExpr(Builder::SymExpr($1), Builder::NumExpr($3));
+  Expr *num = Builder::NumExpr($3);
+  if (num == nullptr) {
+    YYABORT;
+  }
+  $$ = Builder::ArrayRefExpr(Builder::SymExpr($1), num);
 } | '(' EXPR ')' {
   $$ = $2;
 } | EXPR '[' EXPR ']' {
@@ -557,6 +561,9 @@ EXPR : SYM {
 } | NUM_EXPR {
   ScannerInterface::InSemiColonStatement();
   $$ = Builder::NumExpr($1);
+  if ($$ == nullptr) {
+    YYABORT;
+  }
 }
 
 NUM_EXPR : NUM {

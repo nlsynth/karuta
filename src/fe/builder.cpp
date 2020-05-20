@@ -84,13 +84,17 @@ Expr *Builder::SymExpr(sym_t sym) {
 }
 
 Expr *Builder::NumExpr(iroha::NumericLiteral num) {
-  Expr *expr = NewExpr(EXPR_NUM);
+  if (num.has_error) {
+    yyerror("Malformed numeric expression");
+    return nullptr;
+  }
   iroha::Numeric n;
   iroha::Op::MakeConst0(num.value, n.GetMutableArray());
   if (num.width > -1) {
     n.type_.SetWidth(num.width);
   }
   iroha::Numeric::MayExpandStorage(nullptr, &n);
+  Expr *expr = NewExpr(EXPR_NUM);
   expr->SetNum(n);
   return expr;
 }

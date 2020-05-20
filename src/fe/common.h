@@ -9,6 +9,8 @@ class Annotation;
 class AnnotationKeyValueSet;
 class DumpStream;
 
+extern void yyerror(const char *msg);
+
 namespace iroha {
 class NumericWidth;
 }  // namespace iroha
