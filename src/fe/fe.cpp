@@ -126,6 +126,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
     {"import", K_IMPORT},
     {"int", K_INT},
     {"mailbox", K_MAILBOX},
+    {"module", K_MODULE},
     {"object", K_OBJECT},
     {"process", K_PROCESS},
     // ram and reg are experimental syntax sugar.

@@ -37,7 +37,7 @@ extern void yyerror(const char *msg);
   class AnnotationKeyValueSet *annotation_value_set;
 }
 
-%type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD
+%type <expr> EXPR ARG_LIST VAR FUNCALL FUNCALL_HEAD MODULE_HEAD
 %type <expr_set> VAR_LIST
 %type <shape> ARRAY_SPEC EMPTY_OR_ARRAY_SPEC
 %type <var_decl_set> VAR_DECL_STMT VAR_DECL VAR_DECL_TAIL
@@ -68,7 +68,7 @@ extern void yyerror(const char *msg);
 %token K_DEF K_DEFAULT K_DO K_ELSE K_ENUM K_EQ_COMPARE K_FUNC K_FOR K_GOTO
 %token K_IF K_IMPORT K_INC_DEC K_INT K_LG_COMPARE K_MAILBOX
 %token K_OBJECT K_PROCESS K_RETURN K_SHARED K_SHIFT K_STRING K_SWITCH K_THREAD
-%token K_VAR K_WHILE K_WITH
+%token K_VAR K_WHILE K_WITH K_MODULE
 
 %token NUM
 %token SYM
@@ -100,8 +100,9 @@ FUNC_DECL_OR_STMT_LIST : | FUNC_DECL_OR_STMT_LIST FUNC_DECL_OR_STMT
 
 FUNC_DECL_OR_STMT : FUNC_DECL |
   STMT |
-  K_WITH VAR '{' { Emitter::SetBlockVar($2); Emitter::BeginBlock(nullptr); } FUNC_DECL_OR_STMT_LIST '}' { Emitter::EndBlock(); }
+  MODULE_HEAD '{' { Emitter::SetBlockVar($1); Emitter::BeginBlock(nullptr); } FUNC_DECL_OR_STMT_LIST '}' { Emitter::EndBlock(); }
 
+MODULE_HEAD : K_WITH VAR { $$ = $2; } | K_MODULE VAR { $$ = $2; } | K_MODULE { $$ = nullptr; }
 
 IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
   $$ = AnnotationBuilder::BuildStrParam($1, $4);
@@ -112,7 +113,9 @@ IMPORT_PARAM_HEAD : SYM K_ASSIGN '(' STR {
 
 ANNOTATION_VALUE : SYM K_ASSIGN STR {
   $$ = AnnotationBuilder::BuildStrParam($1, $3);
-} |  SYM K_ASSIGN NUM {
+ } | /* kind a kludge to allow "module" key */ K_MODULE K_ASSIGN STR {
+  $$ = AnnotationBuilder::BuildStrParam(sym_lookup("module"), $3);
+} | SYM K_ASSIGN NUM {
   $$ = AnnotationBuilder::BuildIntParam($1, $3.value);
 } | IMPORT_PARAM_HEAD ')' {
   $$ = $1;
