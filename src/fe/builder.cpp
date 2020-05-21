@@ -89,11 +89,7 @@ Expr *Builder::NumExpr(iroha::NumericLiteral num) {
     return nullptr;
   }
   iroha::Numeric n;
-  iroha::Op::MakeConst0(num.value, n.GetMutableArray());
-  if (num.width > -1) {
-    n.type_.SetWidth(num.width);
-  }
-  iroha::Numeric::MayExpandStorage(nullptr, &n);
+  num.ToNumeric(nullptr, &n);
   Expr *expr = NewExpr(EXPR_NUM);
   expr->SetNum(n);
   return expr;
