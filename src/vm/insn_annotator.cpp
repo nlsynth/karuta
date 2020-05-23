@@ -344,9 +344,10 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
       for (int i = 0; i < parse_tree->GetReturns()->decls.size(); ++i) {
 	auto *decl = parse_tree->GetReturns()->decls[i];
 	// TODO: type object.
-	if (decl->GetType() == sym_object) {
+	sym_t type = decl->GetType();
+	if (type == sym_object || type == sym_module) {
 	  insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
-	} else if (decl->GetType() == sym_bool) {
+	} else if (type == sym_bool) {
 	  insn->dst_regs_[i]->type_.value_type_ = Value::ENUM_ITEM;
 	  insn->dst_regs_[i]->type_.enum_type_ = vm_->bool_type_;
 	} else {
@@ -390,7 +391,7 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
   if (sym == sym_int || sym == sym_null) {
     // Assumes width is specified instead for sym_null.
     return Value::NUM;
-  } else if (sym == sym_object) {
+  } else if (sym == sym_object || sym == sym_module) {
     return Value::OBJECT;
   } else if (sym == sym_bool) {
     return Value::ENUM_ITEM;

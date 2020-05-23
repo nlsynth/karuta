@@ -38,7 +38,7 @@ sym_t sym_if, sym_else;
 sym_t sym_for, sym_do, sym_while, sym_return, sym_as;
 sym_t sym_switch, sym_case, sym_default;
 sym_t sym_break, sym_continue, sym_goto;
-sym_t sym_int, sym_bool, sym_object;
+sym_t sym_int, sym_bool, sym_object, sym_module;
 sym_t sym_output, sym_input;
 
 static int str_hash(const char *str) {
@@ -148,6 +148,7 @@ void sym_table_init(void) {
   sym_int = sym_lookup("int");
   sym_bool = sym_lookup("bool");
   sym_object = sym_lookup("object");
+  sym_module = sym_lookup("module");
   sym_output = sym_lookup("output");
   sym_input = sym_lookup("input");
 }
