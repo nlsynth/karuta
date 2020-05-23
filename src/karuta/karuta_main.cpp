@@ -17,7 +17,7 @@
 #include "fe/fe.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
-#include "iroha/util.h"
+#include "iroha/base/util.h"
 #include "karuta/karuta.h"
 
 #include <errno.h>

@@ -173,7 +173,9 @@ int Scanner::ReadNum() {
   }
   while (true) {
     char c = CurChar();
-    if (hex_dec_mode) {
+    if (c == '_') {
+      // skip.
+    } else if (hex_dec_mode) {
       if (!IsHexDec(c)) {
 	break;
       }

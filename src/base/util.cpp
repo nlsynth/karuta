@@ -1,7 +1,7 @@
 #include "base/util.h"
 
 #include "base/logging.h"
-#include "iroha/util.h"
+#include "iroha/base/util.h"
 
 #include <fstream>
 #include <set>
