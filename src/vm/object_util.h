@@ -4,6 +4,8 @@
 
 #include "vm/common.h"
 
+#include <set>
+
 namespace vm {
 
 class ObjectUtil {
@@ -17,6 +19,12 @@ public:
 			      const string &str);
   static int GetIntMember(Object *obj, const string &key, int dflt);
   static void SetIntMember(Object *obj, const string &key, int val);
+  static void CollectReachableObjects(Object *obj,
+				      vector<Object *> *objs);
+private:
+  static void CollectReachableObjectsRec(Object *obj,
+					 std::set<Object *> *seen,
+					 vector<Object *> *objs);
 };
 
 }  // namespace vm

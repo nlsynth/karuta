@@ -5,6 +5,8 @@
 #include "vm/string_wrapper.h"
 #include "vm/value.h"
 
+using std::set;
+
 namespace vm {
 
 int ObjectUtil::GetAddressWidth(Object *obj) {
@@ -51,6 +53,30 @@ void ObjectUtil::SetIntMember(Object *obj, const string &key, int val) {
   Value *value = obj->LookupValue(sym_lookup(key.c_str()), true);
   value->type_ = Value::NUM;
   iroha::Op::MakeConst0(val, &value->num_);
+}
+
+void ObjectUtil::CollectReachableObjects(Object *obj,
+					 vector<Object *> *objs) {
+  set<Object *> seen;
+  CollectReachableObjectsRec(obj, &seen, objs);
+}
+
+void ObjectUtil::CollectReachableObjectsRec(Object *obj,
+					    set<Object *> *seen,
+					    vector<Object *> *objs) {
+  if (seen->find(obj) != seen->end()) {
+    return;
+  }
+  objs->push_back(obj);
+  seen->insert(obj);
+  map<sym_t, vm::Object *> member_objs;
+  obj->GetAllMemberObjs(&member_objs);
+  for (auto it : member_objs) {
+    if (it.first == sym_parent) {
+      continue;
+    }
+    CollectReachableObjectsRec(it.second, seen, objs);
+  }
 }
 
 }  // namespace vm

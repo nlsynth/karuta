@@ -1,6 +1,7 @@
 #include "vm/thread_wrapper.h"
 
 #include "vm/object.h"
+#include "vm/object_util.h"
 #include "vm/vm.h"
 
 namespace vm {
@@ -31,14 +32,18 @@ Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name,
 }
 
 void ThreadWrapper::Run(VM *vm, Object *obj) {
-  vector<ThreadEntry> methods;
-  GetThreadEntryMethods(obj, &methods, true);
-  for (auto &m : methods) {
-    string &name = m.method_name;
-    Value *method_value =
-      obj->LookupValue(sym_lookup(name.c_str()), false);
-    CHECK(method_value && method_value->type_ == Value::METHOD) << name;
-    vm->AddThreadFromMethod(nullptr, obj, method_value->method_, m.index);
+  vector<Object *> objs;
+  ObjectUtil::CollectReachableObjects(obj, &objs);
+  for (Object *o : objs) {
+    vector<ThreadEntry> methods;
+    GetThreadEntryMethods(o, &methods, true);
+    for (auto &m : methods) {
+      string &name = m.method_name;
+      Value *method_value =
+	o->LookupValue(sym_lookup(name.c_str()), false);
+      CHECK(method_value && method_value->type_ == Value::METHOD) << name;
+      vm->AddThreadFromMethod(nullptr, o, method_value->method_, m.index);
+    }
   }
 }
 
