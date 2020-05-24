@@ -35,6 +35,13 @@ int Scanner::GetToken(int *sub) {
   if (IsDec(c)) {
     return ReadNum();
   }
+  // An expression ends with a '}'.
+  // Injects a semicolon and doesn't proceed.
+  if (c == '}' && UseReturnAsSep()) {
+    in_semicolon_ = false;
+    *sub = 0;
+    return ';';
+  }
   // operator.
   struct OperatorTableEntry *op = LookupOp();
   if (op) {
