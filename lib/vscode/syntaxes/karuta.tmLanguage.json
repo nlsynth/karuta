@@ -68,9 +68,10 @@
 		"scopedecls": {
 			"patterns": [
 				{
-					"match": "with\\s+(\\w+)",
+					"match": "(with|module)\\s+(\\w*)",
 					"captures": {
-						"1": {"name": "variable.other"}
+						"1": {"name": "storage.modifier"},
+						"2": {"name": "variable.other"}
 					}
 				}
 			]
