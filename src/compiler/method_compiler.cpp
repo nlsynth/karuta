@@ -226,7 +226,7 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
       RegisterTuple rt = exc_->CompileExpr(scope->obj_expr_);
       vm::Insn *insn = new vm::Insn;
       insn->op_ = vm::OP_MEMBER_WRITE;
-      insn->label_ = sym_lookup("parent");
+      insn->label_ = sym_parent;
       insn->obj_reg_ = rt.GetOne();
       insn->src_regs_.push_back(EmitLoadObj(nullptr));
       insn->src_regs_.push_back(insn->obj_reg_);

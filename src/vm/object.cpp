@@ -117,7 +117,7 @@ Object *Object::Clone() {
   Value *self = new_obj->LookupValue(sym_lookup("self"), true);
   self->type_ = Value::OBJECT;
   self->object_ = new_obj;
-  Value *parent = new_obj->LookupValue(sym_lookup("parent"), true);
+  Value *parent = new_obj->LookupValue(sym_parent, true);
   parent->type_ = Value::OBJECT;
   parent->object_ = new_obj;
   return new_obj;

@@ -21,6 +21,6 @@ extern sym_t sym_switch, sym_case, sym_default;
 extern sym_t sym_break, sym_continue, sym_goto;
 extern sym_t sym_return, sym_as;
 extern sym_t sym_int, sym_bool, sym_object, sym_module;
-extern sym_t sym_output, sym_input;
+extern sym_t sym_output, sym_input, sym_parent;
 
 #endif  // _base_sym_h_
