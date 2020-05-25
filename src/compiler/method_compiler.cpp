@@ -231,11 +231,19 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
 }
 
 void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
-  RegisterTuple rt = exc_->CompileExpr(obj_expr);
+  vm::Register *scope_obj = nullptr;
+  if (obj_expr->GetType() == fe::EXPR_ELM_SYM_REF) {
+    vm::Register *head = CompilePathHead(obj_expr);
+    scope_obj = EmitMemberLoad(head, obj_expr->GetSym());
+  } else {
+    RegisterTuple rt = exc_->CompileExpr(obj_expr);
+    scope_obj = rt.GetOne();
+  }
+  // Link to self.parent.
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_MEMBER_WRITE;
   insn->label_ = sym_parent;
-  insn->obj_reg_ = rt.GetOne();
+  insn->obj_reg_ = scope_obj;
   insn->src_regs_.push_back(EmitLoadObj(nullptr));
   insn->src_regs_.push_back(insn->obj_reg_);
   insn->dst_regs_.push_back(insn->src_regs_[0]);
@@ -243,7 +251,7 @@ void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
 
   insn = new vm::Insn;
   insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
-  insn->obj_reg_ = rt.GetOne();
+  insn->obj_reg_ = scope_obj;
   EmitInsn(insn);
 }
 
