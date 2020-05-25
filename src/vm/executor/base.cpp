@@ -501,7 +501,7 @@ void Base::SetupCalleeFrame(Object *obj, Method *callee_method,
   }
 }
 
-void Base::ExecMemberAccess() {
+bool Base::ExecMemberAccess() {
   Object *obj;
   if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
     obj = VAL(sreg(0)).object_;
@@ -513,7 +513,7 @@ void Base::ExecMemberAccess() {
     Status::os(Status::USER_ERROR) << "member not found: "
 				   << sym_cstr(insn_->label_);
     thr_->UserError();
-    return;
+    return false;
   }
   if (TlsWrapper::IsTlsValue(member)) {
     member = TlsWrapper::GetValue(member->object_, thr_);
@@ -537,6 +537,7 @@ void Base::ExecMemberAccess() {
     member->CopyDataFrom(src, src_reg->type_.width_);
     member->type_ = src_reg->type_.value_type_;
   }
+  return true;
 }
 
 void Base::ExecBitRange() {
@@ -557,7 +558,9 @@ bool Base::ExecYield() {
 }
 
 void Base::ExecMemberReadWithCheck() {
-  ExecMemberAccess();
+  if (!ExecMemberAccess()) {
+    return;
+  }
   // Annotate the type of the results now.
   CHECK(op() == OP_MEMBER_READ_WITH_CHECK);
   Value &obj_value = VAL(sreg(0));

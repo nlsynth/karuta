@@ -21,7 +21,7 @@ public:
   }
   
 protected:
-  void ExecMemberAccess();
+  bool ExecMemberAccess();
   bool ExecFuncall();
   void ExecFuncallDone();
   Method *LookupMethod(Object **obj);
