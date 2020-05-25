@@ -223,24 +223,28 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
   if (stmt != nullptr) {
     scope->obj_expr_ = stmt->GetExpr();
     if (scope->obj_expr_ != nullptr) {
-      RegisterTuple rt = exc_->CompileExpr(scope->obj_expr_);
-      vm::Insn *insn = new vm::Insn;
-      insn->op_ = vm::OP_MEMBER_WRITE;
-      insn->label_ = sym_parent;
-      insn->obj_reg_ = rt.GetOne();
-      insn->src_regs_.push_back(EmitLoadObj(nullptr));
-      insn->src_regs_.push_back(insn->obj_reg_);
-      insn->dst_regs_.push_back(insn->src_regs_[0]);
-      EmitInsn(insn);
-
-      insn = new vm::Insn;
-      insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
-      insn->obj_reg_ = rt.GetOne();
-      EmitInsn(insn);
+      LoadScopeObj(scope->obj_expr_);
     }
   }
   MaySetUnrollAnnotation(stmt, scope);
   bindings_.push_back(scope);
+}
+
+void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
+  RegisterTuple rt = exc_->CompileExpr(obj_expr);
+  vm::Insn *insn = new vm::Insn;
+  insn->op_ = vm::OP_MEMBER_WRITE;
+  insn->label_ = sym_parent;
+  insn->obj_reg_ = rt.GetOne();
+  insn->src_regs_.push_back(EmitLoadObj(nullptr));
+  insn->src_regs_.push_back(insn->obj_reg_);
+  insn->dst_regs_.push_back(insn->src_regs_[0]);
+  EmitInsn(insn);
+
+  insn = new vm::Insn;
+  insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
+  insn->obj_reg_ = rt.GetOne();
+  EmitInsn(insn);
 }
 
 void MethodCompiler::PopScope() {
