@@ -390,7 +390,15 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
   bool is_member_decl = false;
   if (var_expr->GetType() == fe::EXPR_ELM_SYM_REF) {
-    CHECK(IsTopLevel() && vdd->GetIsShared());
+    if (!IsTopLevel()) {
+      Status::os(Status::USER_ERROR)
+	<< "Member declaration is allowed only from toplevel";
+      return;
+    }
+    if (!vdd->GetIsShared()) {
+      Status::os(Status::USER_ERROR)
+	<< "Member local var declaration is not allowed";
+    }
     is_member_decl = true;
   }
   if (IsTopLevel() && vdd->GetIsShared()) {
