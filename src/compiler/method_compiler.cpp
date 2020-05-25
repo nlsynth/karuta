@@ -231,14 +231,9 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
 }
 
 void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
-  vm::Register *scope_obj = nullptr;
-  if (obj_expr->GetType() == fe::EXPR_ELM_SYM_REF) {
-    vm::Register *head = CompilePathHead(obj_expr);
-    scope_obj = EmitMemberLoad(head, obj_expr->GetSym());
-  } else {
-    RegisterTuple rt = exc_->CompileExpr(obj_expr);
-    scope_obj = rt.GetOne();
-  }
+  vm::Register *head = CompilePathHead(obj_expr);
+  vm::Register *scope_obj = EmitMemberLoad(head, obj_expr->GetSym());
+
   // Link to self.parent.
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_MEMBER_WRITE;
