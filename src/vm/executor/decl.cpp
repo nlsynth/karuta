@@ -27,6 +27,11 @@ void Decl::ExecVardecl() {
   fe::VarDecl *decl = insn_->insn_stmt_->GetVarDecl();
   Annotation *an = decl->GetAnnotation();
   Object *obj = VAL(oreg()).object_;
+  if (obj == nullptr) {
+    Status::os(Status::USER_ERROR) << "Can't find object";
+    thr_->UserError();
+    return;
+  }
   CHECK(obj);
   sym_t name = decl->GetNameExpr()->GetSym();
   Value *value = obj->LookupValue(name, true);
