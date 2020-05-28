@@ -141,6 +141,16 @@ void Decl::ExecFuncdecl() {
   }
 }
 
+void Decl::PushCurrentObject() {
+  frame_->objs_.push_back(frame_->obj_);
+  frame_->obj_ = VAL(oreg()).object_;
+}
+
+void Decl::PopCurrentObject() {
+  frame_->obj_ = *(frame_->objs_.rbegin());
+  frame_->objs_.pop_back();
+}
+
 void Decl::AddThreadEntry(const string &name, int num, bool is_soft) {
   Object *obj = VAL(oreg()).object_;
   for (int i = 0; i < num; ++i) {

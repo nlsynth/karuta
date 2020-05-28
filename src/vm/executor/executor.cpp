@@ -140,12 +140,10 @@ bool Executor::ExecInsn(Insn *insn) {
     ExecSetTypeObject();
     break;
   case OP_PUSH_CURRENT_OBJECT:
-    frame_->objs_.push_back(frame_->obj_);
-    frame_->obj_ = VAL(oreg()).object_;
+    PushCurrentObject();
     break;
   case OP_POP_CURRENT_OBJECT:
-    frame_->obj_ = *(frame_->objs_.rbegin());
-    frame_->objs_.pop_back();
+    PopCurrentObject();
     break;
   case OP_MAY_WITH_TYPE_DONE:
     ExecMayWithTypeDone();

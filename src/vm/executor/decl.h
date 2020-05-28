@@ -18,6 +18,8 @@ protected:
   void ExecChannelDecl();
   void ExecMailboxDecl();
   void ExecFuncdecl();
+  void PushCurrentObject();
+  void PopCurrentObject();
 
   void AddThreadEntry(const string &name, int num, bool is_soft);
   void ClearThreadEntry();
