@@ -234,19 +234,21 @@ void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
   vm::Register *head = CompilePathHead(obj_expr);
   vm::Register *scope_obj = EmitMemberLoad(head, obj_expr->GetSym());
 
-  // Link to self.parent.
+  vm::Register *parent_obj = EmitLoadObj(nullptr);
+
   vm::Insn *insn = new vm::Insn;
+  insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
+  insn->obj_reg_ = scope_obj;
+  EmitInsn(insn);
+
+  // Link to self.parent.
+  insn = new vm::Insn;
   insn->op_ = vm::OP_MEMBER_WRITE;
   insn->label_ = sym_parent;
   insn->obj_reg_ = scope_obj;
-  insn->src_regs_.push_back(EmitLoadObj(nullptr));
+  insn->src_regs_.push_back(parent_obj);
   insn->src_regs_.push_back(insn->obj_reg_);
   insn->dst_regs_.push_back(insn->src_regs_[0]);
-  EmitInsn(insn);
-
-  insn = new vm::Insn;
-  insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
-  insn->obj_reg_ = scope_obj;
   EmitInsn(insn);
 }
 
