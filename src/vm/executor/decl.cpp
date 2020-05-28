@@ -101,8 +101,9 @@ void Decl::ExecMailboxDecl() {
 
 void Decl::ExecFuncdecl() {
   Object *obj = VAL(oreg()).object_;
-  if (!obj) {
-    Status::os(Status::USER_ERROR) << "Can't find object";
+  if (obj == nullptr) {
+    Status::os(Status::USER_ERROR) << "Can't find object to add function "
+				   << sym_cstr(insn_->label_);
     thr_->UserError();
     return;
   }
