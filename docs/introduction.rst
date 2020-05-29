@@ -139,38 +139,42 @@ The last example here illustrates some of the most important features of Karuta 
 
 .. code-block:: none
 
-   // This channel can be accessed like ch.write(v) or v = ch.read()
-   channel ch int
+   // Enclosing module { ... } is optional here and just to make it clear
+   // following members are in this module.
+   module {
+     // This channel can be accessed like ch.write(v) or v = ch.read()
+     channel ch int
 
-   func update(t int) (int) {
-     t = t ^ (t << 13); t = t ^ (t >> 17); t = t ^ (t << 15)
-     return t
-   }
-
-   // Thread entry method.
-   process main() {
-     var y int = 1
-     while true {
-       y = update(y)
-       ch.write(y)
+     func update(t int) (int) {
+       t = t ^ (t << 13); t = t ^ (t >> 17); t = t ^ (t << 15)
+       return t
      }
-   }
 
-   @ExtIO(output = "o")
-   func output(y #0) {
-     print(y)
-   }
+     // Thread entry method.
+     process main() {
+       var y int = 1
+       while true {
+         y = update(y)
+         ch.write(y)
+       }
+     }
 
-   // Thread entry method.
-   process thr() {
-     var b #0 = 0
-     while true {
-       var v int = ch.read()
-       // Flip the output on-off value when the generated random number is
-       // below this number.
-       if v < 10000 {
-         b = ~b
-         output(b)
+     @ExtIO(output = "o")
+     func output(y #0) {
+       print(y)
+     }
+
+     // Thread entry method.
+     process thr() {
+       var b #0 = 0
+       while true {
+         var v int = ch.read()
+         // Flip the output on-off value when the generated random number is
+         // below this number.
+         if v < 10000 {
+           b = ~b
+           output(b)
+         }
        }
      }
    }

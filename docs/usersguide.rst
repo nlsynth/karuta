@@ -528,14 +528,14 @@ The basic way to build an object hierarchy is to add new member objects and modi
      x.f()
    }
 
-This structure can be a more cleanly described with `with` block.
+This structure can be a more cleanly described with `module` block.
 
 .. code-block:: none
 
    shared x object = new()
    shared x.y object = new()
-   with x {
-     with y {
+   module x {
+     module y {
        func g() {
          print(1)
        }
@@ -548,7 +548,7 @@ This structure can be a more cleanly described with `with` block.
      x.f()
    }
 
-When `with` block is used, the member object can access its enclosing object by `parent` keyword.
+When `module` block is used, the member object can access its enclosing object by `parent` keyword.
 
 .. code-block:: none
 

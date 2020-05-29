@@ -19,8 +19,10 @@ to install the Karuta package.
 Karuta's language is an object oriented scripting language. The syntax is similar to recently popular programming languages like JavaScript, Python, Go or so on.
 Minimum code looks like as follows.
 
-     func main() {
-       // Do computation, call other methods and some I/O.
+     module {
+       process main() {
+         // Do computation, call other methods and some I/O.
+       }
      }
 
 This defines a method 'main' of current object. It can be called like this.
