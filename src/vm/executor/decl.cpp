@@ -143,8 +143,13 @@ void Decl::ExecFuncdecl() {
 }
 
 void Decl::PushCurrentObject() {
+  vm::Object *obj = VAL(oreg()).object_;
+  Value *value = obj->LookupValue(sym_parent, true);
+  value->type_ = Value::OBJECT;
+  value->object_ = frame_->obj_;
+
   frame_->objs_.push_back(frame_->obj_);
-  frame_->obj_ = VAL(oreg()).object_;
+  frame_->obj_ = obj;
 }
 
 void Decl::PopCurrentObject() {
