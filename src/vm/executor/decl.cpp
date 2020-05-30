@@ -144,6 +144,12 @@ void Decl::ExecFuncdecl() {
 
 void Decl::PushCurrentObject() {
   vm::Object *obj = VAL(oreg()).object_;
+  // * Uses the object if the label is not speficied (local var).
+  // * Looks up a member object if label is specified (member var).
+  if (insn_->label_ != sym_null) {
+    Value *value = obj->LookupValue(insn_->label_, false);
+    obj = value->object_;
+  }
   Value *value = obj->LookupValue(sym_parent, true);
   value->type_ = Value::OBJECT;
   value->object_ = frame_->obj_;

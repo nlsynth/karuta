@@ -231,12 +231,22 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
 }
 
 void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
-  vm::Register *head = CompilePathHead(obj_expr);
-  vm::Register *scope_obj = EmitMemberLoad(head, obj_expr->GetSym());
-
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
-  insn->obj_reg_ = scope_obj;
+  vm::Register *obj_reg = nullptr;
+  if (obj_expr->GetType() == fe::EXPR_SYM) {
+    obj_reg = LookupLocalVar(obj_expr->GetSym());
+  }
+  if (obj_reg == nullptr) {
+    // Member look up.
+    insn->obj_reg_ = CompilePathHead(obj_expr);
+    insn->label_ = obj_expr->GetSym();
+  } else {
+    // Local var.
+    insn->obj_reg_ = obj_reg;
+    insn->label_ = sym_null;
+  }
+
   EmitInsn(insn);
 }
 
