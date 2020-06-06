@@ -6,8 +6,8 @@
 #include "fe/fe.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "iroha/numeric.h"
 #include "karuta/annotation.h"
-#include "numeric/numeric_op.h"  // from iroha
 #include "vm/array_wrapper.h"
 #include "vm/channel_wrapper.h"
 #include "vm/decl_annotator.h"
@@ -144,11 +144,16 @@ void Decl::ExecFuncdecl() {
 
 void Decl::PushCurrentObject() {
   vm::Object *obj = VAL(oreg()).object_;
-  // * Uses the object if the label is not speficied (local var).
-  // * Looks up a member object if label is specified (member var).
+  // (a) Uses the object if the label is not speficied (local var).
+  // (b) Looks up a member object if label is specified (member var).
+  // (c) Uses the module name from the file name if (b) fails (file object).
   if (insn_->label_ != sym_null) {
     Value *value = obj->LookupValue(insn_->label_, false);
-    obj = value->object_;
+    if (value != nullptr) {
+      obj = value->object_;
+    } else {
+      CHECK(sym_str(insn_->label_) == thr_->GetModuleName());
+    }
   }
   Value *value = obj->LookupValue(sym_parent, true);
   value->type_ = Value::OBJECT;

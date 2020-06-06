@@ -11,6 +11,7 @@ using std::string;
 class Util {
 public:
   static string DirName(const string &fn);
+  // "a/b.x" to "b".
   static string BaseNameWithoutSuffix(const string &fn);
   static bool IsHtmlFileName(const string &fn);
   static bool IsDotFileName(const string &fn);

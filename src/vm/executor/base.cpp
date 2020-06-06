@@ -7,8 +7,8 @@
 #include "fe/stmt.h"
 #include "fe/nodecode.h"
 #include "fe/var_decl.h"
+#include "iroha/numeric.h"
 #include "karuta/annotation.h"
-#include "numeric/numeric_op.h"  // from iroha
 #include "vm/array_wrapper.h"
 #include "vm/distance_wrapper.h"
 #include "vm/insn.h"

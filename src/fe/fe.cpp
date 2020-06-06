@@ -225,7 +225,10 @@ bool FE::RunFile(bool is_import ,bool with_run, bool with_compile,
   if (method == nullptr || method->IsCompileFailure()) {
     return false;
   }
-  vm->AddThreadFromMethod(nullptr, thr_obj, method, 0);
+  vm::Thread *thr =
+    vm->AddThreadFromMethod(/* parent */ nullptr, thr_obj, method, 0);
+  string base = Util::BaseNameWithoutSuffix(file);
+  thr->SetModuleName(base);
   vm->Run();
   return true;
 }

@@ -232,4 +232,12 @@ void Thread::MaySetThreadIndex() {
   }
 }
 
+void Thread::SetModuleName(const string &n) {
+  module_name_ = n;
+}
+
+const string &Thread::GetModuleName() {
+  return module_name_;
+}
+
 }  // namespace vm

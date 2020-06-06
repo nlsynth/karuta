@@ -39,6 +39,9 @@ public:
   bool OnJump();
   void MayBlock();
 
+  void SetModuleName(const string &n);
+  const string &GetModuleName();
+
 private:
   enum Stat {
     RUNNABLE, SUSPENDED, DONE
@@ -60,6 +63,7 @@ private:
   vector<MethodFrame*> method_stack_;
   bool in_yield_;
   int index_;
+  string module_name_;
   long busy_counter_;
   long busy_counter_limit_;
 };

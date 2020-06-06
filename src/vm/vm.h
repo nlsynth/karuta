@@ -17,8 +17,8 @@ public:
   ~VM();
 
   void Run();
-  void AddThreadFromMethod(Thread *parent, Object *object, Method *method,
-			   int index);
+  Thread *AddThreadFromMethod(Thread *parent, Object *object, Method *method,
+			      int index);
   void Yield(Thread *thr);
   void GC();
   IntArray *GetDefaultMemory();
