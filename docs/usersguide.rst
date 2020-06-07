@@ -237,6 +237,9 @@ Communication to external
 I/O from/to external
 --------------------
 
+A method with *@ExtIO* annotation is used to access I/Os (e.g. LEDs, DIP switches, interrputs and so on).
+Its argument when called is taken as the output value and return value is taken from the input value.
+
 .. code-block:: none
 
    @ExtIO(output = "o")

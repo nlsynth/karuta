@@ -17,4 +17,5 @@ Source of this projects: <https://github.com/nlsynth/karuta> (see its docs/ dire
    User's guide <usersguide>
    Reference <reference>
    Design and Implementation <designandimpl>
+   Examples <examples>
    (Experimental features - might be removed without notice) <experimental>

@@ -147,6 +147,7 @@ Data types of a scalar variable are:
 * #0  - boolean
 * #10 - 10 bits
 * #T - User define type T
+* object, module - Object
 
 A vector type is declared by [scalar type][length] like int[16].
 
@@ -280,22 +281,24 @@ Control
 
 TODO: switch/case statement
 
-with block
+module block
 
 .. code-block:: none
 
-   shared obj object = new()
-   with obj {
+   module {
+     shared obj object = new()
+     func bar() {
+       obj.x[0] = 0
+       obj.foo()
+     }
+   }
+
+   module obj {
      // same as obj.foo()
      func foo() {
      }
      // same as obj.x
      shared x int[16]
-   }
-   
-   func bar() {
-     obj.x[0] = 0
-     obj.foo()
    }
 
 
