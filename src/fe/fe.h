@@ -29,7 +29,7 @@ class FE {
 				 bool dbg_parser,
 				 vm::VM *vm, vm::Object *obj);
   static Method *ReadFile(const string &file, bool import);
-  static void InitScannerInfo(ScannerInfo *s_info);
+  static ScannerInfo *BuildScannerInfo();
   static void InitSyms();
 
   bool dbg_parser_;

@@ -153,9 +153,9 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
 FE::FE(bool dbg_parser, bool dbg_scanner, string dbg_bytecode)
   : dbg_parser_(dbg_parser) {
   InitSyms();
-  scanner_info_.reset(new ScannerInfo);
-  InitScannerInfo(scanner_info_.get());
-  Scanner::Init(scanner_info_.get(), op_tab, dbg_scanner);
+  ScannerInfo *s_info = BuildScannerInfo();
+  scanner_info_.reset(s_info);
+  Scanner::Init(s_info, op_tab, dbg_scanner);
   compiler::Compiler::SetByteCodeDebug(dbg_bytecode);
   vm::Thread::SetByteCodeDebug(dbg_bytecode);
 }
@@ -298,10 +298,12 @@ void FE::InitSyms() {
   sym_var = sym_lookup("var");
 }
 
-void FE::InitScannerInfo(ScannerInfo *s_info) {
+ScannerInfo *FE::BuildScannerInfo() {
+  ScannerInfo *s_info = new ScannerInfo();
   s_info->num_token = NUM;
   s_info->sym_token = SYM;
   s_info->str_token = STR;
+  return s_info;
 }
 
 }  // namespace fe
