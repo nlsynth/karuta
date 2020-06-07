@@ -7,6 +7,8 @@
 
 namespace fe {
 
+class ScannerPos;
+
 class FileImage {
 public:
   string buf;
@@ -37,14 +39,6 @@ struct ScannerToken {
   iroha::NumericLiteral num;
   int sub_op;
   const string *str;
-};
-
-struct ScannerPos {
-  ScannerPos();
-
-  int line;
-  int pos;
-  string file;
 };
 
 class Scanner {

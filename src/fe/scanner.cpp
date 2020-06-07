@@ -3,6 +3,7 @@
 #include "fe/scanner.h"
 
 #include "base/stl_util.h"
+#include "fe/scanner_pos.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -453,4 +454,3 @@ void ScannerInterface::EndArrayElmDecl() {
 }
 
 }  // namespace fe
-
