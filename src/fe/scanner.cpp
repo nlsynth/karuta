@@ -5,6 +5,8 @@
 #include "base/stl_util.h"
 #include "fe/scanner_pos.h"
 
+#include <map>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -14,6 +16,23 @@
 #include <string.h>
 
 namespace fe {
+
+struct FilesMap {
+  ~FilesMap() {
+    STLDeleteSecondElements(&files_);
+  }
+  ScannerFile *GetScannerFile(const string &fn) {
+    auto it = files_.find(fn);
+    if (it != files_.end()) {
+      return it->second;
+    }
+    ScannerFile *sf = new ScannerFile();
+    files_[fn] = sf;
+    return sf;
+  }
+  std::map<string, ScannerFile *> files_;
+
+} Files;
 
 OperatorTableEntry *Scanner::op_tab;
 const ScannerInfo *Scanner::s_info;
@@ -27,6 +46,7 @@ Scanner::Scanner() {
   current_scanner_ = this;
   in_semicolon_ = false;
   in_array_elm_ = false;
+  file_ = nullptr;
 }
 
 int Scanner::GetToken(int *sub) {
@@ -85,7 +105,7 @@ const string *Scanner::GetStr() {
 void Scanner::GetPosition(ScannerPos *pos) {
   pos->pos = 0;
   pos->line = ln_;
-  pos->file = im_->file_name;
+  pos->file = file_;
 }
 
 char Scanner::CurChar() {
@@ -356,6 +376,11 @@ FileImage *Scanner::CreateFileImage(const char *fn) {
 void Scanner::SetFileImage(FileImage *im) {
   Reset();
   im_.reset(im);
+  if (im != nullptr) {
+    file_ = Files.GetScannerFile(im->file_name);
+  } else {
+    file_ = nullptr;
+  }
 }
 
 void Scanner::Reset() {
@@ -387,12 +412,6 @@ void Scanner::InArrayElmDecl() {
 
 void Scanner::EndArrayElmDecl() {
   in_array_elm_ = false;
-}
-
-
-ScannerPos::ScannerPos() {
-  line = -1;
-  pos = -1;
 }
 
 Scanner* ScannerInterface::CreateScanner() {

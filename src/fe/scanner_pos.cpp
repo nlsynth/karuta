@@ -1,5 +1,11 @@
 #include "fe/scanner_pos.h"
 
 namespace fe {
-// WIP: Does nothing for now.
+
+ScannerPos::ScannerPos() {
+  line = -1;
+  pos = -1;
+  file = nullptr;
+}
+
 }  // namespace fe

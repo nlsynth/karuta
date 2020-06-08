@@ -6,12 +6,16 @@
 
 namespace fe {
 
+struct ScannerFile {
+  std::string file;
+};
+
 struct ScannerPos {
   ScannerPos();
 
   int line;
   int pos;
-  std::string file;
+  ScannerFile *file;
 };
 
 }  // namespace fe

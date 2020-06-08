@@ -7,8 +7,6 @@
 
 namespace fe {
 
-class ScannerPos;
-
 class FileImage {
 public:
   string buf;
@@ -96,6 +94,7 @@ private:
 private:
   static const int MAX_TOKEN = 256;
   std::unique_ptr<FileImage> im_;
+  ScannerFile *file_;
   int cur_pos_;
 
   char token_[MAX_TOKEN];
