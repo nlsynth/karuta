@@ -96,6 +96,8 @@
         'fe/nodecode.h',
         'fe/scanner.cpp',
         'fe/scanner.h',
+        'fe/scanner_interface.cpp',
+        'fe/scanner_interface.h',
         'fe/scanner_pos.cpp',
         'fe/scanner_pos.h',
         'fe/stmt.cpp',

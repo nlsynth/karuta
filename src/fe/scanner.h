@@ -111,18 +111,6 @@ public:
   static bool dbg_scanner;
 };
 
-// Interface to access current Scanner instance from the parser.
-class ScannerInterface {
-public:
-  static Scanner *CreateScanner();
-  static int GetToken(ScannerToken *tk);
-  static void GetPosition(ScannerPos *pos);
-  static void InSemiColonStatement();
-  static void EndSemiColonStatement();
-  static void InArrayElmDecl();
-  static void EndArrayElmDecl();
-};
-
 }  // namespace fe
 
 #endif  // _fe_scanner_h_

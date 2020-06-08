@@ -7,7 +7,7 @@
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/nodecode.h"
-#include "fe/scanner.h"
+#include "fe/scanner_interface.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "karuta/annotation_builder.h"

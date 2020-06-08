@@ -10,6 +10,7 @@
 #include "fe/fe_method.h"
 #include "fe/nodecode.h"
 #include "fe/scanner.h"
+#include "fe/scanner_interface.h"
 #include "fe/scanner_pos.h"
 #include "vm/method.h"
 #include "vm/object.h"
