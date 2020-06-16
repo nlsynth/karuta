@@ -133,6 +133,10 @@ enum NodeCode Stmt::GetType() const {
   return type_;
 }
 
+ScannerPos &Stmt::GetPos() {
+  return pos_;
+}
+
 void Stmt::SetAnnotation(Annotation *an) {
   annotation_ = an;
 }

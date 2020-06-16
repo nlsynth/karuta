@@ -14,6 +14,10 @@ enum NodeCode Expr::GetType() const {
   return type_;
 }
 
+ScannerPos &Expr::GetPos() {
+  return pos_;
+}
+
 const iroha::Numeric &Expr::GetNum() const {
   return num_;
 }

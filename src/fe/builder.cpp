@@ -5,6 +5,7 @@
 #include "fe/enum_decl.h"
 #include "fe/expr.h"
 #include "fe/nodecode.h"
+#include "fe/scanner_interface.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "iroha/numeric.h"
@@ -61,12 +62,16 @@ const iroha::NumericWidth WidthSpec::GetWidth(sym_t name,
 
 Expr *Builder::NewExpr(NodeCode type) {
   Expr *expr = new Expr(type);
+  ScannerPos &pos = expr->GetPos();
+  ScannerInterface::GetPosition(&pos);
   NodePool::AddExpr(expr);
   return expr;
 }
 
 Stmt *Builder::NewStmt(int type) {
   Stmt *stmt = new Stmt(static_cast<NodeCode>(type));
+  ScannerPos &pos = stmt->GetPos();
+  ScannerInterface::GetPosition(&pos);
   NodePool::AddStmt(stmt);
   return stmt;
 }

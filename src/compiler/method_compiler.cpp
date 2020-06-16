@@ -233,6 +233,7 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
 void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
+  insn->insn_expr_ = obj_expr;
   vm::Register *obj_reg = nullptr;
   if (obj_expr->GetType() == fe::EXPR_SYM) {
     obj_reg = LookupLocalVar(obj_expr->GetSym());

@@ -13,6 +13,8 @@ struct ScannerFile {
 struct ScannerPos {
   ScannerPos();
 
+  std::string Format();
+
   int line;
   int pos;
   ScannerFile *file;

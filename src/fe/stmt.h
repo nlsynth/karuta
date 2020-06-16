@@ -4,6 +4,7 @@
 
 #include "fe/common.h"
 #include "fe/nodecode.h"
+#include "fe/scanner_pos.h"
 #include "iroha/numeric.h"
 
 namespace fe {
@@ -16,6 +17,8 @@ public:
   void Dump(DumpStream &os);
 
   enum NodeCode GetType() const;
+
+  ScannerPos &GetPos();
 
   Expr *GetExpr() const;
   void SetExpr(Expr *expr);
@@ -40,6 +43,8 @@ public:
 
 private:
   enum NodeCode type_;
+  ScannerPos pos_;
+
   Expr *expr_;
   sym_t sym_;
   Method *method_def_;

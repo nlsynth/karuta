@@ -27,6 +27,7 @@ struct FilesMap {
       return it->second;
     }
     ScannerFile *sf = new ScannerFile();
+    sf->file = fn;
     files_[fn] = sf;
     return sf;
   }

@@ -152,7 +152,14 @@ void Decl::PushCurrentObject() {
     if (value != nullptr) {
       obj = value->object_;
     } else {
-      CHECK(sym_str(insn_->label_) == thr_->GetModuleName());
+      if (sym_str(insn_->label_) != thr_->GetModuleName()) {
+	Status::os(Status::USER_ERROR)
+	  << "Failed to get object: "
+	  << sym_str(insn_->label_) << " "
+	  << insn_->insn_expr_->GetPos().Format();
+	thr_->UserError();
+	return;
+      }
     }
   }
   Value *value = obj->LookupValue(sym_parent, true);
