@@ -77,18 +77,20 @@ extern int yydebug;
     K_STRING = 287,
     K_SWITCH = 288,
     K_THREAD = 289,
-    K_VAR = 290,
-    K_WHILE = 291,
-    K_WITH = 292,
-    K_MODULE = 293,
-    NUM = 294,
-    SYM = 295,
-    STR = 296,
-    K_LOGIC_OR = 297,
-    K_LOGIC_AND = 298,
-    K_BIT_CONCAT = 299,
-    SIGN = 300,
-    ADDRESS = 301
+    K_INPUT = 290,
+    K_OUTPUT = 291,
+    K_VAR = 292,
+    K_WHILE = 293,
+    K_WITH = 294,
+    K_MODULE = 295,
+    NUM = 296,
+    SYM = 297,
+    STR = 298,
+    K_LOGIC_OR = 299,
+    K_LOGIC_AND = 300,
+    K_BIT_CONCAT = 301,
+    SIGN = 302,
+    ADDRESS = 303
   };
 #endif
 /* Tokens.  */
@@ -124,18 +126,20 @@ extern int yydebug;
 #define K_STRING 287
 #define K_SWITCH 288
 #define K_THREAD 289
-#define K_VAR 290
-#define K_WHILE 291
-#define K_WITH 292
-#define K_MODULE 293
-#define NUM 294
-#define SYM 295
-#define STR 296
-#define K_LOGIC_OR 297
-#define K_LOGIC_AND 298
-#define K_BIT_CONCAT 299
-#define SIGN 300
-#define ADDRESS 301
+#define K_INPUT 290
+#define K_OUTPUT 291
+#define K_VAR 292
+#define K_WHILE 293
+#define K_WITH 294
+#define K_MODULE 295
+#define NUM 296
+#define SYM 297
+#define STR 298
+#define K_LOGIC_OR 299
+#define K_LOGIC_AND 300
+#define K_BIT_CONCAT 301
+#define SIGN 302
+#define ADDRESS 303
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -163,7 +167,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 167 "src/fe/parser.h" /* yacc.c:1909  */
+#line 171 "src/fe/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

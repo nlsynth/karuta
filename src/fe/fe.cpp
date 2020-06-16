@@ -126,10 +126,12 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
     {"goto", K_GOTO},
     {"if", K_IF},
     {"import", K_IMPORT},
+    {"input", K_INPUT},
     {"int", K_INT},
     {"mailbox", K_MAILBOX},
     {"module", K_MODULE},
     {"object", K_OBJECT},
+    {"output", K_OUTPUT},
     {"process", K_PROCESS},
     // ram and reg are experimental syntax sugar.
     // We'll make these separate keywords, if users like them.
