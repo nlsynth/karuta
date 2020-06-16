@@ -62,3 +62,30 @@ Module hierarchy
        p.ch.read()
      }
    }
+
+---------------------
+Matrix multiplication
+---------------------
+
+.. code-block:: none
+
+   module m {
+     ram a int[4][4]
+     ram b int[4][4]
+     ram x int[4][4]
+
+     func mult() {
+       for var i int = 0; i < 4; ++i {
+         for var j int = 0; j < 4; ++j {
+           var t int = 0
+           for var k int = 0; k < 4; ++k {
+             t += a[i][k] * b[k][j]
+           }
+           x[i][j] = t
+         }
+       }
+     }
+     process p() {
+       mult()
+     }
+   }
