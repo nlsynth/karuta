@@ -95,12 +95,12 @@ void yyerror(const char *msg) {
   fe::ScannerPos pos;
   fe::ScannerInterface::GetPosition(&pos);
   ostream &os = Status::os(Status::USER_ERROR);
-  os << "[" << msg << "] at line: " << pos.line;
+  os << "[" << msg << "]";
   string fn = Emitter::GetFunctionName();
   if (!fn.empty()) {
     os << " in function " << fn;
   }
-  os << " in " << pos.file;
+  os << " " << pos.Format();
 }
 
 namespace fe {
