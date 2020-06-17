@@ -171,6 +171,8 @@
         'vm/insn.h',
         'vm/int_array.cpp',
         'vm/int_array.h',
+        'vm/io_wrapper.cpp',
+        'vm/io_wrapper.h',
         'vm/mailbox_wrapper.cpp',
         'vm/mailbox_wrapper.h',
         'vm/method.cpp',

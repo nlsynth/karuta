@@ -56,6 +56,9 @@ void DeclAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
       value->type_ = Value::INT_ARRAY;
     }
   }
+  if (decl->GetIsIO()) {
+    value->type_ = Value::OBJECT;
+  }
   value->num_type_ = decl->GetWidth();
   sym_t object_name = decl->GetObjectName();
   if (object_name != sym_null) {

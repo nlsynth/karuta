@@ -13,6 +13,7 @@
 #include "vm/decl_annotator.h"
 #include "vm/distance_wrapper.h"
 #include "vm/int_array.h"
+#include "vm/io_wrapper.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/object.h"
 #include "vm/thread.h"
@@ -52,6 +53,10 @@ void Decl::ExecVardecl() {
   }
   if (value->type_ == Value::OBJECT_ARRAY) {
     value->object_ = CreateObjectArray(decl->GetArrayShape());
+  }
+  if (value->type_ == Value::OBJECT && decl->GetIsIO()) {
+    value->object_ = CreateIOObject(decl, name, decl->GetIsOutput(),
+				    decl->GetWidth());
   }
   if (an != nullptr && an->IsThreadLocal()) {
     TlsWrapper::InjectTlsWrapper(thr_->GetVM(), value);
@@ -247,6 +252,12 @@ Object *Decl::CreateMemoryObject(const iroha::NumericWidth &width,
 
 Object *Decl::CreateObjectArray(fe::ArrayShape *shape) {
   return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), shape->length[0]);
+}
+
+Object *Decl::CreateIOObject(fe::VarDecl *decl, sym_t name,
+			     bool is_output,
+			     const iroha::NumericWidth &width) {
+  return IOWrapper::NewIOWrapper(thr_->GetVM(), name, is_output, width);
 }
 
 }  // namespace executor
