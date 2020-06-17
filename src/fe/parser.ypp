@@ -199,12 +199,16 @@ VAR_DECL_TAIL : VAR_LIST WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
 VAR_OR_SHARED : K_VAR {$$ = K_VAR;} | K_SHARED {$$ = K_SHARED;} | K_INPUT {$$ = K_INPUT;} | K_OUTPUT {$$ = K_OUTPUT;}
 
 VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::InSemiColonStatement();} VAR_OR_SHARED VAR_DECL_TAIL {
-  bool is_shared = ($3 == K_SHARED);
+  bool is_input = ($3 == K_OUTPUT);
+  bool is_output = ($3 == K_OUTPUT);
+  bool is_io = (is_input || is_output);
+  bool is_shared = ($3 == K_SHARED) || is_io;
   for (VarDecl *vd : $4->decls) {
     Builder::SetVarDeclAnnotation(vd, $1);
     if (is_shared) {
       vd->SetIsShared(true);
     }
+    vd->SetIsIO(is_io, is_output);
   }
   $$ = $4;
 } | K_ENUM TYPE_NAME VAR {

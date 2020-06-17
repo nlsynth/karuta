@@ -39,6 +39,9 @@ public:
   void SetObjectName(sym_t object_name);
   void SetIsShared(bool is_shared);
   bool GetIsShared() const;
+  void SetIsIO(bool is_io, bool is_output);
+  bool GetIsIO() const;
+  bool GetIsOutput() const;
   Expr *GetInitialVal() const;
   void SetInitialVal(Expr *initial_val);
   ArrayInitializer *GetArrayInitializer() const;
@@ -57,6 +60,8 @@ private:
   // for numeric object.
   sym_t object_name_;
   bool is_shared_;
+  bool is_io_;
+  bool is_output_;
   Expr *initial_val_;
   std::unique_ptr<ArrayInitializer> array_initializer_;
   std::unique_ptr<ArrayShape> array_shape_;

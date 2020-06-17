@@ -11,7 +11,8 @@
 namespace vm {
 
 Value::Value() : type_(NONE), is_const_(false), method_(nullptr),
-		 object_(nullptr), type_object_name_(sym_null) {
+		 annotation_(nullptr), object_(nullptr),
+		 type_object_name_(sym_null) {
 }
 
 void Value::Dump() const {

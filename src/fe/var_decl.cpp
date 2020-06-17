@@ -9,6 +9,8 @@ namespace fe {
 VarDecl::VarDecl() : name_expr_(nullptr), type_(nullptr),
 		     object_name_(sym_null),
 		     is_shared_(false),
+		     is_io_(false),
+		     is_output_(false),
 		     initial_val_(nullptr),
 		     array_initializer_(nullptr),
 		     annotation_(nullptr) {
@@ -24,6 +26,13 @@ void VarDecl::Dump(DumpStream &ds) {
   ds.os << "type: ";
   if (is_shared_) {
     ds.os << "shared ";
+  }
+  if (is_io_) {
+    if (is_output_) {
+      ds.os << "output ";
+    } else {
+      ds.os << "input ";
+    }
   }
   if (type_) {
     ds.os << sym_cstr(type_) << " ";
@@ -113,6 +122,19 @@ void VarDecl::SetIsShared(bool is_shared) {
 
 bool VarDecl::GetIsShared() const {
   return is_shared_;
+}
+
+void VarDecl::SetIsIO(bool is_io, bool is_output) {
+  is_io_ = is_io;
+  is_output_ = is_output;
+}
+
+bool VarDecl::GetIsIO() const {
+  return is_io_;
+}
+
+bool VarDecl::GetIsOutput() const {
+  return is_output_;
 }
 
 Expr *VarDecl::GetInitialVal() const {
