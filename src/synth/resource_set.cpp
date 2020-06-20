@@ -245,7 +245,7 @@ IResource *ResourceSet::GetExtIOByObject(vm::Object *obj) {
   int width = vm::IOWrapper::GetWidth(obj);
   IResource *res = BuildExtIO(name, is_output, width);
   ext_io_by_object_[obj] = res;
-  return nullptr;
+  return res;
 }
 
 IResource *ResourceSet::BuildExtIO(const string &name, bool is_output,

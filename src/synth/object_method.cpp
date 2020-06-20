@@ -61,6 +61,10 @@ void ObjectMethod::Synth() {
     iinsn = SynthChannelAccess(obj, false);
   } else if (name == kChannelWrite || name == kChannelNoWaitWrite) {
     iinsn = SynthChannelAccess(obj, true);
+  } else if (name == kIORead) {
+    iinsn = SynthExtIO(obj, false);
+  } else if (name == kIOWrite) {
+    iinsn = SynthExtIO(obj, true);
   } else {
     CHECK(false) << name;
   }
@@ -241,6 +245,13 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
 IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
   IResource *res = synth_->GetResourceSet()->GetTicker();
   return new IInsn(res);
+}
+
+IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
+  ResourceSet *rset = synth_->GetResourceSet();
+  IResource *res = rset->GetExtIOByObject(obj);
+  IInsn *iinsn = new IInsn(res);
+  return iinsn;
 }
 
 }  // namespace synth
