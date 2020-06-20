@@ -11,6 +11,7 @@
 #include "vm/channel_wrapper.h"
 #include "vm/insn.h"
 #include "vm/int_array.h"
+#include "vm/io_wrapper.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 #include "vm/object_util.h"
@@ -224,11 +225,31 @@ IResource *ResourceSet::GetTaskReturnRegWriter(int width) {
   return task_return_reg_writer_;
 }
 
-IResource *ResourceSet::GetExtIO(const string &name,
-				 bool is_output, int width) {
-  if (ext_io_.find(name) != ext_io_.end()) {
-    return ext_io_[name];
+IResource *ResourceSet::GetExtIOByName(const string &name,
+				       bool is_output, int width) {
+  if (ext_io_by_name_.find(name) != ext_io_by_name_.end()) {
+    return ext_io_by_name_[name];
   }
+  IResource *res = BuildExtIO(name, is_output, width);
+  ext_io_by_name_[name] = res;
+  return res;
+}
+
+IResource *ResourceSet::GetExtIOByObject(vm::Object *obj) {
+  auto it = ext_io_by_object_.find(obj);
+  if (it != ext_io_by_object_.end()) {
+    return it->second;
+  }
+  bool is_output = vm::IOWrapper::IsOutput(obj);
+  string name = vm::IOWrapper::GetName(obj);
+  int width = vm::IOWrapper::GetWidth(obj);
+  IResource *res = BuildExtIO(name, is_output, width);
+  ext_io_by_object_[obj] = res;
+  return nullptr;
+}
+
+IResource *ResourceSet::BuildExtIO(const string &name, bool is_output,
+				   int width) {
   IResourceClass *rc =
     DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
 				  (is_output ?
@@ -244,7 +265,6 @@ IResource *ResourceSet::GetExtIO(const string &name,
   IValueType vt;
   vt.SetWidth(width);
   res->input_types_.push_back(vt);
-  ext_io_[name] = res;
   return res;
 }
 

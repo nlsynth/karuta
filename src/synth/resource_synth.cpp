@@ -102,7 +102,7 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
   } else {
     width = reg->type_.width_.GetWidth();
   }
-  IResource *res = rset_->GetExtIO(name, is_output, width);
+  IResource *res = rset_->GetExtIOByName(name, is_output, width);
   int d = an->GetDistance();
   if (d > 0) {
     res->GetParams()->SetDistance(d);
@@ -129,6 +129,10 @@ void ResourceSynth::MayAddSharedRegExtWriter(vm::Object *mailbox_obj) {
   if (!s.empty()) {
     res->GetParams()->SetPutSuffix(s);
   }
+}
+
+void ResourceSynth::MayAddIO(vm::Object *io) {
+  rset_->GetExtIOByObject(io);
 }
 
 }  // namespace synth

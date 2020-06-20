@@ -47,7 +47,8 @@ public:
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
   IResource *GetMailboxExtWriter(vm::Object *obj);
   IResource *GetTaskReturnRegWriter(int width);
-  IResource *GetExtIO(const string &name, bool is_output, int width);
+  IResource *GetExtIOByName(const string &name, bool is_output, int width);
+  IResource *GetExtIOByObject(vm::Object *obj);
   IResource *GetExtTaskResource();
   IResource *GetExtTaskDoneResource();
   IResource *GetTicker();
@@ -58,6 +59,7 @@ private:
   void PopulateIOTypes(fe::VarDeclSet *vds, bool is_output, IResource *res);
   IResource *GetPortResource(vm::Object *obj, const string &name,
 			     map<vm::Object *, IResource *> *resources);
+  IResource *BuildExtIO(const string &name, bool is_output, int width);
 
   ITable *tab_;
   IResource *assert_;
@@ -101,7 +103,8 @@ private:
   map<vm::Object *, IResource *> mailbox_putters_;
   map<vm::Object *, IResource *> mailbox_getters_;
   map<vm::Object *, IResource *> mailbox_shared_reg_ext_writers_;
-  map<string, IResource *> ext_io_;
+  map<string, IResource *> ext_io_by_name_;
+  map<vm::Object *, IResource *> ext_io_by_object_;
 };
 
 }  // namespace synth

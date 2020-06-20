@@ -11,6 +11,9 @@ public:
   static bool IsIO(Object *obj);
   static Object *NewIOWrapper(VM *vm, sym_t name, bool is_output,
 			      const iroha::NumericWidth &width);
+  static bool IsOutput(Object *obj);
+  static const string &GetName(Object *obj);
+  static int GetWidth(Object *obj);
 
 private:
   static void InstallMethods(VM* vm, Object *obj, bool is_output,

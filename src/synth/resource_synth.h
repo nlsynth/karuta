@@ -15,6 +15,7 @@ public:
   void MayAddSramIfPort(vm::Object *owner_obj, vm::Object *array_obj);
   IResource *MayAddExtIO(vm::Method *method, bool is_output);
   void MayAddSharedRegExtWriter(vm::Object *mailbox_obj);
+  void MayAddIO(vm::Object *io);
 
 private:
   void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj, IResource *res);

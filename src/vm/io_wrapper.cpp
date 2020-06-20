@@ -29,6 +29,21 @@ bool IOWrapper::IsIO(Object *obj) {
   return (obj->ObjectTypeKey() == kIoKey);
 }
 
+bool IOWrapper::IsOutput(Object *obj) {
+  IOWrapperData *data = (IOWrapperData *)obj->object_specific_.get();
+  return data->is_output_;
+}
+
+const string &IOWrapper::GetName(Object *obj) {
+  IOWrapperData *data = (IOWrapperData *)obj->object_specific_.get();
+  return data->name_;
+}
+
+int IOWrapper::GetWidth(Object *obj) {
+  IOWrapperData *data = (IOWrapperData *)obj->object_specific_.get();
+  return data->width_;
+}
+
 Object *IOWrapper::NewIOWrapper(VM *vm, sym_t name, bool is_output,
 				const iroha::NumericWidth &width) {
   Object *obj = vm->root_object_->Clone();

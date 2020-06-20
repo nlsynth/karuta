@@ -15,6 +15,7 @@
 #include "synth/resource_synth.h"
 #include "synth/tool.h"
 #include "vm/array_wrapper.h"
+#include "vm/io_wrapper.h"
 #include "vm/object.h"
 #include "vm/object_util.h"
 #include "vm/mailbox_wrapper.h"
@@ -180,6 +181,12 @@ void ThreadSynth::CollectUnclaimedMembers() {
 	continue;
       }
       rsynth_->MayAddSharedRegExtWriter(member_obj);
+    }
+    if (vm::IOWrapper::IsIO(member_obj)) {
+      if (sres->HasAccessor(member_obj, nullptr)) {
+	continue;
+      }
+      rsynth_->MayAddIO(member_obj);
     }
     // Named Memory member should be kept.
     string n = vm::ObjectUtil::GetStringMember(member_obj, kSramName);
