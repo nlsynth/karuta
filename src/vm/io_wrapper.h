@@ -8,8 +8,16 @@ namespace vm {
 
 class IOWrapper {
 public:
+  static bool IsIO(Object *obj);
   static Object *NewIOWrapper(VM *vm, sym_t name, bool is_output,
 			      const iroha::NumericWidth &width);
+
+private:
+  static void InstallMethods(VM* vm, Object *obj, bool is_output,
+			     const iroha::NumericWidth &width);
+
+  static void Read(Thread *thr, Object *obj, const vector<Value> &args);
+  static void Write(Thread *thr, Object *obj, const vector<Value> &args);
 };
 
 }  // namespace vm

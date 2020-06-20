@@ -2004,7 +2004,7 @@ yyreduce:
   case 49:
 #line 201 "src/fe/parser.ypp" /* yacc.c:1646  */
     {
-  bool is_input = ((yyvsp[-1].id) == K_OUTPUT);
+  bool is_input = ((yyvsp[-1].id) == K_INPUT);
   bool is_output = ((yyvsp[-1].id) == K_OUTPUT);
   bool is_io = (is_input || is_output);
   bool is_shared = ((yyvsp[-1].id) == K_SHARED) || is_io;
