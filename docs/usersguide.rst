@@ -237,7 +237,30 @@ Communication to external
 I/O from/to external
 --------------------
 
-A method with *@ExtIO* annotation is used to access I/Os (e.g. LEDs, DIP switches, interrputs and so on).
+^^^^^^^^^^
+I/O object
+^^^^^^^^^^
+
+I/Os (e.g. LEDs, DIP switches, interrputs and so on) can be accessed with member variabels with *input* or *output* .
+
+.. code-block:: none
+
+   input i int
+   output o int
+   @(name="led")
+   output o2 #0
+
+   process p() {
+     print(i.read())
+     o.write(123)
+     o2.write(1)
+   }
+
+^^^^^^^^^^
+I/O method
+^^^^^^^^^^
+
+Another way to access I/Os is to annotate a method with *@ExtIO* annotation.
 Its argument when called is taken as the output value and return value is taken from the input value.
 
 .. code-block:: none
@@ -250,6 +273,28 @@ Its argument when called is taken as the output value and return value is taken 
    func L.g() (bool) {
      return true
    }
+
+^^^^^^^^^^^^^^
+Mailbox writer
+^^^^^^^^^^^^^^
+
+mailbox can be configured to accept writes from an external accessor.
+
+.. code-block:: none
+
+   // Signals "name", "name_wen", "name_notify", "name_put" and "name_put_ack"
+   // are genrated.
+   @ExtIO(name="name", wen="wen", notify="notify", put="put")
+   mailbox mb int
+
+   process p1() {
+     mb.wait()
+   }
+
+   process p2() {
+     print(mb.get())
+   }
+
 
 -------------
 AXI interface
