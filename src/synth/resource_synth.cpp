@@ -8,6 +8,7 @@
 #include "synth/object_synth.h"
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
+#include "vm/io_wrapper.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 #include "vm/object.h"
@@ -132,6 +133,9 @@ void ResourceSynth::MayAddSharedRegExtWriter(vm::Object *mailbox_obj) {
 }
 
 void ResourceSynth::MayAddIO(vm::Object *io) {
+  if (vm::IOWrapper::IsIO(io)) {
+    return;
+  }
   rset_->GetExtIOByObject(io);
 }
 

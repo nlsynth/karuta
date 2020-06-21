@@ -6,6 +6,7 @@
 
 namespace synth {
 
+// MethodSynth and MethodScanner calls this to handle native method.
 class ObjectMethod {
 public:
   ObjectMethod(MethodSynth *synth, InsnWalker *walker, ResourceSynth *rsynth,

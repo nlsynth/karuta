@@ -99,7 +99,8 @@ void ObjectMethod::Scan() {
       name == kMailboxPut || name == kMailboxGet ||
       name == kMailboxNotify || name == kMailboxWait ||
       name == kChannelWrite || name == kChannelNoWaitWrite ||
-      name == kChannelRead) {
+      name == kChannelRead ||
+      name == kIORead || kIOWrite) {
     vm::Object *parent_obj = walker_->GetParentObjByObj(obj);
     sres->AddObjectAccessor(walker_->GetThreadSynth(),
 			    parent_obj, obj, insn_, name, false);
@@ -180,6 +181,7 @@ IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj,
 					bool is_put) {
   SharedResource *sres =
     synth_->GetSharedResourceSet()->GetByObj(mailbox_obj, nullptr);
+  rsynth_->MayAddSharedRegExtWriter(mailbox_obj);
   IResource *res = nullptr;
   ResourceSet *rset = synth_->GetResourceSet();
   if (sres->owner_thr_ == synth_->GetThreadSynth()) {
@@ -248,6 +250,7 @@ IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
 }
 
 IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
+  rsynth_->MayAddIO(obj);
   ResourceSet *rset = synth_->GetResourceSet();
   IResource *res = rset->GetExtIOByObject(obj);
   IInsn *iinsn = new IInsn(res);
