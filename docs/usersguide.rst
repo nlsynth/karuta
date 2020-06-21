@@ -601,12 +601,26 @@ When `module` block is used, the member object can access its enclosing object b
 .. code-block:: none
 
    shared x object = new()
-   with x {
+   module x {
      func f() {
        parent.g()
      }
    }
    func g() {
+   }
+
+
+.. code-block:: none
+
+   // Just use the default object.
+   module {
+     ...
+   }
+
+   // Member object name or base file name of current file
+   // (e.g. "m" for "m.karuta").
+   module m {
+     ...
    }
 
 =================================

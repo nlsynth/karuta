@@ -83,16 +83,13 @@ With Karuta, you can annotate a method to make it an output port. The output val
 
 .. code-block:: none
 
-   @ExtIO(output = "o")
-   func output(v int) {
-     print(v)
-   }
+   output o int
 
    process main() {
      var y int = 1
      for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
-       output(y)
+       o.write(y)
      }
    }
 
@@ -116,10 +113,7 @@ This can be tidied up a bit by factoring out update formulas.
    // Member variable of the default object for this file.
    shared y int
 
-   @ExtIO(output = "o")
-   func output(v int) {
-     print(v)
-   }
+   output o int
 
    // Gets an argument t and returns an update value.
    func update(t int) (int) {
@@ -131,7 +125,7 @@ This can be tidied up a bit by factoring out update formulas.
      y = 1
      while true {
        y = update(y)
-       output(y)
+       o.write(y)
      }
    }
 
@@ -159,10 +153,7 @@ The last example here illustrates some of the most important features of Karuta 
        }
      }
 
-     @ExtIO(output = "o")
-     func output(y #0) {
-       print(y)
-     }
+     output o #0
 
      // Thread entry method.
      process thr() {
@@ -173,7 +164,7 @@ The last example here illustrates some of the most important features of Karuta 
          // below this number.
          if v < 10000 {
            b = ~b
-           output(b)
+           o.write(b)
          }
        }
      }
