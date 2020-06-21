@@ -44,11 +44,11 @@ int IOWrapper::GetWidth(Object *obj) {
   return data->width_;
 }
 
-Object *IOWrapper::NewIOWrapper(VM *vm, sym_t name, bool is_output,
+Object *IOWrapper::NewIOWrapper(VM *vm, const string &name, bool is_output,
 				const iroha::NumericWidth &width) {
   Object *obj = vm->root_object_->Clone();
   IOWrapperData *data =
-    new IOWrapperData(sym_str(name), is_output, width.GetWidth());
+    new IOWrapperData(name, is_output, width.GetWidth());
   obj->object_specific_.reset(data);
   InstallMethods(vm, obj, is_output, width);
   return obj;

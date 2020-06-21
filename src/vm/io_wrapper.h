@@ -9,7 +9,7 @@ namespace vm {
 class IOWrapper {
 public:
   static bool IsIO(Object *obj);
-  static Object *NewIOWrapper(VM *vm, sym_t name, bool is_output,
+  static Object *NewIOWrapper(VM *vm, const string &name, bool is_output,
 			      const iroha::NumericWidth &width);
   static bool IsOutput(Object *obj);
   static const string &GetName(Object *obj);

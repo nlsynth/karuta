@@ -30,7 +30,7 @@ protected:
 			     fe::ArrayInitializer *array_initializer,
 			     Annotation *an);
   Object *CreateObjectArray(fe::ArrayShape *shape);
-  Object *CreateIOObject(fe::VarDecl *decl, sym_t name,
+  Object *CreateIOObject(fe::VarDecl *decl, sym_t member_name,
 			 bool is_output,
 			 const iroha::NumericWidth &width);
   void InitializeArray(IntArray *array,

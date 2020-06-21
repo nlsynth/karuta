@@ -254,9 +254,17 @@ Object *Decl::CreateObjectArray(fe::ArrayShape *shape) {
   return ArrayWrapper::NewObjectArrayWrapper(thr_->GetVM(), shape->length[0]);
 }
 
-Object *Decl::CreateIOObject(fe::VarDecl *decl, sym_t name,
+Object *Decl::CreateIOObject(fe::VarDecl *decl, sym_t member_name,
 			     bool is_output,
 			     const iroha::NumericWidth &width) {
+  string name = sym_str(member_name);
+  Annotation *an = decl->GetAnnotation();
+  if (an != nullptr) {
+    string n = an->GetName();
+    if (!n.empty()) {
+      name = n;
+    }
+  }
   return IOWrapper::NewIOWrapper(thr_->GetVM(), name, is_output, width);
 }
 
