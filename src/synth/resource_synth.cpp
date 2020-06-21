@@ -133,7 +133,7 @@ void ResourceSynth::MayAddSharedRegExtWriter(vm::Object *mailbox_obj) {
 }
 
 void ResourceSynth::MayAddIO(vm::Object *io) {
-  if (vm::IOWrapper::IsIO(io)) {
+  if (!vm::IOWrapper::IsIO(io)) {
     return;
   }
   rset_->GetExtIOByObject(io);
