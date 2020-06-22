@@ -2,6 +2,7 @@
 
 #include "synth/object_method_names.h"
 #include "vm/method.h"
+#include "vm/native_methods.h"
 #include "vm/native_objects.h"
 #include "vm/object.h"
 #include "vm/vm.h"
@@ -71,6 +72,10 @@ void IOWrapper::InstallMethods(VM* vm, Object *obj, bool is_output,
 }
 
 void IOWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
+  Value value;
+  value.type_ = Value::NUM;
+  iroha::Op::MakeConst0(0, &value.num_);
+  NativeMethods::SetReturnValue(thr, value);
 }
 
 void IOWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {

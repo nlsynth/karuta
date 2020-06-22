@@ -17,6 +17,7 @@
 #include "vm/string_wrapper.h"
 #include "vm/thread.h"
 #include "vm/thread_wrapper.h"
+#include "vm/ticker_wrapper.h"
 #include "vm/value.h"
 #include "vm/vm.h"
 
@@ -273,8 +274,7 @@ void NativeMethods::GetTicker(Thread *thr, Object *obj,
 			      const vector<Value> &args) {
   Value value;
   value.type_ = Value::OBJECT;
-  // WIP.
-  value.object_ = obj->Clone();
+  value.object_ = TickerWrapper::NewTicker(thr->GetVM());
   SetReturnValue(thr, value);
 }
 

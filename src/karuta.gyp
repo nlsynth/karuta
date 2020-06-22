@@ -198,6 +198,8 @@
         'vm/enum_type_wrapper.h',
         'vm/string_wrapper.cpp',
         'vm/string_wrapper.h',
+        'vm/ticker_wrapper.cpp',
+        'vm/ticker_wrapper.h',
         'vm/thread.cpp',
         'vm/thread.h',
         'vm/thread_queue.cpp',
