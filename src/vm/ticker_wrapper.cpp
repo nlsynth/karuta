@@ -12,10 +12,14 @@ namespace vm {
 Object *TickerWrapper::NewTicker(VM *vm) {
   Object *obj = vm->root_object_->Clone();
   vector<RegisterType> rets;
-  rets.push_back(NativeObjects::IntType(32));
-  Method *m = NativeObjects::InstallNativeMethod(vm, obj, "getTickCount",
-						 &TickerWrapper::GetTickCount,
+  Method *m = NativeObjects::InstallNativeMethod(vm, obj, "decrementTick",
+						 &TickerWrapper::DecrementTick,
 						 rets);
+  m->SetSynthName(synth::kDecrementTick);
+  rets.push_back(NativeObjects::IntType(32));
+  m = NativeObjects::InstallNativeMethod(vm, obj, "getTickCount",
+					 &TickerWrapper::GetTickCount,
+					 rets);
   m->SetSynthName(synth::kGetTickCount);
   return obj;
 }
@@ -26,6 +30,10 @@ void TickerWrapper::GetTickCount(Thread *thr, Object *obj,
   value.type_ = Value::NUM;
   iroha::Op::MakeConst0(0, &value.num_);
   NativeMethods::SetReturnValue(thr, value);
+}
+
+void TickerWrapper::DecrementTick(Thread *thr, Object *obj,
+				  const vector<Value> &args) {
 }
 
 }  // namespace vm

@@ -12,6 +12,8 @@ public:
 
 private:
   static void GetTickCount(Thread *thr, Object *obj, const vector<Value> &args);
+  static void DecrementTick(Thread *thr, Object *obj,
+			    const vector<Value> &args);
 };
 
 }  // namespace vm

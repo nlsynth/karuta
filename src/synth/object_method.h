@@ -27,6 +27,7 @@ private:
   IInsn *SynthMemoryAccess(vm::Object *mem, bool is_write);
   IInsn *SynthChannelAccess(vm::Object *ch_obj, bool is_write);
   IInsn *SynthGetTickCount(vm::Object *obj);
+  IInsn *SynthDecrementTick(vm::Object *obj);
   IInsn *SynthExtIO(vm::Object *, bool is_write);
 
   MethodSynth *synth_;

@@ -41,6 +41,8 @@ void ObjectMethod::Synth() {
     iinsn = SynthAxiAccess(obj, true);
   } else if (name == kGetTickCount) {
     iinsn = SynthGetTickCount(obj);
+  } else if (name == kDecrementTick) {
+    iinsn = SynthDecrementTick(obj);
   } else if (name == kSlaveWait) {
     iinsn = SynthWait(obj);
   } else if (name == kMailboxWidth) {
@@ -245,6 +247,11 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
 }
 
 IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
+  IResource *res = synth_->GetResourceSet()->GetTicker(obj);
+  return new IInsn(res);
+}
+
+IInsn *ObjectMethod::SynthDecrementTick(vm::Object *obj) {
   IResource *res = synth_->GetResourceSet()->GetTicker(obj);
   return new IInsn(res);
 }
