@@ -245,7 +245,7 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
 }
 
 IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
-  IResource *res = synth_->GetResourceSet()->GetTicker();
+  IResource *res = synth_->GetResourceSet()->GetTicker(obj);
   return new IInsn(res);
 }
 

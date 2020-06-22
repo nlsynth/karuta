@@ -51,7 +51,7 @@ public:
   IResource *GetExtIOByObject(vm::Object *obj);
   IResource *GetExtTaskResource();
   IResource *GetExtTaskDoneResource();
-  IResource *GetTicker();
+  IResource *GetTicker(vm::Object *obj);
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -73,7 +73,6 @@ private:
   IResource *task_return_reg_writer_;
   IResource *ext_task_;
   IResource *ext_task_done_;
-  IResource *ticker_;
 
   class ResourceEntry {
   public:
@@ -105,6 +104,7 @@ private:
   map<vm::Object *, IResource *> mailbox_shared_reg_ext_writers_;
   map<string, IResource *> ext_io_by_name_;
   map<vm::Object *, IResource *> ext_io_by_object_;
+  map<vm::Object *, IResource *> tickers_;
 };
 
 }  // namespace synth
