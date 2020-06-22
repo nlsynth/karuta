@@ -269,6 +269,15 @@ void NativeMethods::DisableProfile(Thread *thr, Object *obj,
   thr->GetVM()->GetProfile()->SetEnable(false);
 }
 
+void NativeMethods::GetTicker(Thread *thr, Object *obj,
+			      const vector<Value> &args) {
+  Value value;
+  value.type_ = Value::OBJECT;
+  // WIP.
+  value.object_ = obj->Clone();
+  SetReturnValue(thr, value);
+}
+
 void NativeMethods::SetReturnValue(Thread *thr, const Value &value) {
   thr->SetReturnValueFromNativeMethod(value);
 }

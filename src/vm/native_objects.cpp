@@ -88,6 +88,9 @@ void NativeObjects::InstallEnvNativeMethods(VM *vm, Object *env) {
 		      &NativeMethods::DisableProfile, rets);
   rets.push_back(BoolType(vm));
   InstallNativeMethod(vm, env, "isMain", &NativeMethods::IsMain, rets);
+  rets.clear();
+  rets.push_back(ObjectType());
+  InstallNativeMethod(vm, env, "getTicker", &NativeMethods::GetTicker, rets);
 }
 
 Method *NativeObjects::FindMethod(Object *obj, Method::method_func func) {
