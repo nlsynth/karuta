@@ -12,12 +12,12 @@ namespace vm {
 Object *TickerWrapper::NewTicker(VM *vm) {
   Object *obj = vm->root_object_->Clone();
   vector<RegisterType> rets;
-  Method *m = NativeObjects::InstallNativeMethod(vm, obj, "decrementTick",
+  Method *m = NativeObjects::InstallNativeMethod(vm, obj, "decrementCount",
 						 &TickerWrapper::DecrementTick,
 						 rets);
   m->SetSynthName(synth::kDecrementTick);
   rets.push_back(NativeObjects::IntType(32));
-  m = NativeObjects::InstallNativeMethod(vm, obj, "getTickCount",
+  m = NativeObjects::InstallNativeMethod(vm, obj, "getCount",
 					 &TickerWrapper::GetTickCount,
 					 rets);
   m->SetSynthName(synth::kGetTickCount);
