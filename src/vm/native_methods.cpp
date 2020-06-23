@@ -57,7 +57,7 @@ void NativeMethods::GetTickCount(Thread *thr, Object *obj,
 				 const vector<Value> &args) {
   Value value;
   value.type_ = Value::NUM;
-  iroha::Op::MakeConst0(thr->GetVM()->GetTickCount(), &value.num_);
+  iroha::Op::MakeConst0(thr->GetVM()->GetGlobalTickCount(), &value.num_);
   SetReturnValue(thr, value);
 }
 
@@ -226,6 +226,9 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
 
 void NativeMethods::Wait(Thread *thr, Object *obj,
 			 const vector<Value> &args) {
+  if (args.size() == 1 && args[0].type_ == Value::NUM) {
+    thr->GetVM()->AddGlobalTickCount(args[0].num_.GetValue0());
+  }
 }
 
 void NativeMethods::WriteHdl(Thread *thr, Object *obj,

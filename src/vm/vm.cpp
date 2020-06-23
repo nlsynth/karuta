@@ -173,8 +173,12 @@ Profile *VM::GetProfile() const {
   return profile_.get();
 }
 
-int VM::GetTickCount() {
+unsigned int VM::GetGlobalTickCount() {
   return ++tick_count_;
+}
+
+void VM::AddGlobalTickCount(unsigned int t) {
+  tick_count_ += t;
 }
 
 }  // namespace vm

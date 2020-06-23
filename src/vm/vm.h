@@ -26,7 +26,8 @@ public:
   Method *NewMethod(bool is_toplevel);
   Object *NewEmptyObject();
   Profile *GetProfile() const;
-  int GetTickCount();
+  unsigned int GetGlobalTickCount();
+  void AddGlobalTickCount(unsigned int t);
 
   // root of the objects.
   Object *root_object_;
@@ -45,7 +46,7 @@ private:
   std::unique_ptr<Profile> profile_;
   set<Object*> objects_;
 
-  int tick_count_;
+  unsigned int tick_count_;
 
   void InstallBoolType();
   void InstallObjects();
