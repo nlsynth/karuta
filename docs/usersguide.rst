@@ -687,6 +687,33 @@ Elements of designs are placed onto the physical area of an FPGA and there are p
      m.f()
    }
 
+============
+Clock ticker
+============
+
+A ticker object keeps a counter incremented by the clock. Each ticker object has *.getCount()* method to get current count and *.decrementCount(n)* to decrement the value.
+
+.. code-block:: none
+
+   module {
+     shared ticker object = Env.newTicker()
+     output o #0
+
+     process p1() {
+       // Resets the counter to (almost) 0.
+       ticker.decrementCount(ticker.getCount())
+       var b #0 = 0
+       while true {
+         o.write(b)
+	 b = ~b
+	 // Makes 10000 clocks interval.
+	 wait(10000 - ticker.getCount())
+	 ticker.decrementCount(10000)
+       }
+     }
+   }
+
+
 =======
 Testing
 =======
