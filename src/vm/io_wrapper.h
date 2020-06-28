@@ -19,6 +19,7 @@ private:
   static void InstallMethods(VM* vm, Object *obj, bool is_output,
 			     const iroha::NumericWidth &width);
 
+  static void Peek(Thread *thr, Object *obj, const vector<Value> &args);
   static void Read(Thread *thr, Object *obj, const vector<Value> &args);
   static void Write(Thread *thr, Object *obj, const vector<Value> &args);
 };

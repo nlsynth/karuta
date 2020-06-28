@@ -55,7 +55,7 @@ Object *IOWrapper::NewIOWrapper(VM *vm, const string &name, bool is_output,
   return obj;
 }
 
-void IOWrapper::InstallMethods(VM* vm, Object *obj, bool is_output,
+void IOWrapper::InstallMethods(VM *vm, Object *obj, bool is_output,
 			       const iroha::NumericWidth &width) {
   vector<RegisterType> rets;
   Method *m;
@@ -63,6 +63,10 @@ void IOWrapper::InstallMethods(VM* vm, Object *obj, bool is_output,
     m = NativeObjects::InstallNativeMethod(vm, obj, "write",
 					   &IOWrapper::Write, rets);
     m->SetSynthName(synth::kIOWrite);
+    rets.push_back(NativeObjects::IntType(width.GetWidth()));
+    m = NativeObjects::InstallNativeMethod(vm, obj, "peek",
+					   &IOWrapper::Peek, rets);
+    m->SetSynthName(synth::kIOPeek);
   } else {
     rets.push_back(NativeObjects::IntType(width.GetWidth()));
     m = NativeObjects::InstallNativeMethod(vm, obj, "read",
@@ -76,6 +80,9 @@ void IOWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
   value.type_ = Value::NUM;
   iroha::Op::MakeConst0(0, &value.num_);
   NativeMethods::SetReturnValue(thr, value);
+}
+
+void IOWrapper::Peek(Thread *thr, Object *obj, const vector<Value> &args) {
 }
 
 void IOWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {

@@ -67,6 +67,8 @@ void ObjectMethod::Synth() {
     iinsn = SynthExtIO(obj, false);
   } else if (name == kIOWrite) {
     iinsn = SynthExtIO(obj, true);
+  } else if (name == kIOPeek) {
+    iinsn = SynthExtIO(obj, true);
   } else {
     CHECK(false) << name;
   }
@@ -102,7 +104,7 @@ void ObjectMethod::Scan() {
       name == kMailboxNotify || name == kMailboxWait ||
       name == kChannelWrite || name == kChannelNoWaitWrite ||
       name == kChannelRead ||
-      name == kIORead || kIOWrite) {
+      name == kIORead || kIOWrite || kIOPeek) {
     vm::Object *parent_obj = walker_->GetParentObjByObj(obj);
     sres->AddObjectAccessor(walker_->GetThreadSynth(),
 			    parent_obj, obj, insn_, name, false);

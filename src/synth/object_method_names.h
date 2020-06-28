@@ -14,6 +14,7 @@ const char kChannelWrite[] = "channel_write";
 const char kChannelNoWaitWrite[] = "channel_no_wait_write";
 const char kDecrementTick[] = "decrement_tick_count";
 const char kGetTickCount[] = "get_tick_count";
+const char kIOPeek[] = "io_peek";
 const char kIORead[] = "io_read";
 const char kIOWrite[] = "io_write";
 const char kSlaveWait[] = "wait";
