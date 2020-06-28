@@ -1,4 +1,5 @@
-0.5.9wip
+2020/06/27 0.5.9
+ input, output and ticker object.
 2020/05/30 0.5.8
  module m { ... } syntax.
 2020/05/02 0.5.7
