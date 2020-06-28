@@ -259,9 +259,20 @@ IInsn *ObjectMethod::SynthDecrementTick(vm::Object *obj) {
 }
 
 IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
-  rsynth_->MayAddIO(obj);
+  bool is_owner = false;
   ResourceSet *rset = synth_->GetResourceSet();
-  IResource *res = rset->GetExtIOByObject(obj);
+  SharedResource *sres =
+    synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
+  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
+    is_owner = true;
+  }
+  rsynth_->MayAddIO(obj, is_owner);
+  IResource *res = rset->GetExtIOByObject(obj, is_owner);
+  if (is_owner) {
+    sres->SetOwnerIResource(res);
+  } else {
+    sres->AddAccessorResource(res, synth_->GetThreadSynth());
+  }
   IInsn *iinsn = new IInsn(res);
   return iinsn;
 }

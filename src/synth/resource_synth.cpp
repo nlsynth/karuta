@@ -43,7 +43,8 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
   ConfigureSlavePort(owner_obj, array_obj, a, slave_port);
 }
 
-void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj, vm::Object *array_obj) {
+void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj,
+				     vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
   if (a == nullptr || !a->IsSramIf()) {
     return;
@@ -52,7 +53,9 @@ void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj, vm::Object *array_ob
   ConfigureSlavePort(owner_obj, array_obj, a, sram_if_port);
 }
 
-void ResourceSynth::ConfigureSlavePort(vm::Object *owner_obj, vm::Object *array_obj, Annotation *an, IResource *if_port) {
+void ResourceSynth::ConfigureSlavePort(vm::Object *owner_obj,
+				       vm::Object *array_obj,
+				       Annotation *an, IResource *if_port) {
   if (if_port->GetParams()->GetWidth() > 0) {
     // already configured.
     return;
@@ -129,11 +132,11 @@ void ResourceSynth::MayAddSharedRegExtWriter(vm::Object *mailbox_obj) {
   }
 }
 
-void ResourceSynth::MayAddIO(vm::Object *io) {
+void ResourceSynth::MayAddIO(vm::Object *io, bool is_owner) {
   if (!vm::IOWrapper::IsIO(io)) {
     return;
   }
-  rset_->GetExtIOByObject(io);
+  rset_->GetExtIOByObject(io, is_owner);
 }
 
 }  // namespace synth

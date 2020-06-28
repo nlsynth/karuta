@@ -186,7 +186,7 @@ void ThreadSynth::CollectUnclaimedMembers() {
       if (sres->HasAccessor(member_obj, nullptr)) {
 	continue;
       }
-      rsynth_->MayAddIO(member_obj);
+      rsynth_->MayAddIO(member_obj, true);
     }
     // Named Memory member should be kept.
     string n = vm::ObjectUtil::GetStringMember(member_obj, kSramName);

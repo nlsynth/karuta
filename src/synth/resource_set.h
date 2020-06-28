@@ -49,7 +49,7 @@ public:
   IResource *GetTaskReturnRegWriter(int width);
   IResource *GetExtIOByName(const string &name, bool is_output, int width,
 			    int distance);
-  IResource *GetExtIOByObject(vm::Object *obj);
+  IResource *GetExtIOByObject(vm::Object *obj, bool is_owner);
   IResource *GetExtTaskResource();
   IResource *GetExtTaskDoneResource();
   IResource *GetTicker(vm::Object *obj);
@@ -106,6 +106,7 @@ private:
   map<vm::Object *, IResource *> mailbox_shared_reg_ext_writers_;
   map<string, IResource *> ext_io_by_name_;
   map<vm::Object *, IResource *> ext_io_by_object_;
+  map<vm::Object *, IResource *> ext_io_accessor_by_object_;
   map<vm::Object *, IResource *> tickers_;
 };
 

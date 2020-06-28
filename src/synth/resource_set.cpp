@@ -235,18 +235,44 @@ IResource *ResourceSet::GetExtIOByName(const string &name,
   return res;
 }
 
-IResource *ResourceSet::GetExtIOByObject(vm::Object *obj) {
-  auto it = ext_io_by_object_.find(obj);
-  if (it != ext_io_by_object_.end()) {
+IResource *ResourceSet::GetExtIOByObject(vm::Object *obj, bool is_owner) {
+  map<vm::Object *, IResource *> *m;
+  if (is_owner) {
+    m = &ext_io_by_object_;
+  } else {
+    m = &ext_io_accessor_by_object_;
+  }
+  auto it = m->find(obj);
+  if (it != m->end()) {
     return it->second;
   }
   bool is_output = vm::IOWrapper::IsOutput(obj);
-  string name = vm::IOWrapper::GetName(obj);
   int width = vm::IOWrapper::GetWidth(obj);
-  int distance = vm::IOWrapper::GetDistance(obj);
-  IResource *res = BuildExtIO(name, is_output, width, distance);
-  ext_io_by_object_[obj] = res;
-  return res;
+  if (is_owner) {
+    string name = vm::IOWrapper::GetName(obj);
+    int width = vm::IOWrapper::GetWidth(obj);
+    int distance = vm::IOWrapper::GetDistance(obj);
+    IResource *res = BuildExtIO(name, is_output, width, distance);
+    ext_io_by_object_[obj] = res;
+    return res;
+  } else {
+    IResourceClass *rc =
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
+				    (is_output ?
+				     resource::kExtOutputAccessor :
+				     resource::kExtInputAccessor));
+    IResource *res = new IResource(tab_, rc);
+    IValueType vt;
+    vt.SetWidth(width);
+    if (is_output) {
+      res->input_types_.push_back(vt);
+    } else {
+      res->output_types_.push_back(vt);
+    }
+    tab_->resources_.push_back(res);
+    ext_io_accessor_by_object_[obj] = res;
+    return res;
+  }
 }
 
 IResource *ResourceSet::BuildExtIO(const string &name, bool is_output,
@@ -268,7 +294,11 @@ IResource *ResourceSet::BuildExtIO(const string &name, bool is_output,
   tab_->resources_.push_back(res);
   IValueType vt;
   vt.SetWidth(width);
-  res->input_types_.push_back(vt);
+  if (is_output) {
+    res->input_types_.push_back(vt);
+  } else {
+    res->output_types_.push_back(vt);
+  }
   return res;
 }
 
