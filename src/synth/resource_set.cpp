@@ -225,11 +225,12 @@ IResource *ResourceSet::GetTaskReturnRegWriter(int width) {
 }
 
 IResource *ResourceSet::GetExtIOByName(const string &name,
-				       bool is_output, int width) {
+				       bool is_output, int width,
+				       int distance) {
   if (ext_io_by_name_.find(name) != ext_io_by_name_.end()) {
     return ext_io_by_name_[name];
   }
-  IResource *res = BuildExtIO(name, is_output, width);
+  IResource *res = BuildExtIO(name, is_output, width, distance);
   ext_io_by_name_[name] = res;
   return res;
 }
@@ -242,13 +243,14 @@ IResource *ResourceSet::GetExtIOByObject(vm::Object *obj) {
   bool is_output = vm::IOWrapper::IsOutput(obj);
   string name = vm::IOWrapper::GetName(obj);
   int width = vm::IOWrapper::GetWidth(obj);
-  IResource *res = BuildExtIO(name, is_output, width);
+  int distance = vm::IOWrapper::GetDistance(obj);
+  IResource *res = BuildExtIO(name, is_output, width, distance);
   ext_io_by_object_[obj] = res;
   return res;
 }
 
 IResource *ResourceSet::BuildExtIO(const string &name, bool is_output,
-				   int width) {
+				   int width, int distance) {
   IResourceClass *rc =
     DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
 				  (is_output ?
@@ -259,6 +261,9 @@ IResource *ResourceSet::BuildExtIO(const string &name, bool is_output,
     res->GetParams()->SetExtOutputPort(name, width);
   } else {
     res->GetParams()->SetExtInputPort(name, width);
+  }
+  if (distance > 0) {
+    res->GetParams()->SetDistance(distance);
   }
   tab_->resources_.push_back(res);
   IValueType vt;

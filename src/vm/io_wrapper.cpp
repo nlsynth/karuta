@@ -14,13 +14,14 @@ static const char *kIoKey = "io_wrapper";
 
 class IOWrapperData : public ObjectSpecificData {
 public:
-  IOWrapperData(const string &name, bool is_output, int width)
-    : name_(name), is_output_(is_output), width_(width) {
+  IOWrapperData(const string &name, bool is_output, int width, int distance)
+    : name_(name), is_output_(is_output), width_(width), distance_(distance) {
   }
 
   string name_;
   bool is_output_;
   int width_;
+  int distance_;
 
   iroha::NumericValue written_num_;
 
@@ -48,11 +49,17 @@ int IOWrapper::GetWidth(Object *obj) {
   return data->width_;
 }
 
+int IOWrapper::GetDistance(Object *obj) {
+  IOWrapperData *data = (IOWrapperData *)obj->object_specific_.get();
+  return data->distance_;
+}
+
 Object *IOWrapper::NewIOWrapper(VM *vm, const string &name, bool is_output,
-				const iroha::NumericWidth &width) {
+				const iroha::NumericWidth &width,
+				int distance) {
   Object *obj = vm->root_object_->Clone();
   IOWrapperData *data =
-    new IOWrapperData(name, is_output, width.GetWidth());
+    new IOWrapperData(name, is_output, width.GetWidth(), distance);
   obj->object_specific_.reset(data);
   InstallMethods(vm, obj, is_output, width);
   return obj;

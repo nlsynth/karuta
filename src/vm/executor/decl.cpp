@@ -259,13 +259,16 @@ Object *Decl::CreateIOObject(fe::VarDecl *decl, sym_t member_name,
 			     const iroha::NumericWidth &width) {
   string name = sym_str(member_name);
   Annotation *an = decl->GetAnnotation();
+  int distance = 0;
   if (an != nullptr) {
     string n = an->GetName();
     if (!n.empty()) {
       name = n;
     }
+    distance = an->GetDistance();
   }
-  return IOWrapper::NewIOWrapper(thr_->GetVM(), name, is_output, width);
+  return IOWrapper::NewIOWrapper(thr_->GetVM(), name, is_output, width,
+				 distance);
 }
 
 }  // namespace executor

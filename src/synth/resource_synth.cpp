@@ -103,11 +103,8 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
   } else {
     width = reg->type_.width_.GetWidth();
   }
-  IResource *res = rset_->GetExtIOByName(name, is_output, width);
   int d = an->GetDistance();
-  if (d > 0) {
-    res->GetParams()->SetDistance(d);
-  }
+  IResource *res = rset_->GetExtIOByName(name, is_output, width, d);
   return res;
 }
 

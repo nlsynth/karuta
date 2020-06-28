@@ -47,7 +47,8 @@ public:
   IResource *GetMailbox(vm::Object *obj, bool is_owner, bool is_put);
   IResource *GetMailboxExtWriter(vm::Object *obj);
   IResource *GetTaskReturnRegWriter(int width);
-  IResource *GetExtIOByName(const string &name, bool is_output, int width);
+  IResource *GetExtIOByName(const string &name, bool is_output, int width,
+			    int distance);
   IResource *GetExtIOByObject(vm::Object *obj);
   IResource *GetExtTaskResource();
   IResource *GetExtTaskDoneResource();
@@ -59,7 +60,8 @@ private:
   void PopulateIOTypes(fe::VarDeclSet *vds, bool is_output, IResource *res);
   IResource *GetPortResource(vm::Object *obj, const string &name,
 			     map<vm::Object *, IResource *> *resources);
-  IResource *BuildExtIO(const string &name, bool is_output, int width);
+  IResource *BuildExtIO(const string &name, bool is_output, int width,
+			int distance);
 
   ITable *tab_;
   IResource *assert_;

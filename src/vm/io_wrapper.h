@@ -10,9 +10,10 @@ class IOWrapper {
 public:
   static bool IsIO(Object *obj);
   static Object *NewIOWrapper(VM *vm, const string &name, bool is_output,
-			      const iroha::NumericWidth &width);
+			      const iroha::NumericWidth &width, int distance);
   static bool IsOutput(Object *obj);
   static const string &GetName(Object *obj);
+  static int GetDistance(Object *obj);
   static int GetWidth(Object *obj);
 
 private:
