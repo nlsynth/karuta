@@ -1,5 +1,6 @@
 #include "vm/io_wrapper.h"
 
+#include "iroha/numeric.h"
 #include "synth/object_method_names.h"
 #include "vm/method.h"
 #include "vm/native_methods.h"
@@ -20,6 +21,8 @@ public:
   string name_;
   bool is_output_;
   int width_;
+
+  iroha::NumericValue written_num_;
 
   virtual const char *ObjectTypeKey() {
     return kIoKey;
@@ -83,9 +86,16 @@ void IOWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
 }
 
 void IOWrapper::Peek(Thread *thr, Object *obj, const vector<Value> &args) {
+  IOWrapperData *data = (IOWrapperData *)obj->object_specific_.get();
+  Value value;
+  value.type_ = Value::NUM;
+  value.num_ = data->written_num_;
+  NativeMethods::SetReturnValue(thr, value);
 }
 
 void IOWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
+  IOWrapperData *data = (IOWrapperData *)obj->object_specific_.get();
+  data->written_num_ = args[0].num_;
 }
 
 }  // namespace vm
