@@ -173,6 +173,11 @@ int Annotation::GetDistance() {
   return LookupIntParam("distance", 0);
 }
 
+bool Annotation::IsPipeline() {
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "Pipeline");
+}
+
 bool Annotation::IsSoftThreadEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
   return (s == "SoftThreadEntry" || s == "SoftProcess" || s == "Soft");

@@ -70,6 +70,7 @@ public:
   int GetNum();
   bool IsThreadLocal();
   int GetDistance();
+  bool IsPipeline();
 
   // resetPolarity 1 or not.
   bool ResetPolarity();

@@ -610,6 +610,9 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   if (an != nullptr) {
     auto *params = ireg->GetParams(true);
     params->SetLoopUnroll(an->GetNum());
+    if (an->IsPipeline()) {
+      params->SetIsPipeline(true);
+    }
   }
   return ireg;
 }
