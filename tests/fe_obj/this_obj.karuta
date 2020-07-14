@@ -1,19 +1,19 @@
 // test current object
 
 var X object
-X = Kernel.clone();
+X = Kernel.clone()
 
-def Kernel.f() (bool) {
-  return false;
+func Kernel.f() (bool) {
+  return false
 }
 
-def X.f() (bool) {
-  return true;
+func X.f() (bool) {
+  return true
 }
 
-def X.main() {
-  assert(f());
+func X.main() {
+  assert(f())
 }
 
-X.main();
+X.main()
 

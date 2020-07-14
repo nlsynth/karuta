@@ -1,7 +1,7 @@
 shared x int = 9;
 shared Kernel.x int = 10;
 
-def Kernel.main() {
+func Kernel.main() {
   assert(x == 10);
   var x int = 11;
   assert(x == 11);

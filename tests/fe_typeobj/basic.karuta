@@ -41,7 +41,7 @@ func T.F(x, y #32) (#32) {
   return x + y
 }
 
-def main() {
+func main() {
   var x #T = T.Build(123)
   assert(x == 1230)
   var y #T = T.Build(456)

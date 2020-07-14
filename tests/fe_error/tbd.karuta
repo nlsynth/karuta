@@ -1,34 +1,34 @@
 // KARUTA_COMPOUND_TEST
 // KARUTA_EXPECT_ABORT:
 // TODO(yusuke): decide whether this should be an error or warning.
-def f() {
+func f() {
   label:
   label:
 }
 
 // KARUTA_NEXT_TEST
-def f(x int) (int) {
+func f(x int) (int) {
   if (x == 0) {
     return 1
   }
 }
 // KARUTA_NEXT_TEST
 // KARUTA_EXPECT_ABORT:
-var x int;
-x = false;
+var x int
+x = false
 
 // KARUTA_NEXT_TEST
 // should output useful message.
 // KARUTA_EXPECT_ABORT:
-def f() (int) {
-  return 10;
-  return false;
+func f() (int) {
+  return 10
+  return false
 }
-f();
+f()
 // KARUTA_NEXT_TEST
 // should be type error.
-def f() (int) {
-  return false;
-  return 10;
+func f() (int) {
+  return false
+  return 10
 }
-f();
+f()

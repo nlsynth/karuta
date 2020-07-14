@@ -1,12 +1,12 @@
 /* this modules adds +10 to data in address 0 */
 
-def Kernel.main() {
+func Kernel.main() {
   Memory.write(0, Memory.read(0) + 10)
 }
 
 /* test it */
 Memory.write(0, 10)
-Kernel.main();
+Kernel.main()
 if (Memory.read(0) == 20) {
-  print("maybe ok");
+  print("maybe ok")
 }

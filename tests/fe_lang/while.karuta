@@ -1,10 +1,10 @@
-def main() {
-  var i int = 0;
+func main() {
+  var i int = 0
   while (i < 10) {
-    ++i;
-    print(i);
+    i++
+    print(i)
   }
-  assert(i == 10);
+  assert(i == 10)
 }
 
-main();
+main()

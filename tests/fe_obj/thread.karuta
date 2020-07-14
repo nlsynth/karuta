@@ -1,15 +1,15 @@
-shared Kernel.x int = 9;
+shared Kernel.x int = 9
 
-shared M object = Kernel.clone();
-shared M.x int = 10;
+shared M object = Kernel.clone()
+shared M.x int = 10
 
-def M.f() {
+func M.f() {
   // *this* should be M.
-  assert(x == 10);
-  x++;
+  assert(x == 10)
+  x++
 }
 
-thread M.t = f();
+thread M.t = f()
 
-M.run();
-assert(Kernel.x == 9);
+M.run()
+assert(Kernel.x == 9)

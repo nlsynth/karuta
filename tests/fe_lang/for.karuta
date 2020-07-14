@@ -1,9 +1,9 @@
-def Kernel.main() {
-  var x int;
-  print("start");
+func main() {
+  var x int
+  print("start")
   for x = 0; x < 10; x = x + 1 {
-    print(x);
+    print(x)
   }
 }
 
-main();
+main()

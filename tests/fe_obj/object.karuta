@@ -1,21 +1,21 @@
 //
-shared Kernel.x int = 3;
-shared Kernel.Hoge object = Kernel.clone();
-assert(Kernel.x == 3);
-assert(Kernel.Hoge.x == 3);
+shared Kernel.x int = 3
+shared Kernel.Hoge object = Kernel.clone()
+assert(Kernel.x == 3)
+assert(Kernel.Hoge.x == 3)
 
-Kernel.Hoge.x = 2;
-assert(Kernel.x == 3);
-assert(Kernel.Hoge.x == 2);
+Kernel.Hoge.x = 2
+assert(Kernel.x == 3)
+assert(Kernel.Hoge.x == 2)
 
 
-def Kernel.f() (int) {
-  return 1;
+func Kernel.f() (int) {
+  return 1
 }
-assert(Kernel.f() == 1);
-shared MyObj object = Kernel.clone();
-def MyObj.f() (int) {
-  return 2;
+assert(Kernel.f() == 1)
+shared MyObj object = Kernel.clone()
+func MyObj.f() (int) {
+  return 2
 }
-assert(Kernel.f() == 1);
-assert(MyObj.f() == 2);
+assert(Kernel.f() == 1)
+assert(MyObj.f() == 2)

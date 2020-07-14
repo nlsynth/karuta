@@ -1,12 +1,12 @@
-def Kernel.f(x int) {
-  print("arg=", x);
+func f(x int) {
+  print("arg=", x)
   if (x > 10) {
-    print("x>10");
+    print("x>10")
   }
 }
 
-def Kernel.main() {
-  print("here");
-  f(10);
+func main() {
+  print("here")
+  f(10)
 }
-main();
+main()

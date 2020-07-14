@@ -5,7 +5,7 @@ var i int
 for i = 0; i < 10; ++i {
 }
 
-def f(p int, q int) {
-  print(p);
-  print(q);
+func f(p int, q int) {
+  print(p)
+  print(q)
 }
