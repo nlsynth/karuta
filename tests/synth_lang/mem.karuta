@@ -1,7 +1,7 @@
 // VERILOG_OUTPUT: a.v
 // EXTERNAL_RAM
 
-def main() {
+func main() {
     Memory.write(0, 100)
     assert(Memory.read(0) == 100)
 }

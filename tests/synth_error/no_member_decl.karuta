@@ -1,4 +1,4 @@
-def Kernel.main() {
+func Kernel.main() {
   x = 10;
 }
 

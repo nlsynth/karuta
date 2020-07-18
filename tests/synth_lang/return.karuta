@@ -1,9 +1,9 @@
 // VERILOG_OUTPUT: a.v
-def f() (int, int) {
+func f() (int, int) {
   return 1, 2;
 }
 
-def main() {
+func main() {
   f();
   var x int;
   var y int;

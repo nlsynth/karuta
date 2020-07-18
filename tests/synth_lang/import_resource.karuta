@@ -1,14 +1,14 @@
 // VERILOG_OUTPUT: a.v
-def Kernel.f(x int) (int) {
+func Kernel.f(x int) (int) {
   return x + 1;
 }
 
 @embed(resource = "a", verilog="resource.v", file="copy", module="hello")
-def Kernel.ex()
+func Kernel.ex()
 {
 }
 
-def Kernel.main()
+func Kernel.main()
 {
  Memory.write(0, 0)
  ex();

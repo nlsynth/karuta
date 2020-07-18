@@ -7,7 +7,7 @@ shared a int[16]
 @AxiSlave()
 shared b int[16]
 
-def main() {
+process main() {
 }
 
 compile()

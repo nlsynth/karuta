@@ -2,7 +2,7 @@
 
 import "fp/fp16r.karuta"
 
-def main() {
+func main() {
   var x1 #FP16R = Numerics.FP16R.Build(0, 15, 0)
   var y #FP16R
   y = x1 * x1

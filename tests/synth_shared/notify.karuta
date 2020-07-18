@@ -6,7 +6,7 @@ mailbox M.n0 int
 shared M.x int
 
 @ThreadEntry()
-def M.f0() {
+func M.f0() {
   // kick f2() and f3()
   m0.put(10)
   m0.put(10)
@@ -17,13 +17,13 @@ def M.f0() {
 }
 
 @ThreadEntry()
-def M.f1() {
+func M.f1() {
   m1.get()
   n0.notify(11)
 }
 
 @ThreadEntry()
-def M.f2() {
+func M.f2() {
   m0.get()
   print(n0.wait())
   x = 22
@@ -31,7 +31,7 @@ def M.f2() {
 }
 
 @ThreadEntry()
-def M.f3() {
+func M.f3() {
   m0.get()
   print(n0.wait())
   m2.get()

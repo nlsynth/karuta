@@ -1,17 +1,17 @@
 // VERILOG_OUTPUT: a.v
 shared Kernel.X object = Kernel.clone();
 
-def Kernel.X.f(x int) (int) {
+func Kernel.X.f(x int) (int) {
   return x
 }
 
 @ThreadEntry()
-def Kernel.t1() {
+func Kernel.t1() {
   assert(X.f(1) == 1)
 }
 
 @ThreadEntry()
-def Kernel.t2() {
+func Kernel.t2() {
   assert(X.f(2) == 2)
 }
 

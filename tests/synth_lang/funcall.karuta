@@ -1,13 +1,13 @@
 // VERILOG_OUTPUT: a.v
-def Kernel.g(x int) (int) {
+func Kernel.g(x int) (int) {
   return x;
 }
 
-def Kernel.f(x int, y int) (int) {
+func Kernel.f(x int, y int) (int) {
   return 10 + g(x);
 }
 
-def Kernel.main() {
+func Kernel.main() {
   var x int;
   x = 65535;
   if (x < 10) {

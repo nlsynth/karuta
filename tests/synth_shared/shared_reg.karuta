@@ -4,13 +4,13 @@ shared M.x int
 mailbox M.mu int
 
 @ThreadEntry()
-def M.f1() {
+func M.f1() {
   x = 10
   mu.put(1)
 }
 
 @ThreadEntry()
-def M.f2() {
+func M.f2() {
   assert(mu.get() == 1)
   assert(x == 10)
 }

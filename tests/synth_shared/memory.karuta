@@ -4,14 +4,14 @@ mailbox M.mb int
 shared M.a int[16]
 
 @ThreadEntry()
-def M.f0() {
+func M.f0() {
   a[0] = 123
   mb.put(1)
   assert(a[0] == 123)
 }
 
 @ThreadEntry()
-def M.f1() {
+func M.f1() {
   mb.get()
   assert(a[0] == 123)
   a[0] = 123

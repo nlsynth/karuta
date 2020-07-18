@@ -1,7 +1,7 @@
 // VERILOG_OUTPUT: a.v
 shared Kernel.m int = 10;
 
-def Kernel.main() {
+func Kernel.main() {
   assert(m == 10);
   print(m);
 }

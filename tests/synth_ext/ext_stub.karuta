@@ -2,11 +2,11 @@
 // VERILOG_TB: ext_stub_tb.v
 
 @ExtStub()
-def f(a1, a2 #32) (#32) {
+func f(a1, a2 #32) (#32) {
   return 0
 }
 
-def main() {
+func main() {
   assert(f(2, 3) == 5)
 }
 

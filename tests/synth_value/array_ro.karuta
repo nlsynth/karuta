@@ -1,7 +1,7 @@
 // VERILOG_OUTPUT: a.v 
 shared Kernel.x int[] = {1,2,3,4};
 
-def Kernel.main() {
+func Kernel.main() {
   assert(x[1] == 2);
   assert(x[3] == 0);
 }
