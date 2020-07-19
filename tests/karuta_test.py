@@ -84,13 +84,9 @@ def ReadTestInfo(fn):
 
 def GetVerilogCompileCommand(dut_fn, tb_fn, test_bin_fn):
     ifh = open(dut_fn, "r")
-    has_mem_if = False
     has_iroha_mem_if = False
     has_iroha_sram = False
     for line in ifh:
-        m = re.search("EXTERNAL_RAM", line)
-        if m:
-            has_mem_if = True
         m = re.search("sram_addr", line)
         if m:
             has_iroha_mem_if = True
@@ -101,9 +97,6 @@ def GetVerilogCompileCommand(dut_fn, tb_fn, test_bin_fn):
            dut_fn + " " + tb_fn + " -I../lib")
     if has_iroha_sram:
         has_iroha_mem_if = False
-    if has_mem_if:
-        cmd += " -D KARUTA_RAM"
-        cmd += " -D KARUTA_RAM1"
     if has_iroha_mem_if:
         cmd += " -D KARUTA_RAM"
         cmd += " -D KARUTA_RAM2"
