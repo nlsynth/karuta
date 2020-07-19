@@ -1,10 +1,6 @@
-// VERILOG_OUTPUT: a.v
-// EXTERNAL_RAM
+// SELF_SHELL:
 
 func main() {
     Memory.write(0, 100)
     assert(Memory.read(0) == 100)
 }
-
-compile()
-writeHdl("a.v")
