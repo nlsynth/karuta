@@ -1,4 +1,4 @@
-// VERILOG_OUTPUT: a.v
+// SELF_SHELL:
 
 // see if member reference in inline function works.
 
@@ -14,6 +14,3 @@ def Kernel.main() {
 }
 
 Kernel.main()
-
-Kernel.compile()
-Kernel.writeHdl("a.v")
