@@ -74,6 +74,10 @@ void ResourceSynth::MayConfigureExternalSram(vm::Object *obj, IResource *res) {
     return;
   }
   res->GetArray()->SetExternal(true);
+  string n = a->GetName();
+  if (!n.empty()) {
+    res->GetParams()->SetPortNamePrefix(n);
+  }
 }
 
 void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
