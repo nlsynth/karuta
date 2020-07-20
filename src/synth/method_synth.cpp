@@ -928,6 +928,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
     rsynth_->MayAddAxiMasterPort(obj_, array_obj);
     rsynth_->MayAddAxiSlavePort(obj_, array_obj);
     rsynth_->MayAddSramIfPort(obj_, array_obj);
+    rsynth_->MayConfigureExternalSram(array_obj, res);
   } else {
     res = res_set_->GetSharedArray(array_obj, false, is_write);
     array_sres->AddAccessorResource(res, thr_synth_);
@@ -953,6 +954,7 @@ void MethodSynth::SynthLocalArrayAccess(vm::Insn *insn, bool is_write,
 					IRegister *index) {
   vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
   IResource *res = res_set_->GetInternalArrayResource(array_obj);
+  rsynth_->MayConfigureExternalSram(array_obj, res);
   IInsn *iinsn = new IInsn(res);
   if (!is_write) {
     SynthSramRead(insn, iinsn, index);

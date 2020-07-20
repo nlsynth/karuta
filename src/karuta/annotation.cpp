@@ -256,6 +256,10 @@ bool Annotation::IsExtCombinational() {
   return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtCombinational");
 }
 
+bool Annotation::IsExternal() {
+  return (LookupStrParam(annotation::kAnnotationKey, "") == "External");
+}
+
 string Annotation::LookupStrParam(const string &key, const string &dflt) {
   AnnotationKeyValue *p = LookupParam(key);
   if (!p) {

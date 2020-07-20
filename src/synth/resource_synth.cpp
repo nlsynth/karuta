@@ -68,6 +68,14 @@ void ResourceSynth::ConfigureSlavePort(vm::Object *owner_obj,
   }
 }
 
+void ResourceSynth::MayConfigureExternalSram(vm::Object *obj, IResource *res) {
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(obj);
+  if (a == nullptr || !a->IsExternal()) {
+    return;
+  }
+  res->GetArray()->SetExternal(true);
+}
+
 void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
 				 IResource *res) {
   DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();

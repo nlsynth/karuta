@@ -47,6 +47,7 @@ public:
   bool IsExtInput();
   bool IsExtOutput();
   bool IsExtCombinational();
+  bool IsExternal();
 
   // For imported Verilog module.
   string GetResourceName();
