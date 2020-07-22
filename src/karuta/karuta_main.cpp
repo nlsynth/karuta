@@ -113,6 +113,8 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("flavor", nullptr);
   parser->RegisterValueFlag("root", nullptr);
   parser->RegisterValueFlag("timeout", nullptr);
+  parser->RegisterModeArg("compile", nullptr);
+  parser->RegisterModeArg("run", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
   }

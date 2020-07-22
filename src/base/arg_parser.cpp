@@ -19,6 +19,13 @@ void ArgParser::RegisterValueFlag(const char *name, const char *canonical) {
   flags_with_value_.insert(string(name));
 }
 
+void ArgParser::RegisterModeArg(const char *name, const char *canonical) {
+  if (canonical == nullptr) {
+    canonical = name;
+  }
+  mode_flags_[string(name)] = string(canonical);
+}
+
 bool ArgParser::Parse(int argc, char **argv) {
   for (int i = 1; i < argc; i++) {
     char *arg = argv[i];
@@ -36,6 +43,9 @@ bool ArgParser::Parse(int argc, char **argv) {
       enable_logging_ = true;
     } else if (!strncmp(arg, "-d", 2)) {
       debug_flags.push_back(&arg[2]);
+    } else if (mode_flags_.find(arg) != mode_flags_.end()) {
+      const string &canonical_flag_name = mode_flags_[arg];
+      flag_values_[canonical_flag_name] = "";
     } else if (registered_flags_.find(flag_name) != registered_flags_.end()) {
       const string &canonical_flag_name = registered_flags_[flag_name];
       if (flags_with_value_.find(flag_name) != flags_with_value_.end()) {

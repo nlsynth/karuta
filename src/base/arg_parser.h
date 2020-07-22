@@ -16,8 +16,13 @@ class ArgParser {
 public:
   ArgParser();
 
+  // canonical can be null if it is same as the name.
+  // RegisterBoolFlag("name", "canonical") to register. then,
+  // GetBoolFlag("canonical") to get the value of --name or --canonical.
   void RegisterBoolFlag(const char *name, const char *canonical);
   void RegisterValueFlag(const char *name, const char *canonical);
+  // Treats "name" as a bool flag --canonical
+  void RegisterModeArg(const char *name, const char *canonical);
   bool Parse(int argc, char **argv);
   bool GetBoolFlag(const char *name, bool default_value);
   bool GetFlagValue(const char *name, string *value);
@@ -34,6 +39,7 @@ private:
   map<string, string> registered_flags_;
   map<string, string> flag_values_;
   set<string> flags_with_value_;
+  map<string, string> mode_flags_;
 };
 
 #endif  // _base_arg_parser_h_
