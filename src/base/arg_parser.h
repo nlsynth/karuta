@@ -19,10 +19,10 @@ public:
   // canonical can be null if it is same as the name.
   // RegisterBoolFlag("name", "canonical") to register. then,
   // GetBoolFlag("canonical") to get the value of --name or --canonical.
-  void RegisterBoolFlag(const char *name, const char *canonical);
-  void RegisterValueFlag(const char *name, const char *canonical);
+  void RegisterBoolFlag(const string &name, const char *canonical);
+  void RegisterValueFlag(const string &name, const char *canonical);
   // Treats "name" as a bool flag --canonical
-  void RegisterModeArg(const char *name, const char *canonical);
+  void RegisterModeArg(const string &name, const char *canonical);
   bool Parse(int argc, char **argv);
   bool GetBoolFlag(const char *name, bool default_value);
   bool GetFlagValue(const char *name, string *value);

@@ -7,23 +7,23 @@
 ArgParser::ArgParser() : enable_logging_(false) {
 }
 
-void ArgParser::RegisterBoolFlag(const char *name, const char *canonical) {
+void ArgParser::RegisterBoolFlag(const string &name, const char *canonical) {
   if (canonical == nullptr) {
-    canonical = name;
+    canonical = name.c_str();
   }
-  registered_flags_[string(name)] = string(canonical);
+  registered_flags_[name] = string(canonical);
 }
 
-void ArgParser::RegisterValueFlag(const char *name, const char *canonical) {
+void ArgParser::RegisterValueFlag(const string &name, const char *canonical) {
   RegisterBoolFlag(name, canonical);
-  flags_with_value_.insert(string(name));
+  flags_with_value_.insert(name);
 }
 
-void ArgParser::RegisterModeArg(const char *name, const char *canonical) {
+void ArgParser::RegisterModeArg(const string &name, const char *canonical) {
   if (canonical == nullptr) {
-    canonical = name;
+    canonical = name.c_str();
   }
-  mode_flags_[string(name)] = string(canonical);
+  mode_flags_[name] = string(canonical);
 }
 
 bool ArgParser::Parse(int argc, char **argv) {
