@@ -40,3 +40,28 @@
 $ ./src/out/Default/karuta_test # run tests
 
 $ karuta -dbc x.karuta # debug pre-exec toplevel byte code
+
+## Testing
+
+karuta/tests/run-test scans each test case file and use follwing directives in comment line to check the results.
+
+     // e.g.
+     // SELF_SHELL:
+     process main() {
+       assert(true)
+     }
+
+
+* KARUTA_EXPECTED_ERRORS int
+* KARUTA_IGNORE_ERRORS
+* KARUTA_TIMEOUT int-sec
+* KARUTA_EXPECT_ABORT
+* VERILOG_EXPECTED_ERRORS int
+* VERILOG_EXPECTED_OUTPUT string
+* VERILOG_OUTPUT verilog-filename
+* VERILOG_TB verilog-filename
+* SELF_SHELL
+
+* KARUTA_COMPOUND_TEST
+* KARUTA_SPLIT_TEST
+* KARUTA_NEXT_TEST
