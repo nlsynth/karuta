@@ -14,6 +14,6 @@
 #include "karuta/karuta_main.h"
 
 int main(int argc, char **argv) {
-  Main m;
+  KarutaMain m;
   return m.main(argc, argv);
 }

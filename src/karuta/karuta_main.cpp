@@ -25,7 +25,12 @@
 #include <sys/time.h>
 #include <string.h>
 
-void Main::PrintUsage() {
+KarutaMain::KarutaMain() : dbg_scanner_(false), dbg_parser_(false),
+			   timeout_(0), print_exit_status_(false),
+			   vanilla_(false) {
+}
+
+void KarutaMain::PrintUsage() {
   cout << "karuta-" << Env::GetVersion() << "\n";
   cout << " karuta [FILE]...\n"
        << "   -d[spb] scanner,parser,byte code compiler\n"
@@ -49,14 +54,14 @@ void Main::PrintUsage() {
   exit(0);
 }
 
-void Main::RunFiles(bool with_run, bool with_compile,
+void KarutaMain::RunFiles(bool with_run, bool with_compile,
 		    vector<string> &files) {
   fe::FE fe(dbg_parser_, dbg_scanner_, dbg_bytecode_);
 
   fe.Run(with_run, with_compile, vanilla_, files);
 }
 
-void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
+void KarutaMain::ProcDebugArgs(vector<char *> &dbg_flags) {
   for (char *flag : dbg_flags) {
     switch (*flag) {
     case 'b':
@@ -74,7 +79,7 @@ void Main::ProcDebugArgs(vector<char *> &dbg_flags) {
   }
 }
 
-void Main::InstallTimeout() {
+void KarutaMain::InstallTimeout() {
   struct sigaction sa;
   memset(&sa, 0, sizeof(sa));
   sigemptyset(&sa.sa_mask);
@@ -94,7 +99,7 @@ void Main::InstallTimeout() {
   }
 }
 
-void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
+void KarutaMain::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterBoolFlag("compile", nullptr);
   parser->RegisterBoolFlag("dot", nullptr);
   parser->RegisterBoolFlag("h", "help");
@@ -120,10 +125,7 @@ void Main::ParseArgs(int argc, char **argv, ArgParser *parser) {
   }
 }
 
-int Main::main(int argc, char **argv) {
-  dbg_scanner_ = false;
-  dbg_parser_ = false;
-
+int KarutaMain::main(int argc, char **argv) {
   ArgParser args;
   ParseArgs(argc, argv, &args);
   if (args.GetBoolFlag("iroha", false)) {

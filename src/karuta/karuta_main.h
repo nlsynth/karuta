@@ -6,8 +6,10 @@
 
 class ArgParser;
 
-class Main {
+class KarutaMain {
 public:
+  KarutaMain();
+
   int main(int argc, char **argv);
 
 private:
