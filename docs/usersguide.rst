@@ -158,7 +158,6 @@ Arrays are really important to utilize FPGA, so Karuta has features to use array
 
 One important difference from Karuta and other languages is that an array index wraps around by the length of the array.
 
-------------
 Array images
 ------------
 
@@ -233,7 +232,6 @@ A *for* loop with fixed loop count can be unrolled by specifying the number of c
 Communication to external
 =========================
 
---------------------
 I/O from/to external
 --------------------
 
@@ -296,7 +294,6 @@ mailbox can be configured to accept writes from an external accessor.
    }
 
 
--------------
 AXI interface
 -------------
 
@@ -340,7 +337,6 @@ When an array declared with AXI slave annotation, an AXI slave interface to outs
 
 `notifyAccess()` method can be used for testing.
 
---------------
 SRAM interface
 --------------
 
@@ -351,7 +347,6 @@ Similar to AXI slave interface, SRAM interface which can be accessed from outsid
    @SramIf
    ram s int[16]
 
--------------
 External SRAM
 -------------
 
@@ -374,7 +369,18 @@ The code above will generate sram interface ports
    output reg [31:0] sram_s_wdata,
    output reg sram_s_wdata_en,
 
-----------------
+Antoher way to declare external RAM is to use @External annotation.
+
+.. code-block:: none
+
+  @External(name="sram")
+  ram r int[16]
+
+  process main() {
+    r[0] = 123
+  }
+
+
 Method interface
 ----------------
 
@@ -394,7 +400,6 @@ Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f
      return 0
    }
 
-----------------------------
 Embedded combinational logic
 ----------------------------
 
@@ -536,7 +541,6 @@ Karuta allows to implement user defined numeric types. An object describes user 
      x + x
    }		
 
------------------------------
 Custom data type with Verilog
 -----------------------------
 

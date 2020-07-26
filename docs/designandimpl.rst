@@ -11,7 +11,6 @@ As readers might know, there have been a good amount of efforts to improve effic
 
 Karuta is one of the efforts to make some of circuit designs more efficient. Karuta is a new programming designed for this purpose and its compiler. The language introduces higher level abstraction than RTL (so called HLS).
 
------------------
 Why new language?
 -----------------
 
@@ -28,7 +27,6 @@ While most of other attempts to introduce higher level abstraction adopt existin
 
    * It is also fun!
 
---------------
 Considerations
 --------------
 
@@ -69,31 +67,46 @@ In addition to allow arbitrary width, Karuta allows to define custom operators t
 
 Every design has some kinds of I/Os like master or slave interface of a certain bus protocol, GPIO, handshake or so on. Karuta supports them by annotations to a method or an array.
 
-------------------------
 Compiler and interpreter
 ------------------------
 
 Once the behavior of a design is written in Karuta language, `karuta` command can execute it as an interpreter or generate the RTL description of the behavior.
 So, users can simulate and test the behavior on Karuta's interpreter first before implementing it on real FPGAs.
 
---------------------------
 Simple and familiar syntax
 --------------------------
 
 Karuta adopts syntax similar to recently popular programming languages. For example, declaring a variable is like `var x int = 123`. It also allows multiple return values from a function as other languages do.
 Karuta also takes some syntax from HDLs so bits can be sliced like `x[15:8]` and concatenated like `x :: y`.
 
----------
 Use of IR
 ---------
 
 Karuta adopts Iroha (Intermediate Representation Of Hardware Abstraction) as its IR and backend which borrowed concepts from LLVM. Karuta generates Iroha based IR and Iroha takes it as its input, optimizes and writes out HDL files.
 
--------------
 HDL embedding
 -------------
 
 Trying to design everything in one HLS language is a terrible goal, so Karuta has features to embed Verilog code in users' design.
+
+
+Synthesis friendly HDL
+----------------------
+
+Karuta implements following features to support large scale hardware.
+
+Object distance
+^^^^^^^^^^^^^^^
+
+Elements of design can be placed in distant positions in a chip, so Karuta lets users specify the latency between objects manually.
+This can allow place and route tool to work with reasonable constraints.
+
+Tree of MUXes
+^^^^^^^^^^^^^
+
+Karuta aims to support designs with many FSMs and resources shared between them.
+To support many accessors to one resource, Karuta generates a tree of multiplexers to arbitrate accesses.
+The tree structure avoids too deep priority logic.
 
 ======================================
 Architecture and source code structure

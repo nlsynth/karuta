@@ -101,7 +101,6 @@ Methods and various things can be declared only in top level environment.
      // Object modification is not allowed (hence synthesizable).
    }
 
--------
 Methods
 -------
 
@@ -122,7 +121,6 @@ If no object name is given in the declaration, the method will belong to the cur
 A declaration can have an argument list and return value list.
 A declaration begin with a keyword either *func* or *process*.
 
---------------------
 Variable declaration
 --------------------
 
@@ -165,7 +163,6 @@ A vector type is declared by [scalar type][length] like int[16].
      a = y + z
    }
 
-------------
 Basic Syntax
 ------------
 
@@ -306,7 +303,6 @@ module block
 Built in objects and methods
 ============================
 
--------
 Objects
 -------
 
@@ -320,7 +316,6 @@ Objects
   * Numerics - Registry for user defined types.
 
 
--------
 Methods
 -------
 
