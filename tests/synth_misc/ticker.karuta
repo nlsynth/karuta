@@ -1,0 +1,12 @@
+// SELF_SHELL:
+module {
+  shared t object = Env.newTicker()
+
+  process main() {
+    assert(t.getCount() < 10)
+    wait(100)
+    assert(t.getCount() > 100)
+    t.decrementCount(100)
+    assert(t.getCount() < 20)
+  }
+}
