@@ -8,5 +8,7 @@ module {
     assert(t.getCount() > 100)
     t.decrementCount(100)
     assert(t.getCount() < 20)
+    t.decrementCount(t.getCount())
+    assert(t.getCount() < 10)
   }
 }
