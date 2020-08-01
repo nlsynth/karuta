@@ -52,7 +52,7 @@ public:
   IResource *GetExtIOByObject(vm::Object *obj, bool is_owner);
   IResource *GetExtTaskResource();
   IResource *GetExtTaskDoneResource();
-  IResource *GetTicker(vm::Object *obj);
+  IResource *GetTicker(vm::Object *obj, bool is_owner);
 
 private:
   string GetResourceClassName(vm::OpCode op);
@@ -108,6 +108,7 @@ private:
   map<vm::Object *, IResource *> ext_io_by_object_;
   map<vm::Object *, IResource *> ext_io_accessor_by_object_;
   map<vm::Object *, IResource *> tickers_;
+  map<vm::Object *, IResource *> ticker_accessors_;
 };
 
 }  // namespace synth

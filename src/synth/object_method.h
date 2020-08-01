@@ -29,6 +29,7 @@ private:
   IInsn *SynthGetTickCount(vm::Object *obj);
   IInsn *SynthDecrementTick(vm::Object *obj);
   IInsn *SynthExtIO(vm::Object *, bool is_write);
+  bool IsOwner(SharedResource *sres);
 
   MethodSynth *synth_;
   InsnWalker *walker_;

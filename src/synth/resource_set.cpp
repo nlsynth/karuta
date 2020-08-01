@@ -316,14 +316,25 @@ IResource *ResourceSet::GetExtTaskDoneResource() {
   return ext_task_done_;
 }
 
-IResource *ResourceSet::GetTicker(vm::Object *obj) {
-  auto it = tickers_.find(obj);
-  if (it != tickers_.end()) {
+IResource *ResourceSet::GetTicker(vm::Object *obj, bool is_owner) {
+  map<vm::Object *, IResource *> *m;
+  if (is_owner) {
+    m = &tickers_;
+  } else {
+    m = &ticker_accessors_;
+  }
+  auto it = m->find(obj);
+  if (it != m->end()) {
     return it->second;
   }
+  string n;
+  if (is_owner) {
+    n = resource::kTicker;
+  } else {
+    n = resource::kTickerAccessor;
+  }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  resource::kTicker);
+    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   tab_->resources_.push_back(res);
   tickers_[obj] = res;

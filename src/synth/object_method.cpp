@@ -249,24 +249,37 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
 }
 
 IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
-  IResource *res = synth_->GetResourceSet()->GetTicker(obj);
+  SharedResource *sres =
+    synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
+  bool is_owner = IsOwner(sres);
+  IResource *res = synth_->GetResourceSet()->GetTicker(obj, is_owner);
+  if (is_owner) {
+    sres->SetOwnerIResource(res);
+  } else {
+    sres->AddAccessorResource(res, synth_->GetThreadSynth());
+  }
   return new IInsn(res);
 }
 
 IInsn *ObjectMethod::SynthDecrementTick(vm::Object *obj) {
-  IResource *res = synth_->GetResourceSet()->GetTicker(obj);
+  SharedResource *sres =
+    synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
+  bool is_owner = IsOwner(sres);
+  IResource *res = synth_->GetResourceSet()->GetTicker(obj, is_owner);
+  if (is_owner) {
+    sres->SetOwnerIResource(res);
+  } else {
+    sres->AddAccessorResource(res, synth_->GetThreadSynth());
+  }
   return new IInsn(res);
 }
 
 IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
-  bool is_owner = false;
-  ResourceSet *rset = synth_->GetResourceSet();
   SharedResource *sres =
     synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
-  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
-    is_owner = true;
-  }
+  bool is_owner = IsOwner(sres);
   rsynth_->MayAddIO(obj, is_owner);
+  ResourceSet *rset = synth_->GetResourceSet();
   IResource *res = rset->GetExtIOByObject(obj, is_owner);
   if (is_owner) {
     sres->SetOwnerIResource(res);
@@ -275,6 +288,13 @@ IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
   }
   IInsn *iinsn = new IInsn(res);
   return iinsn;
+}
+
+bool ObjectMethod::IsOwner(SharedResource *sres) {
+  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
+    return true;
+  }
+  return false;
 }
 
 }  // namespace synth
