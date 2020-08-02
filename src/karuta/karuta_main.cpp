@@ -120,6 +120,7 @@ void KarutaMain::ParseArgs(int argc, char **argv, ArgParser *parser) {
   parser->RegisterValueFlag("timeout", nullptr);
   parser->RegisterModeArg("compile", nullptr);
   parser->RegisterModeArg("run", nullptr);
+  parser->RegisterModeArg("sim", nullptr);
   if (!parser->Parse(argc, argv)) {
     exit(0);
   }
@@ -189,6 +190,11 @@ int KarutaMain::main(int argc, char **argv) {
   LOG(INFO) << "KARUTA-" << Env::GetVersion();
   bool with_compile = args.GetBoolFlag("compile", false);
   bool with_run = args.GetBoolFlag("run", false);
+  bool with_sim = args.GetBoolFlag("sim", false);
+  if (with_sim) {
+    with_compile = true;
+    Env::SetWithSelfShell(true);
+  }
   RunFiles(with_run, with_compile, args.source_files);
   if (Status::CheckAllErrors(true)) {
     exit_status = "error";
