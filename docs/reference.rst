@@ -331,7 +331,6 @@ Methods
 * Kernel.abort()
 * Kernel.compile()
 * Kernel.exit()
-* Kernel.getTickCount()
 * Kernel.new()
 * Kernel.print()
 * Kernel.runIroha()

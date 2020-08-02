@@ -48,10 +48,6 @@ void NativeObjects::InstallNativeKernelObjectMethods(VM *vm, Object *obj) {
   InstallNativeMethod(vm, obj, "yield", &NativeMethods::Yield, rets);
   rets.push_back(IntType(32));
   InstallNativeMethod(vm, obj, "widthof", &NativeMethods::WidthOf, rets);
-  // DEPRECATED. Use Env.getTicker() and its getCount() instead.
-  m = InstallNativeMethod(vm, obj, "getTickCount", &NativeMethods::GetTickCount,
-			  rets);
-  m->SetSynthName(synth::kGetTickCount);
 }
 
 Method *NativeObjects::InstallNativeMethodWithAltImpl(VM *vm, Object *obj,
