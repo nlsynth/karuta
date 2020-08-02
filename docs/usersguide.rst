@@ -823,7 +823,9 @@ If you are using Ubuntu, just do
 
    $ sudo snap install karuta
 
-Installing Karuta from its source code requires a C++ compiler (namely g++ or clang++), python, gyp (Makefile generator) and make.
+Installing Karuta from its source code requires a C++ compiler (namely g++ or clang++), python, gyp-next and make.
+
+NOTE: gyp is a Makefile generator. Please use maintained gyp-next ('$ pip install gyp-next' to install) instead of the original gyp.
 
 .. code-block:: none
 
