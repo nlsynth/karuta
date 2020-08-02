@@ -3,7 +3,7 @@
     "displayName": "Karuta",
     "description": "Karuta syntax support",
     "publisher": "karuta",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "engines": {
         "vscode": "^1.37.0"
     },

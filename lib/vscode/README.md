@@ -18,6 +18,10 @@ This is a preliminary version and doesn't fully support all of Karuta grammar.
 
 ## Release Notes
 
+### 0.0.8 (0.5.11wip)
+
+Add "input" and "output" keyword.
+
 ### 0.5.8wip
 
 Add "channel" and "mailbox" keyword.
