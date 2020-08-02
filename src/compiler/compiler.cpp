@@ -3,7 +3,7 @@
 
 #include "base/status.h"
 #include "compiler/method_compiler.h"
-#include "fe/fe_method.h"
+#include "fe/method.h"
 #include "vm/method.h"
 #include "vm/vm.h"
 

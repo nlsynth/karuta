@@ -7,7 +7,7 @@
 #include "fe/builder.h"
 #include "fe/common.h"
 #include "fe/emitter.h"
-#include "fe/fe_method.h"
+#include "fe/method.h"
 #include "fe/nodecode.h"
 #include "fe/scanner.h"
 #include "fe/scanner_interface.h"

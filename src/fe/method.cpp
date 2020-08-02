@@ -1,7 +1,4 @@
-// The file name should be fe/method.cpp, but gyp complains it conflicts
-// against vm/method.cpp and can't compile on macos...
-// This should be fixed once I switch the build system.
-#include "fe/fe_method.h"
+#include "fe/method.h"
 
 #include "base/dump_stream.h"
 #include "fe/stmt.h"

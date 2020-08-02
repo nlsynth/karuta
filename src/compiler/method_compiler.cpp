@@ -6,7 +6,7 @@
 #include "compiler/reg_checker.h"
 #include "compiler/loop_marker.h"
 #include "fe/expr.h"
-#include "fe/fe_method.h"
+#include "fe/method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "vm/insn.h"

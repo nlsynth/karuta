@@ -1,6 +1,6 @@
 #include "compiler/loop_marker.h"
 
-#include "fe/fe_method.h"
+#include "fe/method.h"
 #include "fe/stmt.h"
 
 namespace compiler {
