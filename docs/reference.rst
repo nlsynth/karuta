@@ -316,8 +316,8 @@ Objects
   * Numerics - Registry for user defined types.
 
 
-Methods
--------
+Built in methods
+----------------
 
 * Object.clone()
 * Object.dump()

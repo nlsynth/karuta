@@ -36,7 +36,7 @@ Save this to a file named xorshift32.karuta, then you can run this program like
 
 .. code-block:: none
 
-   $ karuta xorshift32.karuta --run
+   $ karuta run xorshift32.karuta
    print: default-isynth.karuta loaded
    print: 268476417
    print: 1157628417
@@ -48,7 +48,8 @@ So you can the run same *karuta* command again and will get xorshift32.v. The co
 
 .. code-block:: none
 
-   $ karuta xorshift32.karuta --compile
+   $ karuta compile xorshift32.karuta
+
 .. code-block:: none
 
    ... 100~ lines of code in Verilog here. ...
@@ -64,7 +65,7 @@ If you think it is tedious, *--with_shell* option will do most of the work;
 
 .. code-block:: none
 
-   $ karuta xorshift32.karuta --compile --with_shell
+   $ karuta compile xorshift32.karuta --with_shell
 
 The output contains an enclosing module to generate clock and reset. So you can simply run iverilog (or your simulator) to see the results.
 

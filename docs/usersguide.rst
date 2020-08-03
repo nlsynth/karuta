@@ -1,3 +1,4 @@
+============
 User's guide
 ============
 
@@ -350,25 +351,6 @@ Similar to AXI slave interface, SRAM interface which can be accessed from outsid
 External SRAM
 -------------
 
-.. code-block:: none
-
-   shared s object = Memory.clone()
-   s.setName("s")
-   s.setWidth(8, 32)
-
-   process main() {
-     s.write(16, s.read(32))
-   }
-
-The code above will generate sram interface ports
-
-.. code-block:: none
-
-   output reg [7:0] sram_s_addr,
-   input [31:0] sram_s_rdata,
-   output reg [31:0] sram_s_wdata,
-   output reg sram_s_wdata_en,
-
 Antoher way to declare external RAM is to use @External annotation.
 
 .. code-block:: none
@@ -379,6 +361,15 @@ Antoher way to declare external RAM is to use @External annotation.
   process main() {
     r[0] = 123
   }
+
+The code above will generate sram interface ports
+
+.. code-block:: none
+
+   output reg [7:0] sram_s_addr,
+   input [3:0] sram_s_rdata,
+   output reg [31:0] sram_s_wdata,
+   output reg sram_s_wdata_en,
 
 
 Method interface
@@ -709,10 +700,10 @@ A ticker object keeps a counter incremented by the clock. Each ticker object has
        var b #0 = 0
        while true {
          o.write(b)
-	 b = ~b
-	 // Makes 10000 clocks interval.
-	 wait(10000 - ticker.getCount())
-	 ticker.decrementCount(10000)
+	       b = ~b
+	       // Makes 10000 clocks interval.
+	       wait(10000 - ticker.getCount())
+	       ticker.decrementCount(10000)
        }
      }
    }
