@@ -41,7 +41,7 @@ public:
       objs_.resize(size);
       // Sets non null object so that vm/ doesn't have to care about nullptr.
       for (int i = 0; i < size; ++i) {
-	objs_[i] = vm->root_object_;
+        objs_[i] = vm->root_object_;
       }
     }
     an_ = an;
@@ -258,7 +258,11 @@ void ArrayWrapper::LoadImage(Thread *thr, Object *obj,
 
 void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
 			   const vector<Value> &args) {
-  CHECK(args.size() > 0) << "save/load image requires a file name";
+  if (args.size() == 0) {
+    Status::os(Status::USER_ERROR) << "save/load image requires a file name";
+    thr->UserError();
+    return;
+  }
   const Value& arg = args[0];
   CHECK(StringWrapper::IsString(arg.object_));
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
