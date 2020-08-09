@@ -113,4 +113,11 @@ void Value::CopyDataFrom(const Value &src, const iroha::NumericWidth &width) {
   }
 }
 
+bool Value::IsString() const {
+  if (type_ == OBJECT && StringWrapper::IsString(object_)) {
+    return true;
+  }
+  return false;
+}
+
 }  // namespace vm

@@ -27,8 +27,7 @@ void ObjectUtil::SetDataWidth(Object *obj, int width) {
 
 string ObjectUtil::GetStringMember(Object *obj, const string &key) {
   Value *value = obj->LookupValue(sym_lookup(key.c_str()), false);
-  if (value == nullptr || value->type_ != Value::OBJECT ||
-      !StringWrapper::IsString(value->object_)) {
+  if (value == nullptr || !value->IsString()) {
     return "";
   }
   return StringWrapper::String(value->object_);

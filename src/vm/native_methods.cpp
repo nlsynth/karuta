@@ -113,8 +113,7 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
     thr->UserError();
     return;
   }
-  if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
-      !StringWrapper::IsString(args[0].object_)) {
+  if (args.size() != 1 || !args[0].IsString()) {
     Status::os(Status::USER_ERROR) << "Missing argument for runIroha()";
     thr->UserError();
     return;
@@ -129,9 +128,7 @@ void NativeMethods::RunIroha(Thread *thr, Object *obj,
 
 void NativeMethods::Synth(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
-  if (args.size() != 1 || args[0].type_ != Value::OBJECT ||
-      !StringWrapper::IsString(args[0].object_)) {
-  }
+  CHECK(args.size() == 1 && args[0].IsString());
   synth::Synth::Synthesize(thr->GetVM(), obj,
 			   StringWrapper::String(args[0].object_));
 }
@@ -139,8 +136,7 @@ void NativeMethods::Synth(Thread *thr, Object *obj,
 void NativeMethods::SetMemberString(Thread *thr, const char *name,
 				    Object *obj,
 				    const vector<Value> &args) {
-  if (args.size() == 1 && args[0].type_ == Value::OBJECT &&
-      StringWrapper::IsString(args[0].object_)) {
+  if (args.size() == 1 && args[0].IsString()) {
     const string &str = StringWrapper::String(args[0].object_);
     ObjectUtil::SetStringMember(obj, name, str);
   }
@@ -150,7 +146,7 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
 			    const vector<Value> &args) {
   string phase;
   if (args.size() == 1) {
-    CHECK(StringWrapper::IsString(args[0].object_));
+    CHECK(args[0].IsString());
     phase = StringWrapper::String(args[0].object_);
   }
   if (phase.empty()) {
@@ -171,16 +167,13 @@ void NativeMethods::Compile(Thread *thr, Object *obj,
 
 void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
 				  const vector<Value> &args) {
-  if (args.size() != 2 ||
-      (args[0].type_ != Value::OBJECT ||
-       !StringWrapper::IsString(args[0].object_))) {
+  if (args.size() != 2 || !args[0].IsString()) {
     Status::os(Status::USER_ERROR)
       << "setSynthParam() requires 2 arguments and 1st argument should be a string.";
     thr->UserError();
     return;
   }
-  if ((args[1].type_ != Value::OBJECT ||
-       !StringWrapper::IsString(args[1].object_)) &&
+  if (!args[1].IsString() &&
       args[1].type_ != Value::NUM) {
     Status::os(Status::USER_ERROR) << "setSynthParam() requires a string or integer value.";
     thr->UserError();
@@ -227,7 +220,7 @@ void NativeMethods::WriteHdl(Thread *thr, Object *obj,
 			     const vector<Value> &args) {
   CHECK(args.size() == 1);
   const Value& arg = args[0];
-  CHECK(StringWrapper::IsString(arg.object_));
+  CHECK(arg.IsString());
   synth::Synth::WriteHdl(StringWrapper::String(arg.object_), obj);
 }
 

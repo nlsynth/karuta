@@ -263,14 +263,21 @@ void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
     thr->UserError();
     return;
   }
-  const Value& arg = args[0];
-  CHECK(StringWrapper::IsString(arg.object_));
+  const Value &arg = args[0];
+  if (!arg.IsString()) {
+    Status::os(Status::USER_ERROR) << "save/load image requires a string file name";
+    thr->UserError();
+    return;
+  }
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = data->int_array_.get();
   string format;
   if (args.size() >= 2) {
-    const Value& fmt = args[1];
-    CHECK(StringWrapper::IsString(fmt.object_));
+    const Value &fmt = args[1];
+    if (!fmt.IsString()) {
+      Status::os(Status::USER_ERROR) << "malformed save/load image format";
+      return;
+    }
     format = StringWrapper::String(fmt.object_);
   }
   arr->ImageIO(StringWrapper::String(arg.object_), format, save);
@@ -308,7 +315,7 @@ void ArrayWrapper::SetWidth(Thread *thr, Object *obj,
 
 void ArrayWrapper::SetName(Thread *thr, Object *obj,
 			   const vector<Value> &args) {
-  if (args.size() != 1 || !StringWrapper::IsString(args[0].object_)) {
+  if (args.size() != 1 || !args[0].IsString()) {
     Status::os(Status::USER_ERROR) << "SetName should be take a string";
     thr->UserError();
     return;

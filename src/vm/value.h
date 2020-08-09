@@ -21,6 +21,7 @@ public:
   void SetBool(bool b);
   bool IsObjectType() const;
   void CopyDataFrom(const Value &src, const iroha::NumericWidth &width);
+  bool IsString() const;
 
   enum ValueType {
     NONE,
