@@ -1,9 +1,9 @@
 // Memory model for interpreted Karuta
 #include "vm/int_array.h"
 
-#include "iroha/numeric.h"
-
 #include <stdlib.h>
+
+#include "iroha/numeric.h"
 
 namespace vm {
 
@@ -27,7 +27,7 @@ IntArray::~IntArray() {
 }
 
 IntArray *IntArray::Create(const iroha::NumericWidth &data_width,
-			   const vector<uint64_t> &shape) {
+                           const vector<uint64_t> &shape) {
   return new IntArray(data_width, shape);
 }
 
@@ -37,8 +37,8 @@ IntArray *IntArray::Copy(const IntArray *src) {
 }
 
 IntArray::IntArray(const iroha::NumericWidth &width,
-		   const vector<uint64_t> &shape)
-  : shape_(shape), data_width_(width) {
+                   const vector<uint64_t> &shape)
+    : shape_(shape), data_width_(width) {
   size_ = 1;
   for (uint64_t s : shape_) {
     size_ *= s;
@@ -56,28 +56,28 @@ IntArray::IntArray(const IntArray *src) {
 }
 
 void IntArray::Write(const vector<uint64_t> &indexes,
-		     const iroha::Numeric &data) {
+                     const iroha::Numeric &data) {
   WriteSingle(GetIndex(indexes), data.type_, data.GetArray());
 }
 
 void IntArray::WriteSingle(uint64_t addr, const iroha::NumericWidth &width,
-			   const iroha::NumericValue &data) {
+                           const iroha::NumericValue &data) {
   IntArrayPage *p = FindPage(addr);
   int offset = (addr % PAGE_SIZE);
-  iroha::Numeric::CopyValueWithWidth(data, width, p->width_,
-				     nullptr, &p->data_[offset]);
+  iroha::Numeric::CopyValueWithWidth(data, width, p->width_, nullptr,
+                                     &p->data_[offset]);
 }
 
 void IntArray::WriteWide(uint64_t byte_addr, const iroha::NumericWidth &type,
-			 const iroha::NumericValue &data) {
+                         const iroha::NumericValue &data) {
   int mem_width = data_width_.GetWidth();
   uint64_t array_addr = byte_addr / (mem_width / 8);
   int c = type.GetWidth() / mem_width;
   for (int i = 0; i < c; ++i) {
     int l = mem_width * i;
     iroha::Numeric d;
-    iroha::Op::SelectBits(data, type, l + mem_width - 1, l,
-			  d.GetMutableArray(), &d.type_);
+    iroha::Op::SelectBits(data, type, l + mem_width - 1, l, d.GetMutableArray(),
+                          &d.type_);
     WriteSingle(array_addr + i, d.type_, d.GetArray());
   }
 }
@@ -103,23 +103,19 @@ iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
     iroha::NumericValue a = ReadSingle(array_addr + i);
     iroha::Numeric t;
     iroha::Op::Concat(a, data_width_, n.GetArray(), n.type_,
-		      t.GetMutableArray(), &t.type_);
+                      t.GetMutableArray(), &t.type_);
     n = t;
   }
   return n;
 }
 
-uint64_t IntArray::GetLength() const {
-  return size_;
-}
+uint64_t IntArray::GetLength() const { return size_; }
 
 const iroha::NumericWidth &IntArray::GetDataWidth() const {
   return data_width_;
 }
 
-const vector<uint64_t> &IntArray::GetShape() const {
-  return shape_;
-}
+const vector<uint64_t> &IntArray::GetShape() const { return shape_; }
 
 bool IntArray::ImageIO(const string &fn, const string &format, bool save) {
   string raw_fn;
@@ -135,7 +131,7 @@ bool IntArray::ImageIO(const string &fn, const string &format, bool save) {
   if (fp == nullptr) {
     return false;
   }
-    bool r;
+  bool r;
   if (format.empty()) {
     r = BinaryIO(fp, save);
   } else {
@@ -150,11 +146,25 @@ bool IntArray::BinaryIO(FILE *fp, bool save) {
   for (int i = 0; i < GetLength(); ++i) {
     if (save) {
       iroha::NumericValue nv = ReadSingle(i);
-      fwrite((void *)&nv.value_[0], num_bytes, 1, fp);
+      void *ptr;
+      if (data_width_.IsExtraWide()) {
+        ptr = &nv.extra_wide_value_->value_[0];
+      } else {
+        ptr = &nv.value_[0];
+      }
+      fwrite(ptr, num_bytes, 1, fp);
     } else {
       iroha::Numeric n;
       iroha::NumericValue *nv = n.GetMutableArray();
-      fread((void *)&nv->value_[0], num_bytes, 1, fp);
+      iroha::ExtraWideValue wv;
+      void *ptr;
+      if (data_width_.IsExtraWide()) {
+        nv->extra_wide_value_ = &wv;
+        ptr = wv.value_;
+      } else {
+        ptr = &nv->value_[0];
+      }
+      fread(ptr, num_bytes, 1, fp);
       WriteSingle(i, n.type_, n.GetArray());
     }
   }
