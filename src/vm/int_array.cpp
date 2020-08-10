@@ -11,13 +11,16 @@ static const int PAGE_SIZE = 1024;
 
 struct IntArrayPage {
   IntArrayPage(const iroha::NumericWidth &w);
+
   iroha::NumericValue data_[PAGE_SIZE];
   iroha::NumericWidth width_;
 };
 
 IntArrayPage::IntArrayPage(const iroha::NumericWidth &width) : width_(width) {
   int i;
+  iroha::NumericManager *mgr = iroha::Numeric::DefaultManager();
   for (i = 0; i < PAGE_SIZE; i++) {
+    mgr->MayPopulateStorage(width_, &data_[i]);
     iroha::Numeric::Clear(width_, &data_[i]);
   }
 }
