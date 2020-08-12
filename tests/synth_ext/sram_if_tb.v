@@ -39,19 +39,30 @@ module sram_if_tb;
 	      st <= 1;
 	   end
 	   1: begin
-	      addr <= 7;
+	      addr <= 8;
 	      wdata <= 6;
-	      wen <= 0;
+	      wen <= 1;
 	      st <= 2;
 	   end
 	   2: begin
-	      $display("rdata %x", rdata);
-	      if (rdata != 5) begin
-		 $display("ASSERTION FAILURE %x", rdata);
-	      end
+	      addr <= 7;
+	      wen <= 0;
 	      st <= 3;
 	   end
 	   3: begin
+	      addr <= 8;
+	      if (rdata != 5) begin
+		 $display("ASSERTION FAILURE %x", rdata);
+	      end
+	      st <= 4;
+	   end
+	   4: begin
+	      if (rdata != 6) begin
+		 $display("ASSERTION FAILURE %x", rdata);
+	      end
+	      st <= 5;
+	   end
+	   5: begin
 	      $finish();
 	   end
 	 endcase
