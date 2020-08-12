@@ -1,0 +1,8 @@
+// VERILOG_OUTPUT: a.v
+// VERILOG_TB: sram_if_tb.v
+
+@SramIf
+ram s int[16]
+
+compile()
+writeHdl("a.v")
