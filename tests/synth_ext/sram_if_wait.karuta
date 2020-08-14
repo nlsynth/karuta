@@ -7,6 +7,10 @@ shared s int[16]
 
 process main() {
   s.waitAccess()
+  s[6] = 10
+  assert(s[6] == 10)
+  assert(s[7] == 5)
+  assert(s[8] == 6)
   print(123)
 }
 
