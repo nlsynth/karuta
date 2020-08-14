@@ -30,7 +30,6 @@ module sram_if_tb;
 	 wen <= 0;
 	 wdata <= 0;
       end else begin
-	 $display("st=%d", st);
 	 case (st)
 	   0: begin
 	      addr <= 7;
@@ -63,7 +62,6 @@ module sram_if_tb;
 	      st <= 5;
 	   end
 	   5: begin
-	      $finish();
 	   end
 	 endcase
       end
@@ -72,4 +70,3 @@ module sram_if_tb;
    mod_main m(.clk(clk), .rst(rst), .s_addr(addr), .s_wen(wen), .s_rdata(rdata), .s_wdata(wdata));
 
 endmodule // sram_if_tb
-

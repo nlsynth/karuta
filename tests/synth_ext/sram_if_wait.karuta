@@ -1,0 +1,14 @@
+// VERILOG_OUTPUT: a.v
+// VERILOG_TB: sram_if_tb.v
+// VERILOG_EXPECTED_OUTPUT: 123
+
+@SramIf
+shared s int[16]
+
+process main() {
+  s.waitAccess()
+  print(123)
+}
+
+compile()
+writeHdl("a.v")
