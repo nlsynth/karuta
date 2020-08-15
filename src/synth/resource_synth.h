@@ -17,6 +17,7 @@ public:
   void MayAddSharedRegExtWriter(vm::Object *mailbox_obj);
   void MayAddIO(vm::Object *io, bool is_owner);
   void MayConfigureExternalSram(vm::Object *obj, IResource *res);
+  void MayAddExternalSram(vm::Object *array_obj);
 
 private:
   void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj, IResource *res);

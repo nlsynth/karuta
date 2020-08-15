@@ -80,6 +80,15 @@ void ResourceSynth::MayConfigureExternalSram(vm::Object *obj, IResource *res) {
   }
 }
 
+void ResourceSynth::MayAddExternalSram(vm::Object *array_obj) {
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
+  if (a == nullptr || !a->IsExternal()) {
+    return;
+  }
+  IResource *res = rset_->GetExternalArrayResource(array_obj);
+  MayConfigureExternalSram(array_obj, res);
+}
+
 void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
 				 IResource *res) {
   DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();

@@ -170,21 +170,22 @@ void ThreadSynth::CollectUnclaimedMembers() {
     }
     if (vm::ArrayWrapper::IsIntArray(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {
-	continue;
+	      continue;
       }
-      rsynth_->MayAddAxiMasterPort(obj_synth_->GetObject(), member_obj);
-      rsynth_->MayAddAxiSlavePort(obj_synth_->GetObject(), member_obj);
-      rsynth_->MayAddSramIfPort(obj_synth_->GetObject(), member_obj);
+      rsynth_->MayAddAxiMasterPort(obj, member_obj);
+      rsynth_->MayAddAxiSlavePort(obj, member_obj);
+      rsynth_->MayAddSramIfPort(obj, member_obj);
+      rsynth_->MayAddExternalSram(member_obj);
     }
     if (vm::MailboxWrapper::IsMailbox(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {
-	continue;
+	      continue;
       }
       rsynth_->MayAddSharedRegExtWriter(member_obj);
     }
     if (vm::IOWrapper::IsIO(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {
-	continue;
+	      continue;
       }
       rsynth_->MayAddIO(member_obj, true);
     }
