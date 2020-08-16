@@ -2,8 +2,13 @@ import os
 import re
 import tempfile
 
-karuta_binary="../karuta-bin"
+import synth_test
+
+# Set from external.
 iroha_binary=""
+with_synth_test=False
+
+karuta_binary="../karuta-bin"
 tmp_prefix = "/tmp"
 default_tb="test_tb.v"
 verilog_compiler="iverilog"
@@ -111,6 +116,15 @@ def CheckVerilog(dut_fn, source_fn, summary, test_info):
     if "vl_exp_output" in test_info:
         exp = test_info["vl_exp_output"]
     res = CheckLog(test_log_fn, exp)
+    if with_synth_test:
+        print("  testing synthesizability " + dut_fn)
+        sr = synth_test.Process(dut_fn)
+        if not sr:
+            print("Failed!")
+            e = 0
+            if "num_fails" in res:
+                e = res["num_fails"]
+            res["num_fails"] = e + 1
     num_fails = res["num_fails"]
     exp_fails = test_info["vl_exp_fails"]
     summary.AddVerilogResult(source_fn, num_fails,

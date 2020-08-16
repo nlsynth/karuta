@@ -127,6 +127,9 @@ if len(sys.argv) > 1:
             karuta_test.iroha_binary = args[0]
             args = args[1:]
             continue
+        if arg == "--synth":
+            karuta_test.with_synth_test = True
+            continue
         test_sources.append(arg)
 
 if not test_sources:
