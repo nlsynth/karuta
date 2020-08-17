@@ -4,6 +4,7 @@ import sys
 
 def GenerateScript(vfn, ys, ofn):
     ofh = open(ys, 'w')
+    ofh.write("verilog_defines -DSTRIP_SHELL=1\n")
     ofh.write("read_verilog %s\n" % vfn)
     ofh.write("hierarchy; proc; opt; techmap; opt\n")
     ofh.write("write_verilog %s; clean\n" % ofn)
