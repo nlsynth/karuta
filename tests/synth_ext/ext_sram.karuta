@@ -1,0 +1,13 @@
+// SELF_SHELL:
+
+@External
+shared s int[16]
+
+@External(name="unused")
+shared unused int[16]
+
+process main() {
+  s[1] = 10
+  s[10] = 1
+  assert(s[1] == 10)
+}
