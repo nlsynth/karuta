@@ -30,21 +30,21 @@ Assuming that you have a design like this and save to a file my_design.karuta
      // Does interesting computation.
    }
 
-Karuta generates synthesizable Verilog file, if *--compile* flag is specified.
+Karuta generates synthesizable Verilog file, if *compile* command is specified.
 
 .. code-block:: none
 
-   $ karuta my_design.karuta --compile
+   $ karuta compile my_design.karuta
    ... karuta will output my_design.v
 
 
 This is equivalent to call compile() and writeHdl("my_design.v") at the end of the code.
 
-To run the threads described in the code, *--run* option can be used. The example above has 3 thread entries *thr()*, *testThr()* and *main()*, so it will make 3 threads and wait for them to finish (or timeout).
+To run the threads described in the code, *run* command can be used. The example above has 3 thread entries *thr()*, *testThr()* and *main()*, so it will make 3 threads and wait for them to finish (or timeout).
 
 .. code-block:: none
 
-   $ karuta my_design.karuta --run
+   $ karuta run my_design.karuta
    ... thr(), testThr() and main() will run
 
 This is equivalent to call *run()* at the end of the code.

@@ -61,11 +61,11 @@ So you can the run same *karuta* command again and will get xorshift32.v. The co
    endmodule
 
 Then you can run this on a Verilog simulator with a testbench file to feed the clock and reset.
-If you think it is tedious, *--with_shell* option will do most of the work;
+If you think it is tedious, *sim* command will do most of the work;
 
 .. code-block:: none
 
-   $ karuta compile xorshift32.karuta --with_shell
+   $ karuta sim xorshift32.karuta
 
 The output contains an enclosing module to generate clock and reset. So you can simply run iverilog (or your simulator) to see the results.
 
