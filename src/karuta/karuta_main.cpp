@@ -33,7 +33,10 @@ KarutaMain::KarutaMain() : dbg_scanner_(false), dbg_parser_(false),
 
 void KarutaMain::PrintUsage() {
   cout << "karuta-" << Env::GetVersion() << "\n";
-  cout << " karuta [FILE]...\n"
+  cout << " karuta <command> [FILE]...\n"
+       << "\n"
+       << "   Commands(optional) are: complie, run, sim\n"
+       << "\n"
        << "   -d[spb] scanner,parser,byte code compiler\n"
        << "   -l\n"
        << "   -l=[modules]\n"
