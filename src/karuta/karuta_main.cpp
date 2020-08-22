@@ -17,6 +17,7 @@
 #include "fe/fe.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
+#include "iroha/numeric.h"
 #include "iroha/base/util.h"
 #include "karuta/karuta.h"
 
@@ -196,6 +197,7 @@ int KarutaMain::main(int argc, char **argv) {
     Env::SetWithSelfShell(true);
   }
   RunFiles(with_run, with_compile, args.source_files);
+  iroha::Numeric::ReleaseDefaultManager();
   if (Status::CheckAllErrors(true)) {
     exit_status = "error";
   }
