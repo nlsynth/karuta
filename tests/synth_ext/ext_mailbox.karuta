@@ -1,0 +1,10 @@
+// VERILOG_OUTPUT: a.v
+@ExtIO(name="m")
+mailbox m int
+
+process main() {
+  m.wait()
+}
+
+compile()
+writeHdl("a.v")
