@@ -282,7 +282,7 @@ mailbox can be configured to accept writes from an external accessor.
 
    // Signals "name", "name_wen", "name_notify", "name_put" and "name_put_ack"
    // are genrated.
-   @ExtIO(name="name", wen="wen", notify="notify", put="put")
+   @Export(name="name", wen="wen", notify="notify", put="put")
    mailbox mb int
 
    process p1() {

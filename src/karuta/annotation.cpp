@@ -138,6 +138,11 @@ bool Annotation::IsSramIf() {
   return (s == "SramIf");
 }
 
+bool Annotation::IsExport() {
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "Export");
+}
+
 int Annotation::GetAddrWidth() {
   string k = LookupStrParam(annotation::kAnnotationKey, "");
   if (k == "AxiMaster64" || k == "AxiSlave64") {

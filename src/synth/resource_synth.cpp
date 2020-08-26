@@ -134,7 +134,7 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
 
 void ResourceSynth::MayAddSharedRegExtWriter(vm::Object *mailbox_obj) {
   Annotation *an = vm::MailboxWrapper::GetAnnotation(mailbox_obj);
-  if (an == nullptr || !an->IsExtIO()) {
+  if (an == nullptr || !(an->IsExport() || an->IsExtIO())) {
     return;
   }
   IResource *res = rset_->GetMailboxExtWriter(mailbox_obj);

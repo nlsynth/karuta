@@ -86,6 +86,8 @@ public:
   bool IsAxiExclusive();
   // For ram.
   bool IsSramIf();
+  // For mailbox.
+  bool IsExport();
   // For fifo.
   int GetDepth();
   bool IsNoWait();
