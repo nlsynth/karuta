@@ -1,0 +1,15 @@
+// VERILOG_OUTPUT: a.v
+// VERILOG_TB: ext_input_wait_tb.v
+// VERILOG_EXPECTED_OUTPUT: 124
+input i int
+
+process p() {
+  print(i.wait())
+}
+
+process p2() {
+  print(i.wait() + 1)
+}
+
+compile()
+writeHdl("a.v")
