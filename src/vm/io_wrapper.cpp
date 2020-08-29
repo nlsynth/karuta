@@ -82,6 +82,9 @@ void IOWrapper::InstallMethods(VM *vm, Object *obj, bool is_output,
     m = NativeObjects::InstallNativeMethod(vm, obj, "read",
 					   &IOWrapper::Read, rets);
     m->SetSynthName(synth::kIORead);
+    m = NativeObjects::InstallNativeMethod(vm, obj, "wait",
+					   &IOWrapper::Read, rets);
+    m->SetSynthName(synth::kIOWait);
   }
 }
 

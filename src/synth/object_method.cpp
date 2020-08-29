@@ -63,7 +63,7 @@ void ObjectMethod::Synth() {
     iinsn = SynthChannelAccess(obj, false);
   } else if (name == kChannelWrite || name == kChannelNoWaitWrite) {
     iinsn = SynthChannelAccess(obj, true);
-  } else if (name == kIORead) {
+  } else if (name == kIORead || name == kIOWait) {
     iinsn = SynthExtIO(obj, false);
   } else if (name == kIOWrite) {
     iinsn = SynthExtIO(obj, true);
@@ -125,9 +125,9 @@ IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   rsynth_->MayAddAxiMasterPort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(axim_res);
   if (is_store) {
-    iinsn->SetOperand("write");
+    iinsn->SetOperand(iroha::operand::kWrite);
   } else {
-    iinsn->SetOperand("read");
+    iinsn->SetOperand(iroha::operand::kRead);
   }
   return iinsn;
 }
@@ -287,6 +287,10 @@ IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
     sres->AddAccessorResource(res, synth_->GetThreadSynth());
   }
   IInsn *iinsn = new IInsn(res);
+  string name = GetSynthName(obj);
+  if (name == kIOWait) {
+    iinsn->SetOperand("wait");
+  }
   return iinsn;
 }
 

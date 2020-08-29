@@ -17,6 +17,7 @@ const char kGetTickCount[] = "get_tick_count";
 const char kIOPeek[] = "io_peek";
 const char kIORead[] = "io_read";
 const char kIOWrite[] = "io_write";
+const char kIOWait[] = "io_wait";
 const char kSlaveWait[] = "wait";
 const char kSramRead[] = "sram_read";
 const char kSramWrite[] = "sram_write";
