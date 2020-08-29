@@ -252,6 +252,10 @@ I/Os (e.g. LEDs, DIP switches, interrputs and so on) can be accessed with member
      print(i.read())
      o.write(123)
      o2.write(1)
+     // peek() returns previously written value.
+     print(o2.peek())
+     // wait() waits for the input value to change.
+     print(i.wait())
    }
 
 ^^^^^^^^^^

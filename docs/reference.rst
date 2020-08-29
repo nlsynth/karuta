@@ -7,6 +7,14 @@ Reference
 Command line flags
 ==================
 
+$ karuta <command> [Files]
+
+* Commands(optional)
+
+  * run - starts runnable threads (same as --run)
+  * compile - compiles objects for specified files (same as --compile)
+  * sim - same as `sim` and also with self contained shell (same as --compile and --with_shell)
+
 * Debug options
 
   * -db debug byte code compiler
