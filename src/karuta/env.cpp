@@ -1,9 +1,10 @@
 #include "karuta/env.h"
 
-#include "base/util.h"
+#include <string.h>
 
 #include <set>
-#include <string.h>
+
+#include "base/util.h"
 
 using std::set;
 
@@ -41,12 +42,9 @@ const char *Env::GetKarutaDir() {
   return karuta_dir_;
 }
 
-const char *Env::GetIrohaDataDir() {
-  return getenv("IROHA_DATA_DIR");
-}
+const char *Env::GetIrohaDataDir() { return getenv("IROHA_DATA_DIR"); }
 
-void Env::SearchPathList(const char *fn,
-			 vector<string> *paths) {
+void Env::SearchPathList(const char *fn, vector<string> *paths) {
   if (fn[0] != '/' && fn[0] != '.') {
     auto dirs = SearchDirList();
     for (string &d : dirs) {
@@ -83,34 +81,22 @@ bool Env::GetOutputPath(const string &fn, string *path) {
   return true;
 }
 
-const string &Env::GetOutputMarker() {
-  return output_marker_;
-}
+const string &Env::GetOutputMarker() { return output_marker_; }
 
 void Env::SetOutputRootPath(const string &path) {
   output_root_ = path;
   sandbox_mode_ = true;
 }
 
-void Env::SetOutputMarker(const string &marker) {
-  output_marker_ = marker;
-}
+void Env::SetOutputMarker(const string &marker) { output_marker_ = marker; }
 
-void Env::SetModulePrefix(const string &name) {
-  module_prefix_ = name;
-}
+void Env::SetModulePrefix(const string &name) { module_prefix_ = name; }
 
-const string & Env::GetModulePrefix() {
-  return module_prefix_;
-}
+const string &Env::GetModulePrefix() { return module_prefix_; }
 
-void Env::SetArgv0(const string &c) {
-  argv0_ = c;
-}
+void Env::SetArgv0(const string &c) { argv0_ = c; }
 
-const string &Env::GetArgv0() {
-  return argv0_;
-}
+const string &Env::GetArgv0() { return argv0_; }
 
 void Env::SetCurrentFile(const string &fn) {
   current_file_ = fn;
@@ -126,58 +112,32 @@ void Env::SetCurrentFile(const string &fn) {
   source_dirs_.push_back(dn);
 }
 
-const string &Env::GetCurrentFile() {
-  return current_file_;
-}
+const string &Env::GetCurrentFile() { return current_file_; }
 
-bool Env::IsSandboxMode() {
-  return sandbox_mode_;
-}
+bool Env::IsSandboxMode() { return sandbox_mode_; }
 
-void Env::SetIrohaBinPath(const string &iroha) {
-  iroha_bin_path_ = iroha;
-}
+void Env::SetIrohaBinPath(const string &iroha) { iroha_bin_path_ = iroha; }
 
-const string &Env::GetIrohaBinPath() {
-  return iroha_bin_path_;
-}
+const string &Env::GetIrohaBinPath() { return iroha_bin_path_; }
 
-long Env::GetDuration() {
-  return duration_;
-}
+long Env::GetDuration() { return duration_; }
 
-void Env::SetDuration(long duration) {
-  duration_ = duration;
-}
+void Env::SetDuration(long duration) { duration_ = duration; }
 
-void Env::EnableDotOutput(bool en) {
-  dot_output_ = en;
-}
+void Env::EnableDotOutput(bool en) { dot_output_ = en; }
 
-bool Env::DotOutput() {
-  return dot_output_;
-}
+bool Env::DotOutput() { return dot_output_; }
 
-const string &Env::GetFlavor() {
-  return flavor_;
-}
+const string &Env::GetFlavor() { return flavor_; }
 
-void Env::SetFlavor(const string &flavor) {
-  flavor_ = flavor;
-}
+void Env::SetFlavor(const string &flavor) { flavor_ = flavor; }
 
-bool Env::GetWithSelfShell() {
-  return with_self_shell_;
-}
+bool Env::GetWithSelfShell() { return with_self_shell_; }
 
 void Env::SetWithSelfShell(bool with_self_shell) {
   with_self_shell_ = with_self_shell;
 }
 
-void Env::EnableVcdOutput(bool en) {
-  vcd_output_ = en;
-}
+void Env::EnableVcdOutput(bool en) { vcd_output_ = en; }
 
-bool Env::GetVcdOutput() {
-  return vcd_output_;
-}
+bool Env::GetVcdOutput() { return vcd_output_; }

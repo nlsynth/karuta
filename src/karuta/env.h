@@ -8,15 +8,23 @@
 using std::string;
 using std::vector;
 
+// Dummy defines for VERSION and PACKAGE to silent VSCode.
+#ifndef VERSION
+#define VERSION "0.0.0-undefined"
+#endif
+
+#ifndef PACKAGE
+#define PACKAGE "karuta-undefined"
+#endif
+
 class Env {
-public:
+ public:
   static const string &GetVersion();
   static const char *GetKarutaDir();
   static const char *GetIrohaDataDir();
   static bool GetOutputPath(const string &fn, string *path);
   static const string &GetOutputMarker();
-  static void SearchPathList(const char *fn,
-			     vector<string> *paths);
+  static void SearchPathList(const char *fn, vector<string> *paths);
   static vector<string> SearchDirList();
 
   static void SetOutputRootPath(const string &fn);
@@ -41,7 +49,7 @@ public:
   static void EnableVcdOutput(bool en);
   static bool GetVcdOutput();
 
-private:
+ private:
   static const char *karuta_dir_;
   static string output_root_;
   static string output_marker_;

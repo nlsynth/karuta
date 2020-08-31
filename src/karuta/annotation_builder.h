@@ -9,7 +9,7 @@ class AnnotationKeyValueSet;
 class Annotation;
 
 class AnnotationBuilder {
-public:
+ public:
   static void Init();
 
   // Called mainly from parser
@@ -17,7 +17,7 @@ public:
   static AnnotationKeyValue *BuildStrParam(sym_t key, const char *str);
   static AnnotationKeyValue *BuildIntParam(sym_t key, uint64_t num);
   static AnnotationKeyValueSet *BuildParamSet(AnnotationKeyValueSet *lst,
-					      AnnotationKeyValue *p);
+                                              AnnotationKeyValue *p);
   static void AddStrParam(AnnotationKeyValue *p, const char *str);
   static void AddIntParam(AnnotationKeyValue *p, uint64_t num);
 };

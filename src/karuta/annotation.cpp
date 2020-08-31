@@ -1,9 +1,10 @@
 #include "karuta/annotation.h"
 
-#include <iostream>
-#include <list>
 #include <stdlib.h>
 #include <string.h>
+
+#include <iostream>
+#include <list>
 
 #include "base/pool.h"
 #include "base/stl_util.h"
@@ -20,9 +21,7 @@ static const char kReset[] = "reset";
 static Pool<Annotation> resource_params_pool;
 std::unique_ptr<Annotation> Annotation::empty_annotation_;
 
-AnnotationKeyValueSet::~AnnotationKeyValueSet() {
-  STLDeleteValues(&params_);
-}
+AnnotationKeyValueSet::~AnnotationKeyValueSet() { STLDeleteValues(&params_); }
 
 Annotation::Annotation(AnnotationKeyValueSet *params) {
   if (params == nullptr) {
@@ -45,8 +44,7 @@ Annotation::Annotation(const Annotation &that) {
   }
 }
 
-Annotation::~Annotation() {
-}
+Annotation::~Annotation() {}
 
 void Annotation::Dump(ostream &os) const {
   bool is_first_param = true;
@@ -101,9 +99,7 @@ string Annotation::GetInputPinName() {
   return LookupStrParam(sym_cstr(sym_input), "");
 }
 
-string Annotation::GetAckPinName() {
-  return LookupStrParam("ack", "");
-}
+string Annotation::GetAckPinName() { return LookupStrParam("ack", ""); }
 
 bool Annotation::ResetPolarity() {
   string s = LookupStrParam("resetPolarity", "");
@@ -115,9 +111,7 @@ bool Annotation::ResetPolarity() {
   }
 }
 
-int Annotation::MaxDelayPs() {
-  return LookupIntParam("maxDelayPs", -1);
-}
+int Annotation::MaxDelayPs() { return LookupIntParam("maxDelayPs", -1); }
 
 bool Annotation::IsAxiMaster() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
@@ -165,18 +159,14 @@ int Annotation::GetAddrWidth() {
   return 0;
 }
 
-int Annotation::GetDepth() {
-  return LookupIntParam("depth", 1);
-}
+int Annotation::GetDepth() { return LookupIntParam("depth", 1); }
 
 bool Annotation::IsThreadEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
   return (s == "ThreadEntry" || s == "ProcessEntry" || s == "Process");
 }
 
-int Annotation::GetDistance() {
-  return LookupIntParam("distance", 0);
-}
+int Annotation::GetDistance() { return LookupIntParam("distance", 0); }
 
 bool Annotation::IsPipeline() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
@@ -188,13 +178,9 @@ bool Annotation::IsSoftThreadEntry() {
   return (s == "SoftThreadEntry" || s == "SoftProcess" || s == "Soft");
 }
 
-string Annotation::GetName() {
-  return LookupStrParam("name", "");
-}
+string Annotation::GetName() { return LookupStrParam("name", ""); }
 
-int Annotation::GetNum() {
-  return LookupIntParam("num", 1);
-}
+int Annotation::GetNum() { return LookupIntParam("num", 1); }
 
 bool Annotation::IsThreadLocal() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
@@ -206,17 +192,11 @@ bool Annotation::IsNoWait() {
   return nw;
 }
 
-string Annotation::GetWenSuffix() {
-  return LookupStrParam("wen", "");
-}
+string Annotation::GetWenSuffix() { return LookupStrParam("wen", ""); }
 
-string Annotation::GetNotifySuffix() {
-  return LookupStrParam("notify", "");
-}
+string Annotation::GetNotifySuffix() { return LookupStrParam("notify", ""); }
 
-string Annotation::GetPutSuffix() {
-  return LookupStrParam("put", "");
-}
+string Annotation::GetPutSuffix() { return LookupStrParam("put", ""); }
 
 bool Annotation::IsDataFlowEntry() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
@@ -290,9 +270,7 @@ AnnotationKeyValue *Annotation::LookupParam(const string &key) {
   return nullptr;
 }
 
-string Annotation::GetResourceName() {
-  return LookupStrParam(kResource, "");
-}
+string Annotation::GetResourceName() { return LookupStrParam(kResource, ""); }
 
 string Annotation::GetCopyFileName() {
   string file = LookupStrParam(kFile, "");
@@ -308,17 +286,11 @@ string Annotation::GetCopyFileName() {
   return p->str_value_;
 }
 
-string Annotation::GetModuleName() {
-  return LookupStrParam(kModule, "");
-}
+string Annotation::GetModuleName() { return LookupStrParam(kModule, ""); }
 
-string Annotation::GetClockPinName() {
-  return LookupStrParam(kClock, "clk");
-}
+string Annotation::GetClockPinName() { return LookupStrParam(kClock, "clk"); }
 
-string Annotation::GetResetPinName() {
-  return LookupStrParam(kReset, "rst");
-}
+string Annotation::GetResetPinName() { return LookupStrParam(kReset, "rst"); }
 
 void Annotation::AddPinDecl(sym_t name, bool is_out, int width) {
   ResourceParams_pin pin;
@@ -329,9 +301,7 @@ void Annotation::AddPinDecl(sym_t name, bool is_out, int width) {
   pins_.push_back(pin);
 }
 
-int Annotation::GetNrPinDecls() {
-  return pins_.size();
-}
+int Annotation::GetNrPinDecls() { return pins_.size(); }
 
 bool Annotation::GetNthPinDecl(int nth, ResourceParams_pin *decl) {
   if (nth >= 0 && nth < static_cast<int>(pins_.size())) {
@@ -355,7 +325,8 @@ void Annotation::AddStrParam(const string &key, const string &value) {
     param->str_value_ = value;
     param->has_str_ = true;
   } else {
-    param = AnnotationBuilder::BuildStrParam(sym_lookup(key.c_str()), value.c_str());
+    param = AnnotationBuilder::BuildStrParam(sym_lookup(key.c_str()),
+                                             value.c_str());
     params_->params_.push_back(param);
   }
 }

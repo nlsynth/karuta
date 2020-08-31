@@ -12,24 +12,26 @@
 */
 #include "karuta/karuta_main.h"
 
+#include <errno.h>
+#include <signal.h>
+#include <string.h>
+#include <sys/time.h>
+
 #include "base/arg_parser.h"
 #include "base/status.h"
 #include "fe/fe.h"
+#include "iroha/base/util.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
 #include "iroha/numeric.h"
-#include "iroha/base/util.h"
 #include "karuta/karuta.h"
 
-#include <errno.h>
-#include <signal.h>
-#include <sys/time.h>
-#include <string.h>
-
-KarutaMain::KarutaMain() : dbg_scanner_(false), dbg_parser_(false),
-			   timeout_(0), print_exit_status_(false),
-			   vanilla_(false) {
-}
+KarutaMain::KarutaMain()
+    : dbg_scanner_(false),
+      dbg_parser_(false),
+      timeout_(0),
+      print_exit_status_(false),
+      vanilla_(false) {}
 
 void KarutaMain::PrintUsage() {
   cout << "karuta-" << Env::GetVersion() << "\n";
@@ -59,7 +61,7 @@ void KarutaMain::PrintUsage() {
 }
 
 void KarutaMain::RunFiles(bool with_run, bool with_compile,
-		    vector<string> &files) {
+                          vector<string> &files) {
   fe::FE fe(dbg_parser_, dbg_scanner_, dbg_bytecode_);
 
   fe.Run(with_run, with_compile, vanilla_, files);
@@ -68,17 +70,17 @@ void KarutaMain::RunFiles(bool with_run, bool with_compile,
 void KarutaMain::ProcDebugArgs(vector<char *> &dbg_flags) {
   for (char *flag : dbg_flags) {
     switch (*flag) {
-    case 'b':
-      dbg_bytecode_ = string(flag);
-      break;
-    case 's':
-      dbg_scanner_ = true;
-      break;
-    case 'p':
-      dbg_parser_ = true;
-      break;
-    default:
-      break;
+      case 'b':
+        dbg_bytecode_ = string(flag);
+        break;
+      case 's':
+        dbg_scanner_ = true;
+        break;
+      case 'p':
+        dbg_parser_ = true;
+        break;
+      default:
+        break;
     }
   }
 }

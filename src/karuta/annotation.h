@@ -9,7 +9,7 @@ const char kAnnotationKey[] = "ANNOTATION-KEY";
 }  // namespace annotation
 
 class AnnotationKeyValue {
-public:
+ public:
   AnnotationKeyValue() : has_str_(true) {}
 
   string key_;
@@ -19,20 +19,20 @@ public:
 };
 
 class AnnotationKeyValueSet {
-public:
+ public:
   ~AnnotationKeyValueSet();
   vector<AnnotationKeyValue *> params_;
 };
 
 class ResourceParams_pin {
-public:
+ public:
   sym_t name;
   bool is_out;
   int width;
 };
 
 class Annotation {
-public:
+ public:
   // Takes ownership of params.
   explicit Annotation(AnnotationKeyValueSet *params);
   Annotation(const Annotation &that);
@@ -106,7 +106,7 @@ public:
   void AddStrParam(const string &key, const string &value);
   void AddIntParam(const string &key, uint64_t value);
 
-private:
+ private:
   string LookupStrParam(const string &key, const string &dflt);
   uint64_t LookupIntParam(const string &key, uint64_t dflt);
   AnnotationKeyValue *LookupParam(const string &key);
