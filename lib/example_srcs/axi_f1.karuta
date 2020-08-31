@@ -6,19 +6,19 @@
 //
 // TODO: Investigate better language design to utilize concurrency and illustrate it here. Of course, I also have to test it on real AWS F1.
 
-@AxiMaster shared ddr_a #512[16]
-@AxiMaster shared ddr_b #512[16]
-@AxiMaster shared ddr_c #512[16]
-@AxiMaster shared ddr_d #512[16]
+@AxiMaster ram ddr_a #512[16]
+@AxiMaster ram ddr_b #512[16]
+@AxiMaster ram ddr_c #512[16]
+@AxiMaster ram ddr_d #512[16]
 
-@AxiSlave shared dma_pcis #512[16]
-@AxiMaster shared dma_pcim #512[16]
+@AxiSlave ram dma_pcis #512[16]
+@AxiMaster ram dma_pcim #512[16]
 
-@AxiSlave shared bar1 #32[16]
-@AxiSlave shared ocl #32[16]
-@AxiSlave shared sda #32[16]
+@AxiSlave ram bar1 #32[16]
+@AxiSlave ram ocl #32[16]
+@AxiSlave ram sda #32[16]
 
-shared buf int[16]
+ram buf int[16]
 
 // TODO: MISC IOs like int, status, vLED, vDIP
 

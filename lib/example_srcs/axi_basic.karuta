@@ -3,10 +3,10 @@
 // AXI DMA controller (master or slave) can be attached to an array.
 
 @AxiMaster
-shared m int[16]
+ram m int[16]
 
 @AxiSlave
-shared s int[16]
+ram s int[16]
 
 process main() {
   // Waits for the slave interface to be accessed.
