@@ -15,6 +15,8 @@ If you are using recent Ubuntu, just
 
 to install the Karuta package.
 
+Please follow [@karutalang on Twitter](https://twitter.com/karutalang) for updates and tips.
+
 ## Quick overview
 Karuta's language is an object oriented scripting language. The syntax is similar to recently popular programming languages like JavaScript, Python, Go or so on.
 Minimum code looks like as follows.
