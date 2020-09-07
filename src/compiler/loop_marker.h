@@ -2,16 +2,16 @@
 #ifndef _compiler_loop_marker_h_
 #define _compiler_loop_marker_h_
 
-#include "compiler/common.h"
-
 #include <map>
+
+#include "compiler/common.h"
 
 namespace compiler {
 
 // LoopMarker is a tree where each node corresponds to a block.
 // The root marker collects valid loops and responds to LookUp()
 class LoopMarker {
-public:
+ public:
   LoopMarker(const fe::Method *method, LoopMarker *parent, int start);
   ~LoopMarker();
 
@@ -26,7 +26,7 @@ public:
   fe::VarDecl *GetVarDecl();
   Annotation *GetAnnotation();
 
-private:
+ private:
   void BuildMap();
 
   const fe::Method *method_;

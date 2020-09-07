@@ -33,9 +33,8 @@ class LoopMarker;
 class MethodCompiler;
 
 class RegisterTuple {
-public:
-  RegisterTuple() {
-  }
+ public:
+  RegisterTuple() {}
   explicit RegisterTuple(vm::Register *reg) {
     if (reg != nullptr) {
       regs.push_back(reg);

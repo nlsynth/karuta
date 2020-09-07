@@ -1,19 +1,18 @@
 #include "compiler/reg_checker.h"
 
+#include <list>
+#include <set>
+
 #include "base/status.h"
 #include "vm/insn.h"
 #include "vm/method.h"
 #include "vm/opcode.h"
-
-#include <list>
-#include <set>
 using std::list;
 using std::set;
 
 namespace compiler {
 
-RegChecker::RegChecker(vm::Method *method) : method_(method) {
-}
+RegChecker::RegChecker(vm::Method *method) : method_(method) {}
 
 void RegChecker::Check() {
   if (method_->GetNumReturnRegisters() == 0) {
@@ -46,7 +45,7 @@ void RegChecker::Check() {
     bool has_assign = false;
     for (vm::Register *dst : insn->dst_regs_) {
       if (rets.find(dst) != rets.end()) {
-	has_assign = true;
+        has_assign = true;
       }
     }
     if (has_assign) {
@@ -63,8 +62,8 @@ void RegChecker::Check() {
     }
   }
   // There is at least one path to reach the last insn.
-  if (visited.find(method_->insns_[method_->insns_.size() - 1])
-      != visited.end()) {
+  if (visited.find(method_->insns_[method_->insns_.size() - 1]) !=
+      visited.end()) {
     // TODO: Show the function name.
     Status::os(Status::USER_ERROR) << "0 return values...";
   }

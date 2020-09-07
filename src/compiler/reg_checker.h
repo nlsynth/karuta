@@ -7,7 +7,7 @@
 namespace compiler {
 
 class RegChecker {
-public:
+ public:
   RegChecker(vm::Method *method);
 
   // Checks if return values are set.
@@ -16,7 +16,7 @@ public:
   // (we might implement other checks with parse tree)
   void Check();
 
-private:
+ private:
   vm::Method *method_;
 };
 
