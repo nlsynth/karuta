@@ -129,7 +129,7 @@ bool Annotation::IsAxiExclusive() {
 
 bool Annotation::IsSramIf() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "SramIf");
+  return (s == "SramIf") || (s == "Export");
 }
 
 bool Annotation::IsExport() {
