@@ -348,7 +348,7 @@ Similar to AXI slave interface, SRAM interface which can be accessed from outsid
 
 .. code-block:: none
 
-   @SramIf
+   @SramIf // or @Export
    ram s int[16]
 
 External SRAM
