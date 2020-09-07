@@ -2,10 +2,10 @@
 #ifndef _synth_insn_walker_h_
 #define _synth_insn_walker_h_
 
-#include "synth/common.h"
-
 #include <map>
 #include <set>
+
+#include "synth/common.h"
 
 using std::map;
 using std::set;
@@ -16,14 +16,14 @@ namespace synth {
 // This can be used to share code by both synthesizing phase and
 // preprocesses.
 class InsnWalker {
-public:
+ public:
   vm::Object *GetObjByReg(vm::Register *reg);
   vm::Object *GetParentObjByObj(vm::Object *obj);
   SharedResourceSet *GetSharedResourceSet();
   ThreadSynth *GetThreadSynth();
   vm::Object *GetObject();
 
-protected:
+ protected:
   InsnWalker(ThreadSynth *thr_synth, vm::Object *obj);
   void LoadObj(vm::Insn *insn);
   void MaybeLoadMemberObject(vm::Insn *insn);
@@ -44,7 +44,7 @@ protected:
   // For thread local arrays.
   set<vm::Object *> thread_local_objs_;
 
-private:
+ private:
   vm::Method *GetCalleeMethod(vm::Insn *insn);
 };
 

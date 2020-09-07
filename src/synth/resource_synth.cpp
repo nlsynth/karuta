@@ -4,8 +4,8 @@
 #include "iroha/iroha.h"
 #include "karuta/annotation.h"
 #include "synth/design_synth.h"
-#include "synth/resource_set.h"
 #include "synth/object_synth.h"
+#include "synth/resource_set.h"
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
 #include "vm/io_wrapper.h"
@@ -16,11 +16,10 @@
 namespace synth {
 
 ResourceSynth::ResourceSynth(ResourceSet *rset, ThreadSynth *thr_synth)
-  : rset_(rset), thr_synth_(thr_synth) {
-}
+    : rset_(rset), thr_synth_(thr_synth) {}
 
 void ResourceSynth::MayAddAxiMasterPort(vm::Object *owner_obj,
-					vm::Object *array_obj) {
+                                        vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
   if (a == nullptr || !a->IsAxiMaster()) {
     return;
@@ -34,7 +33,7 @@ void ResourceSynth::MayAddAxiMasterPort(vm::Object *owner_obj,
 }
 
 void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
-				       vm::Object *array_obj) {
+                                       vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
   if (a == nullptr || !a->IsAxiSlave()) {
     return;
@@ -44,7 +43,7 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
 }
 
 void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj,
-				     vm::Object *array_obj) {
+                                     vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
   if (a == nullptr || !a->IsSramIf()) {
     return;
@@ -54,8 +53,8 @@ void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj,
 }
 
 void ResourceSynth::ConfigureSlavePort(vm::Object *owner_obj,
-				       vm::Object *array_obj,
-				       Annotation *an, IResource *if_port) {
+                                       vm::Object *array_obj, Annotation *an,
+                                       IResource *if_port) {
   if (if_port->GetParams()->GetWidth() > 0) {
     // already configured.
     return;
@@ -90,7 +89,7 @@ void ResourceSynth::MayAddExternalSram(vm::Object *array_obj) {
 }
 
 void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
-				 IResource *res) {
+                                 IResource *res) {
   DesignSynth *ds = thr_synth_->GetObjectSynth()->GetDesignSynth();
   string name = ds->GetObjectName(array_obj);
   if (!name.empty()) {
@@ -98,8 +97,7 @@ void ResourceSynth::SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
   }
 }
 
-IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
-				      bool is_output) {
+IResource *ResourceSynth::MayAddExtIO(vm::Method *method, bool is_output) {
   string name;
   Annotation *an = method->GetAnnotation();
   int nth_reg;
@@ -108,7 +106,7 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
     nth_reg = 0;
     if (method->GetNumArgRegisters() != 1) {
       Status::os(Status::USER_ERROR)
-	<< "Ext output method must have 1 argument.";
+          << "Ext output method must have 1 argument.";
       return nullptr;
     }
   } else {
@@ -116,7 +114,7 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method,
     nth_reg = method->GetNumArgRegisters();
     if (method->GetNumReturnRegisters() != 1) {
       Status::os(Status::USER_ERROR)
-	<< "Ext output method must have 1 return value.";
+          << "Ext output method must have 1 return value.";
       return nullptr;
     }
   }

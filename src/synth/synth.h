@@ -12,7 +12,7 @@ class VM;
 namespace synth {
 
 class Synth {
-public:
+ public:
   static bool Synthesize(vm::VM *vm, vm::Object *obj, const string &ofn);
   static void WriteHdl(const string &fn, vm::Object *obj);
   static int RunIroha(vm::Object *obj, const string &args);
@@ -20,7 +20,7 @@ public:
   static string IrPath(vm::Object *obj);
   static string GetIrohaCommand(vm::Object *obj);
 
-private:
+ private:
   static string GetDumpPath(vm::Object *obj);
 };
 

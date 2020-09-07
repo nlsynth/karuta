@@ -2,15 +2,15 @@
 #ifndef _synth_design_synth_h_
 #define _synth_design_synth_h_
 
-#include "synth/common.h"
-
 #include <map>
 #include <set>
+
+#include "synth/common.h"
 
 namespace synth {
 
 class DesignSynth {
-public:
+ public:
   DesignSynth(vm::VM *vm, vm::Object *obj);
   ~DesignSynth();
 
@@ -23,7 +23,7 @@ public:
   string GetObjectName(vm::Object *obj);
   int GetObjectDistance(vm::Object *src, vm::Object *dst);
 
-private:
+ private:
   bool SynthObjects();
   bool SynthObjRec(ObjectSynth *osynth);
   bool ScanObjs();

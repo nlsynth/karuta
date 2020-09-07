@@ -2,10 +2,10 @@
 #ifndef _synth_thread_synth_h_
 #define _synth_thread_synth_h_
 
-#include "synth/common.h"
-
 #include <map>
 #include <set>
+
+#include "synth/common.h"
 
 using std::map;
 using std::set;
@@ -13,12 +13,9 @@ using std::set;
 namespace synth {
 
 class ThreadSynth {
-public:
-  ThreadSynth(ObjectSynth *obj_synth,
-	      const string &thread_name,
-	      const string &method_name,
-	      vm::Object *thread_obj,
-	      int index);
+ public:
+  ThreadSynth(ObjectSynth *obj_synth, const string &thread_name,
+              const string &method_name, vm::Object *thread_obj, int index);
   virtual ~ThreadSynth();
 
   static bool HasExtVisibleResource(vm::Object *obj);
@@ -43,14 +40,14 @@ public:
   const string &GetEntryMethodName();
   int GetIndex() const;
   static IInsn *InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
-				  ITable *callee_tab);
-  static IInsn *InjectDataFlowCall(ThreadSynth *thr,
-				 IState *st, IInsn *pseudo_call_insn,
-				 ITable *callee_tab, bool no_wait);
+                                    ITable *callee_tab);
+  static IInsn *InjectDataFlowCall(ThreadSynth *thr, IState *st,
+                                   IInsn *pseudo_call_insn, ITable *callee_tab,
+                                   bool no_wait);
   static IInsn *InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
-				const string &name, bool is_flow);
+                                  const string &name, bool is_flow);
 
-private:
+ private:
   ObjectSynth *obj_synth_;
   const string thread_name_;
   const string entry_method_name_;

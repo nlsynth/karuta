@@ -1,7 +1,7 @@
 #include "synth/shared_resource_set.h"
 
-#include "base/stl_util.h"
 #include "base/status.h"
+#include "base/stl_util.h"
 #include "iroha/iroha.h"
 #include "synth/design_synth.h"
 #include "synth/object_method_names.h"
@@ -12,15 +12,11 @@
 namespace synth {
 
 SharedResource::SharedResource()
-  : owner_thr_(nullptr), owner_obj_(nullptr), i_res_(nullptr) {
-}
+    : owner_thr_(nullptr), owner_obj_(nullptr), i_res_(nullptr) {}
 
-SharedResource::~SharedResource() {
-}
+SharedResource::~SharedResource() {}
 
-void SharedResource::SetOwnerIResource(IResource *res) {
-  i_res_ = res;
-}
+void SharedResource::SetOwnerIResource(IResource *res) { i_res_ = res; }
 
 void SharedResource::AddAccessorResource(IResource *res, ThreadSynth *acc_thr) {
   vm::Object *object = acc_thr->GetObjectSynth()->GetObject();
@@ -60,7 +56,7 @@ void SharedResourceSet::ResolveAccessorDistanceAll(DesignSynth *design_synth) {
 }
 
 void SharedResourceSet::ResolveAccessorDistance(DesignSynth *design_synth,
-						SharedResource *sres) {
+                                                SharedResource *sres) {
   for (auto it : sres->accessor_resources_) {
     IResource *res = it.first;
     int d = 0;
@@ -74,7 +70,7 @@ void SharedResourceSet::ResolveAccessorDistance(DesignSynth *design_synth,
 void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
   if (res->axi_ctrl_thrs_.size() > 1) {
     Status::os(Status::USER_ERROR)
-      << "AXI memory can't have multiple accessor threads";
+        << "AXI memory can't have multiple accessor threads";
     return;
   }
   if (res->axi_ctrl_thrs_.size() == 1) {
@@ -89,7 +85,7 @@ void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
       first_thr = thr;
     }
     if (first_same_owner_thr == nullptr &&
-	thr->GetObjectSynth()->GetObject() == res->owner_obj_) {
+        thr->GetObjectSynth()->GetObject() == res->owner_obj_) {
       first_same_owner_thr = thr;
     }
   }
@@ -108,8 +104,8 @@ void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
 }
 
 void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr,
-					  vm::Object *owner_obj, sym_t name,
-					  vm::Insn *insn, bool is_tls) {
+                                          vm::Object *owner_obj, sym_t name,
+                                          vm::Insn *insn, bool is_tls) {
   ThreadSynth *tls_thr = nullptr;
   if (is_tls) {
     tls_thr = thr;
@@ -127,11 +123,10 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr,
 }
 
 void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr,
-					  vm::Object *owner_obj,
-					  vm::Object *obj,
-					  vm::Insn *insn,
-					  const string &synth_name,
-					  bool is_tls) {
+                                          vm::Object *owner_obj,
+                                          vm::Object *obj, vm::Insn *insn,
+                                          const string &synth_name,
+                                          bool is_tls) {
   ThreadSynth *tls_thr = nullptr;
   if (is_tls) {
     tls_thr = thr;
@@ -156,7 +151,7 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr,
 }
 
 bool SharedResourceSet::AddExtIOMethodAccessor(ThreadSynth *thr,
-					       vm::Method *method) {
+                                               vm::Method *method) {
   auto it = ext_io_methods_.find(method);
   if (it == ext_io_methods_.end()) {
     ext_io_methods_[method] = thr;
@@ -171,8 +166,7 @@ bool SharedResourceSet::AddExtIOMethodAccessor(ThreadSynth *thr,
 }
 
 SharedResource *SharedResourceSet::GetBySlotName(vm::Object *obj,
-						 ThreadSynth *thr,
-						 sym_t name) {
+                                                 ThreadSynth *thr, sym_t name) {
   auto key = std::make_tuple(obj, thr, name);
   auto it = value_resources_.find(key);
   if (it != value_resources_.end()) {
@@ -183,8 +177,7 @@ SharedResource *SharedResourceSet::GetBySlotName(vm::Object *obj,
   return res;
 }
 
-SharedResource *SharedResourceSet::GetByObj(vm::Object *obj,
-					    ThreadSynth *thr) {
+SharedResource *SharedResourceSet::GetByObj(vm::Object *obj, ThreadSynth *thr) {
   auto key = std::make_tuple(obj, thr);
   auto it = obj_resources_.find(key);
   if (it != obj_resources_.end()) {

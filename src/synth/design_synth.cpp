@@ -9,24 +9,22 @@
 #include "iroha/iroha.h"
 #include "karuta/annotation.h"
 #include "synth/dot_output.h"
-#include "synth/shared_resource_set.h"
 #include "synth/object_attr_names.h"
 #include "synth/object_synth.h"
 #include "synth/object_tree.h"
+#include "synth/shared_resource_set.h"
 #include "vm/object.h"
 
 namespace synth {
 
 DesignSynth::DesignSynth(vm::VM *vm, vm::Object *obj)
-  : vm_(vm), root_obj_(obj) {
+    : vm_(vm), root_obj_(obj) {
   i_design_.reset(new IDesign);
   shared_resources_.reset(new SharedResourceSet);
   obj_tree_.reset(new ObjectTree(vm, obj));
 }
 
-DesignSynth::~DesignSynth() {
-  STLDeleteSecondElements(&obj_synth_map_);
-}
+DesignSynth::~DesignSynth() { STLDeleteSecondElements(&obj_synth_map_); }
 
 bool DesignSynth::Synth() {
   SetSynthParams();
@@ -51,7 +49,7 @@ bool DesignSynth::Synth() {
       writer.Write(ofn);
       const string &marker = Env::GetOutputMarker();
       if (!marker.empty()) {
-	cout << marker << fn << "\n";
+        cout << marker << fn << "\n";
       }
     }
   }
@@ -86,13 +84,9 @@ bool DesignSynth::SynthObjects() {
   return true;
 }
 
-vm::VM *DesignSynth::GetVM() {
-  return vm_;
-}
+vm::VM *DesignSynth::GetVM() { return vm_; }
 
-IDesign *DesignSynth::GetIDesign() {
-  return i_design_.get();
-}
+IDesign *DesignSynth::GetIDesign() { return i_design_.get(); }
 
 ObjectSynth *DesignSynth::GetObjectSynth(vm::Object *obj, bool cr) {
   auto it = obj_synth_map_.find(obj);
@@ -132,10 +126,10 @@ bool DesignSynth::ScanObjs() {
       bool ok = true;
       ObjectSynth *osynth = it.second;
       if (osynth->Scan(&ok)) {
-	++num_scan;
+        ++num_scan;
       }
       if (!ok) {
-	return false;
+        return false;
       }
     }
   } while (num_scan > 0);
@@ -145,7 +139,7 @@ bool DesignSynth::ScanObjs() {
 void DesignSynth::CollectScanRootObjRec(vm::Object *obj) {
   if (obj_synth_map_.find(obj) == obj_synth_map_.end()) {
     if (ObjectSynth::HasSynthesizable(obj)) {
-      (void) GetObjectSynth(obj, true);
+      (void)GetObjectSynth(obj, true);
     }
   }
   auto m = obj_tree_->GetChildObjects(obj);
@@ -206,7 +200,7 @@ bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {
     if (cit != obj_synth_map_.end()) {
       ObjectSynth *csynth = cit->second;
       if (!SynthObjRec(csynth)) {
-	return false;
+        return false;
       }
       csynth->GetIModule()->SetParentModule(osynth->GetIModule());
     }

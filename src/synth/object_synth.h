@@ -2,17 +2,16 @@
 #ifndef _synth_object_synth_h_
 #define _synth_object_synth_h_
 
-#include "synth/common.h"
-
 #include <set>
+
+#include "synth/common.h"
 
 namespace synth {
 
 class ObjectSynth {
-public:
-  ObjectSynth(vm::Object *obj,
-	      DesignSynth *design_synth,
-	      bool is_root, const string &name);
+ public:
+  ObjectSynth(vm::Object *obj, DesignSynth *design_synth, bool is_root,
+              const string &name);
   virtual ~ObjectSynth();
 
   static bool HasSynthesizable(vm::Object *obj);
@@ -31,7 +30,7 @@ public:
   DesignSynth *GetDesignSynth();
   const vector<ThreadSynth *> &GetAllThreads() const;
 
-private:
+ private:
   void CollectThreads(IModule *mod);
   void CollectSubModuleCalls();
   void ResolveTableCall(const TableCall &call);

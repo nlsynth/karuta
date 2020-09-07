@@ -22,11 +22,10 @@ IState *Tool::GetNextState(IState *st) {
   return insn->target_states_[0];
 }
 
-IResource *Tool::FindOrCreateTaskCallResource(ITable *caller,
-					      ITable *callee) {
+IResource *Tool::FindOrCreateTaskCallResource(ITable *caller, ITable *callee) {
   for (IResource *res : caller->resources_) {
     if (resource::IsTaskCall(*res->GetClass()) &&
-	res->GetCalleeTable() == callee) {
+        res->GetCalleeTable() == callee) {
       return res;
     }
   }
@@ -44,7 +43,7 @@ IResource *Tool::FindOrCreateTaskCallResource(ITable *caller,
 }
 
 IResource *Tool::FindOrCreateTaskReturnValueResource(ITable *caller,
-						     ITable *callee) {
+                                                     ITable *callee) {
   // Find the return value writer.
   IState *return_st = callee->states_[callee->states_.size() - 1];
   IResource *writer = nullptr;
@@ -62,8 +61,8 @@ IResource *Tool::FindOrCreateTaskReturnValueResource(ITable *caller,
       return res;
     }
   }
-  IResource *res = DesignTool::CreateSharedRegReaderResource(caller,
-							     return_reg);
+  IResource *res =
+      DesignTool::CreateSharedRegReaderResource(caller, return_reg);
   return res;
 }
 
@@ -72,36 +71,34 @@ IInsn *Tool::FindArgInsn(ITable *tab, IResource *arg_res) {
     IState *st = tab->states_[i];
     for (IInsn *insn : st->insns_) {
       if (insn->GetResource() == arg_res) {
-	return insn;
+        return insn;
       }
     }
   }
   return nullptr;
 }
 
-IResource *Tool::FindOrCreateDataFlowCaller(ITable *caller,
-					    IResource *sreg) {
+IResource *Tool::FindOrCreateDataFlowCaller(ITable *caller, IResource *sreg) {
   for (IResource *res : caller->resources_) {
     if (res->GetParentResource() == sreg) {
       return res;
     }
   }
-  IResource *res = DesignTool::CreateFifoWriterResource(caller,
-							sreg);
+  IResource *res = DesignTool::CreateFifoWriterResource(caller, sreg);
   return res;
 }
 
 IResource *Tool::FindOrCreateExtStubCallResource(ITable *caller,
-						 const string &name,
-						 bool is_flow) {
+                                                 const string &name,
+                                                 bool is_flow) {
   for (IResource *res : caller->resources_) {
     if (is_flow) {
       if (!resource::IsExtFlowCall(*res->GetClass())) {
-	continue;
+        continue;
       }
     } else {
       if (!resource::IsExtTaskCall(*res->GetClass())) {
-	continue;
+        continue;
       }
     }
     if (res->GetParams()->GetExtTaskName() == name) {
@@ -113,8 +110,7 @@ IResource *Tool::FindOrCreateExtStubCallResource(ITable *caller,
     rcn = resource::kExtFlowCall;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(caller->GetModule()->GetDesign(),
-				  rcn);
+      DesignUtil::FindResourceClass(caller->GetModule()->GetDesign(), rcn);
   IResource *call = new IResource(caller, rc);
   caller->resources_.push_back(call);
   call->GetParams()->SetExtTaskName(name);
@@ -122,16 +118,16 @@ IResource *Tool::FindOrCreateExtStubCallResource(ITable *caller,
 }
 
 IResource *Tool::FindOrCreateExtStubWaitResource(ITable *caller,
-						 const string &name,
-						 bool is_flow) {
+                                                 const string &name,
+                                                 bool is_flow) {
   for (IResource *res : caller->resources_) {
     if (is_flow) {
       if (!resource::IsExtFlowResult(*res->GetClass())) {
-	continue;
+        continue;
       }
     } else {
       if (!resource::IsExtTaskWait(*res->GetClass())) {
-	continue;
+        continue;
       }
     }
     if (res->GetParentResource()->GetParams()->GetExtTaskName() == name) {
@@ -139,9 +135,8 @@ IResource *Tool::FindOrCreateExtStubWaitResource(ITable *caller,
     }
   }
   IResource *call = FindOrCreateExtStubCallResource(caller, name, is_flow);
-  IResourceClass *rc =
-    DesignUtil::FindResourceClass(caller->GetModule()->GetDesign(),
-				  resource::kExtTaskWait);
+  IResourceClass *rc = DesignUtil::FindResourceClass(
+      caller->GetModule()->GetDesign(), resource::kExtTaskWait);
   IResource *wait = new IResource(caller, rc);
   caller->resources_.push_back(wait);
   wait->SetParentResource(call);

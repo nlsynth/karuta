@@ -2,9 +2,9 @@
 #ifndef _synth_dot_output_h_
 #define _synth_dot_output_h_
 
-#include "synth/common.h"
-
 #include <map>
+
+#include "synth/common.h"
 
 namespace iroha {
 namespace dot {
@@ -17,24 +17,24 @@ class Node;
 namespace synth {
 
 class DotOutput {
-public:
+ public:
   DotOutput(DesignSynth *synth, ObjectTree *tree);
   ~DotOutput();
 
   void Write(const string &fn);
 
-private:
+ private:
   iroha::dot::Cluster *WriteObject(const string &name, vm::Object *obj,
-				   iroha::dot::Cluster *parent);
+                                   iroha::dot::Cluster *parent);
   void WriteDistance();
   void WriteObjectDetail(ObjectSynth *osynth, iroha::dot::Cluster *cl);
   void MayWriteMemberObject(const string &name, vm::Object *obj,
-			    iroha::dot::Cluster *cl);
+                            iroha::dot::Cluster *cl);
   string GetObjectName(vm::Object *obj);
   void WriteArrayObject(const string &name, vm::Object *obj,
-			iroha::dot::Cluster *cl);
+                        iroha::dot::Cluster *cl);
   void WriteAXIorSramPortInfo(const string &name, vm::Object *obj,
-			      iroha::dot::Node *node, Annotation *an);
+                              iroha::dot::Node *node, Annotation *an);
 
   std::unique_ptr<iroha::dot::Dot> dot_;
   DesignSynth *synth_;

@@ -11,20 +11,19 @@
 #include "vm/int_array.h"
 #include "vm/mailbox_wrapper.h"
 
+using iroha::dot::Cluster;
 using iroha::dot::Dot;
 using iroha::dot::Edge;
-using iroha::dot::Cluster;
 using iroha::dot::Node;
 
 namespace synth {
 
 DotOutput::DotOutput(DesignSynth *synth, ObjectTree *tree)
-  : synth_(synth), tree_(tree) {
+    : synth_(synth), tree_(tree) {
   dot_.reset(new Dot());
 }
 
-DotOutput::~DotOutput() {
-}
+DotOutput::~DotOutput() {}
 
 void DotOutput::Write(const string &fn) {
   WriteObject("main", tree_->GetRootObject(), nullptr);
@@ -32,9 +31,8 @@ void DotOutput::Write(const string &fn) {
   dot_->Write(fn);
 }
 
-iroha::dot::Cluster *DotOutput::WriteObject(const string &name,
-					    vm::Object *obj,
-					    iroha::dot::Cluster *parent) {
+iroha::dot::Cluster *DotOutput::WriteObject(const string &name, vm::Object *obj,
+                                            iroha::dot::Cluster *parent) {
   ObjectSynth *osynth = synth_->GetObjectSynth(obj, false);
   if (osynth == nullptr) {
     MayWriteMemberObject(name, obj, parent);
@@ -58,7 +56,7 @@ iroha::dot::Cluster *DotOutput::WriteObject(const string &name,
 }
 
 void DotOutput::WriteObjectDetail(ObjectSynth *osynth,
-				  iroha::dot::Cluster *cl) {
+                                  iroha::dot::Cluster *cl) {
   const auto &threads = osynth->GetAllThreads();
   set<string> show_index;
   for (ThreadSynth *tsynth : threads) {
@@ -85,8 +83,8 @@ void DotOutput::WriteObjectDetail(ObjectSynth *osynth,
   }
 }
 
-void DotOutput::MayWriteMemberObject(const string &name,
-				     vm::Object *obj, iroha::dot::Cluster *cl) {
+void DotOutput::MayWriteMemberObject(const string &name, vm::Object *obj,
+                                     iroha::dot::Cluster *cl) {
   if (vm::ArrayWrapper::IsIntArray(obj)) {
     WriteArrayObject(name, obj, cl);
   }
@@ -103,7 +101,7 @@ void DotOutput::MayWriteMemberObject(const string &name,
 }
 
 void DotOutput::WriteArrayObject(const string &name, vm::Object *obj,
-				 iroha::dot::Cluster *cl) {
+                                 iroha::dot::Cluster *cl) {
   if (name == "Memory") {
     // Excludes default memory.
     return;
@@ -111,12 +109,10 @@ void DotOutput::WriteArrayObject(const string &name, vm::Object *obj,
   Node *n = dot_->GetNode(GetObjectName(obj));
   n->SetCluster(cl);
   uint64_t len = vm::ArrayWrapper::GetIntArray(obj)->GetLength();
-  string label = name + " #" +
-    Util::Itoa(vm::ArrayWrapper::GetDataWidth(obj)) +
-    "[" + Util::Itoa(len) + "]";
+  string label = name + " #" + Util::Itoa(vm::ArrayWrapper::GetDataWidth(obj)) +
+                 "[" + Util::Itoa(len) + "]";
   Annotation *a = vm::ArrayWrapper::GetAnnotation(obj);
-  if (a != nullptr &&
-      (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
+  if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
     WriteAXIorSramPortInfo(name, obj, n, a);
   }
   n->SetLabel(label);
@@ -144,8 +140,8 @@ void DotOutput::WriteDistance() {
       vm::Object *dst_obj = jt.first;
       Cluster *dst_cl = obj_cluster_map_[dst_obj];
       if (dst_cl == nullptr) {
-	// Ditto. This can happen for an empty object.
-	continue;
+        // Ditto. This can happen for an empty object.
+        continue;
       }
       int dist = jt.second;
       Edge *e = src_cl->AddSink(dot_.get(), dst_cl);
@@ -156,7 +152,7 @@ void DotOutput::WriteDistance() {
 }
 
 void DotOutput::WriteAXIorSramPortInfo(const string &name, vm::Object *obj,
-				       Node *n, Annotation *an) {
+                                       Node *n, Annotation *an) {
   bool is_sram = an->IsSramIf();
   string prefix = (is_sram ? "sram_" : "axi_");
   Node *nn = dot_->GetNode(prefix + n->GetName());

@@ -8,23 +8,22 @@ namespace synth {
 
 // Some of methods might be moved to DesignTool.
 class Tool {
-public:
+ public:
   static void SetNextState(IState *cur, IState *next);
   static IState *GetNextState(IState *st);
   static IResource *FindOrCreateTaskCallResource(ITable *caller,
-						 ITable *callee);
+                                                 ITable *callee);
   static IResource *FindOrCreateTaskReturnValueResource(ITable *caller,
-						 ITable *callee);
-  static IResource *FindOrCreateDataFlowCaller(ITable *caller,
-					       IResource *sreg);
+                                                        ITable *callee);
+  static IResource *FindOrCreateDataFlowCaller(ITable *caller, IResource *sreg);
   static IResource *FindOrCreateExtStubCallResource(ITable *caller,
-						    const string &name,
-						    bool is_flow);
+                                                    const string &name,
+                                                    bool is_flow);
   static IResource *FindOrCreateExtStubWaitResource(ITable *caller,
-						    const string &name,
-						    bool is_flow);
+                                                    const string &name,
+                                                    bool is_flow);
 
-private:
+ private:
   static IInsn *FindArgInsn(ITable *tab, IResource *arg_res);
 };
 

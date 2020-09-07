@@ -14,17 +14,16 @@
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
 #include "vm/channel_wrapper.h"
-#include "vm/mailbox_wrapper.h"
 #include "vm/insn.h"
+#include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
 #include "vm/object.h"
 
 namespace synth {
 
 ObjectMethod::ObjectMethod(MethodSynth *synth, InsnWalker *walker,
-			   ResourceSynth *rsynth, vm::Insn *insn)
-  : synth_(synth), walker_(walker), rsynth_(rsynth), insn_(insn) {
-}
+                           ResourceSynth *rsynth, vm::Insn *insn)
+    : synth_(synth), walker_(walker), rsynth_(rsynth), insn_(insn) {}
 
 void ObjectMethod::Synth() {
   vm::Object *obj = walker_->GetObjByReg(insn_->obj_reg_);
@@ -98,29 +97,27 @@ void ObjectMethod::Scan() {
   CHECK(obj);
   string name = GetSynthName(obj);
   SharedResourceSet *sres = walker_->GetSharedResourceSet();
-  if (name == kAxiLoad || name == kAxiStore ||
-      name == kSlaveWait ||
-      name == kMailboxPut || name == kMailboxGet ||
-      name == kMailboxNotify || name == kMailboxWait ||
-      name == kChannelWrite || name == kChannelNoWaitWrite ||
-      name == kChannelRead ||
-      name == kIORead || kIOWrite || kIOPeek) {
+  if (name == kAxiLoad || name == kAxiStore || name == kSlaveWait ||
+      name == kMailboxPut || name == kMailboxGet || name == kMailboxNotify ||
+      name == kMailboxWait || name == kChannelWrite ||
+      name == kChannelNoWaitWrite || name == kChannelRead || name == kIORead ||
+      kIOWrite || kIOPeek) {
     vm::Object *parent_obj = walker_->GetParentObjByObj(obj);
-    sres->AddObjectAccessor(walker_->GetThreadSynth(),
-			    parent_obj, obj, insn_, name, false);
+    sres->AddObjectAccessor(walker_->GetThreadSynth(), parent_obj, obj, insn_,
+                            name, false);
   }
 }
 
 IInsn *ObjectMethod::SynthAxiAccess(vm::Object *array_obj, bool is_store) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
   if (a == nullptr || !a->IsAxiMaster()) {
-    Status::os(Status::USER_ERROR)
-      << "AXI access methods are allowed on for a master (add @AxiMaster() annotation).";
+    Status::os(Status::USER_ERROR) << "AXI access methods are allowed on for a "
+                                      "master (add @AxiMaster() annotation).";
     return nullptr;
   }
   IResource *axim_res = synth_->GetResourceSet()->GetAxiMasterPort(array_obj);
   SharedResource *array_sres =
-    synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
+      synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
   array_sres->SetOwnerIResource(axim_res->GetParentResource());
   rsynth_->MayAddAxiMasterPort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(axim_res);
@@ -143,7 +140,7 @@ IInsn *ObjectMethod::SynthWait(vm::Object *array_obj) {
     }
   }
   Status::os(Status::USER_ERROR)
-    << "wait method is allowed on for a slave "
+      << "wait method is allowed on for a slave "
       << "(add @AxiSlave() or @SramIf() annotation).";
   return nullptr;
 }
@@ -151,7 +148,7 @@ IInsn *ObjectMethod::SynthWait(vm::Object *array_obj) {
 IInsn *ObjectMethod::SynthAxiWait(vm::Object *array_obj) {
   IResource *axis_res = synth_->GetResourceSet()->GetAxiSlavePort(array_obj);
   SharedResource *array_sres =
-    synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
+      synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
   array_sres->SetOwnerIResource(axis_res->GetParentResource());
   rsynth_->MayAddAxiSlavePort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(axis_res);
@@ -161,7 +158,7 @@ IInsn *ObjectMethod::SynthAxiWait(vm::Object *array_obj) {
 IInsn *ObjectMethod::SynthSramWait(vm::Object *array_obj) {
   IResource *sramif_res = synth_->GetResourceSet()->GetSramIfPort(array_obj);
   SharedResource *array_sres =
-    synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
+      synth_->GetSharedResourceSet()->GetByObj(array_obj, nullptr);
   array_sres->SetOwnerIResource(sramif_res->GetParentResource());
   rsynth_->MayAddSramIfPort(synth_->GetObject(), array_obj);
   IInsn *iinsn = new IInsn(sramif_res);
@@ -172,19 +169,15 @@ IInsn *ObjectMethod::SynthMailboxWidth(vm::Object *mailbox_obj) {
   int width = vm::MailboxWrapper::GetWidth(mailbox_obj);
   ResourceSet *rset = synth_->GetResourceSet();
   IInsn *iinsn = new IInsn(rset->AssignResource());
-  IRegister *wreg =
-    DesignTool::AllocConstNum(synth_->GetITable(),
-			      32,
-			      width);
+  IRegister *wreg = DesignTool::AllocConstNum(synth_->GetITable(), 32, width);
   iinsn->inputs_.push_back(wreg);
   return iinsn;
 }
 
 IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj,
-					bool is_blocking,
-					bool is_put) {
+                                        bool is_blocking, bool is_put) {
   SharedResource *sres =
-    synth_->GetSharedResourceSet()->GetByObj(mailbox_obj, nullptr);
+      synth_->GetSharedResourceSet()->GetByObj(mailbox_obj, nullptr);
   rsynth_->MayAddSharedRegExtWriter(mailbox_obj);
   IResource *res = nullptr;
   ResourceSet *rset = synth_->GetResourceSet();
@@ -230,15 +223,15 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   int width = vm::ChannelWrapper::ChannelWidth(ch_obj);
   ResourceSet *rset = synth_->GetResourceSet();
   SharedResource *sres =
-    synth_->GetSharedResourceSet()->GetByObj(ch_obj, nullptr);
+      synth_->GetSharedResourceSet()->GetByObj(ch_obj, nullptr);
   int depth = vm::ChannelWrapper::ChannelDepth(ch_obj);
   if (sres->owner_thr_ == synth_->GetThreadSynth()) {
     IResource *channel_res =
-      rset->GetChannelResource(ch_obj, true, false, width, depth);
+        rset->GetChannelResource(ch_obj, true, false, width, depth);
     sres->SetOwnerIResource(channel_res);
   }
-  IResource *accessor_res = rset->GetChannelResource(ch_obj, false, is_write,
-						     width, depth);
+  IResource *accessor_res =
+      rset->GetChannelResource(ch_obj, false, is_write, width, depth);
   sres->AddAccessorResource(accessor_res, synth_->GetThreadSynth());
   IInsn *iinsn = new IInsn(accessor_res);
   string name = GetSynthName(ch_obj);
@@ -249,8 +242,7 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
 }
 
 IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
-  SharedResource *sres =
-    synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
+  SharedResource *sres = synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
   bool is_owner = IsOwner(sres);
   IResource *res = synth_->GetResourceSet()->GetTicker(obj, is_owner);
   if (is_owner) {
@@ -262,8 +254,7 @@ IInsn *ObjectMethod::SynthGetTickCount(vm::Object *obj) {
 }
 
 IInsn *ObjectMethod::SynthDecrementTick(vm::Object *obj) {
-  SharedResource *sres =
-    synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
+  SharedResource *sres = synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
   bool is_owner = IsOwner(sres);
   IResource *res = synth_->GetResourceSet()->GetTicker(obj, is_owner);
   if (is_owner) {
@@ -275,8 +266,7 @@ IInsn *ObjectMethod::SynthDecrementTick(vm::Object *obj) {
 }
 
 IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
-  SharedResource *sres =
-    synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
+  SharedResource *sres = synth_->GetSharedResourceSet()->GetByObj(obj, nullptr);
   bool is_owner = IsOwner(sres);
   rsynth_->MayAddIO(obj, is_owner);
   ResourceSet *rset = synth_->GetResourceSet();

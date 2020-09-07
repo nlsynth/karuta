@@ -30,24 +30,27 @@
 
 namespace synth {
 
-MethodSynth::MethodSynth(ThreadSynth *thr_synth,
-			 vm::Object *obj, const string &method_name,
-			 ITable *tab, ResourceSynth *rsynth, ResourceSet *res)
-  : InsnWalker(thr_synth, obj),
-    thr_synth_(thr_synth), method_name_(method_name),
-    tab_(tab), rsynth_(rsynth), res_set_(res), method_(nullptr),
-    is_task_entry_(false), is_root_(false), thread_index_(0) {
+MethodSynth::MethodSynth(ThreadSynth *thr_synth, vm::Object *obj,
+                         const string &method_name, ITable *tab,
+                         ResourceSynth *rsynth, ResourceSet *res)
+    : InsnWalker(thr_synth, obj),
+      thr_synth_(thr_synth),
+      method_name_(method_name),
+      tab_(tab),
+      rsynth_(rsynth),
+      res_set_(res),
+      method_(nullptr),
+      is_task_entry_(false),
+      is_root_(false),
+      thread_index_(0) {
   context_.reset(new MethodContext(this));
   vm::Value *value = obj_->LookupValue(sym_lookup(method_name_.c_str()), false);
   method_ = value->method_;
 }
 
-MethodSynth::~MethodSynth() {
-}
+MethodSynth::~MethodSynth() {}
 
-ResourceSet *MethodSynth::GetResourceSet() {
-  return res_set_;
-}
+ResourceSet *MethodSynth::GetResourceSet() { return res_set_; }
 
 bool MethodSynth::Synth() {
   if (method_ == nullptr) {
@@ -114,18 +117,14 @@ bool MethodSynth::SynthFromInsns() {
   return true;
 }
 
-void MethodSynth::SetTaskEntry() {
-  is_task_entry_ = true;
-}
+void MethodSynth::SetTaskEntry() { is_task_entry_ = true; }
 
 void MethodSynth::SetRoot(int thread_index) {
   is_root_ = true;
   thread_index_ = thread_index;
 }
 
-MethodContext *MethodSynth::GetContext() {
-  return context_.get();
-}
+MethodContext *MethodSynth::GetContext() { return context_.get(); }
 
 void MethodSynth::EmitDataFlowEntry(IState *st) {
   vm::Object *obj = thr_synth_->GetThreadObject();
@@ -232,7 +231,7 @@ void MethodSynth::EmitExtTaskDone(IState *st) {
 
 void MethodSynth::MayEmitThreadIndex(IState *st) {
   CHECK(method_->GetNumArgRegisters() <= 1)
-    << "Too many arguments for a thread entry method";
+      << "Too many arguments for a thread entry method";
   if (method_->GetNumArgRegisters() != 1) {
     return;
   }
@@ -240,9 +239,8 @@ void MethodSynth::MayEmitThreadIndex(IState *st) {
   IRegister *arg_reg = local_reg_map_[arg];
   IResource *assign = res_set_->AssignResource();
   IInsn *iinsn = new IInsn(assign);
-  IRegister *ireg =
-    DesignTool::AllocConstNum(tab_, arg_reg->value_type_.GetWidth(),
-			      thread_index_);
+  IRegister *ireg = DesignTool::AllocConstNum(
+      tab_, arg_reg->value_type_.GetWidth(), thread_index_);
   iinsn->inputs_.push_back(ireg);
   iinsn->outputs_.push_back(arg_reg);
   st->insns_.push_back(iinsn);
@@ -263,8 +261,8 @@ bool MethodSynth::IsThreadEntry() const {
 bool MethodSynth::SynthAlternativeImplMethod(vm::Method *method) {
   sym_t name = sym_lookup(method->AlternativeImplementation());
   if (name == sym_null) {
-    Status::os(Status::USER_ERROR) << "No native implementation for method: "
-				   << method_name_;
+    Status::os(Status::USER_ERROR)
+        << "No native implementation for method: " << method_name_;
     return false;
   }
   vm::Value *value = obj_->LookupValue(name, false);
@@ -300,7 +298,7 @@ void MethodSynth::SynthExtIOMethod() {
 void MethodSynth::DoSynthExtIO(bool is_output) {
   if (!shared_resource_set_->AddExtIOMethodAccessor(thr_synth_, method_)) {
     Status::os(Status::USER_ERROR)
-	<< "ExtIO can be accessed from only 1 thread.";
+        << "ExtIO can be accessed from only 1 thread.";
     return;
   }
   IResource *res = rsynth_->MayAddExtIO(method_, is_output);
@@ -334,95 +332,93 @@ void MethodSynth::LinkStates() {
 
 void MethodSynth::SynthInsn(vm::Insn *insn) {
   switch (insn->op_) {
-  case vm::OP_NOP:
-  case vm::OP_YIELD:
-    SynthNop(insn);
-    break;
-  case vm::OP_NUM:
-    SynthNum(insn);
-    break;
-  case vm::OP_ASSIGN:
-    SynthAssign(insn);
-    break;
-  case vm::OP_FUNCALL:
-    SynthFuncall(insn);
-    break;
-  case vm::OP_FUNCALL_DONE:
-    SynthFuncallDone(insn);
-    break;
-  case vm::OP_LOAD_OBJ:
-    SynthLoadObj(insn);
-    break;
-  case vm::OP_GOTO:
-    SynthGoto(insn);
-    break;
-  case vm::OP_IF:
-    SynthIf(insn);
-    break;
-  case vm::OP_ADD:
-  case vm::OP_SUB:
-  case vm::OP_MUL:
-  case vm::OP_DIV:
-  case vm::OP_EQ:
-  case vm::OP_NE:
-  case vm::OP_GT:
-  case vm::OP_LT:
-  case vm::OP_GTE:
-  case vm::OP_LTE:
-  case vm::OP_AND:
-  case vm::OP_OR:
-  case vm::OP_XOR:
-  case vm::OP_LAND:
-  case vm::OP_LOR:
-    SynthBinCalcExpr(insn);
-    break;
-  case vm::OP_LSHIFT:
-  case vm::OP_RSHIFT:
-    SynthShiftExpr(insn);
-    break;
-  case vm::OP_CONCAT:
-    SynthConcat(insn);
-    break;
-  case vm::OP_PRE_DEC:
-  case vm::OP_PRE_INC:
-    SynthPreIncDec(insn);
-    break;
-  case vm::OP_MEMBER_READ:
-    SynthMemberAccess(insn, false);
-    break;
-  case vm::OP_MEMBER_WRITE:
-    SynthMemberAccess(insn, true);
-    break;
-  case vm::OP_ARRAY_READ:
-    InsnWalker::MaybeLoadObjectArrayElement(insn);
-    SynthArrayAccess(insn, false);
-    break;
-  case vm::OP_ARRAY_WRITE:
-    SynthArrayAccess(insn, true);
-    break;
-  case vm::OP_BIT_RANGE:
-    SynthBitRange(insn);
-    break;
-  case vm::OP_BIT_INV:
-  case vm::OP_LOGIC_INV:
-    SynthBitInv(insn);
-    break;
-  default:
-    CHECK(false) << "unknown insn:" << vm::OpCodeName(insn->op_);
+    case vm::OP_NOP:
+    case vm::OP_YIELD:
+      SynthNop(insn);
+      break;
+    case vm::OP_NUM:
+      SynthNum(insn);
+      break;
+    case vm::OP_ASSIGN:
+      SynthAssign(insn);
+      break;
+    case vm::OP_FUNCALL:
+      SynthFuncall(insn);
+      break;
+    case vm::OP_FUNCALL_DONE:
+      SynthFuncallDone(insn);
+      break;
+    case vm::OP_LOAD_OBJ:
+      SynthLoadObj(insn);
+      break;
+    case vm::OP_GOTO:
+      SynthGoto(insn);
+      break;
+    case vm::OP_IF:
+      SynthIf(insn);
+      break;
+    case vm::OP_ADD:
+    case vm::OP_SUB:
+    case vm::OP_MUL:
+    case vm::OP_DIV:
+    case vm::OP_EQ:
+    case vm::OP_NE:
+    case vm::OP_GT:
+    case vm::OP_LT:
+    case vm::OP_GTE:
+    case vm::OP_LTE:
+    case vm::OP_AND:
+    case vm::OP_OR:
+    case vm::OP_XOR:
+    case vm::OP_LAND:
+    case vm::OP_LOR:
+      SynthBinCalcExpr(insn);
+      break;
+    case vm::OP_LSHIFT:
+    case vm::OP_RSHIFT:
+      SynthShiftExpr(insn);
+      break;
+    case vm::OP_CONCAT:
+      SynthConcat(insn);
+      break;
+    case vm::OP_PRE_DEC:
+    case vm::OP_PRE_INC:
+      SynthPreIncDec(insn);
+      break;
+    case vm::OP_MEMBER_READ:
+      SynthMemberAccess(insn, false);
+      break;
+    case vm::OP_MEMBER_WRITE:
+      SynthMemberAccess(insn, true);
+      break;
+    case vm::OP_ARRAY_READ:
+      InsnWalker::MaybeLoadObjectArrayElement(insn);
+      SynthArrayAccess(insn, false);
+      break;
+    case vm::OP_ARRAY_WRITE:
+      SynthArrayAccess(insn, true);
+      break;
+    case vm::OP_BIT_RANGE:
+      SynthBitRange(insn);
+      break;
+    case vm::OP_BIT_INV:
+    case vm::OP_LOGIC_INV:
+      SynthBitInv(insn);
+      break;
+    default:
+      CHECK(false) << "unknown insn:" << vm::OpCodeName(insn->op_);
   }
 }
 
-void MethodSynth::SynthNop(vm::Insn *insn) {
-}
+void MethodSynth::SynthNop(vm::Insn *insn) {}
 
 void MethodSynth::SynthNum(vm::Insn *insn) {
   vm::Register *src_reg = insn->src_regs_[0];
   CHECK(src_reg->type_.value_type_ == vm::Value::NUM);
   vm::Register *dst_reg = insn->dst_regs_[0];
   IRegister *ireg =
-    DesignTool::AllocConstNum(tab_,
-			      src_reg->type_.width_.GetWidth(),
-			      src_reg->initial_num_.GetValue0());
+      DesignTool::AllocConstNum(tab_, src_reg->type_.width_.GetWidth(),
+                                src_reg->initial_num_.GetValue0());
   local_reg_map_[dst_reg] = ireg;
 }
 
@@ -437,16 +433,13 @@ void MethodSynth::SynthAssign(vm::Insn *insn) {
   sw->state_->insns_.push_back(iinsn);
 }
 
-void MethodSynth::SynthLoadObj(vm::Insn *insn) {
-  InsnWalker::LoadObj(insn);
-}
+void MethodSynth::SynthLoadObj(vm::Insn *insn) { InsnWalker::LoadObj(insn); }
 
 void MethodSynth::SynthPreIncDec(vm::Insn *insn) {
   IValueType vt;
   InsnToCalcValueType(insn, &vt);
-  IResource *res = res_set_->GetOpResource(insn->op_ == vm::OP_PRE_INC ?
-				       vm::OP_ADD : vm::OP_SUB,
-				       vt);
+  IResource *res = res_set_->GetOpResource(
+      insn->op_ == vm::OP_PRE_INC ? vm::OP_ADD : vm::OP_SUB, vt);
   IInsn *iinsn = new IInsn(res);
   IRegister *reg = FindLocalVarRegister(insn->src_regs_[0]);
   iinsn->inputs_.push_back(reg);
@@ -503,8 +496,7 @@ void MethodSynth::SynthFuncall(vm::Insn *insn) {
   }
 }
 
-void MethodSynth::AdjustArgWidth(vm::Insn *insn,
-				 vector<IRegister *> *args) {
+void MethodSynth::AdjustArgWidth(vm::Insn *insn, vector<IRegister *> *args) {
   vm::Object *callee_obj = GetCalleeObject(insn);
   vm::Value *value = callee_obj->LookupValue(insn->label_, false);
   CHECK(value && value->type_ == vm::Value::METHOD) << sym_cstr(insn->label_);
@@ -617,21 +609,17 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   return ireg;
 }
 
-ITable *MethodSynth::GetITable() {
-  return tab_;
-}
+ITable *MethodSynth::GetITable() { return tab_; }
 
-ThreadSynth *MethodSynth::GetThreadSynth() {
-  return thr_synth_;
-}
+ThreadSynth *MethodSynth::GetThreadSynth() { return thr_synth_; }
 
 IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
-					fe::VarDecl *arg_decl) {
+                                        fe::VarDecl *arg_decl) {
   int w = 0;
   if (arg_decl->GetType() == sym_bool) {
     w = 0;
   } else if (arg_decl->GetType() == sym_int ||
-	     arg_decl->GetType() == sym_null) {
+             arg_decl->GetType() == sym_null) {
     w = arg_decl->GetWidth().GetWidth();
   } else {
     CHECK(false);
@@ -651,18 +639,18 @@ void MethodSynth::ResolveJumps() {
   for (auto &sw : context_->states_) {
     if (sw->vm_insn_) {
       if (sw->vm_insn_->op_ == vm::OP_GOTO) {
-	IState *st = vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
-	CHECK(st) << "couldn't resolve goto" << sw->vm_insn_->jump_target_;
-	DesignTool::AddNextState(sw->state_, st);
+        IState *st = vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
+        CHECK(st) << "couldn't resolve goto" << sw->vm_insn_->jump_target_;
+        DesignTool::AddNextState(sw->state_, st);
       }
       if (sw->vm_insn_->op_ == vm::OP_IF) {
-	// next, jump_target
-	IState *next_st = context_->states_[sw_idx + 1]->state_;
-	IState *target_st =
-	  vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
-	IInsn *tr_insn = DesignUtil::FindTransitionInsn(sw->state_);
-	tr_insn->target_states_.push_back(target_st);
-	tr_insn->target_states_.push_back(next_st);
+        // next, jump_target
+        IState *next_st = context_->states_[sw_idx + 1]->state_;
+        IState *target_st =
+            vm_insn_state_map_[sw->vm_insn_->jump_target_]->state_;
+        IInsn *tr_insn = DesignUtil::FindTransitionInsn(sw->state_);
+        tr_insn->target_states_.push_back(target_st);
+        tr_insn->target_states_.push_back(next_st);
       }
     }
     ++sw_idx;
@@ -681,12 +669,12 @@ StateWrapper *MethodSynth::AllocState() {
 void MethodSynth::SynthDivExpr(vm::Insn *insn) {
   // Allows const / const only for now.
   CHECK(insn->src_regs_[0]->type_.is_const_ &&
-	insn->src_regs_[1]->type_.is_const_);
+        insn->src_regs_[1]->type_.is_const_);
   int v = insn->src_regs_[0]->initial_num_.GetValue0() /
-    insn->src_regs_[1]->initial_num_.GetValue0();
+          insn->src_regs_[1]->initial_num_.GetValue0();
   vm::Register *dst_reg = insn->dst_regs_[0];
   IRegister *ireg =
-    DesignTool::AllocConstNum(tab_, dst_reg->type_.width_.GetWidth(), v);
+      DesignTool::AllocConstNum(tab_, dst_reg->type_.width_.GetWidth(), v);
   local_reg_map_[dst_reg] = ireg;
 }
 
@@ -774,9 +762,8 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     CHECK(value->type_ == vm::Value::ENUM_ITEM);
     IRegister *reg = DesignTool::AllocConstNum(tab_, 0, value->enum_val_.val);
     local_reg_map_[insn->dst_regs_[0]] = reg;
-  } else if (vt == vm::Value::OBJECT ||
-	     vt == vm::Value::INT_ARRAY ||
-	     vt == vm::Value::OBJECT_ARRAY) {
+  } else if (vt == vm::Value::OBJECT || vt == vm::Value::INT_ARRAY ||
+             vt == vm::Value::OBJECT_ARRAY) {
     // processed in MaybeLoadMemberObject()
     CHECK(!is_store);
   } else {
@@ -788,7 +775,7 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
     CHECK(!vm::TlsWrapper::IsTlsValue(value));
     CHECK(value->type_ == vm::Value::NUM);
     SharedResource *sres =
-      shared_resource_set_->GetBySlotName(obj, local_accessor, insn->label_);
+        shared_resource_set_->GetBySlotName(obj, local_accessor, insn->label_);
     if (sres->accessors_.size() > 1) {
       SynthMemberSharedRegAccess(insn, obj, value, is_store);
     } else {
@@ -798,9 +785,9 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
 }
 
 void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
-				       vm::Value *value, bool is_store) {
+                                       vm::Value *value, bool is_store) {
   IRegister *reg =
-    member_name_reg_map_[std::make_tuple(owner_obj, sym_cstr(insn->label_))];
+      member_name_reg_map_[std::make_tuple(owner_obj, sym_cstr(insn->label_))];
   if (reg == nullptr) {
     string name = sym_cstr(insn->label_);
     name = "m_" + name;
@@ -812,7 +799,8 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
       w = value->num_type_.GetWidth();
     }
     reg->value_type_.SetWidth(w);
-    member_name_reg_map_[std::make_tuple(owner_obj, sym_cstr(insn->label_))] = reg;
+    member_name_reg_map_[std::make_tuple(owner_obj, sym_cstr(insn->label_))] =
+        reg;
   }
   IResource *assign = res_set_->AssignResource();
   IInsn *iinsn = new IInsn(assign);
@@ -830,12 +818,11 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
 }
 
 void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
-					     vm::Object *owner_obj,
-					     vm::Value *value,
-					     bool is_store) {
+                                             vm::Object *owner_obj,
+                                             vm::Value *value, bool is_store) {
   // This can't be a tls (because shared != tls), so use the default thread.
   SharedResource *sres =
-    shared_resource_set_->GetBySlotName(owner_obj, nullptr, insn->label_);
+      shared_resource_set_->GetBySlotName(owner_obj, nullptr, insn->label_);
   IResource *res;
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
@@ -897,20 +884,18 @@ bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
   if (thread_local_objs_.find(array_obj) != thread_local_objs_.end()) {
     tls_thr = thr_synth_;
   }
-  SharedResource *sres =
-    shared_resource_set_->GetByObj(array_obj, tls_thr);
-  if (sres->accessors_.size() >= 2 ||
-      sres->axi_ctrl_thrs_.size() > 0) {
+  SharedResource *sres = shared_resource_set_->GetByObj(array_obj, tls_thr);
+  if (sres->accessors_.size() >= 2 || sres->axi_ctrl_thrs_.size() > 0) {
     return true;
   }
   return false;
 }
 
 void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
-					 IRegister *index) {
+                                         IRegister *index) {
   vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
   SharedResource *array_sres =
-    shared_resource_set_->GetByObj(array_obj, nullptr);
+      shared_resource_set_->GetByObj(array_obj, nullptr);
   IResource *res = nullptr;
   bool use_replica = false;
   if (array_sres->owner_thr_ == thr_synth_) {
@@ -951,7 +936,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
 }
 
 void MethodSynth::SynthLocalArrayAccess(vm::Insn *insn, bool is_write,
-					IRegister *index) {
+                                        IRegister *index) {
   vm::Object *array_obj = GetObjByReg(insn->obj_reg_);
   IResource *res = res_set_->GetInternalArrayResource(array_obj);
   rsynth_->MayConfigureExternalSram(array_obj, res);
@@ -969,7 +954,7 @@ void MethodSynth::SynthLocalArrayAccess(vm::Insn *insn, bool is_write,
 }
 
 void MethodSynth::SynthSramRead(vm::Insn *insn, IInsn *iinsn,
-				IRegister *index) {
+                                IRegister *index) {
   // Output address.
   iinsn->SetOperand(iroha::operand::kSramReadAddress);
   iinsn->inputs_.push_back(index);
@@ -984,12 +969,12 @@ void MethodSynth::SynthSramRead(vm::Insn *insn, IInsn *iinsn,
 }
 
 IRegister *MethodSynth::GetArrayIndex(vm::Object *array_obj, vm::Insn *insn,
-				      int start) {
+                                      int start) {
   vector<IRegister *> indexes;
   vm::IntArray *array = vm::ArrayWrapper::GetIntArray(array_obj);
   const vector<uint64_t> &shape = array->GetShape();
-  for (int i = start; i < insn->src_regs_.size() &&
-	 indexes.size() < shape.size(); i++) {
+  for (int i = start;
+       i < insn->src_regs_.size() && indexes.size() < shape.size(); i++) {
     indexes.push_back(FindLocalVarRegister(insn->src_regs_[i]));
   }
   if (indexes.size() == 1 || shape.size() == 1) {

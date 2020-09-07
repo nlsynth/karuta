@@ -10,33 +10,31 @@
 #include "synth/method_synth.h"
 #include "synth/object_attr_names.h"
 #include "synth/object_synth.h"
-#include "synth/shared_resource_set.h"
 #include "synth/resource_set.h"
 #include "synth/resource_synth.h"
+#include "synth/shared_resource_set.h"
 #include "synth/tool.h"
 #include "vm/array_wrapper.h"
 #include "vm/io_wrapper.h"
-#include "vm/object.h"
-#include "vm/object_util.h"
 #include "vm/mailbox_wrapper.h"
 #include "vm/method.h"
+#include "vm/object.h"
+#include "vm/object_util.h"
 
 namespace synth {
 
-ThreadSynth::ThreadSynth(ObjectSynth *obj_synth,
-			 const string &thread_name,
-			 const string &entry_method_name,
-			 vm::Object *thread_obj,
-			 int index)
-  : obj_synth_(obj_synth),
-    thread_name_(thread_name), entry_method_name_(entry_method_name),
-    is_primary_thread_(false),
-    thread_obj_(thread_obj),
-    index_(index),
-    tab_(nullptr),
-    is_task_(false),
-    reg_name_index_(0) {
-}
+ThreadSynth::ThreadSynth(ObjectSynth *obj_synth, const string &thread_name,
+                         const string &entry_method_name,
+                         vm::Object *thread_obj, int index)
+    : obj_synth_(obj_synth),
+      thread_name_(thread_name),
+      entry_method_name_(entry_method_name),
+      is_primary_thread_(false),
+      thread_obj_(thread_obj),
+      index_(index),
+      tab_(nullptr),
+      is_task_(false),
+      reg_name_index_(0) {}
 
 ThreadSynth::~ThreadSynth() {
   for (auto &per_obj : obj_methods_) {
@@ -57,8 +55,8 @@ bool ThreadSynth::HasExtVisibleResource(vm::Object *obj) {
     if (vm::ArrayWrapper::IsIntArray(member_obj)) {
       Annotation *a = vm::ArrayWrapper::GetAnnotation(member_obj);
       if (a != nullptr &&
-	  (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
-	return true;
+          (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
+        return true;
       }
     }
   }
@@ -89,21 +87,21 @@ bool ThreadSynth::Scan() {
       vm::Object *obj = it.first;
       map<string, MethodSynth *> &methods = it.second.methods_;
       for (auto jt : methods) {
-	auto &name = jt.first;
-	auto &m = scanned[obj];
-	if (m.find(name) != m.end()) {
-	  continue;
-	}
-	++num_scan;
-	MethodScanner ms(this, obj, name);
-	if (!ms.Scan()) {
-	  Status::os(Status::USER_ERROR)
-	    << "Failed to scan thread: "
-	    << thread_name_ << "." << entry_method_name_;
-	  MessageFlush::Get(Status::USER_ERROR);
-	  return false;
-	}
-	scanned[obj].insert(name);
+        auto &name = jt.first;
+        auto &m = scanned[obj];
+        if (m.find(name) != m.end()) {
+          continue;
+        }
+        ++num_scan;
+        MethodScanner ms(this, obj, name);
+        if (!ms.Scan()) {
+          Status::os(Status::USER_ERROR)
+              << "Failed to scan thread: " << thread_name_ << "."
+              << entry_method_name_;
+          MessageFlush::Get(Status::USER_ERROR);
+          return false;
+        }
+        scanned[obj].insert(name);
       }
     }
   } while (num_scan > 0);
@@ -117,13 +115,13 @@ bool ThreadSynth::Synth() {
     vm::Object *obj = it.first;
     for (auto jt : it.second.methods_) {
       auto &name = jt.first;
-      auto *ms = new MethodSynth(this, obj, name,
-				 tab_, rsynth_.get(), resource_.get());
+      auto *ms = new MethodSynth(this, obj, name, tab_, rsynth_.get(),
+                                 resource_.get());
       obj_methods_[obj].methods_[name] = ms;
     }
   }
   MethodSynth *root_method =
-    obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
+      obj_methods_[obj_synth_->GetObject()].methods_[entry_method_name_];
   root_method->SetRoot(index_);
   if (is_task_) {
     root_method->SetTaskEntry();
@@ -132,30 +130,25 @@ bool ThreadSynth::Synth() {
   for (auto &it : obj_methods_) {
     for (auto jt : it.second.methods_) {
       if (!jt.second->Synth()) {
-	Status::os(Status::USER_ERROR)
-	  << "Failed to synthesize thread: "
-	  << thread_name_ << "." << entry_method_name_;
-	MessageFlush::Get(Status::USER_ERROR);
-	return false;
+        Status::os(Status::USER_ERROR)
+            << "Failed to synthesize thread: " << thread_name_ << "."
+            << entry_method_name_;
+        MessageFlush::Get(Status::USER_ERROR);
+        return false;
       }
     }
   }
 
-  MethodExpander expander(root_method->GetContext(), this,
-			  &table_calls_);
+  MethodExpander expander(root_method->GetContext(), this, &table_calls_);
   expander.Expand();
 
   obj_synth_->GetIModule()->tables_.push_back(tab_);
   return true;
 }
 
-void ThreadSynth::SetPrimary() {
-  is_primary_thread_ = true;
-}
+void ThreadSynth::SetPrimary() { is_primary_thread_ = true; }
 
-bool ThreadSynth::IsPrimary() {
-  return is_primary_thread_;
-}
+bool ThreadSynth::IsPrimary() { return is_primary_thread_; }
 
 void ThreadSynth::CollectUnclaimedMembers() {
   DesignSynth *ds = obj_synth_->GetDesignSynth();
@@ -170,7 +163,7 @@ void ThreadSynth::CollectUnclaimedMembers() {
     }
     if (vm::ArrayWrapper::IsIntArray(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {
-	      continue;
+        continue;
       }
       rsynth_->MayAddAxiMasterPort(obj, member_obj);
       rsynth_->MayAddAxiSlavePort(obj, member_obj);
@@ -179,13 +172,13 @@ void ThreadSynth::CollectUnclaimedMembers() {
     }
     if (vm::MailboxWrapper::IsMailbox(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {
-	      continue;
+        continue;
       }
       rsynth_->MayAddSharedRegExtWriter(member_obj);
     }
     if (vm::IOWrapper::IsIO(member_obj)) {
       if (sres->HasAccessor(member_obj, nullptr)) {
-	      continue;
+        continue;
       }
       rsynth_->MayAddIO(member_obj, true);
     }
@@ -200,16 +193,15 @@ void ThreadSynth::CollectUnclaimedMembers() {
   for (auto it : member_methods) {
     vm::Method *method = it.second;
     if (method->GetAnnotation()->IsExtIO()) {
-      compiler::Compiler::CompileMethod(obj_synth_->GetVM(),
-					obj, method);
+      compiler::Compiler::CompileMethod(obj_synth_->GetVM(), obj, method);
       if (method->IsCompileFailure()) {
-	continue;
+        continue;
       }
       if (method->GetAnnotation()->IsExtInput()) {
-	MayGenerateExtIOMethod(method, false);
+        MayGenerateExtIOMethod(method, false);
       }
       if (method->GetAnnotation()->IsExtOutput()) {
-	MayGenerateExtIOMethod(method, true);
+        MayGenerateExtIOMethod(method, true);
       }
     }
   }
@@ -224,38 +216,25 @@ void ThreadSynth::MayGenerateExtIOMethod(vm::Method *method, bool is_output) {
   rsynth_->MayAddExtIO(method, is_output);
 }
 
-void ThreadSynth::SetIsTask(bool is_task) {
-  is_task_ = is_task;
-}
+void ThreadSynth::SetIsTask(bool is_task) { is_task_ = is_task; }
 
 void ThreadSynth::RequestMethod(vm::Object *obj, const string &m) {
   obj_methods_[obj].methods_[m] = nullptr;
 }
 
-MethodContext *ThreadSynth::GetMethodContext(vm::Object *obj,
-					     const string &m) {
+MethodContext *ThreadSynth::GetMethodContext(vm::Object *obj, const string &m) {
   return obj_methods_[obj].methods_[m]->GetContext();
 }
 
-ResourceSet *ThreadSynth::GetResourceSet() {
-  return resource_.get();
-}
+ResourceSet *ThreadSynth::GetResourceSet() { return resource_.get(); }
 
-ObjectSynth *ThreadSynth::GetObjectSynth() {
-  return obj_synth_;
-}
+ObjectSynth *ThreadSynth::GetObjectSynth() { return obj_synth_; }
 
-ITable *ThreadSynth::GetITable() {
-  return tab_;
-}
+ITable *ThreadSynth::GetITable() { return tab_; }
 
-vm::Object *ThreadSynth::GetThreadObject() {
-  return thread_obj_;
-}
+vm::Object *ThreadSynth::GetThreadObject() { return thread_obj_; }
 
-void ThreadSynth::AddName(const string &n) {
-  used_reg_names_.insert(n);
-}
+void ThreadSynth::AddName(const string &n) { used_reg_names_.insert(n); }
 
 IRegister *ThreadSynth::AllocRegister(const string &prefix) {
   string n;
@@ -269,23 +248,17 @@ IRegister *ThreadSynth::AllocRegister(const string &prefix) {
   return new IRegister(tab_, n);
 }
 
-vector<TableCall> &ThreadSynth::GetTableCalls() {
-  return table_calls_;
-}
+vector<TableCall> &ThreadSynth::GetTableCalls() { return table_calls_; }
 
-const string &ThreadSynth::GetEntryMethodName() {
-  return entry_method_name_;
-}
+const string &ThreadSynth::GetEntryMethodName() { return entry_method_name_; }
 
-int ThreadSynth::GetIndex() const {
-  return index_;
-}
+int ThreadSynth::GetIndex() const { return index_; }
 
 IInsn *ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
-					ITable *callee_tab) {
+                                        ITable *callee_tab) {
   ITable *caller_tab = st->GetTable();
-  IResource *call_res = Tool::FindOrCreateTaskCallResource(caller_tab,
-							   callee_tab);
+  IResource *call_res =
+      Tool::FindOrCreateTaskCallResource(caller_tab, callee_tab);
   if (call_res == nullptr) {
     return nullptr;
   }
@@ -303,7 +276,7 @@ IInsn *ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   IState *next_st = Tool::GetNextState(st);
   CHECK(next_st);
   IResource *ret =
-    Tool::FindOrCreateTaskReturnValueResource(caller_tab, callee_tab);
+      Tool::FindOrCreateTaskReturnValueResource(caller_tab, callee_tab);
   if (ret == nullptr) {
     // TODO: This shouldn't happen. Put CHECK(false) here.
     // outputs_.size() == 1 in case of void return due to the default
@@ -320,12 +293,11 @@ IInsn *ThreadSynth::InjectSubModuleCall(IState *st, IInsn *pseudo_call_insn,
   return ret_insn;
 }
 
-IInsn *ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
-				       IState *st, IInsn *pseudo_call_insn,
-				       ITable *callee_tab, bool no_wait) {
+IInsn *ThreadSynth::InjectDataFlowCall(ThreadSynth *thr, IState *st,
+                                       IInsn *pseudo_call_insn,
+                                       ITable *callee_tab, bool no_wait) {
   vector<IResource *> df;
-  DesignUtil::FindResourceByClassName(callee_tab, resource::kDataFlowIn,
-				      &df);
+  DesignUtil::FindResourceByClassName(callee_tab, resource::kDataFlowIn, &df);
   CHECK(df.size() == 1);
   IResource *sreg = df[0]->GetParentResource();
   ITable *caller_tab = st->GetTable();
@@ -352,15 +324,15 @@ IInsn *ThreadSynth::InjectDataFlowCall(ThreadSynth *thr,
 }
 
 IInsn *ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
-				      const string &name, bool is_flow) {
+                                      const string &name, bool is_flow) {
   // ext-task-call or ext-flow-call
   ITable *caller_tab = st->GetTable();
-  IResource *call = Tool::FindOrCreateExtStubCallResource(caller_tab, name,
-							  is_flow);
+  IResource *call =
+      Tool::FindOrCreateExtStubCallResource(caller_tab, name, is_flow);
   IInsn *insn = new IInsn(call);
   st->insns_.push_back(insn);
   bool need_width =
-    pseudo_call_insn->inputs_.size() > call->input_types_.size();
+      pseudo_call_insn->inputs_.size() > call->input_types_.size();
   for (IRegister *reg : pseudo_call_insn->inputs_) {
     insn->inputs_.push_back(reg);
     if (need_width) {
@@ -369,13 +341,12 @@ IInsn *ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
   }
   // ext-task-wait or ext-flow-result.
   IState *next_st = Tool::GetNextState(st);
-  IResource *wait = Tool::FindOrCreateExtStubWaitResource(caller_tab, name,
-							  is_flow);
+  IResource *wait =
+      Tool::FindOrCreateExtStubWaitResource(caller_tab, name, is_flow);
   IInsn *wait_insn = new IInsn(wait);
   wait_insn->depending_insns_.push_back(insn);
   next_st->insns_.push_back(wait_insn);
-  need_width =
-    pseudo_call_insn->outputs_.size() > wait->output_types_.size();
+  need_width = pseudo_call_insn->outputs_.size() > wait->output_types_.size();
   for (IRegister *reg : pseudo_call_insn->outputs_) {
     wait_insn->outputs_.push_back(reg);
     if (need_width) {

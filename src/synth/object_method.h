@@ -8,22 +8,22 @@ namespace synth {
 
 // MethodSynth and MethodScanner calls this to handle native method.
 class ObjectMethod {
-public:
+ public:
   ObjectMethod(MethodSynth *synth, InsnWalker *walker, ResourceSynth *rsynth,
-	       vm::Insn *insn);
+               vm::Insn *insn);
 
   void Synth();
   void Scan();
 
-private:
+ private:
   string GetSynthName(vm::Object *obj);
   IInsn *SynthAxiAccess(vm::Object *array_obj, bool is_store);
   IInsn *SynthWait(vm::Object *array_obj);
   IInsn *SynthAxiWait(vm::Object *array_obj);
   IInsn *SynthSramWait(vm::Object *array_obj);
   IInsn *SynthMailboxWidth(vm::Object *mailbox_obj);
-  IInsn *SynthMailboxAccess(vm::Object *mailbox_obj,
-			    bool is_blocking, bool is_put);
+  IInsn *SynthMailboxAccess(vm::Object *mailbox_obj, bool is_blocking,
+                            bool is_put);
   IInsn *SynthMemoryAccess(vm::Object *mem, bool is_write);
   IInsn *SynthChannelAccess(vm::Object *ch_obj, bool is_write);
   IInsn *SynthGetTickCount(vm::Object *obj);

@@ -79,15 +79,14 @@ int Synth::RunIroha(vm::Object *obj, const string &args) {
   if (!f.empty()) {
     iopt += " --flavor=" + f;
   }
-  string e = cmd + " " + iopt + " " +
-    path + " " + args;
+  string e = cmd + " " + iopt + " " + path + " " + args;
   cout << "command=" << e << "\n";
   LOG(INFO) << "Executing iroha";
   int r = system(e.c_str());
   LOG(INFO) << "Done";
   return r;
 }
-  
+
 void Synth::WriteHdl(const string &fn, vm::Object *obj) {
   string lang = "-v";
   if (::Util::IsHtmlFileName(fn)) {

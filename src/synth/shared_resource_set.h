@@ -2,11 +2,11 @@
 #ifndef _synth_shared_resource_set_h_
 #define _synth_shared_resource_set_h_
 
-#include "synth/common.h"
-
-#include <set>
 #include <map>
+#include <set>
 #include <tuple>
+
+#include "synth/common.h"
 
 using std::map;
 using std::set;
@@ -17,7 +17,7 @@ namespace synth {
 // This represents a shared resource and its accessors.
 // SharedResource is key-ed by an Object or member name.
 class SharedResource {
-public:
+ public:
   SharedResource();
   ~SharedResource();
 
@@ -39,7 +39,7 @@ public:
 
 // Per DesignSynth object to manage every shared resources.
 class SharedResourceSet {
-public:
+ public:
   ~SharedResourceSet();
 
   // Called between pass 1 and 2.
@@ -52,12 +52,11 @@ public:
   // Declares @thr accesses this.name/obj.
   // NUM
   void AddMemberAccessor(ThreadSynth *thr, vm::Object *owner_obj, sym_t name,
-			 vm::Insn *insn,
-			 bool is_tls);
+                         vm::Insn *insn, bool is_tls);
   // OBJECT, INT_ARRAY, OBJECT_ARRAY
   void AddObjectAccessor(ThreadSynth *thr, vm::Object *owner_obj,
-			 vm::Object *obj, vm::Insn *insn,
-			 const string &synth_name, bool is_tls);
+                         vm::Object *obj, vm::Insn *insn,
+                         const string &synth_name, bool is_tls);
   // ExtIO is not shareable, so this keeps track of the accessor thread.
   bool AddExtIOMethodAccessor(ThreadSynth *thr, vm::Method *method);
 
@@ -68,16 +67,15 @@ public:
   bool HasAccessor(vm::Object *obj, ThreadSynth *thr);
   bool HasExtIOAccessor(vm::Method *method);
 
-private:
+ private:
   void DetermineOwnerThread(SharedResource *res);
   void ResolveSharedResourceAccessor(SharedResource *sres);
   void ResolveAccessorDistance(DesignSynth *design_synth, SharedResource *sres);
 
   // ThreadSynth is nullptr for non TLS object for {obj,value}_resources_.
-  map<tuple<vm::Object *, ThreadSynth *>,
-      SharedResource *> obj_resources_;
-  map<tuple<vm::Object *, ThreadSynth *, sym_t>,
-      SharedResource *> value_resources_;
+  map<tuple<vm::Object *, ThreadSynth *>, SharedResource *> obj_resources_;
+  map<tuple<vm::Object *, ThreadSynth *, sym_t>, SharedResource *>
+      value_resources_;
   map<vm::Method *, ThreadSynth *> ext_io_methods_;
 };
 

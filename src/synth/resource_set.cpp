@@ -32,8 +32,7 @@ ResourceSet::ResourceSet(ITable *tab) : tab_(tab) {
   ext_task_done_ = nullptr;
 }
 
-ResourceSet::~ResourceSet() {
-}
+ResourceSet::~ResourceSet() {}
 
 IResource *ResourceSet::AssertResource() {
   if (!assert_) {
@@ -49,9 +48,7 @@ IResource *ResourceSet::AssignResource() {
   return assign_;
 }
 
-IResource *ResourceSet::BranchResource() {
-  return br_;
-}
+IResource *ResourceSet::BranchResource() { return br_; }
 
 IResource *ResourceSet::PseudoCallResource() {
   if (pseudo_call_ == nullptr) {
@@ -68,15 +65,14 @@ IResource *ResourceSet::PrintResource() {
 }
 
 IResource *ResourceSet::GetMemberSharedReg(sym_t name, bool is_owner,
-					   bool is_write) {
+                                           bool is_write) {
   map<sym_t, IResource *> *m;
   const char *n;
   if (is_owner) {
     n = resource::kSharedReg;
     m = &member_shared_reg_;
   } else {
-    n = is_write ?
-      resource::kSharedRegWriter : resource::kSharedRegReader;
+    n = is_write ? resource::kSharedRegWriter : resource::kSharedRegReader;
     m = is_write ? &member_shared_reg_writer_ : &member_shared_reg_reader_;
   }
   auto it = m->find(name);
@@ -84,7 +80,7 @@ IResource *ResourceSet::GetMemberSharedReg(sym_t name, bool is_owner,
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   tab_->resources_.push_back(res);
   (*m)[name] = res;
@@ -92,7 +88,7 @@ IResource *ResourceSet::GetMemberSharedReg(sym_t name, bool is_owner,
 }
 
 IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
-				       bool is_write) {
+                                       bool is_write) {
   CHECK(vm::ArrayWrapper::IsIntArray(obj));
   map<vm::Object *, IResource *> *m;
   const char *n;
@@ -101,15 +97,15 @@ IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
     n = resource::kSharedMemory;
   } else {
     m = is_write ? &shared_array_writer_ : &shared_array_reader_;
-    n = is_write ?
-      resource::kSharedMemoryWriter : resource::kSharedMemoryReader;
+    n = is_write ? resource::kSharedMemoryWriter
+                 : resource::kSharedMemoryReader;
   }
   auto it = m->find(obj);
   if (it != m->end()) {
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   if (is_owner) {
     vm::IntArray *memory = vm::ArrayWrapper::GetIntArray(obj);
@@ -132,9 +128,8 @@ IResource *ResourceSet::GetSharedArrayReplica(vm::Object *obj, int index) {
   if (it != m.end()) {
     return it->second;
   }
-  IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  resource::kSharedMemoryReplica);
+  IResourceClass *rc = DesignUtil::FindResourceClass(
+      tab_->GetModule()->GetDesign(), resource::kSharedMemoryReplica);
   IResource *res = new IResource(tab_, rc);
   res->SetParentResource(master);
   tab_->resources_.push_back(res);
@@ -154,15 +149,16 @@ IResource *ResourceSet::GetSramIfPort(vm::Object *obj) {
   return GetPortResource(obj, resource::kSramIf, &sram_if_ports_);
 }
 
-IResource *ResourceSet::GetPortResource(vm::Object *obj, const string &name,
-					map<vm::Object *, IResource *> *resources) {
+IResource *ResourceSet::GetPortResource(
+    vm::Object *obj, const string &name,
+    map<vm::Object *, IResource *> *resources) {
   IResource *array_res = GetSharedArray(obj, true, true);
   auto it = resources->find(obj);
   if (it != resources->end()) {
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), name);
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), name);
   IResource *res = new IResource(tab_, rc);
   res->SetParentResource(array_res);
   tab_->resources_.push_back(res);
@@ -171,7 +167,7 @@ IResource *ResourceSet::GetPortResource(vm::Object *obj, const string &name,
 }
 
 IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner,
-				   bool is_put) {
+                                   bool is_put) {
   map<vm::Object *, IResource *> *m;
   const char *n;
   if (is_owner) {
@@ -179,16 +175,14 @@ IResource *ResourceSet::GetMailbox(vm::Object *obj, bool is_owner,
     n = resource::kSharedReg;
   } else {
     m = is_put ? &mailbox_putters_ : &mailbox_getters_;
-    n = is_put ?
-      resource::kSharedRegWriter : resource::kSharedRegReader;
+    n = is_put ? resource::kSharedRegWriter : resource::kSharedRegReader;
   }
   auto it = m->find(obj);
   if (it != m->end()) {
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  n);
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   if (vm::MailboxWrapper::IsMailbox(obj)) {
     // Caller should set width if this isn't a mailbox.
@@ -205,9 +199,8 @@ IResource *ResourceSet::GetMailboxExtWriter(vm::Object *obj) {
     return it->second;
   }
   IResource *mb = GetMailbox(obj, true, false);
-  IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  resource::kSharedRegExtWriter);
+  IResourceClass *rc = DesignUtil::FindResourceClass(
+      tab_->GetModule()->GetDesign(), resource::kSharedRegExtWriter);
   IResource *res = new IResource(tab_, rc);
   res->SetParentResource(mb);
   tab_->resources_.push_back(res);
@@ -219,14 +212,13 @@ IResource *ResourceSet::GetTaskReturnRegWriter(int width) {
   if (task_return_reg_ == nullptr) {
     task_return_reg_ = DesignTool::CreateSharedRegResource(tab_, width);
     task_return_reg_writer_ =
-      DesignTool::CreateSharedRegWriterResource(tab_, task_return_reg_);
+        DesignTool::CreateSharedRegWriterResource(tab_, task_return_reg_);
   }
   return task_return_reg_writer_;
 }
 
-IResource *ResourceSet::GetExtIOByName(const string &name,
-				       bool is_output, int width,
-				       int distance) {
+IResource *ResourceSet::GetExtIOByName(const string &name, bool is_output,
+                                       int width, int distance) {
   if (ext_io_by_name_.find(name) != ext_io_by_name_.end()) {
     return ext_io_by_name_[name];
   }
@@ -256,11 +248,10 @@ IResource *ResourceSet::GetExtIOByObject(vm::Object *obj, bool is_owner) {
     ext_io_by_object_[obj] = res;
     return res;
   } else {
-    IResourceClass *rc =
-      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				    (is_output ?
-				     resource::kExtOutputAccessor :
-				     resource::kExtInputAccessor));
+    IResourceClass *rc = DesignUtil::FindResourceClass(
+        tab_->GetModule()->GetDesign(),
+        (is_output ? resource::kExtOutputAccessor
+                   : resource::kExtInputAccessor));
     IResource *res = new IResource(tab_, rc);
     IValueType vt;
     vt.SetWidth(width);
@@ -276,12 +267,10 @@ IResource *ResourceSet::GetExtIOByObject(vm::Object *obj, bool is_owner) {
 }
 
 IResource *ResourceSet::BuildExtIO(const string &name, bool is_output,
-				   int width, int distance) {
-  IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(),
-				  (is_output ?
-				   resource::kExtOutput :
-				   resource::kExtInput));
+                                   int width, int distance) {
+  IResourceClass *rc = DesignUtil::FindResourceClass(
+      tab_->GetModule()->GetDesign(),
+      (is_output ? resource::kExtOutput : resource::kExtInput));
   IResource *res = new IResource(tab_, rc);
   if (is_output) {
     res->GetParams()->SetExtOutputPort(name, width);
@@ -334,7 +323,7 @@ IResource *ResourceSet::GetTicker(vm::Object *obj, bool is_owner) {
     n = resource::kTickerAccessor;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   tab_->resources_.push_back(res);
   tickers_[obj] = res;
@@ -342,8 +331,7 @@ IResource *ResourceSet::GetTicker(vm::Object *obj, bool is_owner) {
 }
 
 IResource *ResourceSet::GetImportedResource(vm::Method *method) {
-  Annotation *dparams =
-    method->GetAnnotation();
+  Annotation *dparams = method->GetAnnotation();
 
   string name = dparams->GetResourceName();
   for (IResource *res : imported_resources_) {
@@ -355,13 +343,11 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
   string fn = dparams->GetCopyFileName();
   IResource *res = nullptr;
   if (dparams->IsExtCombinational()) {
-    res =
-      DesignTool::CreateExtCombinationalResource(tab_,
-						 dparams->GetModuleName(),
-						 fn);
+    res = DesignTool::CreateExtCombinationalResource(
+        tab_, dparams->GetModuleName(), fn);
   } else {
-    res = DesignTool::CreateExtTaskCallResource(tab_,
-						dparams->GetModuleName(), fn);
+    res = DesignTool::CreateExtTaskCallResource(tab_, dparams->GetModuleName(),
+                                                fn);
   }
 
   fe::VarDeclSet *a = method->GetParseTree()->GetArgs();
@@ -372,7 +358,7 @@ IResource *ResourceSet::GetImportedResource(vm::Method *method) {
 }
 
 void ResourceSet::PopulateIOTypes(fe::VarDeclSet *vds, bool is_output,
-				  IResource *res) {
+                                  IResource *res) {
   if (vds == nullptr) {
     return;
   }
@@ -416,8 +402,8 @@ IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {
   vm::IntArray *memory = vm::ArrayWrapper::GetIntArray(obj);
   int address_bits = memory->GetAddressWidth();
   int data_bits = memory->GetDataWidth().GetWidth();
-  IResource *res =
-    DesignTool::CreateArrayResource(tab_, address_bits, data_bits, false, true);
+  IResource *res = DesignTool::CreateArrayResource(tab_, address_bits,
+                                                   data_bits, false, true);
   if (memory->GetLength() > 0) {
     IDesign *design = tab_->GetModule()->GetDesign();
     IArrayImage *image = new IArrayImage(design);
@@ -434,21 +420,21 @@ IResource *ResourceSet::GetInternalArrayResource(vm::Object *obj) {
 IResource *ResourceSet::GetOpResource(vm::OpCode op, IValueType &vt) {
   // Remap.
   switch (op) {
-  case vm::OP_LT:
-  case vm::OP_LTE:
-  case vm::OP_GTE:
-    op = vm::OP_GT;
-    break;
-  case vm::OP_NE:
-    op = vm::OP_EQ;
-    break;
-  default:
-    break;
+    case vm::OP_LT:
+    case vm::OP_LTE:
+    case vm::OP_GTE:
+      op = vm::OP_GT;
+      break;
+    case vm::OP_NE:
+      op = vm::OP_EQ;
+      break;
+    default:
+      break;
   }
   // Use default type value as the key.
   IValueType key_vt;
-  if (!(op == vm::OP_CONCAT || op == vm::OP_BIT_RANGE ||
-	op == vm::OP_LSHIFT || op == vm::OP_RSHIFT)) {
+  if (!(op == vm::OP_CONCAT || op == vm::OP_BIT_RANGE || op == vm::OP_LSHIFT ||
+        op == vm::OP_RSHIFT)) {
     key_vt = vt;
   }
   for (auto &res : resources_) {
@@ -458,7 +444,7 @@ IResource *ResourceSet::GetOpResource(vm::OpCode op, IValueType &vt) {
   }
   string rcn = GetResourceClassName(op);
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), rcn);
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), rcn);
   IResource *ires = new IResource(tab_, rc);
   tab_->resources_.push_back(ires);
   PopulateResourceDataType(op, vt, ires);
@@ -472,29 +458,44 @@ IResource *ResourceSet::GetOpResource(vm::OpCode op, IValueType &vt) {
 
 string ResourceSet::GetResourceClassName(vm::OpCode op) {
   switch (op) {
-  case vm::OP_GT: return resource::kGt;
-  case vm::OP_EQ: return resource::kEq;
-  case vm::OP_ADD: return resource::kAdd;
-  case vm::OP_SUB: return resource::kSub;
-  case vm::OP_MUL: return resource::kMul;
-  case vm::OP_BIT_INV: return resource::kBitInv;
-  case vm::OP_AND: return resource::kBitAnd;
-  case vm::OP_OR: return resource::kBitOr;
-  case vm::OP_LAND: return resource::kBitAnd;
-  case vm::OP_LOR: return resource::kBitOr;
-  case vm::OP_XOR: return resource::kBitXor;
-  case vm::OP_CONCAT: return resource::kBitConcat;
-  case vm::OP_BIT_RANGE: return resource::kBitSel;
-  case vm::OP_LSHIFT: return resource::kShift;
-  case vm::OP_RSHIFT: return resource::kShift;
-  default:
-    CHECK(false) << "unknown resource type: " << vm::OpCodeName(op);
+    case vm::OP_GT:
+      return resource::kGt;
+    case vm::OP_EQ:
+      return resource::kEq;
+    case vm::OP_ADD:
+      return resource::kAdd;
+    case vm::OP_SUB:
+      return resource::kSub;
+    case vm::OP_MUL:
+      return resource::kMul;
+    case vm::OP_BIT_INV:
+      return resource::kBitInv;
+    case vm::OP_AND:
+      return resource::kBitAnd;
+    case vm::OP_OR:
+      return resource::kBitOr;
+    case vm::OP_LAND:
+      return resource::kBitAnd;
+    case vm::OP_LOR:
+      return resource::kBitOr;
+    case vm::OP_XOR:
+      return resource::kBitXor;
+    case vm::OP_CONCAT:
+      return resource::kBitConcat;
+    case vm::OP_BIT_RANGE:
+      return resource::kBitSel;
+    case vm::OP_LSHIFT:
+      return resource::kShift;
+    case vm::OP_RSHIFT:
+      return resource::kShift;
+    default:
+      CHECK(false) << "unknown resource type: " << vm::OpCodeName(op);
   }
   return "";
 }
 
 void ResourceSet::PopulateResourceDataType(int op, IValueType &vt,
-					   IResource *res) {
+                                           IResource *res) {
   if (vm::InsnType::IsNumCalculation(op)) {
     res->input_types_.push_back(vt);
     res->input_types_.push_back(vt);
@@ -509,8 +510,8 @@ void ResourceSet::PopulateResourceDataType(int op, IValueType &vt,
 }
 
 IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_owner,
-					   bool is_write,
-					   int data_width, int depth) {
+                                           bool is_write, int data_width,
+                                           int depth) {
   map<vm::Object *, IResource *> *m;
   const char *n;
   if (is_owner) {
@@ -530,7 +531,7 @@ IResource *ResourceSet::GetChannelResource(vm::Object *obj, bool is_owner,
     return it->second;
   }
   IResourceClass *rc =
-    DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
+      DesignUtil::FindResourceClass(tab_->GetModule()->GetDesign(), n);
   IResource *res = new IResource(tab_, rc);
   tab_->resources_.push_back(res);
   (*m)[obj] = res;

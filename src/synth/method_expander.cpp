@@ -1,10 +1,10 @@
 #include "synth/method_expander.h"
 
-#include "iroha/iroha.h"
 #include "iroha/i_design.h"
+#include "iroha/iroha.h"
 #include "synth/method_context.h"
-#include "synth/resource_set.h"
 #include "synth/object_synth.h"
+#include "synth/resource_set.h"
 #include "synth/thread_synth.h"
 #include "synth/tool.h"
 #include "vm/object.h"
@@ -12,11 +12,11 @@
 namespace synth {
 
 MethodExpander::MethodExpander(MethodContext *root, ThreadSynth *thr_synth,
-			       vector<TableCall> *table_calls)
-  : root_method_(root), thr_synth_(thr_synth),
-    tab_(thr_synth->GetITable()),
-    table_calls_(table_calls) {
-}
+                               vector<TableCall> *table_calls)
+    : root_method_(root),
+      thr_synth_(thr_synth),
+      tab_(thr_synth->GetITable()),
+      table_calls_(table_calls) {}
 
 bool MethodExpander::Expand() {
   for (IRegister *reg : tab_->registers_) {
@@ -71,12 +71,12 @@ CalleeInfo MethodExpander::ExpandMethod(MethodContext *method) {
 }
 
 void MethodExpander::CollectTableCalls(MethodContext *method,
-				       map<IState *, IState *> &st_map) {
+                                       map<IState *, IState *> &st_map) {
   // sub obj call resource.
   IResource *pseudo = thr_synth_->GetResourceSet()->PseudoCallResource();
   for (StateWrapper *sw : method->states_) {
     if (!(sw->is_sub_obj_call_ || sw->is_data_flow_call_ ||
-	  sw->is_ext_stub_call_)) {
+          sw->is_ext_stub_call_)) {
       continue;
     }
     TableCall call;
@@ -86,9 +86,8 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
     call.caller_thread = thr_synth_;
     call.callee_obj = sw->callee_vm_obj_;
     call.callee_func = sw->callee_func_name_;
-    vm::Value *value =
-      call.callee_obj->LookupValue(sym_lookup(call.callee_func.c_str()),
-				   false);
+    vm::Value *value = call.callee_obj->LookupValue(
+        sym_lookup(call.callee_func.c_str()), false);
     CHECK(value && value->type_ == vm::Value::METHOD);
     call.callee_method = value->method_;
     if (sw->is_sub_obj_call_) {
@@ -105,21 +104,21 @@ void MethodExpander::CollectTableCalls(MethodContext *method,
   }
 }
 
-void MethodExpander::ExpandCalleeStates(MethodContext *method,
-					map<IState *, IState *> &st_map,
-					map<IRegister *, IRegister *> &reg_map) {
+void MethodExpander::ExpandCalleeStates(
+    MethodContext *method, map<IState *, IState *> &st_map,
+    map<IRegister *, IRegister *> &reg_map) {
   // call resource.
   IResource *pseudo = thr_synth_->GetResourceSet()->PseudoCallResource();
   for (StateWrapper *sw : method->states_) {
     if (sw->callee_func_name_.empty()) {
       continue;
     }
-    if (sw->is_sub_obj_call_ || sw->is_data_flow_call_ || sw->is_ext_stub_call_) {
+    if (sw->is_sub_obj_call_ || sw->is_data_flow_call_ ||
+        sw->is_ext_stub_call_) {
       continue;
     }
     MethodContext *callee =
-      thr_synth_->GetMethodContext(sw->callee_vm_obj_,
-				   sw->callee_func_name_);
+        thr_synth_->GetMethodContext(sw->callee_vm_obj_, sw->callee_func_name_);
     CalleeInfo ci = ExpandMethod(callee);
     IState *rs = Tool::GetNextState(sw->state_);
     Tool::SetNextState(st_map[sw->state_], ci.initial);
@@ -145,8 +144,8 @@ void MethodExpander::ExpandCalleeStates(MethodContext *method,
 }
 
 void MethodExpander::CopyState(IState *ost, map<IState *, IState *> &st_map,
-			       map<IRegister *, IRegister *> &reg_map,
-			       IState *nst, map<IInsn *, IInsn *> &insn_map) {
+                               map<IRegister *, IRegister *> &reg_map,
+                               IState *nst, map<IInsn *, IInsn *> &insn_map) {
   for (IInsn *insn : ost->insns_) {
     IInsn *new_insn = CopyInsn(insn, st_map, reg_map);
     insn_map[insn] = new_insn;
@@ -156,9 +155,8 @@ void MethodExpander::CopyState(IState *ost, map<IState *, IState *> &st_map,
   nst->GetMutableProfile()->raw_count_ = ost->GetProfile().raw_count_;
 }
 
-IInsn *MethodExpander::CopyInsn(IInsn *oinsn,
-				map<IState *, IState *> &st_map,
-				map<IRegister *, IRegister *> &reg_map) {
+IInsn *MethodExpander::CopyInsn(IInsn *oinsn, map<IState *, IState *> &st_map,
+                                map<IRegister *, IRegister *> &reg_map) {
   IInsn *insn = new IInsn(oinsn->GetResource());
   insn->SetOperand(oinsn->GetOperand());
   for (IRegister *reg : oinsn->inputs_) {
@@ -173,20 +171,21 @@ IInsn *MethodExpander::CopyInsn(IInsn *oinsn,
   return insn;
 }
 
-void MethodExpander::CopyDependingInsns(MethodContext *method, map<IInsn *, IInsn *> &insn_map) {
+void MethodExpander::CopyDependingInsns(MethodContext *method,
+                                        map<IInsn *, IInsn *> &insn_map) {
   for (StateWrapper *sw : method->states_) {
     for (IInsn *insn : sw->state_->insns_) {
       IInsn *new_insn = insn_map[insn];
       CHECK(new_insn);
       for (IInsn *dinsn : insn->depending_insns_) {
-	new_insn->depending_insns_.push_back(insn_map[dinsn]);
+        new_insn->depending_insns_.push_back(insn_map[dinsn]);
       }
     }
   }
 }
 
 void MethodExpander::BuildInsnRegCopy(IInsn *insn,
-				      map<IRegister *, IRegister *> &reg_map) {
+                                      map<IRegister *, IRegister *> &reg_map) {
   for (IRegister *reg : insn->inputs_) {
     BuildRegCopy(reg, reg_map);
   }
@@ -196,7 +195,7 @@ void MethodExpander::BuildInsnRegCopy(IInsn *insn,
 }
 
 void MethodExpander::BuildRegCopy(IRegister *reg,
-				  map<IRegister *, IRegister *> &reg_map) {
+                                  map<IRegister *, IRegister *> &reg_map) {
   if (reg->IsConst()) {
     reg_map[reg] = reg;
     return;

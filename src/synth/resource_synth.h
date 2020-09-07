@@ -7,7 +7,7 @@
 namespace synth {
 
 class ResourceSynth {
-public:
+ public:
   ResourceSynth(ResourceSet *rset, ThreadSynth *thr_synth_);
 
   void MayAddAxiMasterPort(vm::Object *owner_obj, vm::Object *array_obj);
@@ -19,9 +19,11 @@ public:
   void MayConfigureExternalSram(vm::Object *obj, IResource *res);
   void MayAddExternalSram(vm::Object *array_obj);
 
-private:
-  void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj, IResource *res);
-  void ConfigureSlavePort(vm::Object *owner_obj, vm::Object *array_obj, Annotation *an, IResource *if_port);
+ private:
+  void SetArrayName(vm::Object *owner_obj, vm::Object *array_obj,
+                    IResource *res);
+  void ConfigureSlavePort(vm::Object *owner_obj, vm::Object *array_obj,
+                          Annotation *an, IResource *if_port);
 
   ResourceSet *rset_;
   ThreadSynth *thr_synth_;

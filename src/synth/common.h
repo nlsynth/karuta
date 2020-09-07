@@ -51,8 +51,11 @@ class SharedResourceSet;
 // Sub obj call, data flow call or ext stub call.
 // MethodExpander populates this.
 struct TableCall {
-  TableCall() : is_sub_obj_call(false),	is_data_flow_call(false),
-		is_ext_stub_call(false), is_ext_flow_stub_call(false) {}
+  TableCall()
+      : is_sub_obj_call(false),
+        is_data_flow_call(false),
+        is_ext_stub_call(false),
+        is_ext_flow_stub_call(false) {}
   IInsn *call_insn;
   IState *call_state;
   ThreadSynth *caller_thread;

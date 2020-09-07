@@ -7,13 +7,13 @@
 namespace synth {
 
 class MethodScanner : public InsnWalker {
-public:
+ public:
   MethodScanner(ThreadSynth *thr_synth, vm::Object *obj,
-		const string &method_name);
+                const string &method_name);
 
   bool Scan();
 
-private:
+ private:
   void ScanInsn(vm::Insn *insn);
 
   void Funcall(vm::Insn *insn);

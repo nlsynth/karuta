@@ -1,12 +1,12 @@
 #include "synth/object_tree.h"
 
+#include <list>
+
 #include "karuta/annotation.h"
 #include "synth/object_attr_names.h"
 #include "vm/distance_wrapper.h"
 #include "vm/object.h"
 #include "vm/value.h"
-
-#include <list>
 
 using std::list;
 using std::set;
@@ -14,15 +14,11 @@ using std::set;
 namespace synth {
 
 ObjectTree::ObjectTree(vm::VM *vm, vm::Object *root_obj)
-  : vm_(vm), root_obj_(root_obj) {
-}
+    : vm_(vm), root_obj_(root_obj) {}
 
-ObjectTree::~ObjectTree() {
-}
+ObjectTree::~ObjectTree() {}
 
-vm::Object *ObjectTree::GetRootObject() const {
-  return root_obj_;
-}
+vm::Object *ObjectTree::GetRootObject() const { return root_obj_; }
 
 void ObjectTree::Build() {
   list<vm::Object *> q;
@@ -55,9 +51,7 @@ std::map<vm::Object *, string> ObjectTree::GetChildObjects(vm::Object *o) {
   return obj_children_map_[o];
 }
 
-string ObjectTree::GetObjectName(vm::Object *o) {
-  return obj_to_name_[o];
-}
+string ObjectTree::GetObjectName(vm::Object *o) { return obj_to_name_[o]; }
 
 int ObjectTree::GetDistance(vm::Object *src, vm::Object *dst) {
   auto it = distance_map_.find(src);
@@ -78,7 +72,7 @@ ObjectTree::GetDistanceMap() const {
 }
 
 void ObjectTree::CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
-			     std::list<vm::Object *> *q) {
+                             std::list<vm::Object *> *q) {
   map<sym_t, vm::Object *> member_objs;
   o->GetAllMemberObjs(&member_objs);
   for (auto it : member_objs) {

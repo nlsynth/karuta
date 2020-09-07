@@ -2,11 +2,11 @@
 #ifndef _synth_object_tree_h_
 #define _synth_object_tree_h_
 
-#include "synth/common.h"
-
 #include <list>
 #include <map>
 #include <set>
+
+#include "synth/common.h"
 
 namespace synth {
 
@@ -14,7 +14,7 @@ namespace synth {
 // assigns an unique name to each object.
 // This also holds distances between objects (specified by annotations).
 class ObjectTree {
-public:
+ public:
   ObjectTree(vm::VM *vm, vm::Object *root_obj);
   virtual ~ObjectTree();
 
@@ -24,11 +24,12 @@ public:
   std::map<vm::Object *, string> GetChildObjects(vm::Object *o);
   string GetObjectName(vm::Object *o);
   int GetDistance(vm::Object *src, vm::Object *dst);
-  const std::map<vm::Object *, std::map<vm::Object *, int> > GetDistanceMap() const;
+  const std::map<vm::Object *, std::map<vm::Object *, int> > GetDistanceMap()
+      const;
 
-private:
+ private:
   void CheckObject(vm::Object *o, std::set<vm::Object *> &seen,
-		   std::list<vm::Object *> *q);
+                   std::list<vm::Object *> *q);
   void PopulateDistance(vm::Object *o);
   string GetSpecifiedName(vm::Object *o);
   void AssignNames(std::vector<vm::Object *> &objs);

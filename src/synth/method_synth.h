@@ -2,10 +2,10 @@
 #ifndef _synth_method_synth_h_
 #define _synth_method_synth_h_
 
-#include "synth/insn_walker.h"
-
 #include <map>
 #include <tuple>
+
+#include "synth/insn_walker.h"
 
 using std::map;
 using std::tuple;
@@ -13,10 +13,10 @@ using std::tuple;
 namespace synth {
 
 class MethodSynth : public InsnWalker {
-public:
-  MethodSynth(ThreadSynth *thr_synth,
-	      vm::Object *obj, const string &method_name,
-	      ITable *tab, ResourceSynth *rsynth, ResourceSet *res);
+ public:
+  MethodSynth(ThreadSynth *thr_synth, vm::Object *obj,
+              const string &method_name, ITable *tab, ResourceSynth *rsynth,
+              ResourceSet *res);
   virtual ~MethodSynth();
 
   bool Synth();
@@ -34,7 +34,7 @@ public:
   ITable *GetITable();
   ThreadSynth *GetThreadSynth();
 
-private:
+ private:
   bool SynthFromInsns();
   bool SynthAlternativeImplMethod(vm::Method *method);
   void SynthEmbeddedMethod(vm::Method *method);
@@ -57,9 +57,9 @@ private:
   void SynthGoto(vm::Insn *insn);
   void SynthMemberAccess(vm::Insn *insn, bool is_store);
   void SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
-			    vm::Value *value, bool is_store);
+                            vm::Value *value, bool is_store);
   void SynthMemberSharedRegAccess(vm::Insn *insn, vm::Object *owner_obj,
-				  vm::Value *value, bool is_store);
+                                  vm::Value *value, bool is_store);
   void SynthArrayAccess(vm::Insn *insn, bool is_write);
   IRegister *GetArrayIndex(vm::Object *array_obj, vm::Insn *insn, int start);
   int GetArrayReplicaIndex(vm::Object *array_obj, vm::Insn *insn);
@@ -107,7 +107,7 @@ private:
   map<int, StateWrapper *> vm_insn_state_map_;
 
   IRegister *FindArgRegister(vm::Method *method, int nth,
-			     fe::VarDecl *arg_decl);
+                             fe::VarDecl *arg_decl);
   void ResolveJumps();
   void LinkStates();
   void InsnToCalcValueType(vm::Insn *insn, IValueType *vt);

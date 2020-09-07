@@ -7,7 +7,7 @@
 namespace synth {
 
 class StateWrapper {
-public:
+ public:
   StateWrapper();
 
   int index_;
@@ -26,7 +26,7 @@ public:
 };
 
 class MethodContext {
-public:
+ public:
   MethodContext(MethodSynth *synth);
   ~MethodContext();
 
@@ -37,7 +37,7 @@ public:
 
   StateWrapper *LastState();
 
-private:
+ private:
   MethodSynth *synth_;
 };
 

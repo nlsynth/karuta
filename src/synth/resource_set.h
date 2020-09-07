@@ -8,17 +8,17 @@
 #include "synth/common.h"
 
 // for IValueType
+#include <map>
+
 #include "iroha/i_design.h"
 #include "vm/opcode.h"
-
-#include <map>
 
 using std::map;
 
 namespace synth {
 
 class ResourceSet {
-public:
+ public:
   ResourceSet(ITable *tab);
   ~ResourceSet();
 
@@ -32,13 +32,11 @@ public:
   IResource *GetImportedResource(vm::Method *method);
   IResource *GetExternalArrayResource(vm::Object *obj);
   IResource *GetInternalArrayResource(vm::Object *obj);
-  IResource *GetChannelResource(vm::Object *ch, bool is_owner,
-				bool is_write,
-				int data_width,	int depth);
+  IResource *GetChannelResource(vm::Object *ch, bool is_owner, bool is_write,
+                                int data_width, int depth);
   IResource *GetSubModuleTaskResource();
   IResource *GetDataFlowInResource();
-  IResource *GetMemberSharedReg(sym_t name, bool is_owner,
-				bool is_write);
+  IResource *GetMemberSharedReg(sym_t name, bool is_owner, bool is_write);
   IResource *GetSharedArray(vm::Object *obj, bool is_owner, bool is_write);
   IResource *GetSharedArrayReplica(vm::Object *obj, int index);
   IResource *GetAxiMasterPort(vm::Object *obj);
@@ -48,20 +46,20 @@ public:
   IResource *GetMailboxExtWriter(vm::Object *obj);
   IResource *GetTaskReturnRegWriter(int width);
   IResource *GetExtIOByName(const string &name, bool is_output, int width,
-			    int distance);
+                            int distance);
   IResource *GetExtIOByObject(vm::Object *obj, bool is_owner);
   IResource *GetExtTaskResource();
   IResource *GetExtTaskDoneResource();
   IResource *GetTicker(vm::Object *obj, bool is_owner);
 
-private:
+ private:
   string GetResourceClassName(vm::OpCode op);
   void PopulateResourceDataType(int op, IValueType &vt, IResource *res);
   void PopulateIOTypes(fe::VarDeclSet *vds, bool is_output, IResource *res);
   IResource *GetPortResource(vm::Object *obj, const string &name,
-			     map<vm::Object *, IResource *> *resources);
+                             map<vm::Object *, IResource *> *resources);
   IResource *BuildExtIO(const string &name, bool is_output, int width,
-			int distance);
+                        int distance);
 
   ITable *tab_;
   IResource *assert_;
@@ -77,7 +75,7 @@ private:
   IResource *ext_task_done_;
 
   class ResourceEntry {
-  public:
+   public:
     vm::OpCode op;
     IValueType vt;
     IResource *resource;

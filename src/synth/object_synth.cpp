@@ -12,21 +12,19 @@
 
 namespace synth {
 
-ObjectSynth::ObjectSynth(vm::Object *obj,
-			 DesignSynth *design_synth,
-			 bool is_root, const string &name)
-  : obj_(obj),
-    design_synth_(design_synth), mod_(nullptr), is_root_(is_root),
-    obj_name_(name) {
+ObjectSynth::ObjectSynth(vm::Object *obj, DesignSynth *design_synth,
+                         bool is_root, const string &name)
+    : obj_(obj),
+      design_synth_(design_synth),
+      mod_(nullptr),
+      is_root_(is_root),
+      obj_name_(name) {
   mod_ = new IModule(design_synth_->GetIDesign(), obj_name_);
   design_synth_->GetIDesign()->modules_.push_back(mod_);
   CollectThreads(mod_);
 }
 
-ObjectSynth::~ObjectSynth() {
-  STLDeleteValues(&threads_);
-}
-
+ObjectSynth::~ObjectSynth() { STLDeleteValues(&threads_); }
 
 bool ObjectSynth::HasSynthesizable(vm::Object *obj) {
   // Either runnable threads or visible resource.
@@ -43,7 +41,7 @@ void ObjectSynth::AddTaskEntryName(const string &task_entry) {
     return;
   }
   ThreadSynth *th =
-    new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), nullptr, 0);
+      new ThreadSynth(this, task_entry.c_str(), task_entry.c_str(), nullptr, 0);
   th->SetIsTask(true);
   threads_.push_back(th);
   task_entry_names_.insert(task_entry);
@@ -73,7 +71,7 @@ bool ObjectSynth::Synth() {
   for (auto *thr : threads_) {
     if (!thr->Synth()) {
       Status::os(Status::USER_ERROR)
-	<< "Failed to synthesize object: " << obj_name_;
+          << "Failed to synthesize object: " << obj_name_;
       MessageFlush::Get(Status::USER_ERROR);
       return false;
     }
@@ -86,13 +84,9 @@ bool ObjectSynth::Synth() {
   return true;
 }
 
-vm::VM *ObjectSynth::GetVM() const {
-  return design_synth_->GetVM();
-}
+vm::VM *ObjectSynth::GetVM() const { return design_synth_->GetVM(); }
 
-vm::Object *ObjectSynth::GetObject() const {
-  return obj_;
-}
+vm::Object *ObjectSynth::GetObject() const { return obj_; }
 
 void ObjectSynth::CollectThreads(IModule *mod) {
   vector<vm::ThreadWrapper::ThreadEntry> thread_entries;
@@ -107,8 +101,8 @@ void ObjectSynth::CollectThreads(IModule *mod) {
     threads_.push_back(ts);
   }
   for (auto &te : thread_entries) {
-    threads_.push_back(new ThreadSynth(this, te.thread_name,
-				       te.method_name, te.thread_obj, te.index));
+    threads_.push_back(new ThreadSynth(this, te.thread_name, te.method_name,
+                                       te.thread_obj, te.index));
   }
   for (string &ee : ext_entries) {
     threads_.push_back(new ThreadSynth(this, ee, ee, obj_, 0));
@@ -126,7 +120,7 @@ void ObjectSynth::ResolveTableCallsAll() {
 
 void ObjectSynth::ResolveTableCall(const TableCall &call) {
   ObjectSynth *callee_osynth =
-    design_synth_->GetObjectSynth(call.callee_obj, true);
+      design_synth_->GetObjectSynth(call.callee_obj, true);
   ThreadSynth *callee_thr = callee_osynth->GetThreadByName(call.callee_func);
   ITable *callee_table = nullptr;
   if (callee_thr != nullptr) {
@@ -135,24 +129,24 @@ void ObjectSynth::ResolveTableCall(const TableCall &call) {
   IInsn *insn = nullptr;
   if (call.is_sub_obj_call) {
     insn = ThreadSynth::InjectSubModuleCall(call.call_state, call.call_insn,
-					    callee_table);
+                                            callee_table);
   } else if (call.is_data_flow_call) {
     bool no_wait = call.callee_method->GetAnnotation()->IsNoWait();
-    insn = ThreadSynth::InjectDataFlowCall(call.caller_thread,
-					   call.call_state, call.call_insn,
-					   callee_table, no_wait);
+    insn =
+        ThreadSynth::InjectDataFlowCall(call.caller_thread, call.call_state,
+                                        call.call_insn, callee_table, no_wait);
   } else {
     CHECK(call.is_ext_stub_call);
     string name = call.callee_method->GetAnnotation()->GetName();
     if (name.empty()) {
       name = call.callee_func;
     }
-    insn = ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn,
-					  name, call.is_ext_flow_stub_call);
+    insn = ThreadSynth::InjectExtStubCall(call.call_state, call.call_insn, name,
+                                          call.is_ext_flow_stub_call);
   }
   if (insn == nullptr) {
     Status::os(Status::USER_ERROR)
-      << "Failed to synthesize function call: " << call.callee_func;
+        << "Failed to synthesize function call: " << call.callee_func;
     MessageFlush::Get(Status::USER_ERROR);
     return;
   }
@@ -180,21 +174,15 @@ ThreadSynth *ObjectSynth::GetThreadByName(const string &name) {
   return nullptr;
 }
 
-IModule *ObjectSynth::GetIModule() {
-  return mod_;
-}
+IModule *ObjectSynth::GetIModule() { return mod_; }
 
-DesignSynth *ObjectSynth::GetDesignSynth() {
-  return design_synth_;
-}
+DesignSynth *ObjectSynth::GetDesignSynth() { return design_synth_; }
 
 const vector<ThreadSynth *> &ObjectSynth::GetAllThreads() const {
   return threads_;
 }
 
-const string &ObjectSynth::GetName() const {
-  return obj_name_;
-}
+const string &ObjectSynth::GetName() const { return obj_name_; }
 
 void ObjectSynth::DeterminePrimaryThread() {
   for (auto *thr : threads_) {

@@ -17,7 +17,7 @@
 namespace synth {
 
 InsnWalker::InsnWalker(ThreadSynth *thr_synth, vm::Object *obj)
-  : thr_synth_(thr_synth), obj_(obj) {
+    : thr_synth_(thr_synth), obj_(obj) {
   vm_ = thr_synth->GetObjectSynth()->GetVM();
   DesignSynth *ds = thr_synth->GetObjectSynth()->GetDesignSynth();
   shared_resource_set_ = ds->GetSharedResourceSet();
@@ -28,20 +28,19 @@ void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
     vm::Object *obj = member_reg_to_obj_map_[insn->src_regs_[0]];
     vm::Value *value = obj->LookupValue(insn->label_, false);
     if (value == nullptr) {
-      Status::os(Status::USER_ERROR) << "member not found: "
-				     << sym_cstr(insn->label_);
+      Status::os(Status::USER_ERROR)
+          << "member not found: " << sym_cstr(insn->label_);
       return;
     }
     if (!value->is_const_) {
       if (vm::TlsWrapper::IsTlsValue(value)) {
-	vm::Object *base_obj =
-	  vm::TlsWrapper::GetBaseObject(value->object_);
-	member_reg_to_obj_map_[insn->dst_regs_[0]] = base_obj;
-	member_to_owner_obj_map_[base_obj] = obj;
-	thread_local_objs_.insert(base_obj);
+        vm::Object *base_obj = vm::TlsWrapper::GetBaseObject(value->object_);
+        member_reg_to_obj_map_[insn->dst_regs_[0]] = base_obj;
+        member_to_owner_obj_map_[base_obj] = obj;
+        thread_local_objs_.insert(base_obj);
       } else if (value->IsObjectType()) {
-	member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
-	member_to_owner_obj_map_[value->object_] = obj;
+        member_reg_to_obj_map_[insn->dst_regs_[0]] = value->object_;
+        member_to_owner_obj_map_[value->object_] = obj;
       }
     }
   }
@@ -82,9 +81,7 @@ void InsnWalker::MaybeLoadObjectArrayElement(vm::Insn *insn) {
   }
 }
 
-vm::Object *InsnWalker::GetObject() {
-  return obj_;
-}
+vm::Object *InsnWalker::GetObject() { return obj_; }
 
 bool InsnWalker::IsNativeFuncall(vm::Insn *insn) {
   vm::Method *method = GetCalleeMethod(insn);
@@ -133,7 +130,7 @@ bool InsnWalker::IsDataFlowCall(vm::Insn *insn) {
 bool InsnWalker::IsExtStubCall(vm::Insn *insn) {
   vm::Method *method = GetCalleeMethod(insn);
   return method->GetAnnotation()->IsExtMethodStub() ||
-    method->GetAnnotation()->IsExtFlowStub();
+         method->GetAnnotation()->IsExtFlowStub();
 }
 
 bool InsnWalker::IsExtFlowStubCall(vm::Insn *insn) {
@@ -153,8 +150,6 @@ SharedResourceSet *InsnWalker::GetSharedResourceSet() {
   return shared_resource_set_;
 }
 
-ThreadSynth *InsnWalker::GetThreadSynth() {
-  return thr_synth_;
-}
+ThreadSynth *InsnWalker::GetThreadSynth() { return thr_synth_; }
 
 }  // namespace synth
