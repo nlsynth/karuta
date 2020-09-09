@@ -228,6 +228,16 @@ A *for* loop with fixed loop count can be unrolled by specifying the number of c
      // does computation
    }
 
+WIP.
+
+.. code-block:: none
+
+   @Pipeline(num=2)
+   for var i int = 0; i < 8; ++i {
+     // does computation
+   }
+
+
 =========================
 Communication to external
 =========================
