@@ -57,7 +57,7 @@ bool DesignSynth::Synth() {
   DesignTool::Validate(i_design_.get());
 
   iroha::OptAPI *optimizer = iroha::Iroha::CreateOptimizer(i_design_.get());
-  optimizer->ApplyPhase("clean_pseudo_resource");
+  optimizer->ApplyPass("clean_pseudo_resource");
   return true;
 }
 
