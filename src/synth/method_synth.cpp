@@ -604,6 +604,9 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
     params->SetLoopUnroll(an->GetNum());
     if (an->IsPipeline()) {
       params->SetIsPipeline(true);
+      if (an->IsPipelineX()) {
+        params->SetExperimental(1);
+      }
     }
   }
   return ireg;

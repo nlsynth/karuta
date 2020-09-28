@@ -170,7 +170,12 @@ int Annotation::GetDistance() { return LookupIntParam("distance", 0); }
 
 bool Annotation::IsPipeline() {
   string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "Pipeline");
+  return (s == "Pipeline" || s == "PipelineX");
+}
+
+bool Annotation::IsPipelineX() {
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  return (s == "PipelineX");
 }
 
 bool Annotation::IsSoftThreadEntry() {

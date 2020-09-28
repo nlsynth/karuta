@@ -72,6 +72,8 @@ class Annotation {
   bool IsThreadLocal();
   int GetDistance();
   bool IsPipeline();
+  // With experimental features.
+  bool IsPipelineX();
 
   // resetPolarity 1 or not.
   bool ResetPolarity();
