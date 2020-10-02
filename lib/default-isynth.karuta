@@ -17,9 +17,9 @@ func Kernel.setName(s object) {
 func Kernel.compile() {
   __compile()
   if _use_ssa {
-    __compile("clean,unroll,ssa_convert,phi_cleaner,clean")
+    __compile("clean,unroll,ssa_convert,phi_cleaner,pipeline,clean")
   } else {
-    __compile("clean,unroll,alloc_resource,clean")
+    __compile("clean,unroll,pipeline,alloc_resource,clean")
   }
 }
 
