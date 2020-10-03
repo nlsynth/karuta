@@ -1,4 +1,5 @@
-0.6.1wip
+2020/10/03 0.6.1
+ Bug fixes. Initial pipeline code.
 2020/08/30 0.6.0
  Improved external access of mailbox, sram and input port.
 2020/08/02 0.5.10
