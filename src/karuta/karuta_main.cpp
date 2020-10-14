@@ -56,7 +56,10 @@ void KarutaMain::PrintUsage() {
        << "   --vanilla\n"
        << "   --vcd\n"
        << "   --version\n"
-       << "   --with_shell\n";
+       << "   --with_shell\n"
+       << "\n"
+       << " Please see https://karuta.readthedocs.io/en/latest/ or "
+          "https://twitter.com/karutalang for more information.\n\n";
   exit(0);
 }
 
@@ -139,7 +142,7 @@ int KarutaMain::main(int argc, char **argv) {
     // Run as Iroha.
     return iroha::main(argc, argv);
   }
-  if (args.GetBoolFlag("help", false)) {
+  if (args.GetBoolFlag("help", false) || argc == 1) {
     PrintUsage();
   }
   vanilla_ = args.GetBoolFlag("vanilla", false);
