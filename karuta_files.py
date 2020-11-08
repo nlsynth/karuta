@@ -6,7 +6,7 @@ sys.path.append("iroha/")
 sys.path.append("tests/")
 sys.path.append("lib/")
 
-VERSION = "0.6.2wip"
+VERSION = "0.6.2"
 
 EXTRA = ["README.md", "NEWS", "configure", "Makefile", "config.mk", "karuta", "src/karuta.gyp", "iroha/src/iroha.gyp",
          "src/fe/parser.ypp", "genparser.py", "karuta_files.py", "examples/top.karuta", "examples/fp16r.karuta"]
