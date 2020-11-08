@@ -11,9 +11,9 @@
 #include "vm/int_array.h"
 #include "vm/method.h"
 #include "vm/native_objects.h"
-#include "vm/profile.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
+#include "vm/profile.h"
 #include "vm/thread.h"
 
 namespace vm {
@@ -42,16 +42,17 @@ void VM::Run() {
     may_continue = false;
     for (Thread *thr : threads_) {
       if (thr->IsRunnable()) {
-	thr->Run();
-	may_continue = true;
+        thr->Run();
+        may_continue = true;
       }
     }
     if (!may_continue) {
       if (yielded_threads_.size() > 0) {
-	Thread *thr = *(yielded_threads_.begin());
-	yielded_threads_.erase(thr);
-	thr->Resume();
-	may_continue = true;
+        for (Thread *thr : yielded_threads_) {
+          thr->Resume();
+        }
+        yielded_threads_.clear();
+        may_continue = true;
       }
     }
     context_switch_count++;
@@ -65,8 +66,8 @@ void VM::Run() {
   if (!expired) {
     for (Thread *thr : threads_) {
       if (!thr->IsDone()) {
-	Status::os(Status::USER_ERROR) << "Remaining runnable thread(s)";
-	MessageFlush::Get(Status::USER_ERROR);
+        Status::os(Status::USER_ERROR) << "Remaining runnable thread(s)";
+        MessageFlush::Get(Status::USER_ERROR);
       }
     }
   }
@@ -74,7 +75,7 @@ void VM::Run() {
 }
 
 Thread *VM::AddThreadFromMethod(Thread *parent, Object *object, Method *method,
-				int index) {
+                                int index) {
   compiler::Compiler::CompileMethod(this, object, method);
   Thread *thread = new Thread(this, parent, object, method, index);
   threads_.insert(thread);
@@ -86,9 +87,7 @@ void VM::Yield(Thread *thr) {
   yielded_threads_.insert(thr);
 }
 
-void VM::GC() {
-  GC::Run(this, &threads_, &objects_);
-}
+void VM::GC() { GC::Run(this, &threads_, &objects_); }
 
 void VM::InstallBoolType() {
   bool_type_ = EnumTypeWrapper::NewEnumTypeWrapper(this, sym_lookup("bool"));
@@ -145,9 +144,8 @@ void VM::InstallObjects() {
 
   vector<uint64_t> s;
   s.push_back(0);
-  default_mem_ =
-    ArrayWrapper::NewIntArrayWrapper(this, s, iroha::NumericWidth(false, 32),
-				     nullptr);
+  default_mem_ = ArrayWrapper::NewIntArrayWrapper(
+      this, s, iroha::NumericWidth(false, 32), nullptr);
   ArrayWrapper::InstallSramIfMethods(this, default_mem_);
   object_value.object_ = default_mem_;
   kernel_object_->InstallValue(sym_lookup("Memory"), object_value);
@@ -169,16 +167,10 @@ Object *VM::NewEmptyObject() {
   return object;
 }
 
-Profile *VM::GetProfile() const {
-  return profile_.get();
-}
+Profile *VM::GetProfile() const { return profile_.get(); }
 
-unsigned int VM::GetGlobalTickCount() {
-  return ++tick_count_;
-}
+unsigned int VM::GetGlobalTickCount() { return ++tick_count_; }
 
-void VM::AddGlobalTickCount(unsigned int t) {
-  tick_count_ += t;
-}
+void VM::AddGlobalTickCount(unsigned int t) { tick_count_ += t; }
 
 }  // namespace vm
