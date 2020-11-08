@@ -4,8 +4,8 @@
 #include "base/status.h"
 #include "compiler/compiler.h"
 #include "fe/expr.h"
-#include "fe/stmt.h"
 #include "fe/nodecode.h"
+#include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "iroha/numeric.h"
 #include "karuta/annotation.h"
@@ -32,16 +32,14 @@ void Base::ExecNum() {
     d->type_.width_ = sreg(0)->initial_num_.type_;
   }
   iroha::Numeric::CopyValueWithWidth(sreg(0)->initial_num_.GetArray(),
-				     sreg(0)->initial_num_.type_,
-				     d->type_.width_,
-				     nullptr,
-				     &VAL(d).num_);
+                                     sreg(0)->initial_num_.type_,
+                                     d->type_.width_, nullptr, &VAL(d).num_);
 }
 
 void Base::ExecStr() {
   Value &v = VAL(dreg(0));
   v.object_ =
-    StringWrapper::NewStringWrapper(thr_->GetVM(), InsnOpUtils::Str(insn_));
+      StringWrapper::NewStringWrapper(thr_->GetVM(), InsnOpUtils::Str(insn_));
   if (IsTopLevel()) {
     v.type_ = Value::OBJECT;
   }
@@ -70,97 +68,67 @@ void Base::ExecBinop() {
     return;
   }
   switch (op()) {
-  case OP_ADD:
-  case OP_ADD_MAY_WITH_TYPE:
-    iroha::Op::Add0(VAL(lhs).num_, VAL(rhs).num_,
-		    &VAL(dst).num_);
-    iroha::Op::FixupValueWidth(dst->type_.width_,
-			       &VAL(dst).num_);
-    break;
-  case OP_SUB:
-  case OP_SUB_MAY_WITH_TYPE:
-    iroha::Op::Sub0(VAL(lhs).num_, VAL(rhs).num_,
-		    &VAL(dst).num_);
-    iroha::Op::FixupValueWidth(dst->type_.width_,
-			       &VAL(dst).num_);
-    break;
-  case OP_MUL:
-  case OP_MUL_MAY_WITH_TYPE:
-    iroha::Op::CalcBinOp(iroha::BINOP_MUL,
-			 VAL(lhs).num_, VAL(rhs).num_,
-			 rhs->type_.width_,
-			 &VAL(dst).num_);
-    iroha::Op::FixupValueWidth(dst->type_.width_,
-			       &VAL(dst).num_);
-    break;
-  case OP_DIV:
-  case OP_DIV_MAY_WITH_TYPE:
-    iroha::Op::CalcBinOp(iroha::BINOP_DIV,
-			 VAL(lhs).num_, VAL(rhs).num_,
-			 rhs->type_.width_,
-			 &VAL(dst).num_);
-    iroha::Op::FixupValueWidth(dst->type_.width_,
-			       &VAL(dst).num_);
-    break;
-  case OP_ASSIGN:
-    iroha::Numeric::CopyValueWithWidth(VAL(rhs).num_,
-				       rhs->type_.width_,
-				       dst->type_.width_,
-				       nullptr,
-				       &VAL(dst).num_);
-    iroha::Op::FixupValueWidth(dst->type_.width_,
-			       &VAL(dst).num_);
-    if (IsTopLevel() &&
-	!dst->GetIsDeclaredType()) {
-      dst->type_ = rhs->type_;
-    }
-    break;
-  case OP_AND:
-    iroha::Op::CalcBinOp(iroha::BINOP_AND,
-			 VAL(lhs).num_, VAL(rhs).num_,
-			 lhs->type_.width_,
-			 &VAL(dst).num_);
-    break;
-  case OP_OR:
-    iroha::Op::CalcBinOp(iroha::BINOP_OR,
-			 VAL(lhs).num_, VAL(rhs).num_,
-			 lhs->type_.width_,
-			 &VAL(dst).num_);
-    break;
-  case OP_XOR:
-    iroha::Op::CalcBinOp(iroha::BINOP_XOR,
-			 VAL(lhs).num_, VAL(rhs).num_,
-			 lhs->type_.width_,
-			 &VAL(dst).num_);
-    break;
-  case OP_CONCAT:
-    {
+    case OP_ADD:
+    case OP_ADD_MAY_WITH_TYPE:
+      iroha::Op::Add0(VAL(lhs).num_, VAL(rhs).num_, &VAL(dst).num_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_SUB:
+    case OP_SUB_MAY_WITH_TYPE:
+      iroha::Op::Sub0(VAL(lhs).num_, VAL(rhs).num_, &VAL(dst).num_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_MUL:
+    case OP_MUL_MAY_WITH_TYPE:
+      iroha::Op::CalcBinOp(iroha::BINOP_MUL, VAL(lhs).num_, VAL(rhs).num_,
+                           rhs->type_.width_, &VAL(dst).num_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_DIV:
+    case OP_DIV_MAY_WITH_TYPE:
+      iroha::Op::CalcBinOp(iroha::BINOP_DIV, VAL(lhs).num_, VAL(rhs).num_,
+                           rhs->type_.width_, &VAL(dst).num_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_ASSIGN:
+      iroha::Numeric::CopyValueWithWidth(VAL(rhs).num_, rhs->type_.width_,
+                                         dst->type_.width_, nullptr,
+                                         &VAL(dst).num_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      if (IsTopLevel() && !dst->GetIsDeclaredType()) {
+        dst->type_ = rhs->type_;
+      }
+      break;
+    case OP_AND:
+      iroha::Op::CalcBinOp(iroha::BINOP_AND, VAL(lhs).num_, VAL(rhs).num_,
+                           lhs->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_OR:
+      iroha::Op::CalcBinOp(iroha::BINOP_OR, VAL(lhs).num_, VAL(rhs).num_,
+                           lhs->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_XOR:
+      iroha::Op::CalcBinOp(iroha::BINOP_XOR, VAL(lhs).num_, VAL(rhs).num_,
+                           lhs->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_CONCAT: {
       iroha::NumericWidth &lt = lhs->type_.width_;
       iroha::NumericWidth &rt = rhs->type_.width_;
-      iroha::Op::ConcatWithStorage(VAL(lhs).num_, lt,
-				   VAL(rhs).num_, rt,
-				   nullptr,
-				   &VAL(dst).num_, nullptr);
-    }
-    break;
-  case OP_LSHIFT:
-    iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT,
-			 VAL(lhs).num_, VAL(rhs).num_,
-			 lhs->type_.width_,
-			 &VAL(dst).num_);
-    iroha::Op::FixupValueWidth(dst->type_.width_,
-			       &VAL(dst).num_);
-    break;
-  case OP_RSHIFT:
-    iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT,
-			 VAL(lhs).num_, VAL(rhs).num_,
-			 lhs->type_.width_,
-			 &VAL(dst).num_);
-    iroha::Op::FixupValueWidth(dst->type_.width_,
-			       &VAL(dst).num_);
-    break;
-  default:
-    CHECK(false) << "unknown binop:" << vm::OpCodeName(op());
+      iroha::Op::ConcatWithStorage(VAL(lhs).num_, lt, VAL(rhs).num_, rt,
+                                   nullptr, &VAL(dst).num_, nullptr);
+    } break;
+    case OP_LSHIFT:
+      iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT, VAL(lhs).num_, VAL(rhs).num_,
+                           lhs->type_.width_, &VAL(dst).num_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      break;
+    case OP_RSHIFT:
+      iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT, VAL(lhs).num_, VAL(rhs).num_,
+                           lhs->type_.width_, &VAL(dst).num_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      break;
+    default:
+      CHECK(false) << "unknown binop:" << vm::OpCodeName(op());
   }
 }
 
@@ -169,10 +137,8 @@ void Base::RetryBinopWithType() {
     InsnAnnotator::AnnotateConcatInsn(insn_);
     // TODO: Annotate other types of insns.
   } else {
-    CHECK(op() == OP_ADD_MAY_WITH_TYPE ||
-	  op() == OP_SUB_MAY_WITH_TYPE ||
-	  op() == OP_MUL_MAY_WITH_TYPE ||
-	  op() == OP_DIV_MAY_WITH_TYPE);
+    CHECK(op() == OP_ADD_MAY_WITH_TYPE || op() == OP_SUB_MAY_WITH_TYPE ||
+          op() == OP_MUL_MAY_WITH_TYPE || op() == OP_DIV_MAY_WITH_TYPE);
   }
   Register *lhs = sreg(0);
   Register *rhs = sreg(1);
@@ -227,8 +193,7 @@ void Base::ExecArrayWrite() {
     Register *vobj = sreg(0);
     CHECK(vobj->type_.value_type_ == Value::OBJECT);
     int index = VAL(sreg(1)).num_.GetValue0();
-    ArrayWrapper::Set(array_obj, index,
-		      VAL(vobj).object_);
+    ArrayWrapper::Set(array_obj, index, VAL(vobj).object_);
   }
 }
 
@@ -270,18 +235,18 @@ void Base::ExecNumUniop() {
   }
   iroha::NumericValue res;
   switch (op()) {
-  case OP_BIT_INV:
-    iroha::Op::BitInv0(value.num_, &res);
-    break;
-  case OP_PLUS:
-    res = value.num_;
-    break;
-  case OP_MINUS:
-    iroha::Op::Minus0(value.num_, &res);
-    break;
-  default:
-    CHECK(false);
-    break;
+    case OP_BIT_INV:
+      iroha::Op::BitInv0(value.num_, &res);
+      break;
+    case OP_PLUS:
+      res = value.num_;
+      break;
+    case OP_MINUS:
+      iroha::Op::Minus0(value.num_, &res);
+      break;
+    default:
+      CHECK(false);
+      break;
   }
   iroha::Op::FixupValueWidth(dreg(0)->type_.width_, &res);
   dst_value.num_ = res;
@@ -330,82 +295,67 @@ void Base::ExecNonNumResultBinop() {
   Register *lhs = sreg(0);
   Register *rhs = sreg(1);
   switch (op()) {
-  case OP_ASSIGN:
-    VAL(lhs) = VAL(rhs);
-    VAL(dst) = VAL(rhs);
-    break;
-  case OP_LAND:
-    VAL(dst).enum_val_.val =
-      VAL(lhs).enum_val_.val &&
-      VAL(rhs).enum_val_.val;
-    break;
-  case OP_LOR:
-    VAL(dst).enum_val_.val =
-      VAL(lhs).enum_val_.val ||
-      VAL(rhs).enum_val_.val;
-    break;
-  case OP_GT:
-  case OP_LT:
-  case OP_GTE:
-  case OP_LTE:
-    {
+    case OP_ASSIGN:
+      VAL(lhs) = VAL(rhs);
+      VAL(dst) = VAL(rhs);
+      break;
+    case OP_LAND:
+      VAL(dst).enum_val_.val = VAL(lhs).enum_val_.val && VAL(rhs).enum_val_.val;
+      break;
+    case OP_LOR:
+      VAL(dst).enum_val_.val = VAL(lhs).enum_val_.val || VAL(rhs).enum_val_.val;
+      break;
+    case OP_GT:
+    case OP_LT:
+    case OP_GTE:
+    case OP_LTE: {
       // fall through.
       CHECK(lhs->type_.value_type_ == Value::NUM &&
-	    rhs->type_.value_type_ == Value::NUM);
+            rhs->type_.value_type_ == Value::NUM);
     }
-  case OP_EQ:
-  case OP_NE:
-    {
+    case OP_EQ:
+    case OP_NE: {
       bool r;
       if (rhs->type_.value_type_ == Value::NUM) {
-	iroha::CompareOp cmp_op;
-	switch (op()) {
-	case OP_LT:
-	case OP_GTE:
-	  cmp_op = iroha::COMPARE_LT;
-	  break;
-	case OP_GT:
-	case OP_LTE:
-	  cmp_op = iroha::COMPARE_GT;
-	  break;
-	case OP_EQ:
-	case OP_NE:
-	  cmp_op = iroha::COMPARE_EQ;
-	  break;
-	default:
-	  cmp_op = iroha::COMPARE_EQ;
-	  CHECK(false);
-	  break;
-	}
-	r = iroha::Op::Compare0(cmp_op, VAL(lhs).num_,
-				VAL(rhs).num_);
-      } else if (rhs->type_.value_type_ ==
-		 Value::ENUM_ITEM) {
-	r = (VAL(lhs).enum_val_.val ==
-	     VAL(rhs).enum_val_.val);
+        iroha::CompareOp cmp_op;
+        switch (op()) {
+          case OP_LT:
+          case OP_GTE:
+            cmp_op = iroha::COMPARE_LT;
+            break;
+          case OP_GT:
+          case OP_LTE:
+            cmp_op = iroha::COMPARE_GT;
+            break;
+          case OP_EQ:
+          case OP_NE:
+            cmp_op = iroha::COMPARE_EQ;
+            break;
+          default:
+            cmp_op = iroha::COMPARE_EQ;
+            CHECK(false);
+            break;
+        }
+        r = iroha::Op::Compare0(cmp_op, VAL(lhs).num_, VAL(rhs).num_);
+      } else if (rhs->type_.value_type_ == Value::ENUM_ITEM) {
+        r = (VAL(lhs).enum_val_.val == VAL(rhs).enum_val_.val);
       } else {
-	r = VAL(lhs).object_->Compare(VAL(rhs).object_);
+        r = VAL(lhs).object_->Compare(VAL(rhs).object_);
       }
-      if (op() == OP_NE || op() == OP_GTE ||
-	  op() == OP_LTE) {
-	r = !r;
+      if (op() == OP_NE || op() == OP_GTE || op() == OP_LTE) {
+        r = !r;
       }
       VAL(dst).SetBool(r);
-    }
-    break;
-  case OP_ADD:
-  case OP_ADD_MAY_WITH_TYPE:
-    {
+    } break;
+    case OP_ADD:
+    case OP_ADD_MAY_WITH_TYPE: {
       CHECK(lhs->type_.value_type_ == rhs->type_.value_type_);
       CHECK(lhs->type_.value_type_ == Value::OBJECT);
-      string r = VAL(lhs).object_->ToString() +
-	VAL(rhs).object_->ToString();
-      VAL(dst).object_ =
-	StringWrapper::NewStringWrapper(thr_->GetVM(), r);
-    }
-    break;
-  default:
-    CHECK(false) << "unknown non num binop:" << vm::OpCodeName(op());
+      string r = VAL(lhs).object_->ToString() + VAL(rhs).object_->ToString();
+      VAL(dst).object_ = StringWrapper::NewStringWrapper(thr_->GetVM(), r);
+    } break;
+    default:
+      CHECK(false) << "unknown non num binop:" << vm::OpCodeName(op());
   }
 }
 
@@ -472,12 +422,13 @@ Method *Base::LookupCompiledMethod(Object **obj) {
 
 Method *Base::LookupMethod(Object **obj) {
   Value &obj_value = VAL(oreg());
-  CHECK(obj_value.IsObjectType());
+  CHECK(obj_value.IsObjectType())
+      << "reg id=" << oreg()->id_ << " is not an object.";
   *obj = obj_value.object_;
   Value *value = (*obj)->LookupValue(insn_->label_, false);
   if (!value) {
-    Status::os(Status::USER_ERROR) << "method not found: "
-				   << sym_cstr(insn_->label_);
+    Status::os(Status::USER_ERROR)
+        << "method not found: " << sym_cstr(insn_->label_);
     thr_->UserError();
     return nullptr;
   }
@@ -486,15 +437,15 @@ Method *Base::LookupMethod(Object **obj) {
 }
 
 void Base::ExecFuncallDone() {
-  for (size_t i = 0; i < insn_->dst_regs_.size() &&
-	 i < frame_->returns_.size(); ++i) {
+  for (size_t i = 0; i < insn_->dst_regs_.size() && i < frame_->returns_.size();
+       ++i) {
     VAL(insn_->dst_regs_[i]) = frame_->returns_[i];
   }
   frame_->returns_.clear();
 }
 
 void Base::SetupCalleeFrame(Object *obj, Method *callee_method,
-				const vector<Value> &args) {
+                            const vector<Value> &args) {
   MethodFrame *callee_frame = thr_->PushMethodFrame(obj, callee_method);
   for (size_t i = 0; i < args.size(); ++i) {
     callee_frame->reg_values_[i] = args[i];
@@ -510,8 +461,8 @@ bool Base::ExecMemberAccess() {
   }
   Value *member = obj->LookupValue(insn_->label_, false);
   if (member == nullptr) {
-    Status::os(Status::USER_ERROR) << "member not found: "
-				   << sym_cstr(insn_->label_);
+    Status::os(Status::USER_ERROR)
+        << "member not found: " << sym_cstr(insn_->label_);
     thr_->UserError();
     return false;
   }
@@ -549,13 +500,11 @@ void Base::ExecBitRange() {
   int l = VAL(sreg(2)).num_.GetValue0();
   Value &value = VAL(sreg(0));
   Value &res = VAL(dst);
-  iroha::Op::SelectBitsWithStorage(value.num_, value.num_type_,
-				   h, l, nullptr, &res.num_, nullptr);
+  iroha::Op::SelectBitsWithStorage(value.num_, value.num_type_, h, l, nullptr,
+                                   &res.num_, nullptr);
 }
 
-bool Base::ExecYield() {
-  return thr_->Yield();
-}
+bool Base::ExecYield() { return thr_->Yield(); }
 
 void Base::ExecMemberReadWithCheck() {
   if (!ExecMemberAccess()) {
@@ -570,8 +519,8 @@ void Base::ExecMemberReadWithCheck() {
   Register *dst_reg = dreg(0);
   dst_reg->type_.value_type_ = member->type_;
   dst_reg->type_.object_name_ = member->type_object_name_;
-  dst_reg->type_object_ = NumericObject::Get(thr_->GetVM(),
-					     member->type_object_name_);
+  dst_reg->type_object_ =
+      NumericObject::Get(thr_->GetVM(), member->type_object_name_);
 }
 
 bool Base::ExecFuncallWithCheck() {
@@ -624,11 +573,11 @@ void Base::ExecArrayWriteWithCheck() {
 
 void Base::ExecSetTypeObject() {
   Register *reg = dreg(0);
-  reg->type_object_ = NumericObject::Get(thr_->GetVM(),
-					 reg->type_.object_name_);
+  reg->type_object_ =
+      NumericObject::Get(thr_->GetVM(), reg->type_.object_name_);
   if (reg->type_object_ == nullptr) {
-    Status::os(Status::USER_ERROR) << "Can't find numeric type: "
-				   << sym_cstr(reg->type_.object_name_);
+    Status::os(Status::USER_ERROR)
+        << "Can't find numeric type: " << sym_cstr(reg->type_.object_name_);
     thr_->UserError();
   }
 }
@@ -653,7 +602,7 @@ bool Base::ExecCustomOp() {
   CHECK(s);
   Value *value = type_obj->LookupValue(s, false);
   CHECK(value != nullptr && value->type_ == Value::METHOD &&
-	value->method_ != nullptr);
+        value->method_ != nullptr);
   Method *op_method = value->method_;
   compiler::Compiler::CompileMethod(thr_->GetVM(), type_obj, op_method);
   CHECK(!op_method->IsCompileFailure());
@@ -667,7 +616,6 @@ bool Base::ExecCustomOp() {
   return true;
 }
 
-
 void Base::ExecMayWithTypeDone() {
   if (IsCustomOpCall()) {
     dreg(0)->type_ = sreg(0)->type_;
@@ -678,8 +626,7 @@ void Base::ExecMayWithTypeDone() {
 bool Base::IsCustomOpCall() {
   Register *lhs = sreg(0);
   Register *rhs = sreg(1);
-  if (rhs->type_object_ != nullptr &&
-      lhs->type_object_ == rhs->type_object_) {
+  if (rhs->type_object_ != nullptr && lhs->type_object_ == rhs->type_object_) {
     return true;
   }
   return false;

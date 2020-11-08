@@ -38,25 +38,23 @@ void Decl::ExecVardecl() {
   Value *value = obj->LookupValue(name, true);
   DeclAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
-    iroha::Numeric::MayPopulateStorage(value->num_type_,
-				       nullptr, &value->num_);
+    iroha::Numeric::MayPopulateStorage(value->num_type_, nullptr, &value->num_);
     iroha::Op::MakeConst0(0, &value->num_);
   }
   if (value->type_ == Value::OBJECT && an != nullptr) {
     DistanceWrapper::MaySetDistanceAnnotation(name, an, thr_->GetVM(), obj);
   }
   if (value->type_ == Value::INT_ARRAY) {
-    value->object_ = CreateMemoryObject(decl->GetWidth(),
-					decl->GetArrayShape(),
-					decl->GetArrayInitializer(),
-					decl->GetAnnotation());
+    value->object_ =
+        CreateMemoryObject(decl->GetWidth(), decl->GetArrayShape(),
+                           decl->GetArrayInitializer(), decl->GetAnnotation());
   }
   if (value->type_ == Value::OBJECT_ARRAY) {
     value->object_ = CreateObjectArray(decl->GetArrayShape());
   }
   if (value->type_ == Value::OBJECT && decl->GetIsIO()) {
-    value->object_ = CreateIOObject(decl, name, decl->GetIsOutput(),
-				    decl->GetWidth());
+    value->object_ =
+        CreateIOObject(decl, name, decl->GetIsOutput(), decl->GetWidth());
   }
   if (an != nullptr && an->IsThreadLocal()) {
     TlsWrapper::InjectTlsWrapper(thr_->GetVM(), value);
@@ -69,7 +67,7 @@ void Decl::ExecThreadDecl() {
   CHECK(callee_method) << "no method";
   sym_t method_name = insn_->label_;
   Object *thread_obj =
-    ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, false, 0);
+      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, false, 0);
 
   CHECK(callee_obj == VAL(oreg()).object_);
   sym_t member_name = insn_->insn_stmt_->GetExpr()->GetLhs()->GetSym();
@@ -83,7 +81,7 @@ void Decl::ExecChannelDecl() {
   Annotation *an = insn_->insn_stmt_->GetAnnotation();
   CHECK(an == nullptr || !an->IsThreadLocal());
   Object *channel_obj =
-    ChannelWrapper::NewChannel(thr_->GetVM(), width, insn_->label_, an);
+      ChannelWrapper::NewChannel(thr_->GetVM(), width, insn_->label_, an);
 
   Object *obj = VAL(oreg()).object_;
   CHECK(obj);
@@ -96,7 +94,7 @@ void Decl::ExecMailboxDecl() {
   Annotation *an = insn_->insn_stmt_->GetAnnotation();
   int width = insn_->insn_stmt_->GetWidth().GetWidth();
   Object *mailbox_obj =
-    MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn_->label_, an);
+      MailboxWrapper::NewMailbox(thr_->GetVM(), width, insn_->label_, an);
   Object *obj = VAL(oreg()).object_;
   CHECK(obj);
   Value *value = obj->LookupValue(insn_->label_, true);
@@ -107,8 +105,8 @@ void Decl::ExecMailboxDecl() {
 void Decl::ExecFuncdecl() {
   Object *obj = VAL(oreg()).object_;
   if (obj == nullptr) {
-    Status::os(Status::USER_ERROR) << "Can't find object to add function "
-				   << sym_cstr(insn_->label_);
+    Status::os(Status::USER_ERROR)
+        << "Can't find object to add function " << sym_cstr(insn_->label_);
     thr_->UserError();
     return;
   }
@@ -158,12 +156,11 @@ void Decl::PushCurrentObject() {
       obj = value->object_;
     } else {
       if (sym_str(insn_->label_) != thr_->GetModuleName()) {
-	Status::os(Status::USER_ERROR)
-	  << "Failed to get object: "
-	  << sym_str(insn_->label_) << " "
-	  << insn_->insn_expr_->GetPos().Format();
-	thr_->UserError();
-	return;
+        Status::os(Status::USER_ERROR)
+            << "Failed to get object: " << sym_str(insn_->label_) << " "
+            << insn_->insn_expr_->GetPos().Format();
+        thr_->UserError();
+        return;
       }
     }
   }
@@ -183,8 +180,8 @@ void Decl::PopCurrentObject() {
 void Decl::AddThreadEntry(const string &name, int num, bool is_soft) {
   Object *obj = VAL(oreg()).object_;
   for (int i = 0; i < num; ++i) {
-    Object *thread_obj =
-      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), insn_->label_, is_soft, i);
+    Object *thread_obj = ThreadWrapper::NewThreadWrapper(
+        thr_->GetVM(), insn_->label_, is_soft, i);
     string thr_name = name;
     if (num > 1) {
       char buf[20];
@@ -205,27 +202,28 @@ void Decl::ClearThreadEntry() {
 void Decl::ExecImport() {
   const string &fn = insn_->insn_stmt_->GetString();
   VM *vm = thr_->GetVM();
-  vm::Object *thr_obj = vm->kernel_object_->Clone();
+  vm::Object *new_thr_obj = vm->kernel_object_->Clone();
   compiler::CompileOptions opts;
-  Method *method = fe::FE::ImportFile(fn, vm, thr_obj);
+  Method *method = fe::FE::ImportFile(fn, vm, new_thr_obj);
   if (method == nullptr) {
     Status::os(Status::USER_ERROR) << "Failed to import: " << fn;
     thr_->UserError();
     return;
   }
-  vm->AddThreadFromMethod(thr_, thr_obj, method, 0);
+  vm->AddThreadFromMethod(thr_, new_thr_obj, method, 0);
   thr_->Suspend();
 
   if (insn_->dst_regs_.size() > 0) {
     // import "foo.karuta" as v
     Register *dst = dreg(0);
-    VAL(dst).object_ = thr_obj;
+    VAL(dst).object_ = new_thr_obj;
+    VAL(dst).type_ = Value::OBJECT;
     dst->type_.value_type_ = Value::OBJECT;
   }
 }
 
 void Decl::InitializeArray(IntArray *array,
-			   fe::ArrayInitializer *array_initializer) {
+                           fe::ArrayInitializer *array_initializer) {
   if (array_initializer != nullptr) {
     for (size_t i = 0; i < array_initializer->num_.size(); ++i) {
       iroha::Numeric num;
@@ -236,15 +234,14 @@ void Decl::InitializeArray(IntArray *array,
 }
 
 Object *Decl::CreateMemoryObject(const iroha::NumericWidth &width,
-				     fe::ArrayShape *shape,
-				     fe::ArrayInitializer *array_initializer,
-				     Annotation *an) {
+                                 fe::ArrayShape *shape,
+                                 fe::ArrayInitializer *array_initializer,
+                                 Annotation *an) {
   vector<uint64_t> s;
   for (auto i : shape->length) {
     s.push_back(i);
   }
-  Object *obj = ArrayWrapper::NewIntArrayWrapper(thr_->GetVM(),
-						 s, width, an);
+  Object *obj = ArrayWrapper::NewIntArrayWrapper(thr_->GetVM(), s, width, an);
   IntArray *memory = ArrayWrapper::GetIntArray(obj);
   InitializeArray(memory, array_initializer);
   return obj;
@@ -255,8 +252,7 @@ Object *Decl::CreateObjectArray(fe::ArrayShape *shape) {
 }
 
 Object *Decl::CreateIOObject(fe::VarDecl *decl, sym_t member_name,
-			     bool is_output,
-			     const iroha::NumericWidth &width) {
+                             bool is_output, const iroha::NumericWidth &width) {
   string name = sym_str(member_name);
   Annotation *an = decl->GetAnnotation();
   int distance = 0;
@@ -268,9 +264,8 @@ Object *Decl::CreateIOObject(fe::VarDecl *decl, sym_t member_name,
     distance = an->GetDistance();
   }
   return IOWrapper::NewIOWrapper(thr_->GetVM(), name, is_output, width,
-				 distance);
+                                 distance);
 }
 
 }  // namespace executor
 }  // namespace vm
-
