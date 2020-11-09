@@ -1,6 +1,8 @@
 /**/
-shared Global.x int = 10;
-import "imported_file.karuta";
+shared Global.x int = 10
+import "imported_file.karuta"
+import "imported_file.karuta" as o
 
-assert(Global.x == 0);
-assert(Env.is_main());
+assert(Global.x == 0)
+assert(Env.isMain())
+assert(o.x == 3)

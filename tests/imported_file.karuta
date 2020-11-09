@@ -1,4 +1,6 @@
 /* file to be included from t01_import_file.n */
 Global.x = 0;
 
-assert(!Env.is_main());
+assert(!Env.isMain())
+shared x int = 3
+
