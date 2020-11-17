@@ -1,6 +1,6 @@
 #
-EXTRA = ["QA", "imported_file.karuta", "run-test", "resource.v", "test_tb.v",
-         "test_files.py"]
+EXTRA = ["QA", "imported_file.karuta", "run-test", "karuta_test.py", "synth_test.py", "verilator_test.py",
+         "resource.v", "test_tb.v", "test_files.py"]
 
 # see file QA to see category.
 default_tests = ["fe_error/misc.karuta",

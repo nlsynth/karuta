@@ -3,10 +3,12 @@ import re
 import tempfile
 
 import synth_test
+import verilator_test
 
 # Set from external.
 iroha_binary=""
 with_synth_test=False
+with_verilator_test=False
 
 karuta_binary="../karuta-bin"
 tmp_prefix = "/tmp"
@@ -120,6 +122,15 @@ def CheckVerilog(dut_fn, source_fn, summary, test_info):
         print("  testing synthesizability " + dut_fn)
         sr = synth_test.Process(dut_fn)
         if not sr:
+            print("Failed!")
+            e = 0
+            if "num_fails" in res:
+                e = res["num_fails"]
+            res["num_fails"] = e + 1
+    if with_verilator_test:
+        print("  testing with Verilator " + dut_fn)
+        vr = verilator_test.Process(dut_fn)
+        if not vr:
             print("Failed!")
             e = 0
             if "num_fails" in res:
