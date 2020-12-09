@@ -829,7 +829,13 @@ If you are using Ubuntu, just do
 
 Installing Karuta from its source code requires a C++ compiler (namely g++ or clang++), python, gyp-next and make.
 
-NOTE: gyp is a Makefile generator. Please use maintained gyp-next ('$ pip install gyp-next' to install) instead of the original gyp.
+NOTE: gyp is a Makefile generator. Please use maintained gyp-next instead of the original gyp.
+
+.. code-block:: none
+
+    $ pip install gyp-next
+    install pip on Debian or Ubuntu.
+    $ sudo apt install python3-pip
 
 .. code-block:: none
 
