@@ -38,6 +38,7 @@ void KarutaMain::PrintUsage() {
   cout << " karuta <command> [FILE]...\n"
        << "\n"
        << "   Commands(optional) are: complie, run, sim\n"
+       << "   e.g. $ karuta compile mydesign.karuta\n"
        << "\n"
        << "   -d[spb] scanner,parser,byte code compiler\n"
        << "   -l\n"
