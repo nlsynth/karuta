@@ -131,6 +131,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
       {"module", K_MODULE},
       {"object", K_OBJECT},
       {"output", K_OUTPUT},
+      {"process", K_PROCESS},
       // ram and reg are experimental syntax sugar.
       // We'll make these separate keywords, if users like them.
       {"ram", K_SHARED},
