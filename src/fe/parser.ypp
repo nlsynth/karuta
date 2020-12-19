@@ -53,10 +53,9 @@ extern void yyerror(const char *msg);
 %type <enum_decl> ENUM_DECL ENUM_ITEM_LIST
 %type <str> STR
 %type <sym> SYM TYPE_NAME IMPORT_SPEC_OR_EMPTY SYM_OR_EMPTY
-%type <num> NUM NUM_EXPR ARRAY_ELM K_BIT_CONCAT
+%type <num> NUM NUM_EXPR ARRAY_ELM
 %type <sub_op> K_ASSIGN K_LG_COMPARE K_EQ_COMPARE
 %type <sub_op> K_ADD_SUB K_INC_DEC K_SHIFT
-%type <num> K_LOGIC_AND K_LOGIC_OR
 %type <width_spec> WIDTH_SPEC
 %type <annotation> ANNOTATION_OR_EMPTY
 %type <annotation_value> ANNOTATION_VALUE IMPORT_PARAM_HEAD
