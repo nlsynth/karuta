@@ -7,15 +7,15 @@
 namespace fe {
 
 class Method {
-public:
+ public:
   Method(const string &name);
 
   void Dump() const;
   void Dump(DumpStream &os) const;
   const string &GetName() const;
 
-  const vector<Stmt*> &GetStmts() const;
-  vector<Stmt*> &GetMutableStmts();
+  const vector<Stmt *> &GetStmts() const;
+  vector<Stmt *> &GetMutableStmts();
   VarDeclSet *GetArgs() const;
   void SetArgs(VarDeclSet *args);
   VarDeclSet *GetReturns() const;
@@ -23,15 +23,17 @@ public:
   Annotation *GetAnnotation() const;
   void SetAnnotation(Annotation *an);
   bool GetIsProcess() const;
-  void SetIsProcess(bool is_process);
+  void SetIsProcess(bool is_process, bool is_loop);
+  bool GetIsLoop() const;
 
-private:
+ private:
   const string name_;
-  vector<Stmt*> stmts_;
+  vector<Stmt *> stmts_;
   VarDeclSet *args_;
   VarDeclSet *returns_;
   Annotation *annotation_;
   bool is_process_;
+  bool is_loop_;
 };
 
 }  // namespace fe

@@ -21,7 +21,7 @@ Expr *Emitter::block_var_;
 void Emitter::BeginFunction(Expr *name, bool is_process, bool is_always) {
   string formatted_name = FormatMethodName(name);
   Method *method = new Method(formatted_name);
-  method->SetIsProcess(is_process);
+  method->SetIsProcess(is_process, is_always);
   MethodDecl decl;
   decl.method_ = method;
   decl.name_expr_ = name;

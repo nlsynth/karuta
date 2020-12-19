@@ -69,6 +69,7 @@ class MethodCompiler {
   void MaySetUnrollAnnotation(fe::Stmt *stmt, VarScope *scope);
   void EmitNop();
   void EmitYield();
+  vm::Insn *EmitGoto();
   void ResolveLabels();
   VarScope *CurrentScope();
   void CompilePreIncDec();

@@ -78,6 +78,11 @@ void MethodCompiler::Compile() {
   PopScope();
   EmitNop();
   AddLabel(sym_return);
+  if (tree_->GetIsLoop()) {
+    vm::Insn *insn = EmitGoto();
+    // Jump to the beginning.
+    insn->jump_target_ = 0;
+  }
   // If a jump targets the label at the last insn.
   EmitNop();
   FlushPendingInsns();
@@ -115,7 +120,8 @@ void MethodCompiler::ResolveLabels() {
         insn->jump_target_ = InsnIndexFromLabel(insn->insn_stmt_->GetSym());
       } else if (insn->label_) {
         insn->jump_target_ = InsnIndexFromLabel(insn->label_);
-      } else {
+      } else if (insn->jump_target_ < 0) {
+        // To the end.
         insn->jump_target_ = InsnIndexFromLabel(sym_return);
       }
     }
@@ -328,11 +334,16 @@ void MethodCompiler::CompileStmt(fe::Stmt *stmt) {
 }
 
 void MethodCompiler::CompileGoto(fe::Stmt *stmt) {
+  vm::Insn *insn = EmitGoto();
+  insn->insn_stmt_ = stmt;
+}
+
+vm::Insn *MethodCompiler::EmitGoto() {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_GOTO;
-  insn->insn_stmt_ = stmt;
   EmitYield();
   EmitInsn(insn);
+  return insn;
 }
 
 void MethodCompiler::CompileReturn(fe::Stmt *stmt) {
@@ -435,7 +446,7 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     reg->SetAnnotation(scope->loop_annotation_);
   }
 
-  if (rhs_val) {
+  if (rhs_val != nullptr) {
     SimpleAssign(rhs_val, reg);
   }
 }
