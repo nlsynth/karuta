@@ -18,7 +18,7 @@ Annotation *Emitter::current_annotation_;
 Annotation *Emitter::func_annotation_;
 Expr *Emitter::block_var_;
 
-void Emitter::BeginFunction(Expr *name, bool is_process) {
+void Emitter::BeginFunction(Expr *name, bool is_process, bool is_always) {
   string formatted_name = FormatMethodName(name);
   Method *method = new Method(formatted_name);
   method->SetIsProcess(is_process);
@@ -57,13 +57,12 @@ void Emitter::SetCurrentFunctionParams() {
       fe::VarDecl *arg = args->decls[i];
       int width = 1;
       if (arg->GetType() == sym_int) {
-	width = arg->GetWidth().GetWidth();
+        width = arg->GetWidth().GetWidth();
       } else {
-	CHECK(arg->GetType() == sym_bool);
+        CHECK(arg->GetType() == sym_bool);
       }
       decl.method_->GetAnnotation()->AddPinDecl(arg->GetNameExpr()->GetSym(),
-						false,
-						width);
+                                                false, width);
     }
   }
 }
@@ -79,7 +78,7 @@ void Emitter::SetCurrentFunctionReturns(VarDeclSet *returns) {
 }
 
 Annotation *Emitter::SetCurrentAnnotation(sym_t key,
-					  AnnotationKeyValueSet *values) {
+                                          AnnotationKeyValueSet *values) {
   current_annotation_ = AnnotationBuilder::Build(key, values);
   return current_annotation_;
 }
@@ -88,9 +87,7 @@ void Emitter::SetCurrentFunctionAnnotation(Annotation *an) {
   func_annotation_ = an;
 }
 
-void Emitter::SetBlockVar(Expr *var_expr) {
-  block_var_ = var_expr;
-}
+void Emitter::SetBlockVar(Expr *var_expr) { block_var_ = var_expr; }
 
 void Emitter::BeginBlock(Annotation *an) {
   Stmt *stmt = NewStmt(STMT_PUSH_BINDING);
@@ -105,9 +102,7 @@ void Emitter::EndBlock() {
   EmitStmt(stmt);
 }
 
-MethodDecl &Emitter::CurrentMethod() {
-  return *(method_stack_.rbegin());
-}
+MethodDecl &Emitter::CurrentMethod() { return *(method_stack_.rbegin()); }
 
 void Emitter::EmitNop() {
   iroha::NumericLiteral nl;
@@ -143,8 +138,8 @@ void Emitter::EmitVarDeclStmtSet(VarDeclSet *vds) {
     ArrayShape *shape = vd->GetArrayShape();
     if (shape != nullptr) {
       if (method_stack_.size() > 1) {
-	Status::os(Status::USER_ERROR)
-	  << "Array declaration is allowed only in the top level.";
+        Status::os(Status::USER_ERROR)
+            << "Array declaration is allowed only in the top level.";
       }
     }
     Stmt *stmt = NewStmt(STMT_VARDECL);
@@ -159,7 +154,7 @@ void Emitter::EmitEnumTypeDeclStmt(Expr *name, EnumDecl *decl) {
   stmt->SetEnumDecl(decl);
   EmitStmt(stmt);
 }
-  
+
 Stmt *Emitter::EmitIfStmt(Expr *cond) {
   Stmt *stmt = NewStmt(STMT_IF);
   stmt->SetExpr(cond);
@@ -219,25 +214,22 @@ void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
   EmitStmt(stmt);
 }
 
-void Emitter::EmitChannelDeclStmt(Expr *var, bool is_primitive,
-				  sym_t name,
-				  const iroha::NumericWidth *width) {
+void Emitter::EmitChannelDeclStmt(Expr *var, bool is_primitive, sym_t name,
+                                  const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);
   stmt->SetAnnotation(current_annotation_);
   EmitTypedObjStmt(stmt, var, is_primitive, name, width);
 }
 
-void Emitter::EmitMailboxDeclStmt(Expr *var, bool is_primitive,
-				  sym_t name,
-				  const iroha::NumericWidth *width) {
+void Emitter::EmitMailboxDeclStmt(Expr *var, bool is_primitive, sym_t name,
+                                  const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_MAILBOX_DECL);
   stmt->SetAnnotation(current_annotation_);
   EmitTypedObjStmt(stmt, var, is_primitive, name, width);
 }
 
-void Emitter::EmitTypedObjStmt(Stmt *stmt, Expr *var,
-			       bool is_primitive, sym_t name,
-			       const iroha::NumericWidth *width) {
+void Emitter::EmitTypedObjStmt(Stmt *stmt, Expr *var, bool is_primitive,
+                               sym_t name, const iroha::NumericWidth *width) {
   sym_t type_name = sym_null;
   sym_t obj_name = sym_null;
   if (is_primitive) {
@@ -258,9 +250,7 @@ void Emitter::EmitStmt(Stmt *stmt) {
   stmts.push_back(stmt);
 }
 
-Stmt *Emitter::NewStmt(int type) {
-  return Builder::NewStmt(type);
-}
+Stmt *Emitter::NewStmt(int type) { return Builder::NewStmt(type); }
 
 string Emitter::FormatMethodName(Expr *name) {
   if (name == nullptr) {

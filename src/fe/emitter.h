@@ -13,15 +13,15 @@ struct MethodDecl {
 };
 
 class Emitter {
-public:
-  static void BeginFunction(Expr *name, bool is_process);
+ public:
+  static void BeginFunction(Expr *name, bool is_process, bool is_always);
   static MethodDecl EndFunction();
   static string GetFunctionName();
   static void SetCurrentFunctionParams();
   static void SetCurrentFunctionArgs(VarDeclSet *decls);
   static void SetCurrentFunctionReturns(VarDeclSet *decls);
   static Annotation *SetCurrentAnnotation(sym_t key,
-					  AnnotationKeyValueSet *values);
+                                          AnnotationKeyValueSet *values);
   static void SetCurrentFunctionAnnotation(Annotation *an);
   static void SetBlockVar(Expr *var_expr);
   static void BeginBlock(Annotation *an);
@@ -39,16 +39,14 @@ public:
   static void EmitGoto(sym_t label);
   static void EmitReturnStmt(Expr *expr);
   static void EmitThreadDeclStmt(Expr *var, Expr *funcall);
-  static void EmitChannelDeclStmt(Expr *var, bool is_primitive,
-				  sym_t type_name,
-				  const iroha::NumericWidth *width);
-  static void EmitMailboxDeclStmt(Expr *var, bool is_primitive,
-				  sym_t type_name,
-				  const iroha::NumericWidth *width);
+  static void EmitChannelDeclStmt(Expr *var, bool is_primitive, sym_t type_name,
+                                  const iroha::NumericWidth *width);
+  static void EmitMailboxDeclStmt(Expr *var, bool is_primitive, sym_t type_name,
+                                  const iroha::NumericWidth *width);
   static void EmitWithStmt(Stmt *stmt);
   static string FormatMethodName(Expr *name);
 
-private:
+ private:
   static vector<MethodDecl> method_stack_;
   // For any decl (set at each ANNOTATION_OR_EMPTY).
   static Annotation *current_annotation_;
@@ -60,9 +58,8 @@ private:
   static Stmt *BuildFuncDeclStmt(MethodDecl *decl);
   static MethodDecl &CurrentMethod();
   static void EmitStmt(Stmt *stmt);
-  static void EmitTypedObjStmt(Stmt *stmt, Expr *var,
-			       bool is_primitive, sym_t name,
-			       const iroha::NumericWidth *width);
+  static void EmitTypedObjStmt(Stmt *stmt, Expr *var, bool is_primitive,
+                               sym_t name, const iroha::NumericWidth *width);
 
   static Stmt *NewStmt(int type);
 };
