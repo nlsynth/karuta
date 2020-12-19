@@ -394,13 +394,13 @@ Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f
 
    // f() will be callable outside of the design.
    @ExtEntry(name="e")
-   def f(x int) (int) {
+   func f(x int) (int) {
      return 0
    }
 
    // Actual implementation of f() will be outside of the design.
    @ExtStub(name="e")
-   def f(x int) (int) {
+   func f(x int) (int) {
      return 0
    }
 
