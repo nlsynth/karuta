@@ -122,7 +122,7 @@ Bit width of data is important to use FPGAs efficiently while it is not cared so
 Member variables
 ================
 
-Karuta is an object oriented language, so a design can be described as objects and their members. `shared`, `reg` and `ram` keyword is used to declare an member value of an object, integer or array (other kinds of member has different syntax).
+Karuta is an object oriented language, so a design can be described as objects and their members. ``shared``, ``reg`` and ``ram`` keyword is used to declare an member value of an object, integer or array (other kinds of member has different syntax).
 
 
 .. code-block:: none
@@ -349,7 +349,7 @@ When an array declared with AXI slave annotation, an AXI slave interface to outs
      }
    }
 
-`notifyAccess()` method can be used for testing.
+``notifyAccess()`` method can be used for testing.
 
 SRAM interface
 --------------
@@ -584,7 +584,7 @@ The basic way to build an object hierarchy is to add new member objects and modi
      x.f()
    }
 
-This structure can be a more cleanly described with `module` block.
+This structure can be a more cleanly described with ``module`` block.
 
 .. code-block:: none
 
@@ -604,7 +604,7 @@ This structure can be a more cleanly described with `module` block.
      x.f()
    }
 
-When `module` block is used, the member object can access its enclosing object by `parent` keyword.
+When ``module`` block is used, the member object can access its enclosing object by ``parent`` keyword.
 
 .. code-block:: none
 

@@ -185,10 +185,12 @@ Karuta has features to visualize designs. They will help you to understand or ex
 One is to visualize the structure of objects in Karuta language.
 
 .. image:: intro-obj.png
+   :alt: Object structure
 
 Another one is to visualized the structure of modules and FSMs after synthesis.
 
 .. image:: intro-synth.png
+   :alt: Module structure
 
 
 
