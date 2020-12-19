@@ -1,17 +1,17 @@
 // VERILOG_OUTPUT: a.v
-shared Kernel.MT int[1024] = {0};
-shared Kernel.index int = 0;
+shared MT int[1024] = {0}
+shared index int = 0
 
-def Kernel.main() {
-  var i int;
+func main() {
+  var i int
   for i = 0; i < 1; ++i {
-    var y int = MT[index];
-    assert(y == 0);
-    index = index + 1;
+    var y int = MT[index]
+    assert(y == 0)
+    index = index + 1
   }
 }
 
-Kernel.main();
+main()
 
-Kernel.compile();
-Kernel.writeHdl("a.v");
+compile()
+writeHdl("a.v")

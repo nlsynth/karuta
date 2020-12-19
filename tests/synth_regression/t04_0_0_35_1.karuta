@@ -2,18 +2,18 @@
 
 // infinite loop.
 
-shared Kernel.MT int[1024] = {0};
+shared MT int[1024] = {0}
 
-def Kernel.main() {
-  var i int;
+func main() {
+  var i int
   for i = 1; i < 10; ++i {
-    var prev int = 0;
-    var cur #64;
-    cur = prev ^ (prev >> 30);
-    MT[i] = cur[31:0];
+    var prev int = 0
+    var cur #64
+    cur = prev ^ (prev >> 30)
+    MT[i] = cur[31:0]
   }
-  assert(i == 10);
+  assert(i == 10)
 }
 
-Kernel.compile();
-Kernel.writeHdl("a.v");
+compile();
+writeHdl("a.v")

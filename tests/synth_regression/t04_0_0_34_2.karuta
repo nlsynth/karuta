@@ -2,13 +2,13 @@
 
 // regression in wire insn optimizer.
 
-shared Kernel.MT int[1024] = {0};
+shared MT int[1024] = {0}
 
-def Kernel.main() {
-  var x int = MT[0];
-  x = x ^ (x >> 30);
-  MT[0] = x;
+func main() {
+  var x int = MT[0]
+  x = x ^ (x >> 30)
+  MT[0] = x
 }
 
-Kernel.compile();
-Kernel.writeHdl("a.v");
+compile()
+writeHdl("a.v")

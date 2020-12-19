@@ -1,17 +1,17 @@
 // VERILOG_OUTPUT: a.v
 
-def main() {
-  var k int = 0;
-  var i int;
+func main() {
+  var k int = 0
+  var i int
   for i = 0; i < 4; ++i {
-    var j int;
+    var j int
     for j = 0; j < 4; ++j {
-      ++k;
+      ++k
     }
   }
-//  assert(k == 16);
+  assert(k == 16)
 }
 
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")
