@@ -561,8 +561,8 @@ EXPR : SYM {
   $$ = Builder::BinopExpr($1, $3, BINOP_LAND);
 } | EXPR K_INC_DEC {
   $$ = Builder::IncDecExpr($1, $2, true);
-} | K_INC_DEC EXPR {
-  $$ = Builder::IncDecExpr($2, $1, false);
+} | K_INC_DEC {ScannerInterface::InSemiColonStatement();}  EXPR {
+  $$ = Builder::IncDecExpr($3, $1, false);
 } | K_ADD_SUB EXPR %prec SIGN {
   $$ = Builder::SignedExpr($1, $2);
 } | EXPR '?' EXPR ':' EXPR {
