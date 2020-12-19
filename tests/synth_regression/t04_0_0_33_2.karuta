@@ -2,19 +2,19 @@
 
 // regression test in bb conditions.
 
-def main() {
-  var x int = 0;
-  var i int;
+func main() {
+  var x int = 0
+  var i int
   for i = 0; i < 10; ++i {
-    x = x + 1;
+    x = x + 1
     if (x > 5) {
-      x -= 5;
+      x -= 5
     }
   }
-  assert(x == 5);
+  assert(x == 5)
 }
 
-main();
+main()
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")

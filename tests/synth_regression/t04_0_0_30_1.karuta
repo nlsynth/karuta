@@ -2,21 +2,21 @@
 
 // additional fix
 
-shared Kernel.MT int[1024] = {0};
+shared MT int[1024] = {0}
 
-def Kernel.main() {
-  var i int;
-  i = 1;
-  var cur int;
-  var prev int;
-  prev = MT[0];
-  cur = prev + 1;
-  MT[i] = cur;
-  assert(MT[1] == 1);
+func main() {
+  var i int
+  i = 1
+  var cur int
+  var prev int
+  prev = MT[0]
+  cur = prev + 1
+  MT[i] = cur
+  assert(MT[1] == 1)
 }
 
-Kernel.compile();
-Kernel.writeHdl("a.v");
+compile()
+writeHdl("a.v")
 
 // main should run later not to write ram.
-Kernel.main();
+main()

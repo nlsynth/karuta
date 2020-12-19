@@ -1,18 +1,18 @@
 // VERILOG_OUTPUT: a.v
 
-def main() {
-  var x int = 6;
-  var y int = 0;
+func main() {
+  var x int = 6
+  var y int = 0
   if (x > 5) {
-    x = 10;
+    x = 10
   } else {
-    y = 6;
+    y = 6
   }
-  assert(x == 10);
-  assert(y == 0);
+  assert(x == 10)
+  assert(y == 0)
 }
 
-main();
+main()
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")

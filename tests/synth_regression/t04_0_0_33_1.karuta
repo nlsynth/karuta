@@ -2,15 +2,15 @@
 
 // regression test in selector generation.
 
-def main() {
-  var x int = 11;
+func main() {
+  var x int = 11
   if (x > 10) {
-    x = 10;
+    x = 10
   }
-  assert(x == 10);
+  assert(x == 10)
 }
 
-main();
+main()
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")

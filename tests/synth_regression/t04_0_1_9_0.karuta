@@ -2,24 +2,24 @@
 
 // github issue #1
 
-def main() {
-  var param int = 2;
-  var curr int;
-  var next int;
-  var prev int;
-  var i int;
-  curr = 0;
-  next = 1;
+process main() {
+  var param int = 2
+  var curr int
+  var next int
+  var prev int
+  var i int
+  curr = 0
+  next = 1
   for i = 0; i < param; ++i {
-    prev = curr;
-    curr = next;
-    next = next + prev;
+    prev = curr
+    curr = next
+    next = next + prev
   }
 
-  assert(curr == 1);
+  assert(curr == 1)
 }
 
-main();
+main()
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")

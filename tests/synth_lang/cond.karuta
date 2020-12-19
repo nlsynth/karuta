@@ -1,15 +1,15 @@
 // VERILOG_OUTPUT: a.v
-def Kernel.main() {
-  var y int = 0;
+func main() {
+  var y int = 0
   if (y > 0) {
-    assert(false);
+    assert(false)
   }
   if (false) {
-    assert(false);
+    assert(false)
   }
 }
 
-main();
+main()
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")

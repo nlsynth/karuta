@@ -2,15 +2,15 @@
 
 // see if member reference in inline function works.
 
-shared Kernel.m1 int = 128
+shared m1 int = 128
 
-def Kernel.f1() {
+func f1() {
   Memory.write(m1, 0xffffffff)
 }
 
-def Kernel.main() {
+func main() {
   f1()
   assert(Memory.read(m1) == 0xffffffff)
 }
 
-Kernel.main()
+main()

@@ -2,18 +2,18 @@
 
 // fix for memory access reordering.
 
-shared Kernel.MT int[1024] = {0};
+shared MT int[1024] = {0}
 
-def Kernel.main() {
-  MT[0] = 0;
-  var prev int = MT[0];
-  prev = prev + 1;
-  MT[1] = prev;
-  assert(MT[1] == 1);
+func main() {
+  MT[0] = 0
+  var prev int = MT[0]
+  prev = prev + 1
+  MT[1] = prev
+  assert(MT[1] == 1)
 }
 
-Kernel.compile();
-Kernel.writeHdl("a.v");
+compile()
+writeHdl("a.v")
 
 // main should run later not to write ram.
-Kernel.main();
+main()

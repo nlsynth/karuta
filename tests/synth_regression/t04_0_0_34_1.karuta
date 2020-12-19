@@ -2,9 +2,9 @@
 
 // regression in wire insn optimizer.
 
-shared Kernel.MT int[1024] = {0};
+shared MT int[1024] = {0};
 
-def Kernel.main() {
+func main() {
   var i int;
   for i = 1; i < 624; ++i {
     var prev int = MT[i - 1];
@@ -13,5 +13,5 @@ def Kernel.main() {
   }
 }
 
-Kernel.compile();
-Kernel.writeHdl("a.v");
+compile();
+writeHdl("a.v");

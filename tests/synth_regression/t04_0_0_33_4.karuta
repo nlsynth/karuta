@@ -2,25 +2,25 @@
 
 // regression in ssa conversion. ssa position mistake.
 
-def generateNumbers() {
-  var i int = 0;
-  var y int = 0;
-  var t int = 1;
-  t = t;
+func generateNumbers() {
+  var i int = 0
+  var y int = 0
+  var t int = 1
+  t = t
   if ((t & 1) == 1) {
-    t = t ^ 100;
+    t = t ^ 100
   }
-  assert(t == 101);
+  assert(t == 101)
 }
 
-def main() {
-  var index int = 0;
+func main() {
+  var index int = 0
   if (index == 0) {
-    generateNumbers();
+    generateNumbers()
   }
 }
 
-main();
+main()
 
-compile();
-writeHdl("a.v");
+compile()
+writeHdl("a.v")
