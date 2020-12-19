@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 # This is basically ylwrap.
 import filecmp
@@ -6,9 +6,8 @@ import os
 import shutil
 import tempfile
 
-# -y yacc mode
 # -d produces header file
-cmd = "bison -y -d src/fe/parser.ypp"
+cmd = "bison -d src/fe/parser.ypp"
 print("running: " + cmd)
 r = os.system(cmd)
 if r != 0:
@@ -21,11 +20,11 @@ def Copy(sfn, ofn, skipCopy):
     tfn = tf[1]
     sfh = open(sfn, 'r')
     for line in sfh:
-        line = line.replace("YY_Y_TAB_H", "YY_SRC_FE_PARSER_H")
-        line = line.replace("y.tab.c", "src/fe/parser.cpp")
+        line = line.replace("YY_YY_PARSER_TAB_HPP_INCLUDED", "YY_SRC_FE_PARSER_H")
+        line = line.replace("parser.tab.cpp", "src/fe/parser.cpp")
         # kludge not to replace an occurence in the comment.
         if not line.startswith(' '):
-            line = line.replace("y.tab.h", "src/fe/parser.h")
+            line = line.replace("parser.tab.hpp", "src/fe/parser.h")
         os.write(tf[0], line.encode('utf-8'))
     os.close(tfd)
     if not skipCopy or not os.path.exists(ofn) or not filecmp.cmp(tfn, ofn):
@@ -35,5 +34,5 @@ def Copy(sfn, ofn, skipCopy):
     os.unlink(sfn)
 
         
-Copy("y.tab.c", "src/fe/parser.cpp", False)
-Copy("y.tab.h", "src/fe/parser.h", True)
+Copy("parser.tab.cpp", "src/fe/parser.cpp", False)
+Copy("parser.tab.hpp", "src/fe/parser.h", True)

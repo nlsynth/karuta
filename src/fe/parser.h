@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_SRC_FE_PARSER_H_INCLUDED
-# define YY_YY_SRC_FE_PARSER_H_INCLUDED
+#ifndef YY_SRC_FE_PARSER_H
+# define YY_SRC_FE_PARSER_H
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -97,53 +97,6 @@ extern int yydebug;
     ADDRESS = 303
   };
 #endif
-/* Tokens.  */
-#define K_ADD_SUB 258
-#define K_AS 259
-#define K_ASSIGN 260
-#define K_BOOL 261
-#define K_BREAK 262
-#define K_CASE 263
-#define K_CHANNEL 264
-#define K_CONST 265
-#define K_CONTINUE 266
-#define K_DEF 267
-#define K_DEFAULT 268
-#define K_DO 269
-#define K_ELSE 270
-#define K_ENUM 271
-#define K_EQ_COMPARE 272
-#define K_FUNC 273
-#define K_FOR 274
-#define K_GOTO 275
-#define K_IF 276
-#define K_IMPORT 277
-#define K_INC_DEC 278
-#define K_INT 279
-#define K_LG_COMPARE 280
-#define K_MAILBOX 281
-#define K_OBJECT 282
-#define K_PROCESS 283
-#define K_RETURN 284
-#define K_SHARED 285
-#define K_SHIFT 286
-#define K_STRING 287
-#define K_SWITCH 288
-#define K_THREAD 289
-#define K_INPUT 290
-#define K_OUTPUT 291
-#define K_VAR 292
-#define K_WHILE 293
-#define K_WITH 294
-#define K_MODULE 295
-#define NUM 296
-#define SYM 297
-#define STR 298
-#define K_LOGIC_OR 299
-#define K_LOGIC_AND 300
-#define K_BIT_CONCAT 301
-#define SIGN 302
-#define ADDRESS 303
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -170,7 +123,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 174 "src/fe/parser.h"
+#line 127 "src/fe/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -183,4 +136,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_SRC_FE_PARSER_H_INCLUDED  */
+#endif /* !YY_SRC_FE_PARSER_H  */

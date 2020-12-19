@@ -117,8 +117,8 @@ extern void yyerror(const char *msg);
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_YY_SRC_FE_PARSER_H_INCLUDED
-# define YY_YY_SRC_FE_PARSER_H_INCLUDED
+#ifndef YY_SRC_FE_PARSER_H
+# define YY_SRC_FE_PARSER_H
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -180,53 +180,6 @@ extern int yydebug;
     ADDRESS = 303
   };
 #endif
-/* Tokens.  */
-#define K_ADD_SUB 258
-#define K_AS 259
-#define K_ASSIGN 260
-#define K_BOOL 261
-#define K_BREAK 262
-#define K_CASE 263
-#define K_CHANNEL 264
-#define K_CONST 265
-#define K_CONTINUE 266
-#define K_DEF 267
-#define K_DEFAULT 268
-#define K_DO 269
-#define K_ELSE 270
-#define K_ENUM 271
-#define K_EQ_COMPARE 272
-#define K_FUNC 273
-#define K_FOR 274
-#define K_GOTO 275
-#define K_IF 276
-#define K_IMPORT 277
-#define K_INC_DEC 278
-#define K_INT 279
-#define K_LG_COMPARE 280
-#define K_MAILBOX 281
-#define K_OBJECT 282
-#define K_PROCESS 283
-#define K_RETURN 284
-#define K_SHARED 285
-#define K_SHIFT 286
-#define K_STRING 287
-#define K_SWITCH 288
-#define K_THREAD 289
-#define K_INPUT 290
-#define K_OUTPUT 291
-#define K_VAR 292
-#define K_WHILE 293
-#define K_WITH 294
-#define K_MODULE 295
-#define NUM 296
-#define SYM 297
-#define STR 298
-#define K_LOGIC_OR 299
-#define K_LOGIC_AND 300
-#define K_BIT_CONCAT 301
-#define SIGN 302
-#define ADDRESS 303
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -253,7 +206,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 257 "src/fe/parser.cpp"
+#line 210 "src/fe/parser.cpp"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -266,7 +219,7 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_SRC_FE_PARSER_H_INCLUDED  */
+#endif /* !YY_SRC_FE_PARSER_H  */
 
 
 
@@ -1789,31 +1742,31 @@ yyreduce:
   case 7:
 #line 104 "src/fe/parser.ypp"
                   { Emitter::SetBlockVar((yyvsp[-1].expr)); Emitter::BeginBlock(nullptr); }
-#line 1793 "src/fe/parser.cpp"
+#line 1746 "src/fe/parser.cpp"
     break;
 
   case 8:
 #line 104 "src/fe/parser.ypp"
                                                                                                          { Emitter::EndBlock(); }
-#line 1799 "src/fe/parser.cpp"
+#line 1752 "src/fe/parser.cpp"
     break;
 
   case 9:
 #line 106 "src/fe/parser.ypp"
                          { (yyval.expr) = (yyvsp[0].expr); }
-#line 1805 "src/fe/parser.cpp"
+#line 1758 "src/fe/parser.cpp"
     break;
 
   case 10:
 #line 106 "src/fe/parser.ypp"
                                                      { (yyval.expr) = (yyvsp[0].expr); }
-#line 1811 "src/fe/parser.cpp"
+#line 1764 "src/fe/parser.cpp"
     break;
 
   case 11:
 #line 106 "src/fe/parser.ypp"
                                                                              { (yyval.expr) = nullptr; }
-#line 1817 "src/fe/parser.cpp"
+#line 1770 "src/fe/parser.cpp"
     break;
 
   case 12:
@@ -1821,7 +1774,7 @@ yyreduce:
                                          {
   (yyval.annotation_value) = AnnotationBuilder::BuildStrParam((yyvsp[-3].sym), (yyvsp[0].str));
 }
-#line 1825 "src/fe/parser.cpp"
+#line 1778 "src/fe/parser.cpp"
     break;
 
   case 13:
@@ -1830,7 +1783,7 @@ yyreduce:
   AnnotationBuilder::AddStrParam((yyvsp[-2].annotation_value), (yyvsp[0].str));
   (yyval.annotation_value) = (yyvsp[-2].annotation_value);
 }
-#line 1834 "src/fe/parser.cpp"
+#line 1787 "src/fe/parser.cpp"
     break;
 
   case 14:
@@ -1838,7 +1791,7 @@ yyreduce:
                                     {
   (yyval.annotation_value) = AnnotationBuilder::BuildStrParam((yyvsp[-2].sym), (yyvsp[0].str));
 }
-#line 1842 "src/fe/parser.cpp"
+#line 1795 "src/fe/parser.cpp"
     break;
 
   case 15:
@@ -1846,7 +1799,7 @@ yyreduce:
                                                                           {
   (yyval.annotation_value) = AnnotationBuilder::BuildStrParam((yyvsp[-2].sym), (yyvsp[0].str));
 }
-#line 1850 "src/fe/parser.cpp"
+#line 1803 "src/fe/parser.cpp"
     break;
 
   case 16:
@@ -1854,7 +1807,7 @@ yyreduce:
                      {
   (yyval.annotation_value) = AnnotationBuilder::BuildIntParam((yyvsp[-2].sym), (yyvsp[0].num).value);
 }
-#line 1858 "src/fe/parser.cpp"
+#line 1811 "src/fe/parser.cpp"
     break;
 
   case 17:
@@ -1862,25 +1815,25 @@ yyreduce:
                           {
   (yyval.annotation_value) = (yyvsp[-1].annotation_value);
 }
-#line 1866 "src/fe/parser.cpp"
+#line 1819 "src/fe/parser.cpp"
     break;
 
   case 18:
 #line 125 "src/fe/parser.ypp"
                          { (yyval.sym) = sym_input; }
-#line 1872 "src/fe/parser.cpp"
+#line 1825 "src/fe/parser.cpp"
     break;
 
   case 19:
 #line 125 "src/fe/parser.ypp"
                                                         { (yyval.sym) = sym_output; }
-#line 1878 "src/fe/parser.cpp"
+#line 1831 "src/fe/parser.cpp"
     break;
 
   case 20:
 #line 125 "src/fe/parser.ypp"
                                                                                         { (yyval.sym) = sym_module; }
-#line 1884 "src/fe/parser.cpp"
+#line 1837 "src/fe/parser.cpp"
     break;
 
   case 21:
@@ -1888,7 +1841,7 @@ yyreduce:
                         {
   (yyval.annotation_value_set) = AnnotationBuilder::BuildParamSet(nullptr, nullptr);
 }
-#line 1892 "src/fe/parser.cpp"
+#line 1845 "src/fe/parser.cpp"
     break;
 
   case 22:
@@ -1896,7 +1849,7 @@ yyreduce:
                      {
   (yyval.annotation_value_set) = AnnotationBuilder::BuildParamSet(nullptr, (yyvsp[0].annotation_value));
 }
-#line 1900 "src/fe/parser.cpp"
+#line 1853 "src/fe/parser.cpp"
     break;
 
   case 23:
@@ -1904,7 +1857,7 @@ yyreduce:
                                                {
   (yyval.annotation_value_set) = AnnotationBuilder::BuildParamSet((yyvsp[-2].annotation_value_set), (yyvsp[0].annotation_value));
 }
-#line 1908 "src/fe/parser.cpp"
+#line 1861 "src/fe/parser.cpp"
     break;
 
   case 24:
@@ -1912,7 +1865,7 @@ yyreduce:
                       {
   (yyval.annotation) = Emitter::SetCurrentAnnotation(sym_null, nullptr);
 }
-#line 1916 "src/fe/parser.cpp"
+#line 1869 "src/fe/parser.cpp"
     break;
 
   case 25:
@@ -1920,7 +1873,7 @@ yyreduce:
                                                    {
   (yyval.annotation) = Emitter::SetCurrentAnnotation((yyvsp[-3].sym), (yyvsp[-1].annotation_value_set));
 }
-#line 1924 "src/fe/parser.cpp"
+#line 1877 "src/fe/parser.cpp"
     break;
 
   case 26:
@@ -1928,7 +1881,7 @@ yyreduce:
             {
   (yyval.annotation) = Emitter::SetCurrentAnnotation((yyvsp[0].sym), nullptr);
 }
-#line 1932 "src/fe/parser.cpp"
+#line 1885 "src/fe/parser.cpp"
     break;
 
   case 27:
@@ -1936,7 +1889,7 @@ yyreduce:
                {
   (yyval.sym) = sym_lookup("");
 }
-#line 1940 "src/fe/parser.cpp"
+#line 1893 "src/fe/parser.cpp"
     break;
 
   case 28:
@@ -1944,7 +1897,7 @@ yyreduce:
         {
   (yyval.sym) = (yyvsp[0].sym);
 }
-#line 1948 "src/fe/parser.cpp"
+#line 1901 "src/fe/parser.cpp"
     break;
 
   case 29:
@@ -1952,7 +1905,7 @@ yyreduce:
                          {
   (yyval.var_decl) = Builder::ReturnType((yyvsp[0].width_spec).is_primitive, (yyvsp[0].width_spec).name, (yyvsp[0].width_spec).width);
 }
-#line 1956 "src/fe/parser.cpp"
+#line 1909 "src/fe/parser.cpp"
     break;
 
   case 30:
@@ -1960,7 +1913,7 @@ yyreduce:
                                {
  (yyval.var_decl_set) = Builder::ReturnDeclList(nullptr, (yyvsp[0].var_decl));
 }
-#line 1964 "src/fe/parser.cpp"
+#line 1917 "src/fe/parser.cpp"
     break;
 
   case 31:
@@ -1968,7 +1921,7 @@ yyreduce:
                                      {
  (yyval.var_decl_set) = Builder::ReturnDeclList((yyvsp[-2].var_decl_set), (yyvsp[0].var_decl));
 }
-#line 1972 "src/fe/parser.cpp"
+#line 1925 "src/fe/parser.cpp"
     break;
 
   case 32:
@@ -1976,7 +1929,7 @@ yyreduce:
               {
   (yyval.var_decl_set) = Builder::ReturnDeclList(nullptr, nullptr);
 }
-#line 1980 "src/fe/parser.cpp"
+#line 1933 "src/fe/parser.cpp"
     break;
 
   case 33:
@@ -1984,13 +1937,13 @@ yyreduce:
                              {
   (yyval.var_decl_set) = (yyvsp[-1].var_decl_set);
 }
-#line 1988 "src/fe/parser.cpp"
+#line 1941 "src/fe/parser.cpp"
     break;
 
   case 34:
 #line 165 "src/fe/parser.ypp"
                                 {Emitter::SetCurrentFunctionAnnotation((yyvsp[0].annotation));}
-#line 1994 "src/fe/parser.cpp"
+#line 1947 "src/fe/parser.cpp"
     break;
 
   case 35:
@@ -1998,7 +1951,7 @@ yyreduce:
                                                                                                               {
   Emitter::EndFunction();
 }
-#line 2002 "src/fe/parser.cpp"
+#line 1955 "src/fe/parser.cpp"
     break;
 
   case 36:
@@ -2008,25 +1961,25 @@ yyreduce:
   Emitter::SetCurrentFunctionArgs((yyvsp[-2].var_decl_set));
   Emitter::SetCurrentFunctionReturns((yyvsp[0].var_decl_set));
 }
-#line 2012 "src/fe/parser.cpp"
+#line 1965 "src/fe/parser.cpp"
     break;
 
   case 37:
 #line 176 "src/fe/parser.ypp"
                      { (yyval.id) = K_DEF; }
-#line 2018 "src/fe/parser.cpp"
+#line 1971 "src/fe/parser.cpp"
     break;
 
   case 38:
 #line 176 "src/fe/parser.ypp"
                                               { (yyval.id) = K_FUNC; }
-#line 2024 "src/fe/parser.cpp"
+#line 1977 "src/fe/parser.cpp"
     break;
 
   case 39:
 #line 176 "src/fe/parser.ypp"
                                                                            { (yyval.id) = K_PROCESS; }
-#line 2030 "src/fe/parser.cpp"
+#line 1983 "src/fe/parser.cpp"
     break;
 
   case 40:
@@ -2034,21 +1987,21 @@ yyreduce:
                                       {
   Emitter::BeginFunction((yyvsp[-1].expr), ((yyvsp[-2].id) == K_PROCESS));
 }
-#line 2038 "src/fe/parser.cpp"
+#line 1991 "src/fe/parser.cpp"
     break;
 
   case 41:
 #line 182 "src/fe/parser.ypp"
             {
 }
-#line 2045 "src/fe/parser.cpp"
+#line 1998 "src/fe/parser.cpp"
     break;
 
   case 42:
 #line 183 "src/fe/parser.ypp"
                    {
 }
-#line 2052 "src/fe/parser.cpp"
+#line 2005 "src/fe/parser.cpp"
     break;
 
   case 43:
@@ -2064,37 +2017,37 @@ yyreduce:
   }
   (yyval.var_decl_set) = vds;
 }
-#line 2068 "src/fe/parser.cpp"
+#line 2021 "src/fe/parser.cpp"
     break;
 
   case 44:
 #line 198 "src/fe/parser.ypp"
                       {(yyval.id) = K_VAR;}
-#line 2074 "src/fe/parser.cpp"
+#line 2027 "src/fe/parser.cpp"
     break;
 
   case 45:
 #line 198 "src/fe/parser.ypp"
                                                {(yyval.id) = K_SHARED;}
-#line 2080 "src/fe/parser.cpp"
+#line 2033 "src/fe/parser.cpp"
     break;
 
   case 46:
 #line 198 "src/fe/parser.ypp"
                                                                           {(yyval.id) = K_INPUT;}
-#line 2086 "src/fe/parser.cpp"
+#line 2039 "src/fe/parser.cpp"
     break;
 
   case 47:
 #line 198 "src/fe/parser.ypp"
                                                                                                      {(yyval.id) = K_OUTPUT;}
-#line 2092 "src/fe/parser.cpp"
+#line 2045 "src/fe/parser.cpp"
     break;
 
   case 48:
 #line 200 "src/fe/parser.ypp"
                                {ScannerInterface::InSemiColonStatement();}
-#line 2098 "src/fe/parser.cpp"
+#line 2051 "src/fe/parser.cpp"
     break;
 
   case 49:
@@ -2113,21 +2066,21 @@ yyreduce:
   }
   (yyval.var_decl_set) = (yyvsp[0].var_decl_set);
 }
-#line 2117 "src/fe/parser.cpp"
+#line 2070 "src/fe/parser.cpp"
     break;
 
   case 50:
 #line 213 "src/fe/parser.ypp"
                          {
 }
-#line 2124 "src/fe/parser.cpp"
+#line 2077 "src/fe/parser.cpp"
     break;
 
   case 51:
 #line 214 "src/fe/parser.ypp"
                   {
 }
-#line 2131 "src/fe/parser.cpp"
+#line 2084 "src/fe/parser.cpp"
     break;
 
   case 52:
@@ -2135,7 +2088,7 @@ yyreduce:
                        {
   (yyval.width_spec) = WidthSpec::Name((yyvsp[0].sym), true);
 }
-#line 2139 "src/fe/parser.cpp"
+#line 2092 "src/fe/parser.cpp"
     break;
 
   case 53:
@@ -2143,7 +2096,7 @@ yyreduce:
             {
   (yyval.width_spec) = WidthSpec::Int(false, (yyvsp[0].num).value);
 }
-#line 2147 "src/fe/parser.cpp"
+#line 2100 "src/fe/parser.cpp"
     break;
 
   case 54:
@@ -2151,7 +2104,7 @@ yyreduce:
             {
   (yyval.width_spec) = WidthSpec::Name((yyvsp[0].sym), false);
 }
-#line 2155 "src/fe/parser.cpp"
+#line 2108 "src/fe/parser.cpp"
     break;
 
   case 55:
@@ -2160,7 +2113,7 @@ yyreduce:
   /* no arguments */
   (yyval.var_decl_set) = nullptr;
 }
-#line 2164 "src/fe/parser.cpp"
+#line 2117 "src/fe/parser.cpp"
     break;
 
   case 56:
@@ -2168,7 +2121,7 @@ yyreduce:
                   {
   (yyval.var_decl_set) = (yyvsp[0].var_decl_set);
 }
-#line 2172 "src/fe/parser.cpp"
+#line 2125 "src/fe/parser.cpp"
     break;
 
   case 57:
@@ -2184,7 +2137,7 @@ yyreduce:
   }
   (yyval.var_decl_set) = vds;
 }
-#line 2188 "src/fe/parser.cpp"
+#line 2141 "src/fe/parser.cpp"
     break;
 
   case 58:
@@ -2196,7 +2149,7 @@ yyreduce:
   }
   (yyval.var_decl_set) = vds;
 }
-#line 2200 "src/fe/parser.cpp"
+#line 2153 "src/fe/parser.cpp"
     break;
 
   case 59:
@@ -2205,7 +2158,7 @@ yyreduce:
   ArrayShape *shape = new ArrayShape((yyvsp[-1].num).value);
   (yyval.shape) = shape;
 }
-#line 2209 "src/fe/parser.cpp"
+#line 2162 "src/fe/parser.cpp"
     break;
 
   case 60:
@@ -2214,7 +2167,7 @@ yyreduce:
   (yyvsp[0].shape)->length.push_back((yyvsp[-2].num).value);
   (yyval.shape) = (yyvsp[0].shape);
 }
-#line 2218 "src/fe/parser.cpp"
+#line 2171 "src/fe/parser.cpp"
     break;
 
   case 61:
@@ -2222,7 +2175,7 @@ yyreduce:
                       {
   (yyval.shape) = nullptr;
 }
-#line 2226 "src/fe/parser.cpp"
+#line 2179 "src/fe/parser.cpp"
     break;
 
   case 62:
@@ -2230,7 +2183,7 @@ yyreduce:
                {
   (yyval.shape) = (yyvsp[0].shape);
 }
-#line 2234 "src/fe/parser.cpp"
+#line 2187 "src/fe/parser.cpp"
     break;
 
   case 63:
@@ -2240,7 +2193,7 @@ yyreduce:
   ArrayShape *shape = new ArrayShape(0);
   (yyval.shape) = shape;
 }
-#line 2244 "src/fe/parser.cpp"
+#line 2197 "src/fe/parser.cpp"
     break;
 
   case 64:
@@ -2248,7 +2201,7 @@ yyreduce:
                 {
   (yyval.num) = (yyvsp[0].num);
 }
-#line 2252 "src/fe/parser.cpp"
+#line 2205 "src/fe/parser.cpp"
     break;
 
   case 65:
@@ -2258,7 +2211,7 @@ yyreduce:
   array->num_.push_back((yyvsp[0].num).value);
   (yyval.array) = array;
 }
-#line 2262 "src/fe/parser.cpp"
+#line 2215 "src/fe/parser.cpp"
     break;
 
   case 66:
@@ -2267,19 +2220,19 @@ yyreduce:
   (yyvsp[-2].array)->num_.push_back((yyvsp[0].num).value);
   (yyval.array) = (yyvsp[-2].array);
 }
-#line 2271 "src/fe/parser.cpp"
+#line 2224 "src/fe/parser.cpp"
     break;
 
   case 67:
 #line 281 "src/fe/parser.ypp"
                         { ScannerInterface::InArrayElmDecl(); }
-#line 2277 "src/fe/parser.cpp"
+#line 2230 "src/fe/parser.cpp"
     break;
 
   case 68:
 #line 281 "src/fe/parser.ypp"
                                                                                {ScannerInterface::EndArrayElmDecl(); }
-#line 2283 "src/fe/parser.cpp"
+#line 2236 "src/fe/parser.cpp"
     break;
 
   case 69:
@@ -2287,7 +2240,7 @@ yyreduce:
                                                                                                                            {
   (yyval.array) = (yyvsp[-2].array);
 }
-#line 2291 "src/fe/parser.cpp"
+#line 2244 "src/fe/parser.cpp"
     break;
 
   case 70:
@@ -2296,7 +2249,7 @@ yyreduce:
   ScannerInterface::InSemiColonStatement();
   (yyval.var_decl_set) = (yyvsp[0].var_decl_set);
 }
-#line 2300 "src/fe/parser.cpp"
+#line 2253 "src/fe/parser.cpp"
     break;
 
   case 71:
@@ -2310,7 +2263,7 @@ yyreduce:
   (yyvsp[-2].var_decl_set)->decls[0]->SetInitialVal((yyvsp[0].expr));
   (yyval.var_decl_set) = Builder::VarDeclList(nullptr, (yyvsp[-2].var_decl_set)->decls[0]);
 }
-#line 2314 "src/fe/parser.cpp"
+#line 2267 "src/fe/parser.cpp"
     break;
 
   case 72:
@@ -2328,7 +2281,7 @@ yyreduce:
   Builder::SetArrayInitializer((yyvsp[-2].var_decl_set)->decls[0], (yyvsp[0].array));
   (yyval.var_decl_set) = Builder::VarDeclList(nullptr, (yyvsp[-2].var_decl_set)->decls[0]);
 }
-#line 2332 "src/fe/parser.cpp"
+#line 2285 "src/fe/parser.cpp"
     break;
 
   case 73:
@@ -2336,7 +2289,7 @@ yyreduce:
                   {
   (yyval.sym) = sym_int;
 }
-#line 2340 "src/fe/parser.cpp"
+#line 2293 "src/fe/parser.cpp"
     break;
 
   case 74:
@@ -2344,7 +2297,7 @@ yyreduce:
            {
   (yyval.sym) = sym_bool;
 }
-#line 2348 "src/fe/parser.cpp"
+#line 2301 "src/fe/parser.cpp"
     break;
 
   case 75:
@@ -2352,7 +2305,7 @@ yyreduce:
              {
   (yyval.sym) = sym_object;
 }
-#line 2356 "src/fe/parser.cpp"
+#line 2309 "src/fe/parser.cpp"
     break;
 
   case 76:
@@ -2360,7 +2313,7 @@ yyreduce:
              {
   (yyval.sym) = sym_module;
 }
-#line 2364 "src/fe/parser.cpp"
+#line 2317 "src/fe/parser.cpp"
     break;
 
   case 77:
@@ -2368,7 +2321,7 @@ yyreduce:
              {
   (yyval.sym) = sym_string;
 }
-#line 2372 "src/fe/parser.cpp"
+#line 2325 "src/fe/parser.cpp"
     break;
 
   case 78:
@@ -2376,7 +2329,7 @@ yyreduce:
                 {
   Emitter::EmitLabel((yyvsp[-1].sym));
 }
-#line 2380 "src/fe/parser.cpp"
+#line 2333 "src/fe/parser.cpp"
     break;
 
   case 79:
@@ -2384,7 +2337,7 @@ yyreduce:
                   {
   ScannerInterface::InSemiColonStatement();
 }
-#line 2388 "src/fe/parser.cpp"
+#line 2341 "src/fe/parser.cpp"
     break;
 
   case 80:
@@ -2392,7 +2345,7 @@ yyreduce:
            {
   /* empty stmt */
 }
-#line 2396 "src/fe/parser.cpp"
+#line 2349 "src/fe/parser.cpp"
     break;
 
   case 81:
@@ -2400,21 +2353,21 @@ yyreduce:
              {
   Emitter::EmitExprStmt((yyvsp[-1].expr));
 }
-#line 2404 "src/fe/parser.cpp"
+#line 2357 "src/fe/parser.cpp"
     break;
 
   case 82:
 #line 335 "src/fe/parser.ypp"
                   {
 }
-#line 2411 "src/fe/parser.cpp"
+#line 2364 "src/fe/parser.cpp"
     break;
 
   case 83:
 #line 336 "src/fe/parser.ypp"
                           {
 }
-#line 2418 "src/fe/parser.cpp"
+#line 2371 "src/fe/parser.cpp"
     break;
 
   case 84:
@@ -2422,7 +2375,7 @@ yyreduce:
                       {
   Emitter::EmitGoto((yyvsp[-1].sym));
 }
-#line 2426 "src/fe/parser.cpp"
+#line 2379 "src/fe/parser.cpp"
     break;
 
   case 85:
@@ -2430,7 +2383,7 @@ yyreduce:
                     {
   Emitter::EmitReturnStmt((yyvsp[-1].expr));
 }
-#line 2434 "src/fe/parser.cpp"
+#line 2387 "src/fe/parser.cpp"
     break;
 
   case 86:
@@ -2438,49 +2391,49 @@ yyreduce:
                {
   Emitter::EmitReturnStmt(nullptr);
 }
-#line 2442 "src/fe/parser.cpp"
+#line 2395 "src/fe/parser.cpp"
     break;
 
   case 87:
 #line 343 "src/fe/parser.ypp"
           {
 }
-#line 2449 "src/fe/parser.cpp"
+#line 2402 "src/fe/parser.cpp"
     break;
 
   case 88:
 #line 344 "src/fe/parser.ypp"
             {
 }
-#line 2456 "src/fe/parser.cpp"
+#line 2409 "src/fe/parser.cpp"
     break;
 
   case 89:
 #line 345 "src/fe/parser.ypp"
              {
 }
-#line 2463 "src/fe/parser.cpp"
+#line 2416 "src/fe/parser.cpp"
     break;
 
   case 90:
 #line 346 "src/fe/parser.ypp"
                {
 }
-#line 2470 "src/fe/parser.cpp"
+#line 2423 "src/fe/parser.cpp"
     break;
 
   case 91:
 #line 347 "src/fe/parser.ypp"
                   {
 }
-#line 2477 "src/fe/parser.cpp"
+#line 2430 "src/fe/parser.cpp"
     break;
 
   case 92:
 #line 348 "src/fe/parser.ypp"
                 {
 }
-#line 2484 "src/fe/parser.cpp"
+#line 2437 "src/fe/parser.cpp"
     break;
 
   case 93:
@@ -2488,28 +2441,28 @@ yyreduce:
                       {
   Emitter::EmitVarDeclStmtSet((yyvsp[-1].var_decl_set));
 }
-#line 2492 "src/fe/parser.cpp"
+#line 2445 "src/fe/parser.cpp"
     break;
 
   case 96:
 #line 353 "src/fe/parser.ypp"
                          {
 }
-#line 2499 "src/fe/parser.cpp"
+#line 2452 "src/fe/parser.cpp"
     break;
 
   case 97:
 #line 354 "src/fe/parser.ypp"
                           {
 }
-#line 2506 "src/fe/parser.cpp"
+#line 2459 "src/fe/parser.cpp"
     break;
 
   case 98:
 #line 355 "src/fe/parser.ypp"
                           {
 }
-#line 2513 "src/fe/parser.cpp"
+#line 2466 "src/fe/parser.cpp"
     break;
 
   case 99:
@@ -2517,7 +2470,7 @@ yyreduce:
           {
   ScannerInterface::EndSemiColonStatement();
 }
-#line 2521 "src/fe/parser.cpp"
+#line 2474 "src/fe/parser.cpp"
     break;
 
   case 100:
@@ -2525,13 +2478,13 @@ yyreduce:
                    {
   ScannerInterface::InSemiColonStatement();
 }
-#line 2529 "src/fe/parser.cpp"
+#line 2482 "src/fe/parser.cpp"
     break;
 
   case 101:
 #line 367 "src/fe/parser.ypp"
                        {ScannerInterface::InSemiColonStatement();}
-#line 2535 "src/fe/parser.cpp"
+#line 2488 "src/fe/parser.cpp"
     break;
 
   case 102:
@@ -2539,7 +2492,7 @@ yyreduce:
                                                                                                 {
   Emitter::EmitImportStmt((yyvsp[-2].str), (yyvsp[-1].sym));
 }
-#line 2543 "src/fe/parser.cpp"
+#line 2496 "src/fe/parser.cpp"
     break;
 
   case 103:
@@ -2547,7 +2500,7 @@ yyreduce:
                                 {
   (yyval.sym) = (yyvsp[0].sym);
 }
-#line 2551 "src/fe/parser.cpp"
+#line 2504 "src/fe/parser.cpp"
     break;
 
   case 104:
@@ -2555,13 +2508,13 @@ yyreduce:
     {
   (yyval.sym) = sym_null;
 }
-#line 2559 "src/fe/parser.cpp"
+#line 2512 "src/fe/parser.cpp"
     break;
 
   case 105:
 #line 377 "src/fe/parser.ypp"
                             {ScannerInterface::InSemiColonStatement();}
-#line 2565 "src/fe/parser.cpp"
+#line 2518 "src/fe/parser.cpp"
     break;
 
   case 106:
@@ -2569,13 +2522,13 @@ yyreduce:
                                                                                              {
   Emitter::EmitThreadDeclStmt((yyvsp[-2].expr), (yyvsp[0].expr));
 }
-#line 2573 "src/fe/parser.cpp"
+#line 2526 "src/fe/parser.cpp"
     break;
 
   case 107:
 #line 381 "src/fe/parser.ypp"
                                                   {ScannerInterface::InSemiColonStatement();}
-#line 2579 "src/fe/parser.cpp"
+#line 2532 "src/fe/parser.cpp"
     break;
 
   case 108:
@@ -2583,13 +2536,13 @@ yyreduce:
                                                                                                                              {
   Emitter::EmitChannelDeclStmt((yyvsp[-2].expr), (yyvsp[0].width_spec).is_primitive, (yyvsp[0].width_spec).name, (yyvsp[0].width_spec).width);
 }
-#line 2587 "src/fe/parser.cpp"
+#line 2540 "src/fe/parser.cpp"
     break;
 
   case 109:
 #line 385 "src/fe/parser.ypp"
                                                   {ScannerInterface::InSemiColonStatement();}
-#line 2593 "src/fe/parser.cpp"
+#line 2546 "src/fe/parser.cpp"
     break;
 
   case 110:
@@ -2597,14 +2550,14 @@ yyreduce:
                                                                                                                              {
   Emitter::EmitMailboxDeclStmt((yyvsp[-2].expr), (yyvsp[0].width_spec).is_primitive, (yyvsp[0].width_spec).name, (yyvsp[0].width_spec).width);
 }
-#line 2601 "src/fe/parser.cpp"
+#line 2554 "src/fe/parser.cpp"
     break;
 
   case 111:
 #line 389 "src/fe/parser.ypp"
                   {
 }
-#line 2608 "src/fe/parser.cpp"
+#line 2561 "src/fe/parser.cpp"
     break;
 
   case 112:
@@ -2612,7 +2565,7 @@ yyreduce:
              {
   // Maybe remove this syntax later.
 }
-#line 2616 "src/fe/parser.cpp"
+#line 2569 "src/fe/parser.cpp"
     break;
 
   case 113:
@@ -2621,7 +2574,7 @@ yyreduce:
   (yyval.stmt) = Emitter::EmitIfStmt((yyvsp[0].expr));
   Emitter::EmitLabel((yyval.stmt)->GetLabel(false, true));
 }
-#line 2625 "src/fe/parser.cpp"
+#line 2578 "src/fe/parser.cpp"
     break;
 
   case 114:
@@ -2631,7 +2584,7 @@ yyreduce:
   Emitter::EmitGoto((yyvsp[-2].stmt)->GetLabel(true, false));
   Emitter::EmitLabel((yyvsp[-2].stmt)->GetLabel(false, false));
 }
-#line 2635 "src/fe/parser.cpp"
+#line 2588 "src/fe/parser.cpp"
     break;
 
   case 115:
@@ -2641,7 +2594,7 @@ yyreduce:
   Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(false, false));
   Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(true, false));
 }
-#line 2645 "src/fe/parser.cpp"
+#line 2598 "src/fe/parser.cpp"
     break;
 
   case 116:
@@ -2650,7 +2603,7 @@ yyreduce:
   (yyval.block) = nullptr;
   Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(true, false));
 }
-#line 2654 "src/fe/parser.cpp"
+#line 2607 "src/fe/parser.cpp"
     break;
 
   case 117:
@@ -2659,7 +2612,7 @@ yyreduce:
   (yyval.block) = nullptr;
   Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(true, false));
 }
-#line 2663 "src/fe/parser.cpp"
+#line 2616 "src/fe/parser.cpp"
     break;
 
   case 118:
@@ -2667,7 +2620,7 @@ yyreduce:
                                      {
   Emitter::BeginBlock((yyvsp[-1].annotation));
 }
-#line 2671 "src/fe/parser.cpp"
+#line 2624 "src/fe/parser.cpp"
     break;
 
   case 119:
@@ -2675,7 +2628,7 @@ yyreduce:
                                   {
   Emitter::EmitExprStmt((yyvsp[-1].expr));
 }
-#line 2679 "src/fe/parser.cpp"
+#line 2632 "src/fe/parser.cpp"
     break;
 
   case 120:
@@ -2683,7 +2636,7 @@ yyreduce:
                                {
   Emitter::EmitVarDeclStmtSet((yyvsp[-1].var_decl_set));
 }
-#line 2687 "src/fe/parser.cpp"
+#line 2640 "src/fe/parser.cpp"
     break;
 
   case 121:
@@ -2692,7 +2645,7 @@ yyreduce:
   (yyval.stmt) = Emitter::EmitForStmt((yyvsp[0].expr));
   Emitter::EmitLabel((yyval.stmt)->GetLabel(false, true));
 }
-#line 2696 "src/fe/parser.cpp"
+#line 2649 "src/fe/parser.cpp"
     break;
 
   case 122:
@@ -2711,7 +2664,7 @@ yyreduce:
   Emitter::EmitLabel((yyvsp[-3].stmt)->GetLabel(false, false));
   Emitter::EndBlock();
 }
-#line 2715 "src/fe/parser.cpp"
+#line 2668 "src/fe/parser.cpp"
     break;
 
   case 123:
@@ -2724,7 +2677,7 @@ yyreduce:
   (yyval.stmt) = Emitter::EmitWhileStmt((yyvsp[0].expr));
   Emitter::EmitLabel((yyval.stmt)->GetLabel(false, true));
 }
-#line 2728 "src/fe/parser.cpp"
+#line 2681 "src/fe/parser.cpp"
     break;
 
   case 124:
@@ -2734,7 +2687,7 @@ yyreduce:
   Emitter::EmitLabel((yyvsp[-1].stmt)->GetLabel(false, false));
   Emitter::EndBlock();
 }
-#line 2738 "src/fe/parser.cpp"
+#line 2691 "src/fe/parser.cpp"
     break;
 
   case 125:
@@ -2745,7 +2698,7 @@ yyreduce:
   (yyval.stmt) = Builder::DoWhileStmt();
   Emitter::EmitLabel((yyval.stmt)->GetLabel(true, false));
 }
-#line 2749 "src/fe/parser.cpp"
+#line 2702 "src/fe/parser.cpp"
     break;
 
   case 126:
@@ -2753,7 +2706,7 @@ yyreduce:
                                     {
   (yyval.stmt) = (yyvsp[-1].stmt);
 }
-#line 2757 "src/fe/parser.cpp"
+#line 2710 "src/fe/parser.cpp"
     break;
 
   case 127:
@@ -2765,35 +2718,35 @@ yyreduce:
   Emitter::EmitLabel((yyvsp[-4].stmt)->GetLabel(false, false));
   Emitter::EndBlock();
 }
-#line 2769 "src/fe/parser.cpp"
+#line 2722 "src/fe/parser.cpp"
     break;
 
   case 128:
 #line 481 "src/fe/parser.ypp"
                                                {
 }
-#line 2776 "src/fe/parser.cpp"
+#line 2729 "src/fe/parser.cpp"
     break;
 
   case 129:
 #line 484 "src/fe/parser.ypp"
                   {
 }
-#line 2783 "src/fe/parser.cpp"
+#line 2736 "src/fe/parser.cpp"
     break;
 
   case 130:
 #line 485 "src/fe/parser.ypp"
                     {
 }
-#line 2790 "src/fe/parser.cpp"
+#line 2743 "src/fe/parser.cpp"
     break;
 
   case 131:
 #line 488 "src/fe/parser.ypp"
                  {
 }
-#line 2797 "src/fe/parser.cpp"
+#line 2750 "src/fe/parser.cpp"
     break;
 
   case 132:
@@ -2801,7 +2754,7 @@ yyreduce:
                                  {
   Emitter::EndBlock();
 }
-#line 2805 "src/fe/parser.cpp"
+#line 2758 "src/fe/parser.cpp"
     break;
 
   case 133:
@@ -2810,7 +2763,7 @@ yyreduce:
   /* open new bindings */
   Emitter::BeginBlock(nullptr);
 }
-#line 2814 "src/fe/parser.cpp"
+#line 2767 "src/fe/parser.cpp"
     break;
 
   case 134:
@@ -2818,7 +2771,7 @@ yyreduce:
                                               {
   Emitter::EmitEnumTypeDeclStmt((yyvsp[-3].expr), (yyvsp[-1].enum_decl));
 }
-#line 2822 "src/fe/parser.cpp"
+#line 2775 "src/fe/parser.cpp"
     break;
 
   case 135:
@@ -2826,7 +2779,7 @@ yyreduce:
                      {
   (yyval.enum_decl) = Builder::EnumItemList(nullptr, (yyvsp[0].sym));
 }
-#line 2830 "src/fe/parser.cpp"
+#line 2783 "src/fe/parser.cpp"
     break;
 
   case 136:
@@ -2834,7 +2787,7 @@ yyreduce:
                            {
   (yyval.enum_decl) = Builder::EnumItemList((yyvsp[-2].enum_decl), (yyvsp[0].sym));
 }
-#line 2838 "src/fe/parser.cpp"
+#line 2791 "src/fe/parser.cpp"
     break;
 
   case 137:
@@ -2843,7 +2796,7 @@ yyreduce:
   ScannerInterface::InSemiColonStatement();
   (yyval.expr) = Builder::SymExpr((yyvsp[0].sym));
 }
-#line 2847 "src/fe/parser.cpp"
+#line 2800 "src/fe/parser.cpp"
     break;
 
   case 138:
@@ -2856,7 +2809,7 @@ yyreduce:
   }
   (yyval.expr) = Builder::ArrayRefExpr(Builder::SymExpr((yyvsp[-2].sym)), num);
 }
-#line 2860 "src/fe/parser.cpp"
+#line 2813 "src/fe/parser.cpp"
     break;
 
   case 139:
@@ -2864,7 +2817,7 @@ yyreduce:
                  {
   (yyval.expr) = (yyvsp[-1].expr);
 }
-#line 2868 "src/fe/parser.cpp"
+#line 2821 "src/fe/parser.cpp"
     break;
 
   case 140:
@@ -2872,7 +2825,7 @@ yyreduce:
                       {
   (yyval.expr) = Builder::ArrayRefExpr((yyvsp[-3].expr), (yyvsp[-1].expr));
 }
-#line 2876 "src/fe/parser.cpp"
+#line 2829 "src/fe/parser.cpp"
     break;
 
   case 141:
@@ -2880,7 +2833,7 @@ yyreduce:
                                {
   (yyval.expr) = Builder::BitRangeRefExpr((yyvsp[-5].expr), (yyvsp[-3].expr), (yyvsp[-1].expr));
 }
-#line 2884 "src/fe/parser.cpp"
+#line 2837 "src/fe/parser.cpp"
     break;
 
   case 142:
@@ -2888,7 +2841,7 @@ yyreduce:
                   {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_COMMA);
 }
-#line 2892 "src/fe/parser.cpp"
+#line 2845 "src/fe/parser.cpp"
     break;
 
   case 143:
@@ -2896,7 +2849,7 @@ yyreduce:
                   {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_ELM_REF);
 }
-#line 2900 "src/fe/parser.cpp"
+#line 2853 "src/fe/parser.cpp"
     break;
 
   case 144:
@@ -2904,7 +2857,7 @@ yyreduce:
             {
   (yyval.expr) = (yyvsp[0].expr);
 }
-#line 2908 "src/fe/parser.cpp"
+#line 2861 "src/fe/parser.cpp"
     break;
 
   case 145:
@@ -2912,7 +2865,7 @@ yyreduce:
              {
   (yyval.expr) = Builder::LogicInvertExpr((yyvsp[0].expr));
 }
-#line 2916 "src/fe/parser.cpp"
+#line 2869 "src/fe/parser.cpp"
     break;
 
   case 146:
@@ -2920,7 +2873,7 @@ yyreduce:
              {
   (yyval.expr) = Builder::BitInvertExpr((yyvsp[0].expr));
 }
-#line 2924 "src/fe/parser.cpp"
+#line 2877 "src/fe/parser.cpp"
     break;
 
   case 147:
@@ -2928,7 +2881,7 @@ yyreduce:
                         {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2932 "src/fe/parser.cpp"
+#line 2885 "src/fe/parser.cpp"
     break;
 
   case 148:
@@ -2936,7 +2889,7 @@ yyreduce:
                   {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_MUL);
 }
-#line 2940 "src/fe/parser.cpp"
+#line 2893 "src/fe/parser.cpp"
     break;
 
   case 149:
@@ -2944,7 +2897,7 @@ yyreduce:
                   {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_DIV);
 }
-#line 2948 "src/fe/parser.cpp"
+#line 2901 "src/fe/parser.cpp"
     break;
 
   case 150:
@@ -2952,7 +2905,7 @@ yyreduce:
                       {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2956 "src/fe/parser.cpp"
+#line 2909 "src/fe/parser.cpp"
     break;
 
   case 151:
@@ -2960,7 +2913,7 @@ yyreduce:
                        {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2964 "src/fe/parser.cpp"
+#line 2917 "src/fe/parser.cpp"
     break;
 
   case 152:
@@ -2968,7 +2921,7 @@ yyreduce:
                            {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2972 "src/fe/parser.cpp"
+#line 2925 "src/fe/parser.cpp"
     break;
 
   case 153:
@@ -2976,7 +2929,7 @@ yyreduce:
                            {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), (yyvsp[-1].sub_op));
 }
-#line 2980 "src/fe/parser.cpp"
+#line 2933 "src/fe/parser.cpp"
     break;
 
   case 154:
@@ -2984,7 +2937,7 @@ yyreduce:
                            {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_CONCAT);
 }
-#line 2988 "src/fe/parser.cpp"
+#line 2941 "src/fe/parser.cpp"
     break;
 
   case 155:
@@ -2992,7 +2945,7 @@ yyreduce:
                   {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_AND);
 }
-#line 2996 "src/fe/parser.cpp"
+#line 2949 "src/fe/parser.cpp"
     break;
 
   case 156:
@@ -3000,7 +2953,7 @@ yyreduce:
                   {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_OR);
 }
-#line 3004 "src/fe/parser.cpp"
+#line 2957 "src/fe/parser.cpp"
     break;
 
   case 157:
@@ -3008,7 +2961,7 @@ yyreduce:
                   {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_XOR);
 }
-#line 3012 "src/fe/parser.cpp"
+#line 2965 "src/fe/parser.cpp"
     break;
 
   case 158:
@@ -3016,7 +2969,7 @@ yyreduce:
                          {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_LOR);
 }
-#line 3020 "src/fe/parser.cpp"
+#line 2973 "src/fe/parser.cpp"
     break;
 
   case 159:
@@ -3024,7 +2977,7 @@ yyreduce:
                           {
   (yyval.expr) = Builder::BinopExpr((yyvsp[-2].expr), (yyvsp[0].expr), BINOP_LAND);
 }
-#line 3028 "src/fe/parser.cpp"
+#line 2981 "src/fe/parser.cpp"
     break;
 
   case 160:
@@ -3032,7 +2985,7 @@ yyreduce:
                    {
   (yyval.expr) = Builder::IncDecExpr((yyvsp[-1].expr), (yyvsp[0].sub_op), true);
 }
-#line 3036 "src/fe/parser.cpp"
+#line 2989 "src/fe/parser.cpp"
     break;
 
   case 161:
@@ -3040,7 +2993,7 @@ yyreduce:
                    {
   (yyval.expr) = Builder::IncDecExpr((yyvsp[0].expr), (yyvsp[-1].sub_op), false);
 }
-#line 3044 "src/fe/parser.cpp"
+#line 2997 "src/fe/parser.cpp"
     break;
 
   case 162:
@@ -3048,7 +3001,7 @@ yyreduce:
                               {
   (yyval.expr) = Builder::SignedExpr((yyvsp[-1].sub_op), (yyvsp[0].expr));
 }
-#line 3052 "src/fe/parser.cpp"
+#line 3005 "src/fe/parser.cpp"
     break;
 
   case 163:
@@ -3056,7 +3009,7 @@ yyreduce:
                            {
   (yyval.expr) = Builder::TriTerm((yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].expr));
 }
-#line 3060 "src/fe/parser.cpp"
+#line 3013 "src/fe/parser.cpp"
     break;
 
   case 164:
@@ -3065,7 +3018,7 @@ yyreduce:
   ScannerInterface::InSemiColonStatement();
   (yyval.expr) = Builder::StrExpr((yyvsp[0].str));
 }
-#line 3069 "src/fe/parser.cpp"
+#line 3022 "src/fe/parser.cpp"
     break;
 
   case 165:
@@ -3077,7 +3030,7 @@ yyreduce:
     YYABORT;
   }
 }
-#line 3081 "src/fe/parser.cpp"
+#line 3034 "src/fe/parser.cpp"
     break;
 
   case 166:
@@ -3085,7 +3038,7 @@ yyreduce:
                {
   (yyval.num) = (yyvsp[0].num);
 }
-#line 3089 "src/fe/parser.cpp"
+#line 3042 "src/fe/parser.cpp"
     break;
 
   case 167:
@@ -3094,7 +3047,7 @@ yyreduce:
   (yyval.num) = (yyvsp[-2].num);
   (yyval.num).width = (yyvsp[0].num).value;
 }
-#line 3098 "src/fe/parser.cpp"
+#line 3051 "src/fe/parser.cpp"
     break;
 
   case 168:
@@ -3102,7 +3055,7 @@ yyreduce:
           {
   (yyval.expr) = Builder::SymExpr((yyvsp[0].sym));
 }
-#line 3106 "src/fe/parser.cpp"
+#line 3059 "src/fe/parser.cpp"
     break;
 
   case 169:
@@ -3110,7 +3063,7 @@ yyreduce:
                 {
   (yyval.expr) = Builder::ElmSymRefExpr((yyvsp[-2].expr), (yyvsp[0].sym));
 }
-#line 3114 "src/fe/parser.cpp"
+#line 3067 "src/fe/parser.cpp"
     break;
 
   case 170:
@@ -3118,7 +3071,7 @@ yyreduce:
                {
   (yyval.expr_set) = Builder::ExprList(nullptr, (yyvsp[0].expr));
 }
-#line 3122 "src/fe/parser.cpp"
+#line 3075 "src/fe/parser.cpp"
     break;
 
   case 171:
@@ -3126,7 +3079,7 @@ yyreduce:
                      {
   (yyval.expr_set) = Builder::ExprList((yyvsp[-2].expr_set), (yyvsp[0].expr));
 }
-#line 3130 "src/fe/parser.cpp"
+#line 3083 "src/fe/parser.cpp"
     break;
 
   case 172:
@@ -3134,7 +3087,7 @@ yyreduce:
                        {
   (yyval.expr) = Builder::SymExpr((yyvsp[-1].sym));
 }
-#line 3138 "src/fe/parser.cpp"
+#line 3091 "src/fe/parser.cpp"
     break;
 
   case 173:
@@ -3143,7 +3096,7 @@ yyreduce:
   ScannerInterface::InSemiColonStatement();
   (yyval.expr) = Builder::FuncallExpr((yyvsp[-2].expr), (yyvsp[-1].expr));
 }
-#line 3147 "src/fe/parser.cpp"
+#line 3100 "src/fe/parser.cpp"
     break;
 
   case 174:
@@ -3151,7 +3104,7 @@ yyreduce:
            {
   (yyval.expr) = nullptr;
 }
-#line 3155 "src/fe/parser.cpp"
+#line 3108 "src/fe/parser.cpp"
     break;
 
   case 175:
@@ -3159,11 +3112,11 @@ yyreduce:
          {
   (yyval.expr) = (yyvsp[0].expr);
 }
-#line 3163 "src/fe/parser.cpp"
+#line 3116 "src/fe/parser.cpp"
     break;
 
 
-#line 3167 "src/fe/parser.cpp"
+#line 3120 "src/fe/parser.cpp"
 
       default: break;
     }
