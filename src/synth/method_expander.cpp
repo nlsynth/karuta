@@ -211,9 +211,9 @@ void MethodExpander::BuildRegCopy(IRegister *reg,
   nreg->SetConst(reg->IsConst());
   nreg->SetStateLocal(reg->IsStateLocal());
   nreg->value_type_ = reg->value_type_;
-  auto *params = reg->GetParams(false);
+  auto *params = reg->GetMutableParams(false);
   if (params != nullptr) {
-    auto *nparams = nreg->GetParams(true);
+    auto *nparams = nreg->GetMutableParams(true);
     nparams->Merge(params);
   }
   reg_map[reg] = nreg;

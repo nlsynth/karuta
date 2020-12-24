@@ -600,7 +600,7 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
   local_reg_map_[vreg] = ireg;
   Annotation *an = vreg->GetAnnotation();
   if (an != nullptr) {
-    auto *params = ireg->GetParams(true);
+    auto *params = ireg->GetMutableParams(true);
     params->SetLoopUnroll(an->GetNum());
     if (an->IsPipeline()) {
       params->SetIsPipeline(true);
