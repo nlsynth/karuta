@@ -29,7 +29,7 @@ void Status::Flush(Type t) {
   if (t == USER_ERROR) {
     s += "U:";
   } else if (t == INFO) {
-     s += "I:";
+    s += "I:";
   }
   char buf[10];
   if (context->ln_ > -1) {
@@ -62,6 +62,4 @@ bool Status::CheckAllErrors(bool clear) {
   return b;
 }
 
-Status::Context *Status::GetContext(Type t) {
-  return &context_[t];
-}
+Status::Context *Status::GetContext(Type t) { return &context_[t]; }

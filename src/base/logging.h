@@ -17,31 +17,33 @@ enum LogSeverity {
 };
 
 class Logger {
-public:
+ public:
   static void Init(bool on, const std::set<std::string> &modules);
   static std::ostream &GetStream(LogSeverity sev);
   static void Finalize(LogSeverity sev, const char *fn, int line);
 
-private:
+ private:
   static std::stringstream os_;
   static bool is_enabled_;
   static std::set<std::string> modules_;
 };
 
 class LogFinalizer {
-public:
+ public:
   LogFinalizer(LogSeverity sev, const char *fn, int line);
   ~LogFinalizer();
 
   void operator&(std::ostream &none) {}
 
-private:
+ private:
   LogSeverity sev_;
   const char *fn_;
   int line_;
 };
 
 #define LOG(s) LogFinalizer(s, __FILE__, __LINE__) & Logger::GetStream(s)
-#define CHECK(s) LogFinalizer((s ? LOG_NONE : FATAL), __FILE__, __LINE__) & Logger::GetStream((s ? LOG_NONE : FATAL))
+#define CHECK(s)                                             \
+  LogFinalizer((s ? LOG_NONE : FATAL), __FILE__, __LINE__) & \
+      Logger::GetStream((s ? LOG_NONE : FATAL))
 
 #endif  // _base_logging_h_

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <list>
 
 #include "base/stl_util.h"
@@ -15,21 +16,23 @@ using std::list;
 static int tmp_idx;
 
 class sym {
-public:
+ public:
   sym(const char *n);
   ~sym();
   int hash(void);
   const char *str(void);
-private:
+
+ private:
   char *str_;
   int hash_;
 };
 
 class SymTable {
-public:
+ public:
   ~SymTable();
   sym *lookup(const char *str);
-private:
+
+ private:
   list<sym *> buckets_[BUCKET_COUNT];
 } SymTable;
 
@@ -55,17 +58,11 @@ sym::sym(const char *n) {
   hash_ = str_hash(n);
 }
 
-sym::~sym() {
-  free(str_);
-}
+sym::~sym() { free(str_); }
 
-int sym::hash(void) {
-  return hash_;
-}
+int sym::hash(void) { return hash_; }
 
-const char *sym::str(void) {
-  return str_;
-}
+const char *sym::str(void) { return str_; }
 
 sym *SymTable::lookup(const char *str) {
   if (!str) {
@@ -73,7 +70,7 @@ sym *SymTable::lookup(const char *str) {
   }
   int h = str_hash(str);
   int b = h % BUCKET_COUNT;
-  
+
   for (sym *s : buckets_[b]) {
     if (h != s->hash()) {
       continue;
@@ -94,9 +91,7 @@ SymTable::~SymTable() {
   }
 }
 
-sym_t sym_lookup(const char *str) {
-  return SymTable.lookup(str);
-}
+sym_t sym_lookup(const char *str) { return SymTable.lookup(str); }
 
 const char *sym_cstr(const sym_t s) {
   if (s == sym_null) {
@@ -105,9 +100,7 @@ const char *sym_cstr(const sym_t s) {
   return s->str();
 }
 
-std::string sym_str(const sym_t s) {
-  return std::string(sym_cstr(s));
-}
+std::string sym_str(const sym_t s) { return std::string(sym_cstr(s)); }
 
 sym_t sym_alloc_tmp_sym(const char *suffix) {
   char buf[128];
@@ -119,14 +112,14 @@ sym_t sym_alloc_tmp_sym(const char *suffix) {
 sym_t sym_append_prefix(sym_t sym, const char *prefix) {
   int len = strlen(prefix) + strlen(sym_cstr(sym)) + 2;
   char *buf = (char *)alloca(len);
-  sprintf(buf,"%s%s", prefix, sym_cstr(sym));
+  sprintf(buf, "%s%s", prefix, sym_cstr(sym));
   return sym_lookup(buf);
 }
 
 sym_t sym_append_idx(sym_t sym, int idx) {
   int len = strlen(sym_cstr(sym)) + 10;
   char *buf = (char *)alloca(len);
-  sprintf(buf,"%s_%d", sym_cstr(sym), idx);
+  sprintf(buf, "%s_%d", sym_cstr(sym), idx);
   return sym_lookup(buf);
 }
 

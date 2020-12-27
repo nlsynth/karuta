@@ -9,7 +9,7 @@ using std::ostream;
 using std::string;
 
 class Util {
-public:
+ public:
   static string DirName(const string &fn);
   // "a/b.x" to "b".
   static string BaseNameWithoutSuffix(const string &fn);
@@ -17,8 +17,7 @@ public:
   static bool IsDotFileName(const string &fn);
   static bool IsIrFileName(const string &fn);
   static bool HasSuffix(const string &fn);
-  static bool RewriteFile(const char *fn, const char *tag,
-			  const char *content);
+  static bool RewriteFile(const char *fn, const char *tag, const char *content);
   // 0,1,2,3,4 -> 0,0,1,2,2
   static int Log2(int x);
   static uint64_t RoundUp2(uint64_t x);

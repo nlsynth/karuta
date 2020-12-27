@@ -13,7 +13,7 @@ using std::string;
 //  MessageFlush::Get(Status::INFO);
 
 class Status {
-public:
+ public:
   enum Type {
     // Maybe user's issue.
     USER_ERROR,
@@ -34,11 +34,10 @@ public:
   static bool CheckAllErrors(bool clear);
   static ostringstream &os(Type t);
 
-private:
+ private:
   class Context {
-  public:
-    Context() : ln_(-1), has_message_(false) {
-    }
+   public:
+    Context() : ln_(-1), has_message_(false) {}
     ostringstream ss_;
     int ln_;
     bool has_message_;
@@ -50,12 +49,9 @@ private:
 };
 
 class MessageFlush {
-public:
-  MessageFlush(Status::Type t) : t_(t) {
-  }
-  ~MessageFlush() {
-    Status::Flush(t_);
-  }
+ public:
+  MessageFlush(Status::Type t) : t_(t) {}
+  ~MessageFlush() { Status::Flush(t_); }
   static MessageFlush Get(Status::Type t) {
     MessageFlush m(t);
     return m;

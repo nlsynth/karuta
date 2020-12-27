@@ -1,11 +1,10 @@
 #include "base/arg_parser.h"
 
-#include "base/status.h"
-
 #include <string.h>
 
-ArgParser::ArgParser() : enable_logging_(false) {
-}
+#include "base/status.h"
+
+ArgParser::ArgParser() : enable_logging_(false) {}
 
 void ArgParser::RegisterBoolFlag(const string &name, const char *canonical) {
   if (canonical == nullptr) {
@@ -34,7 +33,7 @@ bool ArgParser::Parse(int argc, char **argv) {
     string flag_value;
     bool has_value = StripFlagName(arg, &flag_name, &flag_value);
     if (i < argc - 1) {
-      next_arg = argv[i+1];
+      next_arg = argv[i + 1];
     }
     if (!strcmp(arg, "-l")) {
       enable_logging_ = true;
@@ -49,25 +48,25 @@ bool ArgParser::Parse(int argc, char **argv) {
     } else if (registered_flags_.find(flag_name) != registered_flags_.end()) {
       const string &canonical_flag_name = registered_flags_[flag_name];
       if (flags_with_value_.find(flag_name) != flags_with_value_.end()) {
-	if (has_value) {
-	  flag_values_[canonical_flag_name] = flag_value;
-	} else {
-	  if (next_arg == nullptr) {
-	    Status::os(Status::USER_ERROR) << "Missing value for:" << flag_name;
-	    MessageFlush::Get(Status::USER_ERROR);
-	    return false;
-	  }
-	  flag_values_[canonical_flag_name] = next_arg;
-	  i++;
-	}
+        if (has_value) {
+          flag_values_[canonical_flag_name] = flag_value;
+        } else {
+          if (next_arg == nullptr) {
+            Status::os(Status::USER_ERROR) << "Missing value for:" << flag_name;
+            MessageFlush::Get(Status::USER_ERROR);
+            return false;
+          }
+          flag_values_[canonical_flag_name] = next_arg;
+          i++;
+        }
       } else {
-	flag_values_[canonical_flag_name] = "";
+        flag_values_[canonical_flag_name] = "";
       }
     } else {
       if (arg[0] == '-') {
-	Status::os(Status::USER_ERROR) << "Unknown command line flag:" << arg;
-	MessageFlush::Get(Status::USER_ERROR);
-	return false;
+        Status::os(Status::USER_ERROR) << "Unknown command line flag:" << arg;
+        MessageFlush::Get(Status::USER_ERROR);
+        return false;
       }
       source_files.push_back(arg);
     }

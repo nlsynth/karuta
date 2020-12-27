@@ -1,10 +1,10 @@
 #include "base/logging.h"
 
-#include <iomanip>
 #include <stdlib.h>
 #include <string.h>
-
 #include <sys/time.h>
+
+#include <iomanip>
 
 using std::ostream;
 using std::set;
@@ -28,9 +28,7 @@ void Logger::Init(bool on, const set<string> &modules) {
   modules_ = modules;
 }
 
-ostream &Logger::GetStream(LogSeverity sev) {
-  return os_;
-}
+ostream &Logger::GetStream(LogSeverity sev) { return os_; }
 
 void Logger::Finalize(LogSeverity sev, const char *fn, int line) {
   if (sev == LOG_NONE) {
@@ -51,7 +49,8 @@ void Logger::Finalize(LogSeverity sev, const char *fn, int line) {
     }
   }
   if (is_enabled_ || sev == FATAL || sev == DEBUG) {
-    std::cout << TimeStamp() << " " << fn << ":" << line << ":" << os_.str() << "\n";
+    std::cout << TimeStamp() << " " << fn << ":" << line << ":" << os_.str()
+              << "\n";
   }
   os_.str("");
   if (sev == FATAL) {
@@ -61,9 +60,6 @@ void Logger::Finalize(LogSeverity sev, const char *fn, int line) {
 }
 
 LogFinalizer::LogFinalizer(LogSeverity sev, const char *fn, int line)
-  : sev_(sev), fn_(fn), line_(line) {
-}
+    : sev_(sev), fn_(fn), line_(line) {}
 
-LogFinalizer::~LogFinalizer() {
-  Logger::Finalize(sev_, fn_, line_);
-}
+LogFinalizer::~LogFinalizer() { Logger::Finalize(sev_, fn_, line_); }

@@ -7,7 +7,7 @@
 using std::ostream;
 
 class DumpStream {
-public:
+ public:
   DumpStream(ostream &os);
 
   void push_indent();
@@ -15,7 +15,7 @@ public:
   void indent();
   ostream &os;
 
-private:
+ private:
   int indent_;
 };
 

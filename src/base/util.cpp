@@ -1,19 +1,19 @@
 #include "base/util.h"
 
-#include "base/logging.h"
-#include "iroha/base/util.h"
+#include <string.h>
 
 #include <fstream>
-#include <set>
 #include <memory>
-#include <string.h>
+#include <set>
+
+#include "base/logging.h"
+#include "iroha/base/util.h"
 
 using std::set;
 
 namespace {
 
-bool CheckFileSuffix(const string &fn,
-		     const set<string> &suffixes) {
+bool CheckFileSuffix(const string &fn, const set<string> &suffixes) {
   const char *p = strrchr(fn.c_str(), '.');
   if (!p) {
     return false;
@@ -84,8 +84,7 @@ bool Util::HasSuffix(const string &fn) {
   return true;
 }
 
-bool Util::RewriteFile(const char *fn, const char *tag,
-		       const char *content) {
+bool Util::RewriteFile(const char *fn, const char *tag, const char *content) {
   std::unique_ptr<std::ifstream> ifs;
   ifs.reset(new std::ifstream(fn));
   if (ifs.get() == nullptr) {

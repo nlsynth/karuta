@@ -13,7 +13,7 @@ using std::string;
 using std::vector;
 
 class ArgParser {
-public:
+ public:
   ArgParser();
 
   // canonical can be null if it is same as the name.
@@ -27,13 +27,13 @@ public:
   bool GetBoolFlag(const char *name, bool default_value);
   bool GetFlagValue(const char *name, string *value);
 
-public:
+ public:
   bool enable_logging_;
   vector<char *> debug_flags;
   vector<string> source_files;
   set<string> log_modules;
 
-private:
+ private:
   void ParseLogModules(const char *s);
   bool StripFlagName(const char *arg, string *name, string *value);
   map<string, string> registered_flags_;
