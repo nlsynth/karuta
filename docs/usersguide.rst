@@ -82,11 +82,39 @@ Karuta adopts prototype-base object oriented programming style. A new object can
      o2.f()
    }
 
+====================
+Process and function
+====================
+
+.. code-block:: none
+
+  // A function can be called by other functions and processes.
+  func f1() {
+    // code
+  }
+
+  // Process is an entry point function starts to run from the beginning.
+  process p1() {
+    // code
+  }
+
+  // 'always' is a syntax sugar to denote a process to repeat indefinitely.
+  always p2() {
+    // code
+  }
+  // code above is equivalent to
+  process p2() {
+    while true {
+      // code
+    }
+  }
+
+
 ===================
 Default file object
 ===================
 
-Karuta allocates an object for each source file and the object is used as the default object while executing the code. The default object can be omitted or explicitly denoted as *self*.
+Karuta allocates an object for each source file and the object is used as the default object while executing the code in the file. The default object can be omitted or explicitly denoted as *self*.
 
 .. code-block:: none
 
