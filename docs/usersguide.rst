@@ -381,7 +381,7 @@ When an array is declared with AXI master annotation, we can transfer data to/fr
    }
 
 AXI slave
----------
+^^^^^^^^^
 
 When an array declared with AXI slave annotation, an AXI slave interface to outside of the design is generated and we can access the array from outside.
 
@@ -414,7 +414,7 @@ Similar to AXI slave interface, SRAM interface which can be accessed from outsid
    ram s int[16]
 
 External SRAM
--------------
+^^^^^^^^^^^^^
 
 Antoher way to declare external RAM is to use @External annotation.
 
