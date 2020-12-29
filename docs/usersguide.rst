@@ -1,9 +1,9 @@
+============
 User's guide
 ============
 
 .. contents::
 
-==============
 Run or Compile
 ==============
 
@@ -48,9 +48,12 @@ To run the threads described in the code, *run* command can be used. The example
 
 This is equivalent to call *run()* at the end of the code.
 
-=============================
+
+Language concepts
+=================
+
 Prototype-based object system
-=============================
+-----------------------------
 
 Karuta adopts prototype-base object oriented programming style. A new object can be created by cloning an existing base object and user's design is described by modifying object(s).
 
@@ -82,9 +85,8 @@ Karuta adopts prototype-base object oriented programming style. A new object can
      o2.f()
    }
 
-====================
 Process and function
-====================
+--------------------
 
 .. code-block:: none
 
@@ -110,9 +112,8 @@ Process and function
   }
 
 
-===================
 Default file object
-===================
+-------------------
 
 Karuta allocates an object for each source file and the object is used as the default object while executing the code in the file. The default object can be omitted or explicitly denoted as *self*.
 
@@ -125,9 +126,8 @@ Karuta allocates an object for each source file and the object is used as the de
    self.compile()
    self.writeHdl("my_design.v")
 
-=============
 Integer width
-=============
+-------------
 
 Bit width of data is important to use FPGAs efficiently while it is not cared so much for CPUs. Karuta allows arbitrary bit width.
 
@@ -146,9 +146,8 @@ Bit width of data is important to use FPGAs efficiently while it is not cared so
 
 (Karuta also has features for user defined types (e.g. bfloat16). Document will be added later.)
 
-================
 Member variables
-================
+----------------
 
 Karuta is an object oriented language, so a design can be described as objects and their members. ``shared``, ``reg`` and ``ram`` keyword is used to declare an member value of an object, integer or array (other kinds of member has different syntax).
 
@@ -169,9 +168,8 @@ Karuta is an object oriented language, so a design can be described as objects a
      v = 0
    }
 
-======
 Arrays
-======
+------
 
 Arrays are really important to utilize FPGA, so Karuta has features to use arrays efficiently.
 
@@ -187,7 +185,7 @@ Arrays are really important to utilize FPGA, so Karuta has features to use array
 One important difference from Karuta and other languages is that an array index wraps around by the length of the array.
 
 Array images
-------------
+^^^^^^^^^^^^
 
 Array images can be written to a file or read from a file.
 
@@ -198,9 +196,8 @@ Array images can be written to a file or read from a file.
    arr.saveImage("arr.image")
    arr.loadImage("arr.image")
 
-=======
 Threads
-=======
+-------
 
 Method can be declared as a thread entry. A thread will be created when the code is executed or synthesized.
 
@@ -223,9 +220,8 @@ Method can be declared as a thread entry. A thread will be created when the code
      // @ThreadEntry annotation starts the method as a thread entry.
    }
 
-=====================
 Thread local variable
-=====================
+---------------------
 
 Multiple threads can be created from an entry method by specifying *num=* parameter.
 
@@ -243,39 +239,67 @@ Multiple threads can be created from an entry method by specifying *num=* parame
      x = x + idx
    }
 
-==============
-Loop Unrolling
-==============
+Channel and mailbox
+-------------------
 
-A *for* loop with fixed loop count can be unrolled by specifying the number of copies.
+Communication between threads is really important for circuit design.
+While one simple way of communication is just to use shared registers or arrays, Karuta also supports channel and mailbox to communicate between threads.
 
-.. code-block:: none
-
-   @(num=2)
-   for var i int = 0; i < 8; ++i {
-     // does computation
-   }
-
-WIP.
+This example this just write values and read them from other threads.
 
 .. code-block:: none
 
-   @Pipeline(num=2)
-   for var i int = 0; i < 8; ++i {
-     // does computation
+   channel ch int
+
+   process th1() {
+     ch.write(1)
+     ch.write(1)
+   }
+
+   process th2() {
+     ch.read()
+   }
+
+   // channel can be written or read by arbitrary number of threads.
+   process th3() {
+     ch.read()
+   }
+
+A mailbox is just a channel with one value.
+
+.. code-block:: none
+
+   mailbox mb int
+
+   process th1() {
+     mb.put(1)
+   }
+
+   process th2() {
+     mb.get()
+   }
+
+But it can notify waiting threads.
+
+.. code-block:: none
+
+   mailbox mb int
+
+   process th1() {
+     mb.notify(10)
+   }
+
+   process th2() {
+     print(mb.wait())
    }
 
 
-=========================
+
 Communication to external
 =========================
 
-I/O from/to external
---------------------
-
-^^^^^^^^^^
 I/O object
-^^^^^^^^^^
+----------
 
 I/Os (e.g. LEDs, DIP switches, interrputs and so on) can be accessed with member variabels with *input* or *output* .
 
@@ -296,9 +320,8 @@ I/Os (e.g. LEDs, DIP switches, interrputs and so on) can be accessed with member
      print(i.wait())
    }
 
-^^^^^^^^^^
 I/O method
-^^^^^^^^^^
+----------
 
 Another way to access I/Os is to annotate a method with *@ExtIO* annotation.
 Its argument when called is taken as the output value and return value is taken from the input value.
@@ -314,9 +337,8 @@ Its argument when called is taken as the output value and return value is taken 
      return true
    }
 
-^^^^^^^^^^^^^^
 Mailbox writer
-^^^^^^^^^^^^^^
+--------------
 
 mailbox can be configured to accept writes from an external accessor.
 
@@ -341,7 +363,6 @@ AXI interface
 
 Either AXI master or slave interface can be attached to each array.
 
-^^^^^^^^^^
 AXI master
 ^^^^^^^^^^
 
@@ -359,9 +380,8 @@ When an array is declared with AXI master annotation, we can transfer data to/fr
      m.store(mem_addr, count, array_addr)
    }
 
-^^^^^^^^^
 AXI slave
-^^^^^^^^^
+---------
 
 When an array declared with AXI slave annotation, an AXI slave interface to outside of the design is generated and we can access the array from outside.
 
@@ -381,6 +401,10 @@ When an array declared with AXI slave annotation, an AXI slave interface to outs
 
 SRAM interface
 --------------
+
+Internal SRAM
+^^^^^^^^^^^^^
+
 
 Similar to AXI slave interface, SRAM interface which can be accessed from outside of the design can be attached to a RAM.
 
@@ -454,64 +478,11 @@ Embedded Verilog module has input arguments arg_0, arg_1,, arg_N and output argu
      assign ret_0 = arg_0 + 1;
    endmodule
 
-===================
-Channel and mailbox
-===================
+Basic features
+==============
 
-Communication between threads is really important for circuit design.
-While one simple way of communication is just to use shared registers or arrays, Karuta also supports channel and mailbox to communicate between threads.
-
-This example this just write values and read them from other threads.
-
-.. code-block:: none
-
-   channel ch int
-
-   process th1() {
-     ch.write(1)
-     ch.write(1)
-   }
-
-   process th2() {
-     ch.read()
-   }
-
-   // channel can be written or read by arbitrary number of threads.
-   process th3() {
-     ch.read()
-   }
-
-A mailbox is just a channel with one value.
-
-.. code-block:: none
-
-   mailbox mb int
-
-   process th1() {
-     mb.put(1)
-   }
-
-   process th2() {
-     mb.get()
-   }
-
-But it can notify waiting threads.
-
-.. code-block:: none
-
-   mailbox mb int
-
-   process th1() {
-     mb.notify(10)
-   }
-
-   process th2() {
-     print(mb.wait())
-   }
-
-===========
 Method call
-===========
+-----------
 
 
 .. code-block:: none
@@ -537,9 +508,8 @@ Method call
      g()
    }
 
-===========
 Type object
-===========
+-----------
 
 Karuta allows to implement user defined numeric types. An object describes user define numeric operations can be attached to each numeric declaration.
 
@@ -574,7 +544,7 @@ Karuta allows to implement user defined numeric types. An object describes user 
    }		
 
 Custom data type with Verilog
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Type object and embedded combinational logic can be used to build a custom type with staged operations (e.g. FP16, complex num, RGB and so on).
 
@@ -592,9 +562,8 @@ Type object and embedded combinational logic can be used to build a custom type 
    // add_st2 and add_st3 here.
 
 
-=========================
 Building object hierarchy
-=========================
+-------------------------
 
 The basic way to build an object hierarchy is to add new member objects and modify them.
 
@@ -659,9 +628,30 @@ When ``module`` block is used, the member object can access its enclosing object
      ...
    }
 
-=================================
+Loop Unrolling
+--------------
+
+A *for* loop with fixed loop count can be unrolled by specifying the number of copies.
+
+.. code-block:: none
+
+   @(num=2)
+   for var i int = 0; i < 8; ++i {
+     // does computation
+   }
+
+WIP.
+
+.. code-block:: none
+
+   @Pipeline(num=2)
+   for var i int = 0; i < 8; ++i {
+     // does computation
+   }
+
+
 Profile Guided Optimization (PGO)
-=================================
+---------------------------------
 
 One of the most important points of optimization is to know which part of the design is a good target of optimization. A technique called PGO (Profile Guided Optimization) can be used to obtain the information.
 
@@ -685,9 +675,8 @@ compile() takes the profile information into account to perform optimization.
    compile()
    writeHdl("my_design.v")
 
-==============
 Importing file
-==============
+--------------
 
 .. code-block:: none
 
@@ -700,9 +689,8 @@ Importing file
    // Now you can access m.
    m.dump()
 
-===============
 Object distance
-===============
+---------------
 
 Elements of designs are placed onto the physical area of an FPGA and there are physical distances between them. So Karuta has a feature to specify number of clocks to propagate signals for communication.
 
@@ -723,9 +711,8 @@ Elements of designs are placed onto the physical area of an FPGA and there are p
      m.f()
    }
 
-============
 Clock ticker
-============
+------------
 
 A ticker object keeps a counter incremented by the clock. Each ticker object has *.getCount()* method to get current count and *.decrementCount(n)* to decrement the value.
 
@@ -750,9 +737,8 @@ A ticker object keeps a counter incremented by the clock. Each ticker object has
    }
 
 
-=======
 Testing
-=======
+-------
 
 Features for object oriented programming can be used to test designs as well. One key idea is to create an enclosing tester object for the design (There may be other ways).
 
@@ -778,9 +764,8 @@ Features for object oriented programming can be used to test designs as well. On
 
    run()
 
-=================
 Visualize designs
-=================
+-----------------
 
 Karuta can visualize following 3 aspects of input designs.
 
@@ -818,9 +803,8 @@ Details of each FSM           HTML   writeHdl() with file name .html
    // Outputs (3) Details of each FSM in HTML format.
    writeHdl("design.html")
 
-====================
 Platform description
-====================
+--------------------
 
 Karuta can specify the name of target hardware to use its specific parameters.
 
@@ -830,9 +814,8 @@ Karuta can specify the name of target hardware to use its specific parameters.
    setSynthParam("platformFamily", "generic-platform")
    setSynthParam("platformName", "default")
 
-============================
 Using generated Verilog file
-============================
+----------------------------
 
 Each output Verilog file will have one top module with the basename of the output file name (e.g. *abc* for *abc.v*).
 
@@ -845,7 +828,6 @@ Each output Verilog file also contains placeholder code to instantiate the desig
 
 If the design is an AXI IP on Vivado, --flavor=vivado-axi option to karuta command can be used to add corresponding wire names like .s00_AWSIZE(s00_axi_awsize).
 
-============
 Installation
 ============
 

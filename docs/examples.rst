@@ -1,3 +1,4 @@
+==============
 Examples (WIP)
 ==============
 
@@ -5,9 +6,8 @@ Examples in this page are to understand concepts of Karuta language quickly (I h
 
 .. contents::
 
--------------
 Just a module
--------------
+=============
 
 .. code-block:: none
 
@@ -22,9 +22,8 @@ Just a module
 
 *module* keyword specifies an object and allows to define members inside it.
 
--------------
 Communication
--------------
+=============
 
 .. code-block:: none
 
@@ -42,9 +41,8 @@ Communication
 
 channels, regs, rams and most of member objects are accessible from multiple threads.
 
-----------------
 Module hierarchy
-----------------
+================
 
 .. code-block:: none
 
@@ -63,9 +61,8 @@ Module hierarchy
      }
    }
 
----------------------
 Matrix multiplication
----------------------
+=====================
 
 .. code-block:: none
 

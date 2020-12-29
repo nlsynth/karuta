@@ -1,3 +1,4 @@
+=====================
 Experimental features
 =====================
 
@@ -7,9 +8,8 @@ Karuta has some experimental and premature features to see their feasibility and
 
 They might be remove without notice, probably due to low convenience against high maintenance burden.
 
----------
 Data flow
----------
+=========
 
 .. code-block:: none
 
@@ -23,9 +23,8 @@ Data flow
    func f(x int) (int) {
    }
 
--------------------------
 Thread member declaration
--------------------------
+=========================
 
 Threads can be declared as a member object instead of @ThreadEntry().
 
@@ -36,9 +35,8 @@ Threads can be declared as a member object instead of @ThreadEntry().
    thread Kernel.thr1 = f()
    run()
 
-------------------------
 External SRAM operations
-------------------------
+========================
 
 Memory object represents an address space and can be accessed by read/write method.
 This assumes 32bit address/data for now.
@@ -48,9 +46,8 @@ This assumes 32bit address/data for now.
    Memory.read(addr)
    Memory.write(addr, data)
 
-------------------------
 Multi dimensional arrays
-------------------------
+========================
 
 Multi dimensional array is just an additional view of a normal 1 dimensional array.
 

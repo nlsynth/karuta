@@ -1,7 +1,7 @@
+==================
 Quick Introduction
 ==================
 
-==================
 Installation
 ==================
 
@@ -13,7 +13,6 @@ If you are using Ubuntu, just do
 
 Otherwise please see User's guide to build the binary.
 
-========
 Tutorial
 ========
 
@@ -194,7 +193,6 @@ Another one is to visualized the structure of modules and FSMs after synthesis.
 
 
 
-========
 Features
 ========
 

@@ -1,9 +1,9 @@
+=========================
 Design and Implementation
 =========================
 
 .. contents::
 
-==================
 Overview of Karuta
 ==================
 
@@ -108,7 +108,6 @@ Karuta aims to support designs with many FSMs and resources shared between them.
 To support many accessors to one resource, Karuta generates a tree of multiplexers to arbitrate accesses.
 The tree structure avoids too deep priority logic.
 
-======================================
 Architecture and source code structure
 ======================================
 

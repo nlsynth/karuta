@@ -1,9 +1,9 @@
+=========
 Reference
 =========
 
 .. contents::
 
-==================
 Command line flags
 ==================
 
@@ -92,7 +92,6 @@ $ karuta <command> [Files]
 
   * Generates a top level module to feed clock and reset.
 
-=================
 Program structure
 =================
 
@@ -307,7 +306,6 @@ module block
    }
 
 
-============================
 Built in objects and methods
 ============================
 
@@ -384,7 +382,6 @@ Built in methods
 
   * e.g. runIroha("-v -S -o x.v")
 
-====================
 Synthesis parameters
 ====================
 
@@ -397,7 +394,6 @@ When compilation is requested by calling compile() method, the synthesizer takes
    setSynthParam("platformFamily", "generic-platform")
    setSynthParam("platformName", "generic")
 
-===========
 Annotations
 ===========
 
