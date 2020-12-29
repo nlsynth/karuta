@@ -11,7 +11,7 @@ NOTE: There may be mistakes or glitches in this document due to my English skill
 Source of this projects: <https://github.com/nlsynth/karuta> (see its docs/ directory for this document)
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Index and topics:
 
    Introduction <introduction>
@@ -20,3 +20,4 @@ Source of this projects: <https://github.com/nlsynth/karuta> (see its docs/ dire
    Design and Implementation <designandimpl>
    Examples <examples>
    (Experimental features - might be removed without notice) <experimental>
+   Glossary <glossary>
