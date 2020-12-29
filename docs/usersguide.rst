@@ -52,38 +52,6 @@ This is equivalent to call *run()* at the end of the code.
 Language concepts
 =================
 
-Prototype-based object system
------------------------------
-
-Karuta adopts prototype-base object oriented programming style. A new object can be created by cloning an existing base object and user's design is described by modifying object(s).
-
-.. code-block:: none
-
-   // Temporary object.
-   var o object = new()
-
-   // Adds 2 method f() and g()
-   func o.f() {
-     print(g())
-   }
-   func o.g() (int) {
-     return 1
-   }
-
-   // Makes 2 clones of the object `o` and set them as member objects of `self`.
-   shared self.o1 object = o.clone()
-   shared self.o2 object = o.clone()
-
-   // Modifies one of them a bit.
-   func o2.g() (int) {
-     return 2
-   }
-
-   // `self` can access 2 objects and their methods.
-   func self.main() {
-     o1.f()
-     o2.f()
-   }
 
 Process and function
 --------------------
@@ -126,25 +94,38 @@ Karuta allocates an object for each source file and the object is used as the de
    self.compile()
    self.writeHdl("my_design.v")
 
-Integer width
--------------
+Prototype-based object system
+-----------------------------
 
-Bit width of data is important to use FPGAs efficiently while it is not cared so much for CPUs. Karuta allows arbitrary bit width.
+Karuta adopts prototype-base object oriented programming style. A new object can be created by cloning an existing base object and user's design is described by modifying object(s).
 
 .. code-block:: none
 
-   // Variable declarations.
-   var x int  // default width is 32 bits.
-   var rgb #24  // specify 24 bits.
+   // Temporary object.
+   var o object = new()
 
-   // This function takes a 32 bits argument (arg) and returns a 32 bits argument.
-   func bswap32(arg #32) (#32) {
-     // [h:l] - bit slice operator
-     // ::    - bit concatenation operator
-     return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
+   // Adds 2 method f() and g()
+   func o.f() {
+     print(g())
+   }
+   func o.g() (int) {
+     return 1
    }
 
-(Karuta also has features for user defined types (e.g. bfloat16). Document will be added later.)
+   // Makes 2 clones of the object `o` and set them as member objects of `self`.
+   shared self.o1 object = o.clone()
+   shared self.o2 object = o.clone()
+
+   // Modifies one of them a bit.
+   func o2.g() (int) {
+     return 2
+   }
+
+   // `self` can access 2 objects and their methods.
+   func self.main() {
+     o1.f()
+     o2.f()
+   }
 
 Member variables
 ----------------
@@ -167,6 +148,26 @@ Karuta is an object oriented language, so a design can be described as objects a
    process self.o.f() {
      v = 0
    }
+
+Integer width
+-------------
+
+Bit width of data is important to use FPGAs efficiently while it is not cared so much for CPUs. Karuta allows arbitrary bit width.
+
+.. code-block:: none
+
+   // Variable declarations.
+   var x int  // default width is 32 bits.
+   var rgb #24  // specify 24 bits.
+
+   // This function takes a 32 bits argument (arg) and returns a 32 bits argument.
+   func bswap32(arg #32) (#32) {
+     // [h:l] - bit slice operator
+     // ::    - bit concatenation operator
+     return arg[7:0] :: arg[15:8] :: arg[23:16] :: arg[31:24]
+   }
+
+(Karuta also has features for user defined types (e.g. bfloat16). Document will be added later.)
 
 Arrays
 ------
@@ -218,25 +219,6 @@ Method can be declared as a thread entry. A thread will be created when the code
    @ThreadEntry
    func m2() {
      // @ThreadEntry annotation starts the method as a thread entry.
-   }
-
-Thread local variable
----------------------
-
-Multiple threads can be created from an entry method by specifying *num=* parameter.
-
-.. code-block:: none
-
-   @ThreadLocal()
-   shared M.x int
-
-   @(num=2)
-   process M.thr(idx int) {
-     // 2 copies of this thread runs and the index is given as the method
-     // argument. idx = 0, 1.
-
-     // x is a per thread variable.
-     x = x + idx
    }
 
 Channel and mailbox
@@ -542,6 +524,25 @@ Karuta allows to implement user defined numeric types. An object describes user 
      print(x.IsZero())
      x + x
    }		
+
+Thread local variable
+---------------------
+
+Multiple threads can be created from an entry method by specifying *num=* parameter.
+
+.. code-block:: none
+
+   @ThreadLocal()
+   shared M.x int
+
+   @(num=2)
+   process M.thr(idx int) {
+     // 2 copies of this thread runs and the index is given as the method
+     // argument. idx = 0, 1.
+
+     // x is a per thread variable.
+     x = x + idx
+   }
 
 Custom data type with Verilog
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
