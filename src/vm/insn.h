@@ -8,14 +8,14 @@
 namespace vm {
 
 class Insn {
-public:
+ public:
   Insn();
   void Dump() const;
   void Dump(DumpStream &ds) const;
 
   enum OpCode op_;
-  vector<Register*> dst_regs_;
-  vector<Register*> src_regs_;
+  vector<Register *> dst_regs_;
+  vector<Register *> src_regs_;
   Register *obj_reg_;
   Method *method_;
   int jump_target_;
@@ -26,20 +26,22 @@ public:
 };
 
 class InsnType {
-public:
+ public:
   // (int or enum), (int or enum) -> bool
   static bool IsComparison(int op);
   // int, int -> int (same width)
-  static bool IsNumCalculation(int op);
+  static bool IsSameWidthNumBinOp(int op);
+  // int, int' -> int
+  static bool IsShift(int op);
 };
 
 class InsnOpUtils {
-public:
+ public:
   static const string Str(Insn *insn);
 };
 
 class ByteCodeDebugMode {
-public:
+ public:
   // Dumps before the execution and the type annotation.
   static bool PreExec(const string &flags);
   static bool IsEnabled(const string &flags);

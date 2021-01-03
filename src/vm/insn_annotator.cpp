@@ -20,8 +20,7 @@ using std::set;
 namespace vm {
 
 InsnAnnotator::InsnAnnotator(VM *vm, Object *obj, Method *method)
-  : vm_(vm), obj_(obj), method_(method) {
-}
+    : vm_(vm), obj_(obj), method_(method) {}
 
 void InsnAnnotator::AnnotateMethod(VM *vm, Object *obj, Method *method) {
   InsnAnnotator annotator(vm, obj, method);
@@ -45,12 +44,12 @@ void InsnAnnotator::DoAnnotate() {
     for (auto *insn : untyped_insns) {
       TryType(insn);
       if (Status::CheckAllErrors(false)) {
-	return;
+        return;
       }
       if (IsTyped(insn)) {
-	++n;
+        ++n;
       } else {
-	tmp_insns.push_back(insn);
+        tmp_insns.push_back(insn);
       }
     }
     untyped_insns = tmp_insns;
@@ -64,7 +63,7 @@ void InsnAnnotator::PropagateType() {
   for (auto *insn : method_->insns_) {
     for (auto *reg : insn->dst_regs_) {
       if (reg->GetIsDeclaredType()) {
-	source_regs.insert(reg);
+        source_regs.insert(reg);
       }
     }
   }
@@ -75,14 +74,14 @@ void InsnAnnotator::PropagateType() {
     for (auto *insn : method_->insns_) {
       bool b = false;
       for (auto *reg : insn->dst_regs_) {
-	if (source_regs.find(reg) != source_regs.end() &&
-	    processed_regs.find(reg) == processed_regs.end()) {
-	  tmp_processed.insert(reg);
-	  b = true;
-	}
+        if (source_regs.find(reg) != source_regs.end() &&
+            processed_regs.find(reg) == processed_regs.end()) {
+          tmp_processed.insert(reg);
+          b = true;
+        }
       }
       if (b) {
-	TryPropagate(insn, &propagated);
+        TryPropagate(insn, &propagated);
       }
     }
     for (auto *reg : tmp_processed) {
@@ -95,18 +94,16 @@ void InsnAnnotator::PropagateType() {
 void InsnAnnotator::TryPropagate(Insn *insn, set<Register *> *propagated) {
   if (insn->op_ == OP_ASSIGN) {
     if (insn->dst_regs_[0]->GetIsDeclaredType() &&
-	insn->dst_regs_[0]->type_.value_type_ == Value::NUM &&
-	!insn->src_regs_[1]->GetIsDeclaredType()) {
+        insn->dst_regs_[0]->type_.value_type_ == Value::NUM &&
+        !insn->src_regs_[1]->GetIsDeclaredType()) {
       propagated->insert(insn->src_regs_[1]);
-      insn->src_regs_[1]->type_.width_ =
-	insn->dst_regs_[0]->type_.width_;
+      insn->src_regs_[1]->type_.width_ = insn->dst_regs_[0]->type_.width_;
     }
   }
   if (insn->op_ == OP_BIT_INV) {
     if (!insn->src_regs_[0]->GetIsDeclaredType()) {
       propagated->insert(insn->src_regs_[0]);
-      insn->src_regs_[0]->type_.width_ =
-	insn->dst_regs_[0]->type_.width_;
+      insn->src_regs_[0]->type_.width_ = insn->dst_regs_[0]->type_.width_;
     }
   }
 }
@@ -132,9 +129,9 @@ void InsnAnnotator::TryType(Insn *insn) {
     if (insn->label_ != sym_null) {
       Value *obj_value = obj->LookupValue(insn->label_, false);
       if (obj_value == nullptr) {
-	if (method_->IsTopLevel()) {
-	  return;
-	}
+        if (method_->IsTopLevel()) {
+          return;
+        }
       }
       CHECK(obj_value) << sym_cstr(insn->label_) << "\n";
       CHECK(obj_value->object_);
@@ -151,23 +148,22 @@ void InsnAnnotator::TryType(Insn *insn) {
   if (insn->op_ == OP_ASSIGN) {
     if (insn->src_regs_[0]->type_.value_type_ != Value::NONE) {
       if (insn->dst_regs_[0]->GetIsDeclaredType()) {
-	CHECK(insn->dst_regs_[0]->type_.value_type_ ==
-	      insn->src_regs_[0]->type_.value_type_);
+        CHECK(insn->dst_regs_[0]->type_.value_type_ ==
+              insn->src_regs_[0]->type_.value_type_);
       } else {
-	insn->dst_regs_[0]->type_ = insn->src_regs_[0]->type_;
+        insn->dst_regs_[0]->type_ = insn->src_regs_[0]->type_;
       }
       return;
     }
   }
-  if (InsnType::IsNumCalculation(insn->op_)) {
+  if (InsnType::IsSameWidthNumBinOp(insn->op_)) {
     AnnotateNumCalculationOp(insn);
   }
-  if (insn->op_ == OP_LSHIFT || insn->op_ == OP_RSHIFT) {
+  if (InsnType::IsShift(insn->op_)) {
     if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
-	insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
+        insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-      insn->dst_regs_[0]->type_.width_ =
-	insn->src_regs_[0]->type_.width_;
+      insn->dst_regs_[0]->type_.width_ = insn->src_regs_[0]->type_.width_;
       return;
     }
   }
@@ -177,20 +173,18 @@ void InsnAnnotator::TryType(Insn *insn) {
   if (insn->op_ == OP_BIT_RANGE) {
     AnnotateBitRangeInsn(insn);
   }
-  if (insn->op_ == OP_LOGIC_INV ||
-      insn->op_ == OP_LAND || insn->op_ == OP_LOR ||
-      InsnType::IsComparison(insn->op_)) {
+  if (insn->op_ == OP_LOGIC_INV || insn->op_ == OP_LAND ||
+      insn->op_ == OP_LOR || InsnType::IsComparison(insn->op_)) {
     insn->dst_regs_[0]->type_.value_type_ = Value::ENUM_ITEM;
-    insn->dst_regs_[0]->type_.enum_type_ =
-      vm_->bool_type_;
+    insn->dst_regs_[0]->type_.enum_type_ = vm_->bool_type_;
     return;
   }
   if (insn->op_ == OP_BIT_INV) {
     if (insn->src_regs_[0]->type_.value_type_ != Value::NONE) {
       insn->dst_regs_[0]->type_.value_type_ =
-	insn->src_regs_[0]->type_.value_type_;
+          insn->src_regs_[0]->type_.value_type_;
       insn->dst_regs_[0]->type_.enum_type_ =
-	insn->src_regs_[0]->type_.enum_type_;
+          insn->src_regs_[0]->type_.enum_type_;
       return;
     }
   }
@@ -205,8 +199,7 @@ void InsnAnnotator::TryType(Insn *insn) {
     TypeArrayRead(insn);
     return;
   }
-  if (insn->op_ == OP_MEMBER_READ ||
-      insn->op_ == OP_MEMBER_WRITE) {
+  if (insn->op_ == OP_MEMBER_READ || insn->op_ == OP_MEMBER_WRITE) {
     TypeMemberAccess(insn);
     return;
   }
@@ -221,8 +214,8 @@ void InsnAnnotator::TypeMemberAccess(Insn *insn) {
   }
   if (obj == nullptr) {
     if (!method_->IsTopLevel()) {
-      Status::os(Status::USER_ERROR) << "Failed to find object: "
-				     << sym_cstr(insn->label_);
+      Status::os(Status::USER_ERROR)
+          << "Failed to find object: " << sym_cstr(insn->label_);
       MessageFlush::Get(Status::USER_ERROR);
       method_->SetCompileFailure();
     }
@@ -243,8 +236,8 @@ void InsnAnnotator::TypeMemberAccess(Insn *insn) {
     }
   } else {
     if (!method_->IsTopLevel()) {
-      Status::os(Status::USER_ERROR) << "Failed to find object: "
-				     << sym_cstr(insn->label_);
+      Status::os(Status::USER_ERROR)
+          << "Failed to find object: " << sym_cstr(insn->label_);
       MessageFlush::Get(Status::USER_ERROR);
       method_->SetCompileFailure();
     }
@@ -256,7 +249,7 @@ void InsnAnnotator::AnnotateBitRangeInsn(Insn *insn) {
   if (insn->src_regs_[0]->type_.value_type_ == Value::NUM) {
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
     int w = insn->src_regs_[1]->initial_num_.GetValue0() -
-      insn->src_regs_[2]->initial_num_.GetValue0() + 1;
+            insn->src_regs_[2]->initial_num_.GetValue0() + 1;
     insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
   }
 }
@@ -266,7 +259,7 @@ void InsnAnnotator::AnnotateConcatInsn(Insn *insn) {
       insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
     int w = insn->src_regs_[0]->type_.width_.GetWidth() +
-      insn->src_regs_[1]->type_.width_.GetWidth();
+            insn->src_regs_[1]->type_.width_.GetWidth();
     insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
   }
 }
@@ -277,7 +270,7 @@ void InsnAnnotator::AnnotateNumCalculationOp(Insn *insn) {
     if (!insn->dst_regs_[0]->GetIsDeclaredType()) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
       PropagateRegWidth(insn->src_regs_[0], insn->src_regs_[1],
-			insn->dst_regs_[0]);
+                        insn->dst_regs_[0]);
     }
   }
 }
@@ -295,7 +288,7 @@ void InsnAnnotator::TypeArrayRead(Insn *insn) {
   if (ArrayWrapper::IsIntArray(array_obj)) {
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
     insn->dst_regs_[0]->type_.width_ =
-      iroha::NumericWidth(false, ArrayWrapper::GetDataWidth(array_obj));
+        iroha::NumericWidth(false, ArrayWrapper::GetDataWidth(array_obj));
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
     insn->dst_regs_[0]->type_.value_type_ = Value::OBJECT;
@@ -314,9 +307,9 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
     obj = objs_[insn->obj_reg_];
     if (obj == nullptr) {
       if (!method_->IsTopLevel()) {
-	Status::os(Status::USER_ERROR)
-	  << "Can't get object to determine the return types: "
-	  << sym_cstr(insn->label_);
+        Status::os(Status::USER_ERROR)
+            << "Can't get object to determine the return types: "
+            << sym_cstr(insn->label_);
       }
       return;
     }
@@ -329,31 +322,31 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
       // native
       CHECK(method->return_types_.size() <= insn->dst_regs_.size());
       for (int i = 0; i < method->return_types_.size(); ++i) {
-	auto &ret = method->return_types_[i];
-	if (ret.value_type_ == Value::OBJECT) {
-	  insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
-	} else {
-	  CHECK(ret.value_type_ == Value::NUM);
-	  insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
-	  insn->dst_regs_[i]->type_.width_ = ret.width_;
-	}
+        auto &ret = method->return_types_[i];
+        if (ret.value_type_ == Value::OBJECT) {
+          insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
+        } else {
+          CHECK(ret.value_type_ == Value::NUM);
+          insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
+          insn->dst_regs_[i]->type_.width_ = ret.width_;
+        }
       }
     } else {
       // non native
       CHECK(parse_tree->GetReturns()->decls.size() <= insn->dst_regs_.size());
       for (int i = 0; i < parse_tree->GetReturns()->decls.size(); ++i) {
-	auto *decl = parse_tree->GetReturns()->decls[i];
-	// TODO: type object.
-	sym_t type = decl->GetType();
-	if (type == sym_object || type == sym_module) {
-	  insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
-	} else if (type == sym_bool) {
-	  insn->dst_regs_[i]->type_.value_type_ = Value::ENUM_ITEM;
-	  insn->dst_regs_[i]->type_.enum_type_ = vm_->bool_type_;
-	} else {
-	  insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
-	  insn->dst_regs_[i]->type_.width_ = decl->GetWidth();
-	}
+        auto *decl = parse_tree->GetReturns()->decls[i];
+        // TODO: type object.
+        sym_t type = decl->GetType();
+        if (type == sym_object || type == sym_module) {
+          insn->dst_regs_[i]->type_.value_type_ = Value::OBJECT;
+        } else if (type == sym_bool) {
+          insn->dst_regs_[i]->type_.value_type_ = Value::ENUM_ITEM;
+          insn->dst_regs_[i]->type_.enum_type_ = vm_->bool_type_;
+        } else {
+          insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
+          insn->dst_regs_[i]->type_.width_ = decl->GetWidth();
+        }
       }
     }
   }
@@ -378,13 +371,14 @@ bool InsnAnnotator::IsTypedReg(Register *reg) {
 }
 
 void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
-				      Register *dst) {
+                                      Register *dst) {
   if (dst->orig_name_) {
     return;
   }
   iroha::NumericWidth width =
-    iroha::NumericWidth::CommonWidth(src1->type_.width_, src2->type_.width_);
-  dst->type_.width_ = iroha::NumericWidth::CommonWidth(dst->type_.width_, width);
+      iroha::NumericWidth::CommonWidth(src1->type_.width_, src2->type_.width_);
+  dst->type_.width_ =
+      iroha::NumericWidth::CommonWidth(dst->type_.width_, width);
 }
 
 Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
@@ -404,7 +398,7 @@ Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
 void InsnAnnotator::SetDstRegType(Value::ValueType vtype, Insn *insn, int idx) {
   insn->dst_regs_[idx]->type_.value_type_ = vtype;
   CHECK(insn->dst_regs_[idx] ==
-	method_->method_regs_[insn->dst_regs_[idx]->id_]);
+        method_->method_regs_[insn->dst_regs_[idx]->id_]);
 }
 
 }  // namespace vm

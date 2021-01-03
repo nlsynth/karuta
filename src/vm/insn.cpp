@@ -9,9 +9,13 @@
 
 namespace vm {
 
-Insn::Insn() : obj_reg_(nullptr), method_(nullptr), jump_target_(-1),
-	       label_(nullptr), insn_expr_(nullptr), insn_stmt_(nullptr) {
-}
+Insn::Insn()
+    : obj_reg_(nullptr),
+      method_(nullptr),
+      jump_target_(-1),
+      label_(nullptr),
+      insn_expr_(nullptr),
+      insn_stmt_(nullptr) {}
 
 void Insn::Dump() const {
   DumpStream ds(cout);
@@ -22,7 +26,7 @@ void Insn::Dump(DumpStream &ds) const {
   if (dst_regs_.size() > 0) {
     for (size_t i = 0; i < dst_regs_.size(); ++i) {
       if (i > 0) {
-	ds.os << " ";
+        ds.os << " ";
       }
       ds.os << "r" << dst_regs_[i]->id_;
     }
@@ -36,7 +40,7 @@ void Insn::Dump(DumpStream &ds) const {
     ds.os << "(";
     for (size_t i = 0; i < src_regs_.size(); ++i) {
       if (i > 0) {
-	ds.os << " ";
+        ds.os << " ";
       }
       ds.os << "r" << src_regs_[i]->id_;
     }
@@ -66,20 +70,26 @@ void Insn::Dump(DumpStream &ds) const {
 }
 
 bool InsnType::IsComparison(int op) {
-  if (op == OP_LT || op == OP_GT ||
-      op == OP_LTE || op == OP_GTE ||
+  if (op == OP_LT || op == OP_GT || op == OP_LTE || op == OP_GTE ||
       op == OP_EQ || op == OP_NE) {
     return true;
   }
   return false;
 }
 
-bool InsnType::IsNumCalculation(int op) {
-  if (op == OP_ADD || op == OP_ADD_MAY_WITH_TYPE ||
-      op == OP_SUB || op == OP_SUB_MAY_WITH_TYPE ||
-      op == OP_MUL || op == OP_MUL_MAY_WITH_TYPE ||
-      op == OP_DIV || op == OP_DIV_MAY_WITH_TYPE ||
-      op == OP_AND || op == OP_OR || op == OP_XOR) {
+bool InsnType::IsSameWidthNumBinOp(int op) {
+  if (op == OP_ADD || op == OP_ADD_MAY_WITH_TYPE || op == OP_SUB ||
+      op == OP_SUB_MAY_WITH_TYPE || op == OP_MUL ||
+      op == OP_MUL_MAY_WITH_TYPE || op == OP_DIV ||
+      op == OP_DIV_MAY_WITH_TYPE || op == OP_AND || op == OP_OR ||
+      op == OP_XOR) {
+    return true;
+  }
+  return false;
+}
+
+bool InsnType::IsShift(int op) {
+  if (op == OP_LSHIFT || op == OP_RSHIFT) {
     return true;
   }
   return false;

@@ -16,11 +16,10 @@ namespace vm {
 namespace executor {
 
 class Base {
-public:
-  Base(Thread *thread, MethodFrame *frame) : thr_(thread), frame_(frame) {
-  }
-  
-protected:
+ public:
+  Base(Thread *thread, MethodFrame *frame) : thr_(thread), frame_(frame) {}
+
+ protected:
   bool ExecMemberAccess();
   bool ExecFuncall();
   void ExecFuncallDone();
@@ -28,7 +27,7 @@ protected:
   Method *LookupCompiledMethod(Object **obj);
   void ExecLoadObj();
   void SetupCalleeFrame(Object *obj, Method *callee_method,
-			const vector<Value> &args);
+                        const vector<Value> &args);
   void ExecStr();
   void ExecNum();
   void ExecBinop();
@@ -42,7 +41,7 @@ protected:
   bool ExecGoto();
   void ExecBitRange();
   bool ExecYield();
-  
+
   void ExecMemberReadWithCheck();
   bool ExecFuncallWithCheck();
   void ExecFuncallDoneWithCheck();
@@ -57,24 +56,12 @@ protected:
 
   void PopulateArrayIndexes(int start, vector<uint64_t> *indexes);
 
-  bool IsTopLevel() const {
-    return frame_->method_->IsTopLevel();
-  }
-  enum OpCode op() const {
-    return insn_->op_;
-  }
-  Value &VAL(Register *reg) const {
-    return frame_->reg_values_[reg->id_];
-  }
-  Register *sreg(int idx) {
-    return insn_->src_regs_[idx];
-  }
-  Register *dreg(int idx) {
-    return insn_->dst_regs_[idx];
-  }
-  Register *oreg() {
-    return insn_->obj_reg_;
-  }
+  bool IsTopLevel() const { return frame_->method_->IsTopLevel(); }
+  enum OpCode op() const { return insn_->op_; }
+  Value &VAL(Register *reg) const { return frame_->reg_values_[reg->id_]; }
+  Register *sreg(int idx) { return insn_->src_regs_[idx]; }
+  Register *dreg(int idx) { return insn_->dst_regs_[idx]; }
+  Register *oreg() { return insn_->obj_reg_; }
 
   // Set in ExecInsn().
   Insn *insn_;

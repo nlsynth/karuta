@@ -496,9 +496,15 @@ string ResourceSet::GetResourceClassName(vm::OpCode op) {
 
 void ResourceSet::PopulateResourceDataType(int op, IValueType &vt,
                                            IResource *res) {
-  if (vm::InsnType::IsNumCalculation(op)) {
+  if (vm::InsnType::IsSameWidthNumBinOp(op)) {
     res->input_types_.push_back(vt);
     res->input_types_.push_back(vt);
+    res->output_types_.push_back(vt);
+  } else if (vm::InsnType::IsShift(op)) {
+    res->input_types_.push_back(vt);
+    IValueType a;
+    a.SetWidth(32);
+    res->input_types_.push_back(a);
     res->output_types_.push_back(vt);
   } else if (vm::InsnType::IsComparison(op)) {
     res->input_types_.push_back(vt);

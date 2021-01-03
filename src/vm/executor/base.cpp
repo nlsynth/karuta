@@ -50,13 +50,17 @@ void Base::ExecBinop() {
   Register *lhs = sreg(0);
   Register *rhs = sreg(1);
   if (IsTopLevel()) {
-    if (InsnType::IsNumCalculation(op())) {
+    if (InsnType::IsSameWidthNumBinOp(op())) {
       InsnAnnotator::AnnotateNumCalculationOp(insn_);
     }
-    if (op() == OP_LSHIFT || op() == OP_RSHIFT) {
+    if (InsnType::IsShift(op())) {
       dst->type_.width_ = lhs->type_.width_;
       dst->type_.value_type_ = Value::NUM;
     }
+    if (op() == OP_CONCAT) {
+      InsnAnnotator::AnnotateConcatInsn(insn_);
+    }
+    // TODO: Annotate other types of insns.
   }
   if (dst->type_.value_type_ != Value::NUM) {
     if (dst->type_.value_type_ == Value::NONE) {
@@ -133,13 +137,8 @@ void Base::ExecBinop() {
 }
 
 void Base::RetryBinopWithType() {
-  if (op() == OP_CONCAT) {
-    InsnAnnotator::AnnotateConcatInsn(insn_);
-    // TODO: Annotate other types of insns.
-  } else {
-    CHECK(op() == OP_ADD_MAY_WITH_TYPE || op() == OP_SUB_MAY_WITH_TYPE ||
-          op() == OP_MUL_MAY_WITH_TYPE || op() == OP_DIV_MAY_WITH_TYPE);
-  }
+  CHECK(op() == OP_ADD_MAY_WITH_TYPE || op() == OP_SUB_MAY_WITH_TYPE ||
+        op() == OP_MUL_MAY_WITH_TYPE || op() == OP_DIV_MAY_WITH_TYPE);
   Register *lhs = sreg(0);
   Register *rhs = sreg(1);
   CHECK(lhs->type_.value_type_ == rhs->type_.value_type_);
