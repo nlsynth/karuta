@@ -747,7 +747,7 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
   InsnWalker::MaybeLoadMemberObject(insn);
   vm::Object *obj;
   if (is_store) {
-    obj = member_reg_to_obj_map_[insn->src_regs_[1]];
+    obj = member_reg_to_obj_map_[insn->obj_reg_];
   } else {
     obj = member_reg_to_obj_map_[insn->obj_reg_];
   }

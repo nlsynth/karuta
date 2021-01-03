@@ -206,12 +206,7 @@ void InsnAnnotator::TryType(Insn *insn) {
 }
 
 void InsnAnnotator::TypeMemberAccess(Insn *insn) {
-  Object *obj;
-  if (insn->op_ == OP_MEMBER_READ) {
-    obj = objs_[insn->obj_reg_];
-  } else {
-    obj = objs_[insn->src_regs_[1]];
-  }
+  Object *obj = objs_[insn->obj_reg_];
   if (obj == nullptr) {
     if (!method_->IsTopLevel()) {
       Status::os(Status::USER_ERROR)

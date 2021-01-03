@@ -101,12 +101,7 @@ void MethodScanner::RequestSubObj(vm::Object *callee_obj) {
 }
 
 void MethodScanner::MemberAccess(vm::Insn *insn) {
-  vm::Object *obj;
-  if (insn->op_ == vm::OP_MEMBER_READ) {
-    obj = member_reg_to_obj_map_[insn->obj_reg_];
-  } else {
-    obj = member_reg_to_obj_map_[insn->src_regs_[1]];
-  }
+  vm::Object *obj = member_reg_to_obj_map_[insn->obj_reg_];
   vm::Value *value = obj->LookupValue(insn->label_, false);
   CHECK(value) << sym_cstr(insn->label_);
   if (value->IsObjectType()) {

@@ -630,7 +630,6 @@ vm::Register *ExprCompiler::CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
   insn->label_ = lhs->GetRhs()->GetSym();
   insn->obj_reg_ = lhs_obj;
   insn->src_regs_.push_back(rhs_reg);
-  insn->src_regs_.push_back(lhs_obj);
   insn->dst_regs_.push_back(insn->src_regs_[0]);
   compiler_->EmitInsn(insn);
   return insn->dst_regs_[0];
@@ -638,27 +637,24 @@ vm::Register *ExprCompiler::CompileAssignToElmRef(vm::Insn *insn, fe::Expr *lhs,
 
 vm::Register *ExprCompiler::CompileAssignToSym(vm::Insn *insn, fe::Expr *lhs,
                                                vm::Register *rhs_reg) {
-  // local var
+  // local var - OP_ASSIGN
   //  SRC: LHS_REG, RHS_REG
   //  DST: LHS_REG
-  // member var
-  //  SRC: RHS_REG, OBJ_REG
+  // member var - OP_MEMBER_WRITE
+  //  OBJ: OBJ_REG
+  //  SRC: RHS_REG
   //  DST: RHS_REG
   vm::Register *lhs_reg = compiler_->LookupLocalVar(lhs->GetSym());
-  vm::Register *obj_reg = nullptr;
   insn->label_ = lhs->GetSym();
   if (lhs_reg) {
     insn->op_ = vm::OP_ASSIGN;
     insn->src_regs_.push_back(lhs_reg);
   } else {
-    obj_reg = compiler_->EmitLoadObj(nullptr);
     insn->op_ = vm::OP_MEMBER_WRITE;
+    insn->obj_reg_ = compiler_->EmitLoadObj(nullptr);
   }
   insn->src_regs_.push_back(rhs_reg);
   insn->dst_regs_.push_back(insn->src_regs_[0]);
-  if (obj_reg) {
-    insn->src_regs_.push_back(obj_reg);
-  }
   compiler_->EmitInsn(insn);
   return insn->dst_regs_[0];
 }

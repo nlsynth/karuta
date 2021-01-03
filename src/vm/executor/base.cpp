@@ -466,7 +466,7 @@ bool Base::ExecMemberAccess() {
   if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
     obj = VAL(oreg()).object_;
   } else {
-    obj = VAL(sreg(1)).object_;
+    obj = VAL(oreg()).object_;
   }
   Value *member = obj->LookupValue(insn_->label_, false);
   if (member == nullptr) {
@@ -489,7 +489,7 @@ bool Base::ExecMemberAccess() {
     }
   } else {
     // OP_MEMBER_WRITE
-    CHECK(insn_->src_regs_.size() == 2);
+    CHECK(insn_->src_regs_.size() == 1);
     CHECK(sreg(0)->id_ == dreg(0)->id_);
     // src: value, obj
     Register *src_reg = sreg(0);
