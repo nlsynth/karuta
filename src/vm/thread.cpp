@@ -164,7 +164,7 @@ MethodFrame *Thread::PushMethodFrame(Object *obj, Method *method) {
     Register *reg = method->method_regs_[i];
     local_val.type_ = reg->type_.value_type_;
     local_val.enum_val_.enum_type = reg->type_.enum_type_;
-    local_val.num_width_ = reg->type_.width_;
+    local_val.num_width_ = reg->type_.num_width_;
   }
   method_stack_.push_back(frame);
   return frame;

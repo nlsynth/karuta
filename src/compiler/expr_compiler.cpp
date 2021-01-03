@@ -124,7 +124,7 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
       iroha::Numeric::CopyValue(expr->GetNum(), nullptr,
                                 &dst_reg->initial_num_);
       dst_reg->type_.is_const_ = true;
-      dst_reg->type_.width_ = expr->GetNum().type_;
+      dst_reg->type_.num_width_ = expr->GetNum().type_;
       dst_reg->SetIsDeclaredType(true);
       insn->src_regs_.push_back(dst_reg);
     } break;
@@ -461,7 +461,7 @@ RegisterTuple ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
     } else {
       fe::VarDecl *vd = method->GetParseTree()->GetReturns()->decls[i];
       reg->type_.object_name_ = vd->GetObjectName();
-      reg->type_.width_ = vd->GetWidth();
+      reg->type_.num_width_ = vd->GetWidth();
     }
     done_insn->dst_regs_.push_back(reg);
     rt.regs.push_back(reg);
@@ -791,9 +791,9 @@ void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
   vm::Register *one = compiler_->AllocRegister();
   one->type_.value_type_ = vm::Value::NUM;
   one->initial_num_.SetValue0(1);
-  one->initial_num_.type_ = rhs->type_.width_;
+  one->initial_num_.type_ = rhs->type_.num_width_;
   one->type_.is_const_ = true;
-  one->type_.width_ = rhs->type_.width_;
+  one->type_.num_width_ = rhs->type_.num_width_;
   one->SetIsDeclaredType(true);
   insn->src_regs_.push_back(one);
   insn->dst_regs_.push_back(one);
@@ -802,7 +802,7 @@ void ExprCompiler::CompileIncDecNonLocal(fe::Expr *expr) {
   vm::Register *dst = compiler_->AllocRegister();
   dst->type_.value_type_ = vm::Value::NUM;
   dst->type_.is_const_ = true;
-  dst->type_.width_ = rhs->type_.width_;
+  dst->type_.num_width_ = rhs->type_.num_width_;
   dst->SetIsDeclaredType(false);
 
   insn = new vm::Insn;

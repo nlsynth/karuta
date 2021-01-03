@@ -172,7 +172,7 @@ void MethodSynth::EmitTaskReturn(IState *last) {
       // Assumes bool.
       width += 1;
     } else {
-      width += ret->type_.width_.GetWidth();
+      width += ret->type_.num_width_.GetWidth();
     }
   }
   IResource *res = res_set_->GetTaskReturnRegWriter(width);
@@ -417,7 +417,7 @@ void MethodSynth::SynthNum(vm::Insn *insn) {
   CHECK(src_reg->type_.value_type_ == vm::Value::NUM);
   vm::Register *dst_reg = insn->dst_regs_[0];
   IRegister *ireg =
-      DesignTool::AllocConstNum(tab_, src_reg->type_.width_.GetWidth(),
+      DesignTool::AllocConstNum(tab_, src_reg->type_.num_width_.GetWidth(),
                                 src_reg->initial_num_.GetValue0());
   local_reg_map_[dst_reg] = ireg;
 }
@@ -592,7 +592,7 @@ IRegister *MethodSynth::FindLocalVarRegister(vm::Register *vreg) {
     name = name + "_" + sym_str(vreg->orig_name_);
   }
   IRegister *ireg = thr_synth_->AllocRegister(name);
-  int w = vreg->type_.width_.GetWidth();
+  int w = vreg->type_.num_width_.GetWidth();
   if (vreg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     w = 0;
   }
@@ -677,7 +677,7 @@ void MethodSynth::SynthDivExpr(vm::Insn *insn) {
           insn->src_regs_[1]->initial_num_.GetValue0();
   vm::Register *dst_reg = insn->dst_regs_[0];
   IRegister *ireg =
-      DesignTool::AllocConstNum(tab_, dst_reg->type_.width_.GetWidth(), v);
+      DesignTool::AllocConstNum(tab_, dst_reg->type_.num_width_.GetWidth(), v);
   local_reg_map_[dst_reg] = ireg;
 }
 
@@ -1080,9 +1080,9 @@ void MethodSynth::InsnToCalcValueType(vm::Insn *insn, IValueType *vt) {
   }
   vt->SetIsSigned(false);
   if (reg->type_.value_type_ == vm::Value::NUM) {
-    vt->SetWidth(reg->type_.width_.GetWidth());
+    vt->SetWidth(reg->type_.num_width_.GetWidth());
   } else if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
-    vt->SetWidth(reg->type_.width_.GetWidth());
+    vt->SetWidth(reg->type_.num_width_.GetWidth());
   }
 }
 

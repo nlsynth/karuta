@@ -97,13 +97,15 @@ void InsnAnnotator::TryPropagate(Insn *insn, set<Register *> *propagated) {
         insn->dst_regs_[0]->type_.value_type_ == Value::NUM &&
         !insn->src_regs_[1]->GetIsDeclaredType()) {
       propagated->insert(insn->src_regs_[1]);
-      insn->src_regs_[1]->type_.width_ = insn->dst_regs_[0]->type_.width_;
+      insn->src_regs_[1]->type_.num_width_ =
+          insn->dst_regs_[0]->type_.num_width_;
     }
   }
   if (insn->op_ == OP_BIT_INV) {
     if (!insn->src_regs_[0]->GetIsDeclaredType()) {
       propagated->insert(insn->src_regs_[0]);
-      insn->src_regs_[0]->type_.width_ = insn->dst_regs_[0]->type_.width_;
+      insn->src_regs_[0]->type_.num_width_ =
+          insn->dst_regs_[0]->type_.num_width_;
     }
   }
 }
@@ -113,7 +115,7 @@ void InsnAnnotator::ClearType() {
     if (!reg->GetIsDeclaredType()) {
       reg->type_.value_type_ = Value::NONE;
       // Sets the narrowest width so that CommonWidth() will not confuse.
-      reg->type_.width_ = iroha::NumericWidth(false, 0);
+      reg->type_.num_width_ = iroha::NumericWidth(false, 0);
     }
   }
 }
@@ -163,7 +165,8 @@ void InsnAnnotator::TryType(Insn *insn) {
     if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
         insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
       insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-      insn->dst_regs_[0]->type_.width_ = insn->src_regs_[0]->type_.width_;
+      insn->dst_regs_[0]->type_.num_width_ =
+          insn->src_regs_[0]->type_.num_width_;
       return;
     }
   }
@@ -227,7 +230,7 @@ void InsnAnnotator::TypeMemberAccess(Insn *insn) {
       objs_[insn->dst_regs_[0]] = value->object_;
     }
     if (value->type_ == Value::NUM) {
-      insn->dst_regs_[0]->type_.width_ = value->num_width_;
+      insn->dst_regs_[0]->type_.num_width_ = value->num_width_;
     }
   } else {
     if (!method_->IsTopLevel()) {
@@ -245,7 +248,7 @@ void InsnAnnotator::AnnotateBitRangeInsn(Insn *insn) {
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
     int w = insn->src_regs_[1]->initial_num_.GetValue0() -
             insn->src_regs_[2]->initial_num_.GetValue0() + 1;
-    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
+    insn->dst_regs_[0]->type_.num_width_ = iroha::NumericWidth(false, w);
   }
 }
 
@@ -253,9 +256,9 @@ void InsnAnnotator::AnnotateConcatInsn(Insn *insn) {
   if (insn->src_regs_[0]->type_.value_type_ == Value::NUM &&
       insn->src_regs_[1]->type_.value_type_ == Value::NUM) {
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-    int w = insn->src_regs_[0]->type_.width_.GetWidth() +
-            insn->src_regs_[1]->type_.width_.GetWidth();
-    insn->dst_regs_[0]->type_.width_ = iroha::NumericWidth(false, w);
+    int w = insn->src_regs_[0]->type_.num_width_.GetWidth() +
+            insn->src_regs_[1]->type_.num_width_.GetWidth();
+    insn->dst_regs_[0]->type_.num_width_ = iroha::NumericWidth(false, w);
   }
 }
 
@@ -282,7 +285,7 @@ void InsnAnnotator::TypeArrayRead(Insn *insn) {
   }
   if (ArrayWrapper::IsIntArray(array_obj)) {
     insn->dst_regs_[0]->type_.value_type_ = Value::NUM;
-    insn->dst_regs_[0]->type_.width_ =
+    insn->dst_regs_[0]->type_.num_width_ =
         iroha::NumericWidth(false, ArrayWrapper::GetDataWidth(array_obj));
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
@@ -323,7 +326,7 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
         } else {
           CHECK(ret.value_type_ == Value::NUM);
           insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
-          insn->dst_regs_[i]->type_.width_ = ret.width_;
+          insn->dst_regs_[i]->type_.num_width_ = ret.num_width_;
         }
       }
     } else {
@@ -340,7 +343,7 @@ void InsnAnnotator::TypeReturnValues(Insn *insn) {
           insn->dst_regs_[i]->type_.enum_type_ = vm_->bool_type_;
         } else {
           insn->dst_regs_[i]->type_.value_type_ = Value::NUM;
-          insn->dst_regs_[i]->type_.width_ = decl->GetWidth();
+          insn->dst_regs_[i]->type_.num_width_ = decl->GetWidth();
         }
       }
     }
@@ -370,10 +373,10 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
   if (dst->orig_name_) {
     return;
   }
-  iroha::NumericWidth width =
-      iroha::NumericWidth::CommonWidth(src1->type_.width_, src2->type_.width_);
-  dst->type_.width_ =
-      iroha::NumericWidth::CommonWidth(dst->type_.width_, width);
+  iroha::NumericWidth width = iroha::NumericWidth::CommonWidth(
+      src1->type_.num_width_, src2->type_.num_width_);
+  dst->type_.num_width_ =
+      iroha::NumericWidth::CommonWidth(dst->type_.num_width_, width);
 }
 
 Value::ValueType InsnAnnotator::SymToType(sym_t sym) {

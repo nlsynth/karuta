@@ -9,10 +9,10 @@
 namespace vm {
 
 class RegisterType {
-public:
+ public:
   RegisterType(Value::ValueType value_type, const Object *enum_type,
-	       const iroha::NumericWidth &width, sym_t object_name,
-	       bool is_const);
+               const iroha::NumericWidth &width, sym_t object_name,
+               bool is_const);
   void Dump();
   void Dump(DumpStream &ds);
 
@@ -20,18 +20,18 @@ public:
   enum Value::ValueType value_type_;
   // when value_type_ == ENUM_ITEM
   const Object *enum_type_;
-  iroha::NumericWidth width_;
+  iroha::NumericWidth num_width_;
   sym_t object_name_;
   bool is_const_;
 
-private:
+ private:
   RegisterType();
 };
 
 // Register definition. Actual value will be stored in
 // MethodFrame.reg_values_.
 class Register {
-public:
+ public:
   Register();
 
   void Dump();
@@ -49,7 +49,7 @@ public:
   sym_t orig_name_;
   Object *type_object_;
 
-private:
+ private:
   bool is_declared_type_;
   Annotation *annotation_;
 };

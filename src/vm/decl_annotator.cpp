@@ -25,14 +25,14 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl, Register *reg) {
   if (decl->GetType() == sym_bool) {
     reg->type_.enum_type_ = vm->bool_type_;
   }
-  reg->type_.width_ = decl->GetWidth();
+  reg->type_.num_width_ = decl->GetWidth();
   reg->type_.object_name_ = decl->GetObjectName();
   if (reg->type_.object_name_ != sym_null) {
     reg->type_object_ = NumericObject::Get(vm, reg->type_.object_name_);
     // type_object_ can be null for top level decl.
     if (reg->type_object_ != nullptr) {
       int w = NumericObject::Width(reg->type_object_);
-      reg->type_.width_ = iroha::NumericWidth(false, w);
+      reg->type_.num_width_ = iroha::NumericWidth(false, w);
     }
   }
 }
@@ -40,7 +40,7 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl, Register *reg) {
 void DeclAnnotator::AnnotateByValue(Value *value, Register *reg) {
   reg->type_.value_type_ = value->type_;
   if (value->type_ == Value::NUM) {
-    reg->type_.width_ = value->num_width_;
+    reg->type_.num_width_ = value->num_width_;
   }
   reg->type_.object_name_ = value->type_object_name_;
 }
