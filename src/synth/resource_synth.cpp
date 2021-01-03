@@ -123,7 +123,7 @@ IResource *ResourceSynth::MayAddExtIO(vm::Method *method, bool is_output) {
   if (reg->type_.value_type_ == vm::Value::ENUM_ITEM) {
     width = 0;
   } else {
-    width = reg->type_.width_.GetWidth();
+    width = reg->type_.num_width_.GetWidth();
   }
   int d = an->GetDistance();
   IResource *res = rset_->GetExtIOByName(name, is_output, width, d);
