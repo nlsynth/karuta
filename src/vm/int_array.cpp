@@ -60,7 +60,7 @@ IntArray::IntArray(const IntArray *src) {
 
 void IntArray::Write(const vector<uint64_t> &indexes,
                      const iroha::Numeric &data) {
-  WriteSingle(GetIndex(indexes), data.type_, data.GetArray());
+  WriteSingle(GetIndex(indexes), data.type_, data.GetValue());
 }
 
 void IntArray::WriteSingle(uint64_t addr, const iroha::NumericWidth &width,
@@ -79,9 +79,9 @@ void IntArray::WriteWide(uint64_t byte_addr, const iroha::NumericWidth &type,
   for (int i = 0; i < c; ++i) {
     int l = mem_width * i;
     iroha::Numeric d;
-    iroha::Op::SelectBits(data, type, l + mem_width - 1, l, d.GetMutableArray(),
+    iroha::Op::SelectBits(data, type, l + mem_width - 1, l, d.GetMutableValue(),
                           &d.type_);
-    WriteSingle(array_addr + i, d.type_, d.GetArray());
+    WriteSingle(array_addr + i, d.type_, d.GetValue());
   }
 }
 
@@ -105,8 +105,8 @@ iroha::Numeric IntArray::ReadWide(uint64_t byte_addr, int width) {
   for (int i = 0; i < c; ++i) {
     iroha::NumericValue a = ReadSingle(array_addr + i);
     iroha::Numeric t;
-    iroha::Op::Concat(a, data_width_, n.GetArray(), n.type_,
-                      t.GetMutableArray(), &t.type_);
+    iroha::Op::Concat(a, data_width_, n.GetValue(), n.type_,
+                      t.GetMutableValue(), &t.type_);
     n = t;
   }
   return n;
@@ -158,7 +158,7 @@ bool IntArray::BinaryIO(FILE *fp, bool save) {
       fwrite(ptr, num_bytes, 1, fp);
     } else {
       iroha::Numeric n;
-      iroha::NumericValue *nv = n.GetMutableArray();
+      iroha::NumericValue *nv = n.GetMutableValue();
       iroha::ExtraWideValue wv;
       void *ptr;
       if (data_width_.IsExtraWide()) {
@@ -168,7 +168,7 @@ bool IntArray::BinaryIO(FILE *fp, bool save) {
         ptr = &nv->value_[0];
       }
       fread(ptr, num_bytes, 1, fp);
-      WriteSingle(i, n.type_, n.GetArray());
+      WriteSingle(i, n.type_, n.GetValue());
     }
   }
   return true;
@@ -184,9 +184,9 @@ bool IntArray::TextIO(FILE *fp, bool save) {
       char buf[16];
       fgets(buf, 16, fp);
       iroha::Numeric n;
-      iroha::NumericValue *nv = n.GetMutableArray();
+      iroha::NumericValue *nv = n.GetMutableValue();
       nv->SetValue0(atoll(buf));
-      WriteSingle(i, n.type_, n.GetArray());
+      WriteSingle(i, n.type_, n.GetValue());
     }
   }
   return true;

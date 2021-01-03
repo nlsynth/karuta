@@ -31,7 +31,7 @@ void Base::ExecNum() {
     d->type_.value_type_ = Value::NUM;
     d->type_.width_ = sreg(0)->initial_num_.type_;
   }
-  iroha::Numeric::CopyValueWithWidth(sreg(0)->initial_num_.GetArray(),
+  iroha::Numeric::CopyValueWithWidth(sreg(0)->initial_num_.GetValue(),
                                      sreg(0)->initial_num_.type_,
                                      d->type_.width_, nullptr, &VAL(d).num_);
 }
