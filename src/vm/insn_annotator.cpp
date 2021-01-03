@@ -232,7 +232,7 @@ void InsnAnnotator::TypeMemberAccess(Insn *insn) {
       objs_[insn->dst_regs_[0]] = value->object_;
     }
     if (value->type_ == Value::NUM) {
-      insn->dst_regs_[0]->type_.width_ = value->num_type_;
+      insn->dst_regs_[0]->type_.width_ = value->num_width_;
     }
   } else {
     if (!method_->IsTopLevel()) {

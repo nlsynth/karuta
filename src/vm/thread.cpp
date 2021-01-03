@@ -18,8 +18,11 @@ namespace vm {
 string Thread::dbg_bytecode_;
 
 Thread::Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index)
-  : vm_(vm), parent_thread_(parent),
-    in_yield_(false), index_(index), busy_counter_(0) {
+    : vm_(vm),
+      parent_thread_(parent),
+      in_yield_(false),
+      index_(index),
+      busy_counter_(0) {
   stat_ = RUNNABLE;
   PushMethodFrame(obj, method);
   MaySetThreadIndex();
@@ -32,9 +35,7 @@ Thread::~Thread() {
   }
 }
 
-void Thread::SetByteCodeDebug(string flags) {
-  dbg_bytecode_ = flags;
-}
+void Thread::SetByteCodeDebug(string flags) { dbg_bytecode_ = flags; }
 
 void Thread::Run() {
   while (method_stack_.size() > 0) {
@@ -84,26 +85,20 @@ void Thread::Dump() const {
 
 void Thread::Dump(DumpStream &ds) const {
   MethodFrame *frame = CurrentMethodFrame();
-  ds.os << "thread[" << index_ << "] stat=" << stat_
-	<< " yield=" << in_yield_ << " pc=" << frame->pc_ << "\n";
+  ds.os << "thread[" << index_ << "] stat=" << stat_ << " yield=" << in_yield_
+        << " pc=" << frame->pc_ << "\n";
 }
 
-bool Thread::IsRunnable() const {
-  return (stat_ == RUNNABLE);
-}
+bool Thread::IsRunnable() const { return (stat_ == RUNNABLE); }
 
-bool Thread::IsDone() const {
-  return (stat_ == DONE);
-}
+bool Thread::IsDone() const { return (stat_ == DONE); }
 
 void Thread::Suspend() {
   MayBlock();
   stat_ = SUSPENDED;
 }
 
-void Thread::Exit() {
-  stat_ = DONE;
-}
+void Thread::Exit() { stat_ = DONE; }
 
 void Thread::Resume() {
   CHECK(stat_ == SUSPENDED);
@@ -120,25 +115,19 @@ bool Thread::Yield() {
     GetVM()->Yield(this);
     in_yield_ = true;
   }
-  return in_yield_; // need suspend.
+  return in_yield_;  // need suspend.
 }
 
-VM *Thread::GetVM() {
-  return vm_;
-}
+VM *Thread::GetVM() { return vm_; }
 
 void Thread::SetReturnValueFromNativeMethod(const Value &value) {
   MethodFrame *frame = CurrentMethodFrame();
   frame->returns_.push_back(value);
 }
 
-bool Thread::IsRootThread() const {
-  return (parent_thread_ == nullptr);
-}
+bool Thread::IsRootThread() const { return (parent_thread_ == nullptr); }
 
-vector<MethodFrame*> &Thread::MethodStack() {
-  return method_stack_;
-}
+vector<MethodFrame *> &Thread::MethodStack() { return method_stack_; }
 
 void Thread::UserError() {
   Status::Check(Status::USER_ERROR, true);
@@ -152,8 +141,8 @@ bool Thread::OnJump() {
   busy_counter_++;
   if (busy_counter_limit_ > 0 && busy_counter_ > busy_counter_limit_) {
     Status::os(Status::USER_ERROR)
-      << "Busy loop detected. Killing the thread. "
-      << "Increase the limit by --duration option, if necessary.";
+        << "Busy loop detected. Killing the thread. "
+        << "Increase the limit by --duration option, if necessary.";
     UserError();
     Exit();
     // true to suspend the Executor.
@@ -162,9 +151,7 @@ bool Thread::OnJump() {
   return false;
 }
 
-void Thread::MayBlock() {
-  busy_counter_ = 0;
-}
+void Thread::MayBlock() { busy_counter_ = 0; }
 
 MethodFrame *Thread::PushMethodFrame(Object *obj, Method *method) {
   MethodFrame *frame = new MethodFrame;
@@ -177,7 +164,7 @@ MethodFrame *Thread::PushMethodFrame(Object *obj, Method *method) {
     Register *reg = method->method_regs_[i];
     local_val.type_ = reg->type_.value_type_;
     local_val.enum_val_.enum_type = reg->type_.enum_type_;
-    local_val.num_type_ = reg->type_.width_;
+    local_val.num_width_ = reg->type_.width_;
   }
   method_stack_.push_back(frame);
   return frame;
@@ -206,7 +193,8 @@ void Thread::PassReturnValues() {
 }
 
 void Thread::PopMethodFrame() {
-  CHECK(method_stack_.size() > 0) << "attempting to pop from empty method stack.";
+  CHECK(method_stack_.size() > 0)
+      << "attempting to pop from empty method stack.";
   MethodFrame *frame = CurrentMethodFrame();
   method_stack_.pop_back();
   delete frame;
@@ -226,18 +214,14 @@ MethodFrame *Thread::ParentMethodFrame() const {
 void Thread::MaySetThreadIndex() {
   MethodFrame *frame = CurrentMethodFrame();
   CHECK(frame->method_->GetNumArgRegisters() <= 1)
-    << "Too many arguments for a thread entry method";
+      << "Too many arguments for a thread entry method";
   if (frame->method_->GetNumArgRegisters() == 1) {
     frame->reg_values_[0].num_.SetValue0(index_);
   }
 }
 
-void Thread::SetModuleName(const string &n) {
-  module_name_ = n;
-}
+void Thread::SetModuleName(const string &n) { module_name_ = n; }
 
-const string &Thread::GetModuleName() {
-  return module_name_;
-}
+const string &Thread::GetModuleName() { return module_name_; }
 
 }  // namespace vm

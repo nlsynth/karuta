@@ -9,8 +9,7 @@
 
 namespace vm {
 
-void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
-				   Register *reg) {
+void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl, Register *reg) {
   reg->SetIsDeclaredType(true);
   if (decl->GetArrayShape() != nullptr) {
     Status::os(Status::USER_ERROR) << "Local array is not allowed";
@@ -19,8 +18,8 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
   reg->type_.value_type_ = InsnAnnotator::SymToType(decl->GetType());
   if (reg->type_.value_type_ == Value::NONE) {
     // This may not happen and ICE would be better as the FE should reject this.
-    Status::os(Status::USER_ERROR) << "Unknown value type: "
-				   << sym_cstr(decl->GetType());
+    Status::os(Status::USER_ERROR)
+        << "Unknown value type: " << sym_cstr(decl->GetType());
     return;
   }
   if (decl->GetType() == sym_bool) {
@@ -41,7 +40,7 @@ void DeclAnnotator::AnnotateByDecl(VM *vm, fe::VarDecl *decl,
 void DeclAnnotator::AnnotateByValue(Value *value, Register *reg) {
   reg->type_.value_type_ = value->type_;
   if (value->type_ == Value::NUM) {
-    reg->type_.width_ = value->num_type_;
+    reg->type_.width_ = value->num_width_;
   }
   reg->type_.object_name_ = value->type_object_name_;
 }
@@ -59,7 +58,7 @@ void DeclAnnotator::AnnotateValueType(VM *vm, fe::VarDecl *decl, Value *value) {
   if (decl->GetIsIO()) {
     value->type_ = Value::OBJECT;
   }
-  value->num_type_ = decl->GetWidth();
+  value->num_width_ = decl->GetWidth();
   sym_t object_name = decl->GetObjectName();
   if (object_name != sym_null) {
     CHECK(!value->IsObjectType());

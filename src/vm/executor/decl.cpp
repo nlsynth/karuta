@@ -33,12 +33,12 @@ void Decl::ExecVardecl() {
     thr_->UserError();
     return;
   }
-  CHECK(obj);
   sym_t name = decl->GetNameExpr()->GetSym();
   Value *value = obj->LookupValue(name, true);
   DeclAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
-    iroha::Numeric::MayPopulateStorage(value->num_type_, nullptr, &value->num_);
+    iroha::Numeric::MayPopulateStorage(value->num_width_, nullptr,
+                                       &value->num_);
     iroha::Op::MakeConst0(0, &value->num_);
   }
   if (value->type_ == Value::OBJECT && an != nullptr) {

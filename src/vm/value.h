@@ -8,13 +8,13 @@
 namespace vm {
 
 class EnumVal {
-public:
+ public:
   int val;
   const Object *enum_type;
 };
 
 class Value {
-public:
+ public:
   Value();
   void Dump() const;
   void Dump(ostream &os) const;
@@ -44,7 +44,7 @@ public:
 
   // for NUM
   iroha::NumericValue num_;
-  iroha::NumericWidth num_type_;
+  iroha::NumericWidth num_width_;
   // for METHOD
   Method *method_;
   // for ENUM_ITEM

@@ -393,7 +393,7 @@ bool Base::ExecFuncall() {
     // don't assume argument types.
     for (size_t i = 0; i < insn_->src_regs_.size(); ++i) {
       args[i].type_ = sreg(i)->type_.value_type_;
-      args[i].num_type_ = sreg(i)->type_.width_;
+      args[i].num_width_ = sreg(i)->type_.width_;
     }
     fn(thr_, obj, args);
     if (!thr_->IsRunnable()) {
@@ -469,12 +469,12 @@ bool Base::ExecMemberAccess() {
     member = TlsWrapper::GetValue(member->object_, thr_);
   }
   if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
-    VAL(dreg(0)).CopyDataFrom(*member, member->num_type_);
+    VAL(dreg(0)).CopyDataFrom(*member, member->num_width_);
     if (IsTopLevel()) {
       // Copies data type to the method.
       auto *dst_reg = dreg(0);
       dst_reg->type_.value_type_ = member->type_;
-      dst_reg->type_.width_ = member->num_type_;
+      dst_reg->type_.width_ = member->num_width_;
       dst_reg->type_.object_name_ = member->type_object_name_;
     }
   } else {
@@ -499,7 +499,7 @@ void Base::ExecBitRange() {
   int l = VAL(sreg(2)).num_.GetValue0();
   Value &value = VAL(sreg(0));
   Value &res = VAL(dst);
-  iroha::Op::SelectBitsWithStorage(value.num_, value.num_type_, h, l, nullptr,
+  iroha::Op::SelectBitsWithStorage(value.num_, value.num_width_, h, l, nullptr,
                                    &res.num_, nullptr);
 }
 
