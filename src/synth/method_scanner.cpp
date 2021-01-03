@@ -103,7 +103,7 @@ void MethodScanner::RequestSubObj(vm::Object *callee_obj) {
 void MethodScanner::MemberAccess(vm::Insn *insn) {
   vm::Object *obj;
   if (insn->op_ == vm::OP_MEMBER_READ) {
-    obj = member_reg_to_obj_map_[insn->src_regs_[0]];
+    obj = member_reg_to_obj_map_[insn->obj_reg_];
   } else {
     obj = member_reg_to_obj_map_[insn->src_regs_[1]];
   }

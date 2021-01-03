@@ -749,7 +749,7 @@ void MethodSynth::SynthMemberAccess(vm::Insn *insn, bool is_store) {
   if (is_store) {
     obj = member_reg_to_obj_map_[insn->src_regs_[1]];
   } else {
-    obj = member_reg_to_obj_map_[insn->src_regs_[0]];
+    obj = member_reg_to_obj_map_[insn->obj_reg_];
   }
   CHECK(obj);
   vm::Value *value = obj->LookupValue(insn->label_, false);

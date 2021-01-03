@@ -25,7 +25,7 @@ InsnWalker::InsnWalker(ThreadSynth *thr_synth, vm::Object *obj)
 
 void InsnWalker::MaybeLoadMemberObject(vm::Insn *insn) {
   if (insn->op_ == vm::OP_MEMBER_READ) {
-    vm::Object *obj = member_reg_to_obj_map_[insn->src_regs_[0]];
+    vm::Object *obj = member_reg_to_obj_map_[insn->obj_reg_];
     vm::Value *value = obj->LookupValue(insn->label_, false);
     if (value == nullptr) {
       Status::os(Status::USER_ERROR)

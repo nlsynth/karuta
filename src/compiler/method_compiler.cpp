@@ -608,7 +608,7 @@ vm::Register *MethodCompiler::EmitLoadObj(sym_t label) {
 
 vm::Register *MethodCompiler::EmitMemberLoad(vm::Register *obj_reg, sym_t m) {
   vm::Insn *insn = new vm::Insn;
-  insn->src_regs_.push_back(obj_reg);
+  insn->obj_reg_ = obj_reg;
   if (IsTopLevel()) {
     insn->op_ = vm::OP_MEMBER_READ_WITH_CHECK;
   } else {
@@ -620,7 +620,7 @@ vm::Register *MethodCompiler::EmitMemberLoad(vm::Register *obj_reg, sym_t m) {
   EmitInsn(insn);
 
   vm::Object *vm_obj = GetVMObject(obj_reg);
-  if (vm_obj) {
+  if (vm_obj != nullptr) {
     vm::Value *obj_value = vm_obj->LookupValue(m, false);
     if (obj_value != nullptr && obj_value->IsObjectType()) {
       reg_obj_map_[value_reg] = obj_value->object_;

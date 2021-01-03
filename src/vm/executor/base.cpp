@@ -464,7 +464,7 @@ void Base::SetupCalleeFrame(Object *obj, Method *callee_method,
 bool Base::ExecMemberAccess() {
   Object *obj;
   if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
-    obj = VAL(sreg(0)).object_;
+    obj = VAL(oreg()).object_;
   } else {
     obj = VAL(sreg(1)).object_;
   }
@@ -521,8 +521,8 @@ void Base::ExecMemberReadWithCheck() {
   }
   // Annotate the type of the results now.
   CHECK(op() == OP_MEMBER_READ_WITH_CHECK);
-  Value &obj_value = VAL(sreg(0));
-  CHECK(sreg(0)->type_.value_type_ == Value::OBJECT);
+  Value &obj_value = VAL(oreg());
+  CHECK(oreg()->type_.value_type_ == Value::OBJECT);
   Object *obj = obj_value.object_;
   Value *member = obj->LookupValue(insn_->label_, false);
   Register *dst_reg = dreg(0);
