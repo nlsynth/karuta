@@ -795,11 +795,11 @@ void MethodSynth::SynthMemberRegAccess(vm::Insn *insn, vm::Object *owner_obj,
     string name = sym_cstr(insn->label_);
     name = "m_" + name;
     reg = thr_synth_->AllocRegister(name);
-    iroha::Numeric n(value->num_, value->num_type_);
+    iroha::Numeric n(value->num_value_, value->num_width_);
     reg->SetInitialValue(n);
     int w = 0;
     if (value->type_ == vm::Value::NUM) {
-      w = value->num_type_.GetWidth();
+      w = value->num_width_.GetWidth();
     }
     reg->value_type_.SetWidth(w);
     member_name_reg_map_[std::make_tuple(owner_obj, sym_cstr(insn->label_))] =
@@ -830,11 +830,11 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
   if (sres->owner_thr_ == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
     sres->SetOwnerIResource(res);
-    int w = value->num_type_.GetWidth();
+    int w = value->num_width_.GetWidth();
     auto *params = res->GetParams();
     params->SetWidth(w);
     // TODO: Fix this for a value wider than 32bits.
-    params->SetInitialValue(value->num_.GetValue0());
+    params->SetInitialValue(value->num_value_.GetValue0());
   } else {
     res = res_set_->GetMemberSharedReg(insn->label_, false, is_store);
     sres->AddAccessorResource(res, thr_synth_);
@@ -850,7 +850,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
   if (is_store) {
     iinsn->inputs_.push_back(ireg);
   } else {
-    ireg->value_type_.SetWidth(value->num_type_.GetWidth());
+    ireg->value_type_.SetWidth(value->num_width_.GetWidth());
     iinsn->outputs_.push_back(ireg);
   }
   StateWrapper *sw = AllocState();
