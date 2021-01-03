@@ -4,13 +4,13 @@
 
 #include "base/status.h"
 #include "base/util.h"
-#include "karuta/annotation.h"
 #include "iroha/numeric.h"
+#include "karuta/annotation.h"
 #include "synth/object_attr_names.h"
 #include "synth/object_method_names.h"
 #include "vm/int_array.h"
-#include "vm/native_objects.h"
 #include "vm/method.h"
+#include "vm/native_objects.h"
 #include "vm/object.h"
 #include "vm/object_util.h"
 #include "vm/string_wrapper.h"
@@ -24,10 +24,9 @@ static const char *kObjectArrayKey = "object_array";
 static const char *kIntArrayKey = "int_array";
 
 class ArrayWrapperData : public ObjectSpecificData {
-public:
+ public:
   ArrayWrapperData(VM *vm, vector<uint64_t> &shape, bool is_int,
-		   const iroha::NumericWidth &width,
-		   Annotation *an) {
+                   const iroha::NumericWidth &width, Annotation *an) {
     uint64_t size = 1;
     for (uint64_t s : shape) {
       uint64_t r = Util::RoundUp2(s);
@@ -85,7 +84,7 @@ Object *ArrayWrapper::Copy(VM *vm, Object *src_obj) {
   Object *array_obj = vm->array_prototype_object_->Clone();
   InstallMethods(vm, array_obj);
   ArrayWrapperData *src_data =
-    (ArrayWrapperData *)src_obj->object_specific_.get();
+      (ArrayWrapperData *)src_obj->object_specific_.get();
   ArrayWrapperData *data = new ArrayWrapperData(src_data);
   array_obj->object_specific_.reset(data);
   return array_obj;
@@ -116,8 +115,8 @@ Object *ArrayWrapper::NewObjectArrayWrapper(VM *vm, int size) {
 }
 
 Object *ArrayWrapper::NewIntArrayWrapper(VM *vm, vector<uint64_t> &shape,
-					 const iroha::NumericWidth &width,
-					 Annotation *an) {
+                                         const iroha::NumericWidth &width,
+                                         Annotation *an) {
   Object *array_obj = vm->array_prototype_object_->Clone();
   InstallMethods(vm, array_obj);
   ArrayWrapperData *data = new ArrayWrapperData(vm, shape, true, width, an);
@@ -155,36 +154,35 @@ int ArrayWrapper::GetDataWidth(Object *obj) {
 
 void ArrayWrapper::Read(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 0) << "read requires an address";
-  uint64_t addr = args[0].num_.GetValue0();
+  uint64_t addr = args[0].num_value_.GetValue0();
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = data->int_array_.get();
   Value value;
   value.type_ = Value::NUM;
-  iroha::Op::MakeConst0(arr->ReadSingle(addr).GetValue0(),
-			&value.num_);
+  iroha::Op::MakeConst0(arr->ReadSingle(addr).GetValue0(), &value.num_value_);
   thr->SetReturnValueFromNativeMethod(value);
 }
 
 void ArrayWrapper::Write(Thread *thr, Object *obj, const vector<Value> &args) {
   CHECK(args.size() > 1) << "write requires an address and data";
-  uint64_t addr = args[0].num_.GetValue0();
-  uint64_t data = args[1].num_.GetValue0();
+  uint64_t addr = args[0].num_value_.GetValue0();
+  uint64_t data = args[1].num_value_.GetValue0();
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = ad->int_array_.get();
   iroha::Numeric num;
-  iroha::Op::MakeConst0(data, num.GetMutableArray());
-  arr->WriteSingle(addr, num.type_, num.GetArray());
+  iroha::Op::MakeConst0(data, num.GetMutableValue());
+  arr->WriteSingle(addr, num.type_, num.GetValue());
 }
 
 void ArrayWrapper::AxiLoad(Thread *thr, Object *obj,
-			   const vector<Value> &args) {
+                           const vector<Value> &args) {
   CHECK(args.size() > 0) << "load requires an address";
   MemBurstAccess(thr, obj, args, true);
   MayNotifyWaiters(obj);
 }
 
 void ArrayWrapper::AxiStore(Thread *thr, Object *obj,
-			    const vector<Value> &args) {
+                            const vector<Value> &args) {
   CHECK(args.size() > 0) << "store requires an address";
   MemBurstAccess(thr, obj, args, false);
   MayNotifyWaiters(obj);
@@ -196,7 +194,7 @@ void ArrayWrapper::MayNotifyWaiters(Object *obj) {
 }
 
 void ArrayWrapper::WaitAccess(Thread *thr, Object *obj,
-			      const vector<Value> &args) {
+                              const vector<Value> &args) {
   ArrayWrapperData *ad = (ArrayWrapperData *)obj->object_specific_.get();
   if (ad->waiters_.ClearIfNotified(thr)) {
     return;
@@ -206,35 +204,34 @@ void ArrayWrapper::WaitAccess(Thread *thr, Object *obj,
 }
 
 void ArrayWrapper::NotifyAccess(Thread *thr, Object *obj,
-				const vector<Value> &args) {
+                                const vector<Value> &args) {
   MayNotifyWaiters(obj);
 }
 
 void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
-				  const vector<Value> &args,
-				  bool is_load) {
+                                  const vector<Value> &args, bool is_load) {
   IntArray *mem = thr->GetVM()->GetDefaultMemory();
   ArrayWrapperData *data = (ArrayWrapperData *)obj->object_specific_.get();
   IntArray *arr = data->int_array_.get();
   uint64_t length = arr->GetLength();
   // Mem addr
   int mem_addr_step = arr->GetDataWidth().GetWidth() / 8;
-  uint64_t mem_addr = args[0].num_.GetValue0();
+  uint64_t mem_addr = args[0].num_value_.GetValue0();
   // Count
   int count = length;
   if (args.size() >= 2) {
-    count = args[1].num_.GetValue0() + 1;
+    count = args[1].num_value_.GetValue0() + 1;
   }
   // Start
   uint64_t array_addr = 0;
   if (args.size() >= 3) {
-    array_addr = args[2].num_.GetValue0();
+    array_addr = args[2].num_value_.GetValue0();
   }
   // Do the copy.
   for (int i = 0; i < count; ++i) {
     if (is_load) {
       iroha::Numeric n = mem->ReadWide(mem_addr, mem_addr_step * 8);
-      arr->WriteSingle(array_addr, n.type_, n.GetArray());
+      arr->WriteSingle(array_addr, n.type_, n.GetValue());
     } else {
       iroha::NumericValue v = arr->ReadSingle(array_addr);
       iroha::NumericWidth w = arr->GetDataWidth();
@@ -247,17 +244,17 @@ void ArrayWrapper::MemBurstAccess(Thread *thr, Object *obj,
 }
 
 void ArrayWrapper::SaveImage(Thread *thr, Object *obj,
-			     const vector<Value> &args) {
+                             const vector<Value> &args) {
   ImageIO(true, thr, obj, args);
 }
 
 void ArrayWrapper::LoadImage(Thread *thr, Object *obj,
-			     const vector<Value> &args) {
+                             const vector<Value> &args) {
   ImageIO(false, thr, obj, args);
 }
 
 void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
-			   const vector<Value> &args) {
+                           const vector<Value> &args) {
   if (args.size() == 0) {
     Status::os(Status::USER_ERROR) << "save/load image requires a file name";
     thr->UserError();
@@ -265,7 +262,8 @@ void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
   }
   const Value &arg = args[0];
   if (!arg.IsString()) {
-    Status::os(Status::USER_ERROR) << "save/load image requires a string file name";
+    Status::os(Status::USER_ERROR)
+        << "save/load image requires a string file name";
     thr->UserError();
     return;
   }
@@ -284,14 +282,14 @@ void ArrayWrapper::ImageIO(bool save, Thread *thr, Object *obj,
 }
 
 void ArrayWrapper::SetWidth(Thread *thr, Object *obj,
-			    const vector<Value> &args) {
+                            const vector<Value> &args) {
   if (args.size() != 2 || args[0].type_ != Value::NUM ||
       args[1].type_ != Value::NUM) {
     Status::os(Status::USER_ERROR) << "Only 2 int arguments are allowed";
     thr->UserError();
     return;
   }
-  int aw = args[0].num_.GetValue0();
+  int aw = args[0].num_value_.GetValue0();
   if (aw > 0 && aw <= 64) {
     ObjectUtil::SetAddressWidth(obj, aw);
   } else {
@@ -299,7 +297,7 @@ void ArrayWrapper::SetWidth(Thread *thr, Object *obj,
     thr->UserError();
     return;
   }
-  int dw = args[1].num_.GetValue0();
+  int dw = args[1].num_value_.GetValue0();
   if (dw > 0 && dw <= 64) {
     // Updates the return value type.
     Method *m = NativeObjects::FindMethod(obj, &ArrayWrapper::Read);
@@ -314,52 +312,49 @@ void ArrayWrapper::SetWidth(Thread *thr, Object *obj,
 }
 
 void ArrayWrapper::SetName(Thread *thr, Object *obj,
-			   const vector<Value> &args) {
+                           const vector<Value> &args) {
   if (args.size() != 1 || !args[0].IsString()) {
     Status::os(Status::USER_ERROR) << "SetName should be take a string";
     thr->UserError();
     return;
   }
   ObjectUtil::SetStringMember(obj, synth::kSramName,
-			      StringWrapper::String(args[0].object_));
+                              StringWrapper::String(args[0].object_));
 }
 
 void ArrayWrapper::InstallMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   Method *m;
   m = NativeObjects::InstallNativeMethod(vm, obj, "axiLoad",
-					 &ArrayWrapper::AxiLoad, rets);
+                                         &ArrayWrapper::AxiLoad, rets);
   m->SetSynthName(synth::kAxiLoad);
   m = NativeObjects::InstallNativeMethod(vm, obj, "axiStore",
-					 &ArrayWrapper::AxiStore, rets);
+                                         &ArrayWrapper::AxiStore, rets);
   m->SetSynthName(synth::kAxiStore);
   m = NativeObjects::InstallNativeMethod(vm, obj, "waitAccess",
-					 &ArrayWrapper::WaitAccess,
-					 rets);
+                                         &ArrayWrapper::WaitAccess, rets);
   m->SetSynthName(synth::kSlaveWait);
   m = NativeObjects::InstallNativeMethod(vm, obj, "notifyAccess",
-					 &ArrayWrapper::NotifyAccess,
-					 rets);
+                                         &ArrayWrapper::NotifyAccess, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "saveImage",
-				     &ArrayWrapper::SaveImage, rets);
+                                     &ArrayWrapper::SaveImage, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "loadImage",
-				     &ArrayWrapper::LoadImage, rets);
+                                     &ArrayWrapper::LoadImage, rets);
   NativeObjects::InstallNativeMethod(vm, obj, "setWidth",
-				     &ArrayWrapper::SetWidth, rets);
-  NativeObjects::InstallNativeMethod(vm, obj, "setName",
-				     &ArrayWrapper::SetName, rets);
+                                     &ArrayWrapper::SetWidth, rets);
+  NativeObjects::InstallNativeMethod(vm, obj, "setName", &ArrayWrapper::SetName,
+                                     rets);
 }
 
-void ArrayWrapper::InstallSramIfMethods(VM *vm ,Object *obj) {
+void ArrayWrapper::InstallSramIfMethods(VM *vm, Object *obj) {
   vector<RegisterType> rets;
   rets.push_back(NativeObjects::IntType(32));
-  Method *m =
-    NativeObjects::InstallNativeMethod(vm, obj, "read",
-				       &ArrayWrapper::Read, rets);
+  Method *m = NativeObjects::InstallNativeMethod(vm, obj, "read",
+                                                 &ArrayWrapper::Read, rets);
   m->SetSynthName(synth::kSramRead);
   rets.clear();
-  m = NativeObjects::InstallNativeMethod(vm, obj, "write",
-					 &ArrayWrapper::Write, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "write", &ArrayWrapper::Write,
+                                         rets);
   m->SetSynthName(synth::kSramWrite);
 }
 
