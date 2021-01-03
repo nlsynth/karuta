@@ -31,9 +31,9 @@ void Base::ExecNum() {
     d->type_.value_type_ = Value::NUM;
     d->type_.width_ = sreg(0)->initial_num_.type_;
   }
-  iroha::Numeric::CopyValueWithWidth(sreg(0)->initial_num_.GetValue(),
-                                     sreg(0)->initial_num_.type_,
-                                     d->type_.width_, nullptr, &VAL(d).num_);
+  iroha::Numeric::CopyValueWithWidth(
+      sreg(0)->initial_num_.GetValue(), sreg(0)->initial_num_.type_,
+      d->type_.width_, nullptr, &VAL(d).num_value_);
 }
 
 void Base::ExecStr() {
@@ -74,62 +74,71 @@ void Base::ExecBinop() {
   switch (op()) {
     case OP_ADD:
     case OP_ADD_MAY_WITH_TYPE:
-      iroha::Op::Add0(VAL(lhs).num_, VAL(rhs).num_, &VAL(dst).num_);
-      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      iroha::Op::Add0(VAL(lhs).num_value_, VAL(rhs).num_value_,
+                      &VAL(dst).num_value_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_value_);
       break;
     case OP_SUB:
     case OP_SUB_MAY_WITH_TYPE:
-      iroha::Op::Sub0(VAL(lhs).num_, VAL(rhs).num_, &VAL(dst).num_);
-      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      iroha::Op::Sub0(VAL(lhs).num_value_, VAL(rhs).num_value_,
+                      &VAL(dst).num_value_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_value_);
       break;
     case OP_MUL:
     case OP_MUL_MAY_WITH_TYPE:
-      iroha::Op::CalcBinOp(iroha::BINOP_MUL, VAL(lhs).num_, VAL(rhs).num_,
-                           rhs->type_.width_, &VAL(dst).num_);
-      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      iroha::Op::CalcBinOp(iroha::BINOP_MUL, VAL(lhs).num_value_,
+                           VAL(rhs).num_value_, rhs->type_.width_,
+                           &VAL(dst).num_value_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_value_);
       break;
     case OP_DIV:
     case OP_DIV_MAY_WITH_TYPE:
-      iroha::Op::CalcBinOp(iroha::BINOP_DIV, VAL(lhs).num_, VAL(rhs).num_,
-                           rhs->type_.width_, &VAL(dst).num_);
-      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      iroha::Op::CalcBinOp(iroha::BINOP_DIV, VAL(lhs).num_value_,
+                           VAL(rhs).num_value_, rhs->type_.width_,
+                           &VAL(dst).num_value_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_value_);
       break;
     case OP_ASSIGN:
-      iroha::Numeric::CopyValueWithWidth(VAL(rhs).num_, rhs->type_.width_,
+      iroha::Numeric::CopyValueWithWidth(VAL(rhs).num_value_, rhs->type_.width_,
                                          dst->type_.width_, nullptr,
-                                         &VAL(dst).num_);
-      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+                                         &VAL(dst).num_value_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_value_);
       if (IsTopLevel() && !dst->GetIsDeclaredType()) {
         dst->type_ = rhs->type_;
       }
       break;
     case OP_AND:
-      iroha::Op::CalcBinOp(iroha::BINOP_AND, VAL(lhs).num_, VAL(rhs).num_,
-                           lhs->type_.width_, &VAL(dst).num_);
+      iroha::Op::CalcBinOp(iroha::BINOP_AND, VAL(lhs).num_value_,
+                           VAL(rhs).num_value_, lhs->type_.width_,
+                           &VAL(dst).num_value_);
       break;
     case OP_OR:
-      iroha::Op::CalcBinOp(iroha::BINOP_OR, VAL(lhs).num_, VAL(rhs).num_,
-                           lhs->type_.width_, &VAL(dst).num_);
+      iroha::Op::CalcBinOp(iroha::BINOP_OR, VAL(lhs).num_value_,
+                           VAL(rhs).num_value_, lhs->type_.width_,
+                           &VAL(dst).num_value_);
       break;
     case OP_XOR:
-      iroha::Op::CalcBinOp(iroha::BINOP_XOR, VAL(lhs).num_, VAL(rhs).num_,
-                           lhs->type_.width_, &VAL(dst).num_);
+      iroha::Op::CalcBinOp(iroha::BINOP_XOR, VAL(lhs).num_value_,
+                           VAL(rhs).num_value_, lhs->type_.width_,
+                           &VAL(dst).num_value_);
       break;
     case OP_CONCAT: {
       iroha::NumericWidth &lt = lhs->type_.width_;
       iroha::NumericWidth &rt = rhs->type_.width_;
-      iroha::Op::ConcatWithStorage(VAL(lhs).num_, lt, VAL(rhs).num_, rt,
-                                   nullptr, &VAL(dst).num_, nullptr);
+      iroha::Op::ConcatWithStorage(VAL(lhs).num_value_, lt, VAL(rhs).num_value_,
+                                   rt, nullptr, &VAL(dst).num_value_, nullptr);
     } break;
     case OP_LSHIFT:
-      iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT, VAL(lhs).num_, VAL(rhs).num_,
-                           lhs->type_.width_, &VAL(dst).num_);
-      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      iroha::Op::CalcBinOp(iroha::BINOP_LSHIFT, VAL(lhs).num_value_,
+                           VAL(rhs).num_value_, lhs->type_.width_,
+                           &VAL(dst).num_value_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_value_);
       break;
     case OP_RSHIFT:
-      iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT, VAL(lhs).num_, VAL(rhs).num_,
-                           lhs->type_.width_, &VAL(dst).num_);
-      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_);
+      iroha::Op::CalcBinOp(iroha::BINOP_RSHIFT, VAL(lhs).num_value_,
+                           VAL(rhs).num_value_, lhs->type_.width_,
+                           &VAL(dst).num_value_);
+      iroha::Op::FixupValueWidth(dst->type_.width_, &VAL(dst).num_value_);
       break;
     default:
       CHECK(false) << "unknown binop:" << vm::OpCodeName(op());
@@ -161,14 +170,14 @@ void Base::ExecArrayRead() {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     vector<uint64_t> indexes;
     PopulateArrayIndexes(0, &indexes);
-    lhs_value.num_ = array->Read(indexes);
+    lhs_value.num_value_ = array->Read(indexes);
     if (IsTopLevel()) {
       dst_reg->type_.value_type_ = Value::NUM;
       dst_reg->type_.width_ = array->GetDataWidth();
     }
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
-    int index = VAL(sreg(0)).num_.GetValue0();
+    int index = VAL(sreg(0)).num_value_.GetValue0();
     lhs_value.type_ = Value::OBJECT;
     lhs_value.object_ = ArrayWrapper::Get(array_obj, index);
     if (IsTopLevel()) {
@@ -185,20 +194,20 @@ void Base::ExecArrayWrite() {
     IntArray *array = ArrayWrapper::GetIntArray(array_obj);
     vector<uint64_t> indexes;
     PopulateArrayIndexes(1, &indexes);
-    iroha::Numeric n(VAL(sreg(0)).num_, sreg(0)->type_.width_);
+    iroha::Numeric n(VAL(sreg(0)).num_value_, sreg(0)->type_.width_);
     array->Write(indexes, n);
   } else {
     CHECK(ArrayWrapper::IsObjectArray(array_obj));
     Register *vobj = sreg(0);
     CHECK(vobj->type_.value_type_ == Value::OBJECT);
-    int index = VAL(sreg(1)).num_.GetValue0();
+    int index = VAL(sreg(1)).num_value_.GetValue0();
     ArrayWrapper::Set(array_obj, index, VAL(vobj).object_);
   }
 }
 
 void Base::PopulateArrayIndexes(int start, vector<uint64_t> *indexes) {
   for (int i = start; i < insn_->src_regs_.size(); ++i) {
-    uint64_t v = VAL(insn_->src_regs_[i]).num_.GetValue0();
+    uint64_t v = VAL(insn_->src_regs_[i]).num_value_.GetValue0();
     indexes->push_back(v);
   }
 }
@@ -212,7 +221,7 @@ void Base::ExecLogicInv() {
       v = 0;
     }
   } else if (src->type_.value_type_ == Value::NUM) {
-    if (!iroha::Op::IsZero(src->type_.width_, value.num_)) {
+    if (!iroha::Op::IsZero(src->type_.width_, value.num_value_)) {
       v = 0;
     }
   }
@@ -235,20 +244,20 @@ void Base::ExecNumUniop() {
   iroha::NumericValue res;
   switch (op()) {
     case OP_BIT_INV:
-      iroha::Op::BitInv0(value.num_, &res);
+      iroha::Op::BitInv0(value.num_value_, &res);
       break;
     case OP_PLUS:
-      res = value.num_;
+      res = value.num_value_;
       break;
     case OP_MINUS:
-      iroha::Op::Minus0(value.num_, &res);
+      iroha::Op::Minus0(value.num_value_, &res);
       break;
     default:
       CHECK(false);
       break;
   }
   iroha::Op::FixupValueWidth(dreg(0)->type_.width_, &res);
-  dst_value.num_ = res;
+  dst_value.num_value_ = res;
 }
 
 void Base::ExecLoadObj() {
@@ -281,12 +290,12 @@ void Base::ExecIncDec() {
   n1.SetValue0(1);
   iroha::NumericValue res;
   if (op() == OP_PRE_INC) {
-    iroha::Op::Add0(VAL(target).num_, n1, &res);
+    iroha::Op::Add0(VAL(target).num_value_, n1, &res);
   } else {
-    iroha::Op::Sub0(VAL(target).num_, n1, &res);
+    iroha::Op::Sub0(VAL(target).num_value_, n1, &res);
   }
   iroha::Op::FixupValueWidth(target->type_.width_, &res);
-  VAL(target).num_ = res;
+  VAL(target).num_value_ = res;
 }
 
 void Base::ExecNonNumResultBinop() {
@@ -335,7 +344,8 @@ void Base::ExecNonNumResultBinop() {
             CHECK(false);
             break;
         }
-        r = iroha::Op::Compare0(cmp_op, VAL(lhs).num_, VAL(rhs).num_);
+        r = iroha::Op::Compare0(cmp_op, VAL(lhs).num_value_,
+                                VAL(rhs).num_value_);
       } else if (rhs->type_.value_type_ == Value::ENUM_ITEM) {
         r = (VAL(lhs).enum_val_.val == VAL(rhs).enum_val_.val);
       } else {
@@ -495,12 +505,12 @@ void Base::ExecBitRange() {
   if (dst->type_.value_type_ == Value::NONE) {
     InsnAnnotator::AnnotateBitRangeInsn(insn_);
   }
-  int h = VAL(sreg(1)).num_.GetValue0();
-  int l = VAL(sreg(2)).num_.GetValue0();
+  int h = VAL(sreg(1)).num_value_.GetValue0();
+  int l = VAL(sreg(2)).num_value_.GetValue0();
   Value &value = VAL(sreg(0));
   Value &res = VAL(dst);
-  iroha::Op::SelectBitsWithStorage(value.num_, value.num_width_, h, l, nullptr,
-                                   &res.num_, nullptr);
+  iroha::Op::SelectBitsWithStorage(value.num_value_, value.num_width_, h, l,
+                                   nullptr, &res.num_value_, nullptr);
 }
 
 bool Base::ExecYield() { return thr_->Yield(); }

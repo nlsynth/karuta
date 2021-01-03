@@ -14,15 +14,13 @@ namespace vm {
 static const char *kMailboxObjectKey = "mailbox";
 
 class MailboxData : public ObjectSpecificData {
-public:
+ public:
   MailboxData(int width, sym_t name, Annotation *an)
-    : width_(width), name_(sym_cstr(name)), an_(an) {
+      : width_(width), name_(sym_cstr(name)), an_(an) {
     has_value_ = false;
   }
 
-  virtual const char *ObjectTypeKey() {
-    return kMailboxObjectKey;
-  }
+  virtual const char *ObjectTypeKey() { return kMailboxObjectKey; }
 
   int width_;
   string name_;
@@ -35,7 +33,7 @@ public:
 };
 
 Object *MailboxWrapper::NewMailbox(VM *vm, int width, sym_t name,
-				   Annotation *an) {
+                                   Annotation *an) {
   Object *mailbox_obj = vm->root_object_->Clone();
   mailbox_obj->object_specific_.reset(new MailboxData(width, name, an));
   InstallMethods(vm, mailbox_obj, width);
@@ -57,49 +55,47 @@ Annotation *MailboxWrapper::GetAnnotation(Object *obj) {
   return data->an_;
 }
 
-void MailboxWrapper::InstallMethods(VM *vm ,Object *obj, int width) {
+void MailboxWrapper::InstallMethods(VM *vm, Object *obj, int width) {
   vector<RegisterType> rets;
   rets.push_back(NativeObjects::IntType(32));
   // width
-  Method *m =
-    NativeObjects::InstallNativeMethod(vm, obj, "width",
-				       &MailboxWrapper::Width, rets);
+  Method *m = NativeObjects::InstallNativeMethod(vm, obj, "width",
+                                                 &MailboxWrapper::Width, rets);
   m->SetSynthName(synth::kMailboxWidth);
   // put
-  m = NativeObjects::InstallNativeMethod(vm, obj, "put",
-					 &MailboxWrapper::Put, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "put", &MailboxWrapper::Put,
+                                         rets);
   m->SetSynthName(synth::kMailboxPut);
   // notify
   m = NativeObjects::InstallNativeMethod(vm, obj, "notify",
-					 &MailboxWrapper::Notify, rets);
+                                         &MailboxWrapper::Notify, rets);
   m->SetSynthName(synth::kMailboxNotify);
   // get
   rets[0] = NativeObjects::IntType(width);
-  m = NativeObjects::InstallNativeMethod(vm, obj, "get",
-					 &MailboxWrapper::Get, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "get", &MailboxWrapper::Get,
+                                         rets);
   m->SetSynthName(synth::kMailboxGet);
   // wait
-  m = NativeObjects::InstallNativeMethod(vm, obj, "wait",
-					 &MailboxWrapper::Wait, rets);
+  m = NativeObjects::InstallNativeMethod(vm, obj, "wait", &MailboxWrapper::Wait,
+                                         rets);
   m->SetSynthName(synth::kMailboxWait);
 }
 
 void MailboxWrapper::Width(Thread *thr, Object *obj,
-			   const vector<Value> &args) {
+                           const vector<Value> &args) {
   Value value;
   value.type_ = Value::NUM;
-  value.num_.SetValue0(GetWidth(obj));
+  value.num_value_.SetValue0(GetWidth(obj));
   thr->SetReturnValueFromNativeMethod(value);
 }
 
-void MailboxWrapper::Get(Thread *thr, Object *obj,
-			 const vector<Value> &args) {
+void MailboxWrapper::Get(Thread *thr, Object *obj, const vector<Value> &args) {
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   if (data->has_value_) {
     data->has_value_ = false;
     Value value;
     value.type_ = Value::NUM;
-    value.num_ = data->number_;
+    value.num_value_ = data->number_;
     thr->SetReturnValueFromNativeMethod(value);
     WakeOne(true, data);
   } else {
@@ -107,27 +103,26 @@ void MailboxWrapper::Get(Thread *thr, Object *obj,
   }
 }
 
-void MailboxWrapper::Put(Thread *thr, Object *obj,
-			 const vector<Value> &args) {
+void MailboxWrapper::Put(Thread *thr, Object *obj, const vector<Value> &args) {
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
   if (data->has_value_) {
     data->put_waiters_.AddThread(thr);
   } else {
     data->has_value_ = true;
-    data->number_ = args[0].num_;
+    data->number_ = args[0].num_value_;
     WakeOne(false, data);
   }
 }
 
 void MailboxWrapper::Notify(Thread *thr, Object *obj,
-			    const vector<Value> &args) {
+                            const vector<Value> &args) {
   if (args.size() != 1 || args[0].type_ != Value::NUM) {
     Status::os(Status::USER_ERROR) << "Mailbox.write takes one value argument";
     thr->UserError();
     return;
   }
   MailboxData *data = (MailboxData *)obj->object_specific_.get();
-  data->number_ = args[0].num_;
+  data->number_ = args[0].num_value_;
   data->notify_waiters_.ResumeAll();
 }
 
@@ -137,7 +132,7 @@ void MailboxWrapper::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
     // Already notified at the same time (in execution event order).
     Value value;
     value.type_ = Value::NUM;
-    value.num_ = data->number_;
+    value.num_value_ = data->number_;
     thr->SetReturnValueFromNativeMethod(value);
   } else {
     data->notify_waiters_.AddThread(thr);

@@ -38,8 +38,8 @@ void Decl::ExecVardecl() {
   DeclAnnotator::AnnotateValueType(thr_->GetVM(), decl, value);
   if (value->type_ == Value::NUM) {
     iroha::Numeric::MayPopulateStorage(value->num_width_, nullptr,
-                                       &value->num_);
-    iroha::Op::MakeConst0(0, &value->num_);
+                                       &value->num_value_);
+    iroha::Op::MakeConst0(0, &value->num_value_);
   }
   if (value->type_ == Value::OBJECT && an != nullptr) {
     DistanceWrapper::MaySetDistanceAnnotation(name, an, thr_->GetVM(), obj);

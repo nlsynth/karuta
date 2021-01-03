@@ -105,7 +105,7 @@ bool ChannelWrapper::ReadValue(Thread *thr, Object *obj, Value *value) {
 
   value->type_ = Value::NUM;
   iroha::NumericValue v = *(pipe_data->values_.begin());
-  value->num_ = v;
+  value->num_value_ = v;
   value->num_width_ = iroha::NumericWidth(false, pipe_data->width_);
   pipe_data->values_.pop_front();
   // Wake writers.
@@ -129,7 +129,7 @@ void ChannelWrapper::WriteValue(const Value &value, Thread *thr, Object *obj) {
     BlockOnWrite(thr, obj);
     return;
   }
-  const iroha::NumericValue &v = value.num_;
+  const iroha::NumericValue &v = value.num_value_;
   pipe_data->values_.push_back(v);
   // Wake readers.
   pipe_data->read_waiters_.ResumeAll();

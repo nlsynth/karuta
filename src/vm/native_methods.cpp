@@ -176,7 +176,7 @@ void NativeMethods::SetSynthParam(Thread *thr, Object *obj,
   }
   string key = StringWrapper::String(args[0].object_);
   if (args[1].type_ == Value::NUM) {
-    value->annotation_->AddIntParam(key, args[1].num_.GetValue0());
+    value->annotation_->AddIntParam(key, args[1].num_value_.GetValue0());
   } else {
     value->annotation_->AddStrParam(key,
                                     StringWrapper::String(args[1].object_));
@@ -193,13 +193,13 @@ void NativeMethods::WidthOf(Thread *thr, Object *obj,
   }
   Value value;
   value.type_ = Value::NUM;
-  iroha::Op::MakeConst0(args[0].num_width_.GetWidth(), &value.num_);
+  iroha::Op::MakeConst0(args[0].num_width_.GetWidth(), &value.num_value_);
   SetReturnValue(thr, value);
 }
 
 void NativeMethods::Wait(Thread *thr, Object *obj, const vector<Value> &args) {
   if (args.size() == 1 && args[0].type_ == Value::NUM) {
-    thr->GetVM()->AddGlobalTickCount(args[0].num_.GetValue0());
+    thr->GetVM()->AddGlobalTickCount(args[0].num_value_.GetValue0());
   }
 }
 

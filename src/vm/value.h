@@ -43,7 +43,7 @@ class Value {
   bool is_const_;
 
   // for NUM
-  iroha::NumericValue num_;
+  iroha::NumericValue num_value_;
   iroha::NumericWidth num_width_;
   // for METHOD
   Method *method_;

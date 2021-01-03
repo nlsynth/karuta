@@ -34,7 +34,7 @@ string ObjectUtil::GetStringMember(Object *obj, const string &key) {
 }
 
 void ObjectUtil::SetStringMember(Object *obj, const string &key,
-				 const string &str) {
+                                 const string &str) {
   Value *value = obj->LookupValue(sym_lookup(key.c_str()), true);
   value->type_ = Value::OBJECT;
   value->object_ = StringWrapper::NewStringWrapper(obj->GetVM(), str);
@@ -43,7 +43,7 @@ void ObjectUtil::SetStringMember(Object *obj, const string &key,
 int ObjectUtil::GetIntMember(Object *obj, const string &key, int dflt) {
   Value *value = obj->LookupValue(sym_lookup(key.c_str()), false);
   if (value != nullptr && value->type_ == Value::NUM) {
-    return value->num_.GetValue0();
+    return value->num_value_.GetValue0();
   }
   return dflt;
 }
@@ -51,18 +51,16 @@ int ObjectUtil::GetIntMember(Object *obj, const string &key, int dflt) {
 void ObjectUtil::SetIntMember(Object *obj, const string &key, int val) {
   Value *value = obj->LookupValue(sym_lookup(key.c_str()), true);
   value->type_ = Value::NUM;
-  iroha::Op::MakeConst0(val, &value->num_);
+  iroha::Op::MakeConst0(val, &value->num_value_);
 }
 
-void ObjectUtil::CollectReachableObjects(Object *obj,
-					 vector<Object *> *objs) {
+void ObjectUtil::CollectReachableObjects(Object *obj, vector<Object *> *objs) {
   set<Object *> seen;
   CollectReachableObjectsRec(obj, &seen, objs);
 }
 
-void ObjectUtil::CollectReachableObjectsRec(Object *obj,
-					    set<Object *> *seen,
-					    vector<Object *> *objs) {
+void ObjectUtil::CollectReachableObjectsRec(Object *obj, set<Object *> *seen,
+                                            vector<Object *> *objs) {
   if (seen->find(obj) != seen->end()) {
     return;
   }

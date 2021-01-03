@@ -216,7 +216,7 @@ void Thread::MaySetThreadIndex() {
   CHECK(frame->method_->GetNumArgRegisters() <= 1)
       << "Too many arguments for a thread entry method";
   if (frame->method_->GetNumArgRegisters() == 1) {
-    frame->reg_values_[0].num_.SetValue0(index_);
+    frame->reg_values_[0].num_value_.SetValue0(index_);
   }
 }
 
