@@ -20,7 +20,7 @@ class Value {
   void Dump(ostream &os) const;
   void SetBool(bool b);
   bool IsObjectType() const;
-  void CopyDataFrom(const Value &src, const iroha::NumericWidth &width);
+  void CopyDataFrom(const Value &src, const iroha::NumericWidth &src_width);
   bool IsString() const;
 
   enum ValueType {

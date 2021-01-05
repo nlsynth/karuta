@@ -100,10 +100,12 @@ bool Value::IsObjectType() const {
          type_ == OBJECT_ARRAY;
 }
 
-void Value::CopyDataFrom(const Value &src, const iroha::NumericWidth &width) {
+void Value::CopyDataFrom(const Value &src,
+                         const iroha::NumericWidth &src_width) {
   if (src.type_ == NUM) {
-    iroha::Numeric::CopyValueWithWidth(src.num_value_, width, num_width_,
+    iroha::Numeric::CopyValueWithWidth(src.num_value_, src_width, num_width_,
                                        nullptr, &num_value_);
+    type_ = NUM;
   } else {
     *this = src;
   }

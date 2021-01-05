@@ -474,14 +474,20 @@ bool Base::ExecMemberAccess() {
     member = TlsWrapper::GetValue(member->object_, thr_);
   }
   if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
-    VAL(dreg(0)).CopyDataFrom(*member, member->num_width_);
+    Value &v = VAL(dreg(0));
     if (IsTopLevel()) {
-      // Copies data type to the method.
       auto *dst_reg = dreg(0);
+      // Copies data type to the method.
       dst_reg->type_.value_type_ = member->type_;
       dst_reg->type_.num_width_ = member->num_width_;
       dst_reg->type_.object_name_ = member->type_object_name_;
+      if (!dst_reg->GetIsDeclaredType() && member->type_ == Value::NUM) {
+        v.num_width_ = member->num_width_;
+        iroha::Numeric::MayPopulateStorage(v.num_width_, nullptr,
+                                           &v.num_value_);
+      }
     }
+    v.CopyDataFrom(*member, member->num_width_);
   } else {
     // OP_MEMBER_WRITE
     CHECK(insn_->src_regs_.size() == 1);
