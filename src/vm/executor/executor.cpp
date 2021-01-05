@@ -15,10 +15,10 @@ bool Executor::ExecInsn(Insn *insn) {
     case OP_STR:
       ExecStr();
       break;
-    case OP_ADD_MAY_WITH_TYPE:
-    case OP_SUB_MAY_WITH_TYPE:
-    case OP_MUL_MAY_WITH_TYPE:
-    case OP_DIV_MAY_WITH_TYPE:
+    case OP_TL_ADD_MAY_WITH_TYPE:
+    case OP_TL_SUB_MAY_WITH_TYPE:
+    case OP_TL_MUL_MAY_WITH_TYPE:
+    case OP_TL_DIV_MAY_WITH_TYPE:
       if (MayExecuteCustomOp()) {
         need_suspend = true;
         if (!thr_->IsRunnable()) {
@@ -100,50 +100,50 @@ bool Executor::ExecInsn(Insn *insn) {
     case OP_BIT_RANGE:
       ExecBitRange();
       break;
-    case OP_FUNCDECL:
+    case OP_TL_FUNCDECL:
       ExecFuncdecl();
       break;
-    case OP_VARDECL:
+    case OP_TL_VARDECL:
       ExecVardecl();
       break;
-    case OP_THREAD_DECL:
+    case OP_TL_THREAD_DECL:
       ExecThreadDecl();
       break;
-    case OP_CHANNEL_DECL:
+    case OP_TL_CHANNEL_DECL:
       ExecChannelDecl();
       break;
-    case OP_MAILBOX_DECL:
+    case OP_TL_MAILBOX_DECL:
       ExecMailboxDecl();
       break;
-    case OP_IMPORT:
+    case OP_TL_IMPORT:
       ExecImport();
       need_suspend = true;
       break;
-    case OP_MEMBER_READ_WITH_CHECK:
+    case OP_TL_MEMBER_READ_WITH_CHECK:
       ExecMemberReadWithCheck();
       break;
-    case OP_ARRAY_WRITE_WITH_CHECK:
+    case OP_TL_ARRAY_WRITE_WITH_CHECK:
       ExecArrayWriteWithCheck();
       break;
-    case OP_FUNCALL_WITH_CHECK:
+    case OP_TL_FUNCALL_WITH_CHECK:
       need_suspend = ExecFuncallWithCheck();
       if (!thr_->IsRunnable()) {
         return true;
       }
       break;
-    case OP_FUNCALL_DONE_WITH_CHECK:
+    case OP_TL_FUNCALL_DONE_WITH_CHECK:
       ExecFuncallDoneWithCheck();
       break;
-    case OP_SET_TYPE_OBJECT:
+    case OP_TL_SET_TYPE_OBJECT:
       ExecSetTypeObject();
       break;
-    case OP_PUSH_CURRENT_OBJECT:
+    case OP_TL_PUSH_CURRENT_OBJECT:
       PushCurrentObject();
       break;
-    case OP_POP_CURRENT_OBJECT:
+    case OP_TL_POP_CURRENT_OBJECT:
       PopCurrentObject();
       break;
-    case OP_MAY_WITH_TYPE_DONE:
+    case OP_TL_MAY_WITH_TYPE_DONE:
       ExecMayWithTypeDone();
       break;
     default:

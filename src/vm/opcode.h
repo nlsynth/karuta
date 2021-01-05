@@ -52,33 +52,33 @@ enum OpCode {
   OP_MEMBER_READ,
   OP_MEMBER_WRITE,
 
-  // OPs for top level.
-  OP_IMPORT,
-  OP_FUNCDECL,
-  OP_VARDECL,
-  OP_CHANNEL_DECL,
-  OP_MAILBOX_DECL,
-  OP_THREAD_DECL,
+  // OPs for top level (TL_).
+  OP_TL_IMPORT,
+  OP_TL_FUNCDECL,
+  OP_TL_VARDECL,
+  OP_TL_CHANNEL_DECL,
+  OP_TL_MAILBOX_DECL,
+  OP_TL_THREAD_DECL,
   // Sets type object (and width) by the executor.
   // e.g. var x #type_obj (local var at top level)
-  OP_SET_TYPE_OBJECT,
-  OP_PUSH_CURRENT_OBJECT,
-  OP_POP_CURRENT_OBJECT,
+  OP_TL_SET_TYPE_OBJECT,
+  OP_TL_PUSH_CURRENT_OBJECT,
+  OP_TL_POP_CURRENT_OBJECT,
 
   // OPs with top level specific checks.
   // (for top level)
-  OP_FUNCALL_WITH_CHECK,
-  OP_FUNCALL_DONE_WITH_CHECK,
-  OP_ARRAY_WRITE_WITH_CHECK,
-  OP_MEMBER_READ_WITH_CHECK,
+  OP_TL_FUNCALL_WITH_CHECK,
+  OP_TL_FUNCALL_DONE_WITH_CHECK,
+  OP_TL_ARRAY_WRITE_WITH_CHECK,
+  OP_TL_MEMBER_READ_WITH_CHECK,
 
   // OPs for operator override.
   // (for top level)
-  OP_ADD_MAY_WITH_TYPE,
-  OP_SUB_MAY_WITH_TYPE,
-  OP_MUL_MAY_WITH_TYPE,
-  OP_DIV_MAY_WITH_TYPE,
-  OP_MAY_WITH_TYPE_DONE,
+  OP_TL_ADD_MAY_WITH_TYPE,
+  OP_TL_SUB_MAY_WITH_TYPE,
+  OP_TL_MUL_MAY_WITH_TYPE,
+  OP_TL_DIV_MAY_WITH_TYPE,
+  OP_TL_MAY_WITH_TYPE_DONE,
 };
 
 const char *OpCodeName(enum OpCode node);

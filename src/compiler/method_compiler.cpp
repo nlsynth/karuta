@@ -236,7 +236,7 @@ void MethodCompiler::PushScope(fe::Stmt *stmt) {
 
 void MethodCompiler::LoadScopeObj(fe::Expr *obj_expr) {
   vm::Insn *insn = new vm::Insn;
-  insn->op_ = vm::OP_PUSH_CURRENT_OBJECT;
+  insn->op_ = vm::OP_TL_PUSH_CURRENT_OBJECT;
   insn->insn_expr_ = obj_expr;
   vm::Register *obj_reg = nullptr;
   if (obj_expr->GetType() == fe::EXPR_SYM) {
@@ -259,7 +259,7 @@ void MethodCompiler::PopScope() {
   VarScope *scope = *(bindings_.rbegin());
   if (scope->obj_expr_ != nullptr) {
     vm::Insn *insn = new vm::Insn;
-    insn->op_ = vm::OP_POP_CURRENT_OBJECT;
+    insn->op_ = vm::OP_TL_POP_CURRENT_OBJECT;
     EmitInsn(insn);
   }
   delete scope;
@@ -415,7 +415,7 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     if (rhs_val != nullptr) {
       SetWidthByDecl(stmt->GetVarDecl(), rhs_val);
     }
-    CompileMemberDeclStmt(stmt, var_expr, vm::OP_VARDECL, rhs_val);
+    CompileMemberDeclStmt(stmt, var_expr, vm::OP_TL_VARDECL, rhs_val);
     return;
   }
 
@@ -429,7 +429,7 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
     if (IsTopLevel()) {
       // Set type object later.
       vm::Insn *insn = new vm::Insn;
-      insn->op_ = vm::OP_SET_TYPE_OBJECT;
+      insn->op_ = vm::OP_TL_SET_TYPE_OBJECT;
       insn->dst_regs_.push_back(reg);
       insn->insn_stmt_ = stmt;
       EmitInsn(insn);
@@ -453,17 +453,17 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
 
 void MethodCompiler::CompileThreadDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr()->GetLhs();
-  CompileMemberDeclStmt(stmt, var_expr, vm::OP_THREAD_DECL, nullptr);
+  CompileMemberDeclStmt(stmt, var_expr, vm::OP_TL_THREAD_DECL, nullptr);
 }
 
 void MethodCompiler::CompileChannelDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr();
-  CompileMemberDeclStmt(stmt, var_expr, vm::OP_CHANNEL_DECL, nullptr);
+  CompileMemberDeclStmt(stmt, var_expr, vm::OP_TL_CHANNEL_DECL, nullptr);
 }
 
 void MethodCompiler::CompileMailboxDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr();
-  CompileMemberDeclStmt(stmt, var_expr, vm::OP_MAILBOX_DECL, nullptr);
+  CompileMemberDeclStmt(stmt, var_expr, vm::OP_TL_MAILBOX_DECL, nullptr);
 }
 
 void MethodCompiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
@@ -476,14 +476,14 @@ void MethodCompiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
   insn->op_ = op;
   insn->insn_stmt_ = stmt;
   insn->obj_reg_ = obj_reg;
-  if (op == vm::OP_THREAD_DECL) {
+  if (op == vm::OP_TL_THREAD_DECL) {
     insn->label_ = stmt->GetExpr()->GetFunc()->GetFunc()->GetSym();
   }
-  if (op == vm::OP_CHANNEL_DECL || op == vm::OP_MAILBOX_DECL) {
+  if (op == vm::OP_TL_CHANNEL_DECL || op == vm::OP_TL_MAILBOX_DECL) {
     insn->label_ = stmt->GetExpr()->GetSym();
   }
   EmitInsn(insn);
-  if (op == vm::OP_VARDECL && initial_val) {
+  if (op == vm::OP_TL_VARDECL && initial_val) {
     insn = new vm::Insn;
     insn->op_ = vm::OP_MEMBER_WRITE;
     insn->label_ = var_expr->GetSym();
@@ -496,7 +496,7 @@ void MethodCompiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
 
 void MethodCompiler::CompileImportStmt(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
-  insn->op_ = vm::OP_IMPORT;
+  insn->op_ = vm::OP_TL_IMPORT;
   insn->insn_stmt_ = stmt;
   sym_t name = stmt->GetSym();
   if (name != sym_null) {
@@ -540,7 +540,7 @@ vm::Register *MethodCompiler::LookupOrAllocateLocalVar(sym_t name) {
 
 void MethodCompiler::CompileFuncDecl(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
-  insn->op_ = vm::OP_FUNCDECL;
+  insn->op_ = vm::OP_TL_FUNCDECL;
   insn->label_ = stmt->GetExpr()->GetSym();
   insn->insn_stmt_ = stmt;
   insn->obj_reg_ = CompilePathHead(stmt->GetExpr());
@@ -609,7 +609,7 @@ vm::Register *MethodCompiler::EmitMemberLoad(vm::Register *obj_reg, sym_t m) {
   vm::Insn *insn = new vm::Insn;
   insn->obj_reg_ = obj_reg;
   if (IsTopLevel()) {
-    insn->op_ = vm::OP_MEMBER_READ_WITH_CHECK;
+    insn->op_ = vm::OP_TL_MEMBER_READ_WITH_CHECK;
   } else {
     insn->op_ = vm::OP_MEMBER_READ;
   }

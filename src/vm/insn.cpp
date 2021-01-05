@@ -55,14 +55,14 @@ void Insn::Dump(DumpStream &ds) const {
   if (label_) {
     ds.os << " " << sym_cstr(label_) << ":";
   }
-  if (op_ == OP_ARRAY_WRITE || op_ == OP_ARRAY_WRITE_WITH_CHECK) {
+  if (op_ == OP_ARRAY_WRITE || op_ == OP_TL_ARRAY_WRITE_WITH_CHECK) {
     ds.os << sym_cstr(insn_expr_->GetSym()) << "[]";
   }
   if (op_ == OP_ARRAY_READ) {
     ds.os << sym_cstr(insn_expr_->GetSym()) << "[]";
   }
-  if (op_ == OP_FUNCALL || op_ == OP_FUNCALL_WITH_CHECK ||
-      op_ == OP_FUNCALL_DONE || op_ == OP_FUNCALL_DONE_WITH_CHECK) {
+  if (op_ == OP_FUNCALL || op_ == OP_TL_FUNCALL_WITH_CHECK ||
+      op_ == OP_FUNCALL_DONE || op_ == OP_TL_FUNCALL_DONE_WITH_CHECK) {
     if (insn_expr_ != nullptr) {
       ds.os << " " << sym_cstr(insn_expr_->GetFunc()->GetSym()) << "()";
     }
@@ -78,10 +78,10 @@ bool InsnType::IsComparison(int op) {
 }
 
 bool InsnType::IsSameWidthNumBinOp(int op) {
-  if (op == OP_ADD || op == OP_ADD_MAY_WITH_TYPE || op == OP_SUB ||
-      op == OP_SUB_MAY_WITH_TYPE || op == OP_MUL ||
-      op == OP_MUL_MAY_WITH_TYPE || op == OP_DIV ||
-      op == OP_DIV_MAY_WITH_TYPE || op == OP_AND || op == OP_OR ||
+  if (op == OP_ADD || op == OP_TL_ADD_MAY_WITH_TYPE || op == OP_SUB ||
+      op == OP_TL_SUB_MAY_WITH_TYPE || op == OP_MUL ||
+      op == OP_TL_MUL_MAY_WITH_TYPE || op == OP_DIV ||
+      op == OP_TL_DIV_MAY_WITH_TYPE || op == OP_AND || op == OP_OR ||
       op == OP_XOR) {
     return true;
   }

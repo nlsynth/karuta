@@ -45,13 +45,13 @@ int NumericObject::Width(Object *obj) {
 
 sym_t NumericObject::GetMethodName(Object *obj, enum OpCode op) {
   sym_t n = sym_null;
-  if (op == OP_ADD || op == OP_ADD_MAY_WITH_TYPE) {
+  if (op == OP_ADD || op == OP_TL_ADD_MAY_WITH_TYPE) {
     n = sym_lookup("Add");
-  } else if (op == OP_SUB || op == OP_SUB_MAY_WITH_TYPE) {
+  } else if (op == OP_SUB || op == OP_TL_SUB_MAY_WITH_TYPE) {
     n = sym_lookup("Sub");
-  } else if (op == OP_MUL || op == OP_MUL_MAY_WITH_TYPE) {
+  } else if (op == OP_MUL || op == OP_TL_MUL_MAY_WITH_TYPE) {
     n = sym_lookup("Mul");
-  } else if (op == OP_DIV || op == OP_DIV_MAY_WITH_TYPE) {
+  } else if (op == OP_DIV || op == OP_TL_DIV_MAY_WITH_TYPE) {
     n = sym_lookup("Div");
   }
   if (n == sym_null) {

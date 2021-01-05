@@ -88,13 +88,13 @@ vm::Register *ExprCompiler::CompileSimpleExpr(fe::Expr *expr) {
   insn->dst_regs_.push_back(dst_reg);
   switch (insn->op_) {
     case vm::OP_ADD:
-    case vm::OP_ADD_MAY_WITH_TYPE:
+    case vm::OP_TL_ADD_MAY_WITH_TYPE:
     case vm::OP_SUB:
-    case vm::OP_SUB_MAY_WITH_TYPE:
+    case vm::OP_TL_SUB_MAY_WITH_TYPE:
     case vm::OP_MUL:
-    case vm::OP_MUL_MAY_WITH_TYPE:
+    case vm::OP_TL_MUL_MAY_WITH_TYPE:
     case vm::OP_DIV:
-    case vm::OP_DIV_MAY_WITH_TYPE:
+    case vm::OP_TL_DIV_MAY_WITH_TYPE:
     case vm::OP_GT:
     case vm::OP_LT:
     case vm::OP_GTE:
@@ -287,13 +287,13 @@ vm::OpCode ExprCompiler::MayRewriteToOpWithType(vm::OpCode op) {
   if (compiler_->IsTopLevel()) {
     switch (op) {
       case vm::OP_ADD:
-        return vm::OP_ADD_MAY_WITH_TYPE;
+        return vm::OP_TL_ADD_MAY_WITH_TYPE;
       case vm::OP_SUB:
-        return vm::OP_SUB_MAY_WITH_TYPE;
+        return vm::OP_TL_SUB_MAY_WITH_TYPE;
       case vm::OP_MUL:
-        return vm::OP_MUL_MAY_WITH_TYPE;
+        return vm::OP_TL_MUL_MAY_WITH_TYPE;
       case vm::OP_DIV:
-        return vm::OP_DIV_MAY_WITH_TYPE;
+        return vm::OP_TL_DIV_MAY_WITH_TYPE;
       default:
         break;
     }
@@ -364,7 +364,7 @@ RegisterTuple ExprCompiler::CompileMultiValueFuncall(vm::Register *obj_reg,
                                                      int num_lhs) {
   vm::Insn *call_insn = new vm::Insn;
   if (compiler_->IsTopLevel()) {
-    call_insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
+    call_insn->op_ = vm::OP_TL_FUNCALL_WITH_CHECK;
   } else {
     call_insn->op_ = vm::OP_FUNCALL;
   }
@@ -426,7 +426,7 @@ RegisterTuple ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
   RegisterTuple rt;
   vm::Insn *done_insn = new vm::Insn;
   if (compiler_->IsTopLevel()) {
-    done_insn->op_ = vm::OP_FUNCALL_DONE_WITH_CHECK;
+    done_insn->op_ = vm::OP_TL_FUNCALL_DONE_WITH_CHECK;
   } else {
     done_insn->op_ = vm::OP_FUNCALL_DONE;
   }
@@ -471,11 +471,11 @@ RegisterTuple ExprCompiler::EmitFuncallDone(vm::Insn *call_insn,
 }
 
 void ExprCompiler::MayEmitTypeDoneInsn(vm::Insn *insn) {
-  if (insn->op_ == vm::OP_ADD_MAY_WITH_TYPE ||
-      insn->op_ == vm::OP_ADD_MAY_WITH_TYPE ||
-      insn->op_ == vm::OP_ADD_MAY_WITH_TYPE) {
+  if (insn->op_ == vm::OP_TL_ADD_MAY_WITH_TYPE ||
+      insn->op_ == vm::OP_TL_ADD_MAY_WITH_TYPE ||
+      insn->op_ == vm::OP_TL_ADD_MAY_WITH_TYPE) {
     vm::Insn *done_insn = new vm::Insn;
-    done_insn->op_ = vm::OP_MAY_WITH_TYPE_DONE;
+    done_insn->op_ = vm::OP_TL_MAY_WITH_TYPE_DONE;
     done_insn->src_regs_ = insn->src_regs_;
     done_insn->dst_regs_ = insn->dst_regs_;
     compiler_->EmitInsn(done_insn);
@@ -576,7 +576,7 @@ vm::Register *ExprCompiler::CompileAssignToArray(vm::Insn *insn, fe::Expr *lhs,
   // DST: LHS_REG
   // OBJ: ARRAY
   if (compiler_->IsTopLevel()) {
-    insn->op_ = vm::OP_ARRAY_WRITE_WITH_CHECK;
+    insn->op_ = vm::OP_TL_ARRAY_WRITE_WITH_CHECK;
   } else {
     insn->op_ = vm::OP_ARRAY_WRITE;
   }
@@ -720,7 +720,7 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
   }
   vm::Insn *call_insn = new vm::Insn;
   if (compiler_->IsTopLevel()) {
-    call_insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
+    call_insn->op_ = vm::OP_TL_FUNCALL_WITH_CHECK;
   } else {
     call_insn->op_ = vm::OP_FUNCALL;
   }
@@ -732,7 +732,7 @@ vm::Register *ExprCompiler::MayRewriteOperator(vm::Insn *orig_insn) {
 
   vm::Insn *done_insn = new vm::Insn;
   if (compiler_->IsTopLevel()) {
-    done_insn->op_ = vm::OP_FUNCALL_DONE_WITH_CHECK;
+    done_insn->op_ = vm::OP_TL_FUNCALL_DONE_WITH_CHECK;
   } else {
     done_insn->op_ = vm::OP_FUNCALL_DONE;
   }
@@ -753,8 +753,8 @@ vm::Register *ExprCompiler::LoadNumericTypeRegister(sym_t obj_name) {
 void ExprCompiler::PropagateRegisterType(vm::Insn *insn, vm::Register *lhs,
                                          vm::Register *rhs,
                                          vm::RegisterType *t) {
-  if (insn->op_ == vm::OP_ADD || insn->op_ == vm::OP_ADD_MAY_WITH_TYPE ||
-      insn->op_ == vm::OP_SUB || insn->op_ == vm::OP_SUB_MAY_WITH_TYPE) {
+  if (insn->op_ == vm::OP_ADD || insn->op_ == vm::OP_TL_ADD_MAY_WITH_TYPE ||
+      insn->op_ == vm::OP_SUB || insn->op_ == vm::OP_TL_SUB_MAY_WITH_TYPE) {
     *t = lhs->type_;
   }
 }
@@ -852,7 +852,7 @@ void ExprCompiler::EmitFuncallForEpilogue(const char *name,
                                           vm::Register *obj_reg,
                                           vm::Register *arg_reg) {
   vm::Insn *insn = new vm::Insn;
-  insn->op_ = vm::OP_FUNCALL_WITH_CHECK;
+  insn->op_ = vm::OP_TL_FUNCALL_WITH_CHECK;
   insn->obj_reg_ = obj_reg;
   insn->label_ = sym_lookup(name);
   if (arg_reg != nullptr) {

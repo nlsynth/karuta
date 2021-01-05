@@ -73,26 +73,26 @@ void Base::ExecBinop() {
   }
   switch (op()) {
     case OP_ADD:
-    case OP_ADD_MAY_WITH_TYPE:
+    case OP_TL_ADD_MAY_WITH_TYPE:
       iroha::Op::Add0(VAL(lhs).num_value_, VAL(rhs).num_value_,
                       &VAL(dst).num_value_);
       iroha::Op::FixupValueWidth(dst->type_.num_width_, &VAL(dst).num_value_);
       break;
     case OP_SUB:
-    case OP_SUB_MAY_WITH_TYPE:
+    case OP_TL_SUB_MAY_WITH_TYPE:
       iroha::Op::Sub0(VAL(lhs).num_value_, VAL(rhs).num_value_,
                       &VAL(dst).num_value_);
       iroha::Op::FixupValueWidth(dst->type_.num_width_, &VAL(dst).num_value_);
       break;
     case OP_MUL:
-    case OP_MUL_MAY_WITH_TYPE:
+    case OP_TL_MUL_MAY_WITH_TYPE:
       iroha::Op::CalcBinOp(iroha::BINOP_MUL, VAL(lhs).num_value_,
                            VAL(rhs).num_value_, rhs->type_.num_width_,
                            &VAL(dst).num_value_);
       iroha::Op::FixupValueWidth(dst->type_.num_width_, &VAL(dst).num_value_);
       break;
     case OP_DIV:
-    case OP_DIV_MAY_WITH_TYPE:
+    case OP_TL_DIV_MAY_WITH_TYPE:
       iroha::Op::CalcBinOp(iroha::BINOP_DIV, VAL(lhs).num_value_,
                            VAL(rhs).num_value_, rhs->type_.num_width_,
                            &VAL(dst).num_value_);
@@ -146,8 +146,8 @@ void Base::ExecBinop() {
 }
 
 void Base::RetryBinopWithType() {
-  CHECK(op() == OP_ADD_MAY_WITH_TYPE || op() == OP_SUB_MAY_WITH_TYPE ||
-        op() == OP_MUL_MAY_WITH_TYPE || op() == OP_DIV_MAY_WITH_TYPE);
+  CHECK(op() == OP_TL_ADD_MAY_WITH_TYPE || op() == OP_TL_SUB_MAY_WITH_TYPE ||
+        op() == OP_TL_MUL_MAY_WITH_TYPE || op() == OP_TL_DIV_MAY_WITH_TYPE);
   Register *lhs = sreg(0);
   Register *rhs = sreg(1);
   CHECK(lhs->type_.value_type_ == rhs->type_.value_type_);
@@ -357,7 +357,7 @@ void Base::ExecNonNumResultBinop() {
       VAL(dst).SetBool(r);
     } break;
     case OP_ADD:
-    case OP_ADD_MAY_WITH_TYPE: {
+    case OP_TL_ADD_MAY_WITH_TYPE: {
       CHECK(lhs->type_.value_type_ == rhs->type_.value_type_);
       CHECK(lhs->type_.value_type_ == Value::OBJECT);
       string r = VAL(lhs).object_->ToString() + VAL(rhs).object_->ToString();
@@ -473,7 +473,7 @@ bool Base::ExecMemberAccess() {
   if (TlsWrapper::IsTlsValue(member)) {
     member = TlsWrapper::GetValue(member->object_, thr_);
   }
-  if (op() == OP_MEMBER_READ || op() == OP_MEMBER_READ_WITH_CHECK) {
+  if (op() == OP_MEMBER_READ || op() == OP_TL_MEMBER_READ_WITH_CHECK) {
     Value &v = VAL(dreg(0));
     if (IsTopLevel()) {
       auto *dst_reg = dreg(0);
@@ -521,7 +521,7 @@ void Base::ExecMemberReadWithCheck() {
     return;
   }
   // Annotate the type of the results now.
-  CHECK(op() == OP_MEMBER_READ_WITH_CHECK);
+  CHECK(op() == OP_TL_MEMBER_READ_WITH_CHECK);
   Value &obj_value = VAL(oreg());
   CHECK(oreg()->type_.value_type_ == Value::OBJECT);
   Object *obj = obj_value.object_;
