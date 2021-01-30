@@ -170,6 +170,9 @@ FUNC_DECL_HEAD : FUNC_DECL_NAME '(' ARG_DECL ')' RETURN_SPEC '{' {
   Emitter::SetCurrentFunctionParams($3, $5);
 } | FUNC_DECL_NAME '{' {
   Emitter::SetCurrentFunctionParams(nullptr, nullptr);
+} | FUNC_DECL_KW '{' {
+  Emitter::BeginFunctionDecl($1, nullptr);
+  Emitter::SetCurrentFunctionParams(nullptr, nullptr);
 }
 
 FUNC_DECL_KW : K_FUNC { $$ = K_FUNC; } | K_PROCESS { $$ = K_PROCESS; } | K_ALWAYS { $$ = K_ALWAYS; }
