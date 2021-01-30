@@ -175,8 +175,7 @@ FUNC_DECL_HEAD : FUNC_DECL_NAME ARG_DECL ')' RETURN_SPEC {
 FUNC_DECL_KW : K_FUNC { $$ = K_FUNC; } | K_PROCESS { $$ = K_PROCESS; } | K_ALWAYS { $$ = K_ALWAYS; }
 
 FUNC_DECL_NAME : FUNC_DECL_KW VAR '(' {
-  bool process = ($1 == K_PROCESS) || ($1 == K_ALWAYS);
-  Emitter::BeginFunction($2, process, ($1 == K_ALWAYS));
+  Emitter::BeginFunctionDecl($1, $2);
 }
 
 STMT_LIST : {

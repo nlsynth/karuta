@@ -6,6 +6,7 @@
 #include "fe/expr.h"
 #include "fe/method.h"
 #include "fe/nodecode.h"
+#include "fe/parser.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
 #include "karuta/annotation.h"
@@ -28,6 +29,12 @@ void Emitter::BeginFunction(Expr *name, bool is_process, bool is_always) {
   decl.name_ = formatted_name;
   method_stack_.push_back(decl);
   NodePool::AddMethod(method);
+}
+
+void Emitter::BeginFunctionDecl(int kw, Expr *name) {
+  bool is_process = (kw == K_PROCESS || kw == K_ALWAYS);
+  bool is_always = (kw == K_ALWAYS);
+  BeginFunction(name, is_process, is_always);
 }
 
 MethodDecl Emitter::EndFunction() {
