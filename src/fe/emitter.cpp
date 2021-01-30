@@ -52,14 +52,20 @@ string Emitter::GetFunctionName() {
   return decl.name_;
 }
 
-void Emitter::SetCurrentFunctionParams() {
+void Emitter::SetCurrentFunctionParams(VarDeclSet *args, VarDeclSet *rets) {
+  AnnotatePinNames();
+  SetCurrentFunctionArgs(args);
+  SetCurrentFunctionReturns(rets);
+}
+
+void Emitter::AnnotatePinNames() {
   if (func_annotation_ == nullptr) {
     return;
   }
   MethodDecl &decl = CurrentMethod();
   decl.method_->SetAnnotation(func_annotation_);
   fe::VarDeclSet *args = decl.method_->GetArgs();
-  if (args) {
+  if (args != nullptr) {
     for (size_t i = 0; i < args->decls.size(); ++i) {
       fe::VarDecl *arg = args->decls[i];
       int width = 1;

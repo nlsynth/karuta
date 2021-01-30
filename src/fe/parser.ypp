@@ -167,9 +167,7 @@ FUNC_DECL : ANNOTATION_OR_EMPTY {Emitter::SetCurrentFunctionAnnotation($1);} FUN
 }
 
 FUNC_DECL_HEAD : FUNC_DECL_NAME ARG_DECL ')' RETURN_SPEC {
-  Emitter::SetCurrentFunctionParams();
-  Emitter::SetCurrentFunctionArgs($2);
-  Emitter::SetCurrentFunctionReturns($4);
+  Emitter::SetCurrentFunctionParams($2, $4);
 }
 
 FUNC_DECL_KW : K_FUNC { $$ = K_FUNC; } | K_PROCESS { $$ = K_PROCESS; } | K_ALWAYS { $$ = K_ALWAYS; }

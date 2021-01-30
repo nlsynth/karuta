@@ -18,9 +18,7 @@ class Emitter {
   static void BeginFunctionDecl(int kw, Expr *name);
   static MethodDecl EndFunction();
   static string GetFunctionName();
-  static void SetCurrentFunctionParams();
-  static void SetCurrentFunctionArgs(VarDeclSet *decls);
-  static void SetCurrentFunctionReturns(VarDeclSet *decls);
+  static void SetCurrentFunctionParams(VarDeclSet *args, VarDeclSet *rets);
   static Annotation *SetCurrentAnnotation(sym_t key,
                                           AnnotationKeyValueSet *values);
   static void SetCurrentFunctionAnnotation(Annotation *an);
@@ -48,6 +46,17 @@ class Emitter {
   static string FormatMethodName(Expr *name);
 
  private:
+  static Stmt *BuildFuncDeclStmt(MethodDecl *decl);
+  static MethodDecl &CurrentMethod();
+  static void EmitStmt(Stmt *stmt);
+  static void EmitTypedObjStmt(Stmt *stmt, Expr *var, bool is_primitive,
+                               sym_t name, const iroha::NumericWidth *width);
+  static void AnnotatePinNames();
+  static void SetCurrentFunctionArgs(VarDeclSet *args);
+  static void SetCurrentFunctionReturns(VarDeclSet *rets);
+
+  static Stmt *NewStmt(int type);
+
   static vector<MethodDecl> method_stack_;
   // For any decl (set at each ANNOTATION_OR_EMPTY).
   static Annotation *current_annotation_;
@@ -55,14 +64,6 @@ class Emitter {
   static Annotation *func_annotation_;
   // May set before BeginBlock() and cleared in BeginBlock().
   static Expr *block_var_;
-
-  static Stmt *BuildFuncDeclStmt(MethodDecl *decl);
-  static MethodDecl &CurrentMethod();
-  static void EmitStmt(Stmt *stmt);
-  static void EmitTypedObjStmt(Stmt *stmt, Expr *var, bool is_primitive,
-                               sym_t name, const iroha::NumericWidth *width);
-
-  static Stmt *NewStmt(int type);
 };
 
 }  // namespace fe
