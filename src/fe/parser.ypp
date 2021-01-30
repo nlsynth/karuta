@@ -162,17 +162,19 @@ RETURN_SPEC : {
   $$ = $2;
 }
 
-FUNC_DECL : ANNOTATION_OR_EMPTY {Emitter::SetCurrentFunctionAnnotation($1);} FUNC_DECL_HEAD '{' STMT_LIST '}' {
+FUNC_DECL : ANNOTATION_OR_EMPTY {Emitter::SetCurrentFunctionAnnotation($1);} FUNC_DECL_HEAD STMT_LIST '}' {
   Emitter::EndFunction();
 }
 
-FUNC_DECL_HEAD : FUNC_DECL_NAME ARG_DECL ')' RETURN_SPEC {
-  Emitter::SetCurrentFunctionParams($2, $4);
+FUNC_DECL_HEAD : FUNC_DECL_NAME '(' ARG_DECL ')' RETURN_SPEC '{' {
+  Emitter::SetCurrentFunctionParams($3, $5);
+} | FUNC_DECL_NAME '{' {
+  Emitter::SetCurrentFunctionParams(nullptr, nullptr);
 }
 
 FUNC_DECL_KW : K_FUNC { $$ = K_FUNC; } | K_PROCESS { $$ = K_PROCESS; } | K_ALWAYS { $$ = K_ALWAYS; }
 
-FUNC_DECL_NAME : FUNC_DECL_KW VAR '(' {
+FUNC_DECL_NAME : FUNC_DECL_KW VAR {
   Emitter::BeginFunctionDecl($1, $2);
 }
 
