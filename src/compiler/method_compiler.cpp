@@ -9,6 +9,7 @@
 #include "fe/method.h"
 #include "fe/stmt.h"
 #include "fe/var_decl.h"
+#include "iroha/base/util.h"
 #include "vm/decl_annotator.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
@@ -545,7 +546,7 @@ void MethodCompiler::CompileFuncDecl(fe::Stmt *stmt) {
   if (name_expr != nullptr) {
     insn->label_ = name_expr->GetSym();
   } else {
-    insn->label_ = sym_null;
+    insn->label_ = AllocateMethodName();
   }
   insn->obj_reg_ = CompilePathHead(name_expr);
   insn->insn_stmt_ = stmt;
@@ -667,6 +668,12 @@ void MethodCompiler::MayEmitEpilogueCode() {
   for (const string &s : opts_.outputs) {
     exc_->EmitWriteHdl(s);
   }
+}
+
+sym_t MethodCompiler::AllocateMethodName() {
+  static int id = 1000;
+  string n = "__" + iroha::Util::Itoa(id++);
+  return sym_lookup(n.c_str());
 }
 
 }  // namespace compiler

@@ -86,6 +86,7 @@ class MethodCompiler {
   void SetWidthByDecl(fe::VarDecl *decl, vm::Register *reg);
   void MayEmitEpilogueCode();
   vm::Register *LookupOrAllocateLocalVar(sym_t name);
+  sym_t AllocateMethodName();
 
   static string dbg_bytecode_;
 
