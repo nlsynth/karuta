@@ -544,17 +544,17 @@ void MethodCompiler::CompileFuncDecl(fe::Stmt *stmt) {
   fe::Expr *name_expr = stmt->GetExpr();
   if (name_expr != nullptr) {
     insn->label_ = name_expr->GetSym();
-    insn->obj_reg_ = CompilePathHead(name_expr);
   } else {
     insn->label_ = sym_null;
-    insn->obj_reg_ = nullptr;
   }
+  insn->obj_reg_ = CompilePathHead(name_expr);
   insn->insn_stmt_ = stmt;
   EmitInsn(insn);
 }
 
 vm::Register *MethodCompiler::CompilePathHead(fe::Expr *path_elem) {
-  if (path_elem->GetType() == fe::EXPR_SYM) {
+  // unnamed or just a name sym.
+  if (path_elem == nullptr || path_elem->GetType() == fe::EXPR_SYM) {
     return EmitLoadObj(nullptr);
   }
   return TraverseMemberPath(path_elem->GetArgs());
