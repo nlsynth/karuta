@@ -40,7 +40,8 @@ void Emitter::BeginFunctionDecl(int kw, Expr *name) {
 MethodDecl Emitter::EndFunction() {
   MethodDecl new_decl = CurrentMethod();
   method_stack_.pop_back();
-  if (new_decl.name_expr_) {
+  // Unnamed process is also allowed.
+  if (new_decl.name_expr_ != nullptr || new_decl.method_->GetIsProcess()) {
     Stmt *stmt = BuildFuncDeclStmt(&new_decl);
     EmitStmt(stmt);
   }

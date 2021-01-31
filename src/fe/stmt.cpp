@@ -11,8 +11,13 @@
 namespace fe {
 
 Stmt::Stmt(enum NodeCode type)
-  : type_(type), expr_(nullptr), sym_(sym_null), method_def_(nullptr),
-    decl_(nullptr), enum_(nullptr), annotation_(nullptr) {
+    : type_(type),
+      expr_(nullptr),
+      sym_(sym_null),
+      method_def_(nullptr),
+      decl_(nullptr),
+      enum_(nullptr),
+      annotation_(nullptr) {
   label_t_ = sym_null;
   label_f_ = sym_null;
   label_join_ = sym_null;
@@ -26,99 +31,103 @@ void Stmt::Dump() {
 void Stmt::Dump(DumpStream &ds) {
   ds.indent();
   switch (type_) {
-  case STMT_EXPR:
-    ds.os << "expr_stmt:\n";
-    ds.push_indent();
-    expr_->Dump(ds);
-    ds.pop_indent();
-    break;
-  case STMT_FUNCDECL:
-    ds.os << "funcdecl:\n";
-    ds.push_indent();
-    expr_->Dump(ds);
-    method_def_->Dump(ds);
-    ds.pop_indent();
-    break;
-  case STMT_IMPORT:
-    ds.os << "import:";
-    if (sym_ != sym_null) {
-      ds.os << " " << str_ << " as " << sym_cstr(sym_);
-    }
-    ds.os << "\n";
-    break;
-  case STMT_VARDECL:
-    ds.os << "vardecl:\n";
-    ds.push_indent();
-    decl_->Dump(ds);
-    ds.pop_indent();
-    break;
-  case STMT_THREAD_DECL:
-    ds.os << "thread_decl:\n";
-    ds.push_indent();
-    expr_->Dump(ds);
-    ds.pop_indent();
-    break;
-  case STMT_CHANNEL_DECL:
-  case STMT_MAILBOX_DECL:
-    if (type_ == STMT_CHANNEL_DECL) {
-      ds.os << "channel_decl:\n";
-    } else {
-      ds.os << "mailbox_decl:\n";
-    }
-    ds.push_indent();
-    ds.indent();
-    ds.os << sym_cstr(sym_) << "\n";
-    expr_->Dump(ds);
-    ds.indent();
-    ds.os << width_.Format();
-    ds.os << "\n";
-    ds.pop_indent();
-    break;
-  case STMT_ENUM_DECL:
-    ds.os << "enum:\n";
-    ds.push_indent();
-    expr_->Dump(ds);
-    enum_->Dump(ds);
-    ds.pop_indent();
-    break;
-  case STMT_IF:
-    ds.os << "if:\n";
-    ds.indent();
-    ds.os << " " << sym_cstr(label_t_) << " " << sym_cstr(label_f_)
-	  << " " << sym_cstr(label_join_) << "\n";
-    ds.push_indent();
-    expr_->Dump(ds);
-    ds.pop_indent();
-    break;
-  case STMT_LABEL:
-    ds.os << "label:" << sym_cstr(sym_) << "\n";
-    break;
-  case STMT_GOTO:
-    ds.os << "goto:" << sym_cstr(sym_) << "\n";
-    break;
-  case STMT_RETURN:
-    ds.os << "return:\n";
-    if (expr_) {
+    case STMT_EXPR:
+      ds.os << "expr_stmt:\n";
       ds.push_indent();
       expr_->Dump(ds);
       ds.pop_indent();
-    }
-    break;
-  case STMT_PUSH_BINDING:
-    if (expr_ != nullptr) {
-      ds.os << "with\n";
+      break;
+    case STMT_FUNCDECL:
+      ds.os << "funcdecl:\n";
       ds.push_indent();
-      expr_->Dump();
+      if (expr_ != nullptr) {
+        expr_->Dump(ds);
+      } else {
+        ds.os << " {unnamed}\n";
+      }
+      method_def_->Dump(ds);
       ds.pop_indent();
-    }
-    ds.os << "{\n";
-    break;
-  case STMT_POP_BINDING:
-    ds.os << "}\n";
-    break;
-  default:
-    CHECK(false) << "Unknown stmt:" << NodeName(type_);
-    break;
+      break;
+    case STMT_IMPORT:
+      ds.os << "import:";
+      if (sym_ != sym_null) {
+        ds.os << " " << str_ << " as " << sym_cstr(sym_);
+      }
+      ds.os << "\n";
+      break;
+    case STMT_VARDECL:
+      ds.os << "vardecl:\n";
+      ds.push_indent();
+      decl_->Dump(ds);
+      ds.pop_indent();
+      break;
+    case STMT_THREAD_DECL:
+      ds.os << "thread_decl:\n";
+      ds.push_indent();
+      expr_->Dump(ds);
+      ds.pop_indent();
+      break;
+    case STMT_CHANNEL_DECL:
+    case STMT_MAILBOX_DECL:
+      if (type_ == STMT_CHANNEL_DECL) {
+        ds.os << "channel_decl:\n";
+      } else {
+        ds.os << "mailbox_decl:\n";
+      }
+      ds.push_indent();
+      ds.indent();
+      ds.os << sym_cstr(sym_) << "\n";
+      expr_->Dump(ds);
+      ds.indent();
+      ds.os << width_.Format();
+      ds.os << "\n";
+      ds.pop_indent();
+      break;
+    case STMT_ENUM_DECL:
+      ds.os << "enum:\n";
+      ds.push_indent();
+      expr_->Dump(ds);
+      enum_->Dump(ds);
+      ds.pop_indent();
+      break;
+    case STMT_IF:
+      ds.os << "if:\n";
+      ds.indent();
+      ds.os << " " << sym_cstr(label_t_) << " " << sym_cstr(label_f_) << " "
+            << sym_cstr(label_join_) << "\n";
+      ds.push_indent();
+      expr_->Dump(ds);
+      ds.pop_indent();
+      break;
+    case STMT_LABEL:
+      ds.os << "label:" << sym_cstr(sym_) << "\n";
+      break;
+    case STMT_GOTO:
+      ds.os << "goto:" << sym_cstr(sym_) << "\n";
+      break;
+    case STMT_RETURN:
+      ds.os << "return:\n";
+      if (expr_) {
+        ds.push_indent();
+        expr_->Dump(ds);
+        ds.pop_indent();
+      }
+      break;
+    case STMT_PUSH_BINDING:
+      if (expr_ != nullptr) {
+        ds.os << "with\n";
+        ds.push_indent();
+        expr_->Dump();
+        ds.pop_indent();
+      }
+      ds.os << "{\n";
+      break;
+    case STMT_POP_BINDING:
+      ds.os << "}\n";
+      break;
+    default:
+      CHECK(false) << "Unknown stmt:" << NodeName(type_);
+      break;
   }
   if (annotation_ != nullptr) {
     ds.push_indent();
@@ -129,77 +138,41 @@ void Stmt::Dump(DumpStream &ds) {
   }
 }
 
-enum NodeCode Stmt::GetType() const {
-  return type_;
-}
+enum NodeCode Stmt::GetType() const { return type_; }
 
-ScannerPos &Stmt::GetPos() {
-  return pos_;
-}
+ScannerPos &Stmt::GetPos() { return pos_; }
 
-void Stmt::SetAnnotation(Annotation *an) {
-  annotation_ = an;
-}
+void Stmt::SetAnnotation(Annotation *an) { annotation_ = an; }
 
-Annotation *Stmt::GetAnnotation() {
-  return annotation_;
-}
+Annotation *Stmt::GetAnnotation() { return annotation_; }
 
-Expr *Stmt::GetExpr() const {
-  return expr_;
-}
+Expr *Stmt::GetExpr() const { return expr_; }
 
-void Stmt::SetExpr(Expr *expr) {
-  expr_ = expr;
-}
+void Stmt::SetExpr(Expr *expr) { expr_ = expr; }
 
-sym_t Stmt::GetSym() const {
-  return sym_;
-}
+sym_t Stmt::GetSym() const { return sym_; }
 
-void Stmt::SetSym(sym_t sym) {
-  sym_ = sym;
-}
+void Stmt::SetSym(sym_t sym) { sym_ = sym; }
 
-Method *Stmt::GetMethodDef() const {
-  return method_def_;
-}
+Method *Stmt::GetMethodDef() const { return method_def_; }
 
-void Stmt::SetMethodDef(Method *method_def) {
-  method_def_ = method_def;
-}
+void Stmt::SetMethodDef(Method *method_def) { method_def_ = method_def; }
 
-const string &Stmt::GetString() {
-  return str_;
-}
+const string &Stmt::GetString() { return str_; }
 
-void Stmt::SetString(const string &str) {
-  str_ = str;
-}
+void Stmt::SetString(const string &str) { str_ = str; }
 
-VarDecl *Stmt::GetVarDecl() {
-  return decl_;
-}
+VarDecl *Stmt::GetVarDecl() { return decl_; }
 
-void Stmt::SetVarDecl(VarDecl *decl) {
-  decl_ = decl;
-}
+void Stmt::SetVarDecl(VarDecl *decl) { decl_ = decl; }
 
-EnumDecl *Stmt::GetEnumDecl() {
-  return enum_;
-}
+EnumDecl *Stmt::GetEnumDecl() { return enum_; }
 
-void Stmt::SetEnumDecl(EnumDecl *decl) {
-  enum_ = decl;
-}
+void Stmt::SetEnumDecl(EnumDecl *decl) { enum_ = decl; }
 
-iroha::NumericWidth &Stmt::GetWidth() {
-  return width_;
-}
+iroha::NumericWidth &Stmt::GetWidth() { return width_; }
 
-void Stmt::SetWidth(iroha::NumericWidth &width) {
-  width_ = width;
-}
+void Stmt::SetWidth(iroha::NumericWidth &width) { width_ = width; }
 
 sym_t Stmt::GetLabel(bool is_join, bool is_t) {
   if (is_join) {
