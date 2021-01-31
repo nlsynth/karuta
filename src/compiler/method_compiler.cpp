@@ -541,9 +541,15 @@ vm::Register *MethodCompiler::LookupOrAllocateLocalVar(sym_t name) {
 void MethodCompiler::CompileFuncDecl(fe::Stmt *stmt) {
   vm::Insn *insn = new vm::Insn;
   insn->op_ = vm::OP_TL_FUNCDECL;
-  insn->label_ = stmt->GetExpr()->GetSym();
+  fe::Expr *name_expr = stmt->GetExpr();
+  if (name_expr != nullptr) {
+    insn->label_ = name_expr->GetSym();
+    insn->obj_reg_ = CompilePathHead(name_expr);
+  } else {
+    insn->label_ = sym_null;
+    insn->obj_reg_ = nullptr;
+  }
   insn->insn_stmt_ = stmt;
-  insn->obj_reg_ = CompilePathHead(stmt->GetExpr());
   EmitInsn(insn);
 }
 
