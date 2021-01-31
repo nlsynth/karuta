@@ -9,7 +9,7 @@ namespace vm {
 class ProfileData;
 
 class Profile {
-public:
+ public:
   Profile();
   ~Profile();
 
@@ -20,7 +20,7 @@ public:
   void Clear();
   bool HasInfo();
 
-private:
+ private:
   bool enabled_;
   bool has_info_;
   std::unique_ptr<ProfileData> data_;
@@ -29,4 +29,3 @@ private:
 }  // namespace vm
 
 #endif  // _vm_profile_h_
-

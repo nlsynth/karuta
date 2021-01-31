@@ -11,23 +11,18 @@
 
 namespace vm {
 
-ObjectSpecificData::~ObjectSpecificData() {
-}
+ObjectSpecificData::~ObjectSpecificData() {}
 
-const char *ObjectSpecificData::ObjectTypeKey() {
-  return nullptr;
-}
+const char *ObjectSpecificData::ObjectTypeKey() { return nullptr; }
 
-void ObjectSpecificData::Scan(GC *gc) {
-}
+void ObjectSpecificData::Scan(GC *gc) {}
 
 void Object::Dump() {
   DumpStream ds(cout);
   Dump(ds);
 }
 
-Object::Object(VM *vm) : vm_(vm) {
-}
+Object::Object(VM *vm) : vm_(vm) {}
 
 const char *Object::ObjectTypeKey() {
   if (object_specific_.get()) {
@@ -37,9 +32,8 @@ const char *Object::ObjectTypeKey() {
 }
 
 void Object::Dump(DumpStream &ds) {
-  ds.os << "dump called [" << ToString() << "] "
-	<< std::hex << (unsigned long)this
-	<< std::dec << "\n";
+  ds.os << "dump called [" << ToString() << "] " << std::hex
+        << (unsigned long)this << std::dec << "\n";
   ds.push_indent();
   for (const std::pair<sym_t, Value> &it : members_) {
     ds.indent();
@@ -50,9 +44,7 @@ void Object::Dump(DumpStream &ds) {
   ds.pop_indent();
 }
 
-VM *Object::GetVM() {
-  return vm_;
-}
+VM *Object::GetVM() { return vm_; }
 
 void Object::InstallValue(sym_t name, const Value &value) {
   members_.insert(std::make_pair(name, value));
@@ -110,8 +102,7 @@ Object *Object::Clone() {
       value.object_ = TlsWrapper::Copy(vm_, value.object_);
     }
     if (value.type_ == Value::ANNOTATION) {
-      value.annotation_ =
-	Annotation::Copy(value.annotation_);
+      value.annotation_ = Annotation::Copy(value.annotation_);
     }
   }
   Value *self = new_obj->LookupValue(sym_lookup("self"), true);

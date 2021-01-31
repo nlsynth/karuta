@@ -2,23 +2,23 @@
 #ifndef _vm_gc_h_
 #define _vm_gc_h_
 
-#include "vm/common.h"
-
 #include <set>
+
+#include "vm/common.h"
 
 using std::set;
 
 namespace vm {
 
 class GC {
-public:
+ public:
   GC(VM *vm, set<Thread *> *threads, set<Object *> *objs);
 
   static void Run(VM *vm, set<Thread *> *threads, set<Object *> *objs);
 
   void ScanObject(Object *obj);
 
-private:
+ private:
   void Collect();
   void AddRoot(Object *obj);
   void AddRootFromMethodFrame(MethodFrame *frame);

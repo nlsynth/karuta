@@ -2,20 +2,20 @@
 #ifndef _vm_thread_queue_h_
 #define _vm_thread_queue_h_
 
-#include "vm/common.h"
-
 #include <set>
+
+#include "vm/common.h"
 
 namespace vm {
 
 class ThreadQueue {
-public:
+ public:
   void AddThread(Thread *thr);
   void ResumeOne();
   void ResumeAll();
   bool ClearIfNotified(Thread *thr);
 
-private:
+ private:
   std::set<Thread *> waiters;
   std::set<Thread *> notified;
 };

@@ -9,16 +9,14 @@ namespace vm {
 static const char *kThreadObjectKey = "thread";
 
 class ThreadWrapperData : public ObjectSpecificData {
-public:
+ public:
   ThreadWrapper::ThreadEntry entry;
 
-  virtual const char *ObjectTypeKey() {
-    return kThreadObjectKey;
-  }
+  virtual const char *ObjectTypeKey() { return kThreadObjectKey; }
 };
 
-Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name,
-					bool is_soft, int index) {
+Object *ThreadWrapper::NewThreadWrapper(VM *vm, sym_t method_name, bool is_soft,
+                                        int index) {
   Object *thr = vm->root_object_->Clone();
   ThreadWrapperData *data = new ThreadWrapperData;
   data->entry.method_name = sym_str(method_name);
@@ -39,17 +37,17 @@ void ThreadWrapper::Run(VM *vm, Object *obj) {
     GetThreadEntryMethods(o, &methods, true);
     for (auto &m : methods) {
       string &name = m.method_name;
-      Value *method_value =
-	o->LookupValue(sym_lookup(name.c_str()), false);
-      CHECK(method_value && method_value->type_ == Value::METHOD) << name;
+      Value *method_value = o->LookupValue(sym_lookup(name.c_str()), false);
+      CHECK(method_value != nullptr && method_value->type_ == Value::METHOD)
+          << name;
       vm->AddThreadFromMethod(nullptr, o, method_value->method_, m.index);
     }
   }
 }
 
 void ThreadWrapper::GetThreadEntryMethods(Object *obj,
-					  vector<ThreadEntry> *methods,
-					  bool with_soft_thread) {
+                                          vector<ThreadEntry> *methods,
+                                          bool with_soft_thread) {
   for (auto it : obj->members_) {
     Value &value = it.second;
     if (value.type_ == Value::OBJECT && value.object_ == obj) {

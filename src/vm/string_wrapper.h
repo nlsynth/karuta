@@ -7,7 +7,7 @@
 namespace vm {
 
 class StringWrapper {
-public:
+ public:
   static bool IsString(Object *obj);
   static Object *NewStringWrapper(VM *vm, const string &str);
   static const string &String(Object *obj);

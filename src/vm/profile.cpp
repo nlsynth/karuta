@@ -9,7 +9,7 @@ using std::tuple;
 namespace vm {
 
 class ProfileData {
-public:
+ public:
   ~ProfileData() {}
 
   map<tuple<Method *, int>, int> count_;
@@ -19,16 +19,11 @@ Profile::Profile() : enabled_(false), has_info_(false) {
   data_.reset(new ProfileData);
 }
 
-Profile::~Profile() {
-}
+Profile::~Profile() {}
 
-bool Profile::IsEnabled() const {
-  return enabled_;
-}
+bool Profile::IsEnabled() const { return enabled_; }
 
-void Profile::SetEnable(bool enable) {
-  enabled_ = enable;
-}
+void Profile::SetEnable(bool enable) { enabled_ = enable; }
 
 void Profile::Clear() {
   data_->count_.clear();
@@ -49,8 +44,6 @@ int Profile::GetCount(Method *method, int pc) {
   return data_->count_[k];
 }
 
-bool Profile::HasInfo() {
-  return has_info_;
-}
+bool Profile::HasInfo() { return has_info_; }
 
 }  // namespace vm

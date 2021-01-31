@@ -7,7 +7,7 @@
 namespace vm {
 
 class Thread {
-public:
+ public:
   Thread(VM *vm, Thread *parent, Object *obj, Method *method, int index);
   ~Thread();
 
@@ -30,7 +30,7 @@ public:
   bool IsRootThread() const;
 
   // For GC.
-  vector<MethodFrame*> &MethodStack();
+  vector<MethodFrame *> &MethodStack();
 
   void UserError();
 
@@ -42,10 +42,8 @@ public:
   void SetModuleName(const string &n);
   const string &GetModuleName();
 
-private:
-  enum Stat {
-    RUNNABLE, SUSPENDED, DONE
-  };
+ private:
+  enum Stat { RUNNABLE, SUSPENDED, DONE };
 
   void RunMethod();
   void PassReturnValues();
@@ -60,7 +58,7 @@ private:
   Stat stat_;
   Thread *parent_thread_;
 
-  vector<MethodFrame*> method_stack_;
+  vector<MethodFrame *> method_stack_;
   bool in_yield_;
   int index_;
   string module_name_;

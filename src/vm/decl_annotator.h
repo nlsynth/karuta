@@ -7,10 +7,9 @@
 namespace vm {
 
 class DeclAnnotator {
-public:
+ public:
   // Add declared type by the compiler.
-  static void AnnotateByDecl(VM *vm, fe::VarDecl *decl,
-			     Register *reg);
+  static void AnnotateByDecl(VM *vm, fe::VarDecl *decl, Register *reg);
 
   // Sets the type of the result from OP_MEMBER_READ.
   static void AnnotateByValue(Value *value, Register *reg);

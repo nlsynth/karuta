@@ -9,35 +9,28 @@
 
 namespace vm {
 
-Method::Method(bool is_toplevel) :
-  is_toplevel_(is_toplevel), method_fn_(nullptr), parse_tree_(nullptr),
-  alt_impl_(nullptr), compile_failed_(false) {
-}
+Method::Method(bool is_toplevel)
+    : is_toplevel_(is_toplevel),
+      method_fn_(nullptr),
+      parse_tree_(nullptr),
+      alt_impl_(nullptr),
+      compile_failed_(false) {}
 
 Method::~Method() {
   STLDeleteValues(&insns_);
   STLDeleteValues(&method_regs_);
 }
 
-Method::method_func Method::GetMethodFunc() const {
-  return method_fn_;
-}
+Method::method_func Method::GetMethodFunc() const { return method_fn_; }
 
-void Method::SetMethodFunc(method_func func) {
-  method_fn_ = func;
-}
+void Method::SetMethodFunc(method_func func) { method_fn_ = func; }
 
-const fe::Method *Method::GetParseTree() const {
-  return parse_tree_;
-}
+const fe::Method *Method::GetParseTree() const { return parse_tree_; }
 
-void Method::SetParseTree(const fe::Method *method) {
-  parse_tree_ = method;
-}
+void Method::SetParseTree(const fe::Method *method) { parse_tree_ = method; }
 
 int Method::GetNumArgRegisters() const {
-  if (parse_tree_ != nullptr &&
-      parse_tree_->GetArgs() != nullptr) {
+  if (parse_tree_ != nullptr && parse_tree_->GetArgs() != nullptr) {
     return parse_tree_->GetArgs()->decls.size();
   }
   return 0;
@@ -45,8 +38,7 @@ int Method::GetNumArgRegisters() const {
 
 int Method::GetNumReturnRegisters() const {
   // return_types_ is 0 before compilation, so use the parse tree instead.
-  if (parse_tree_ != nullptr &&
-      parse_tree_->GetReturns() != nullptr) {
+  if (parse_tree_ != nullptr && parse_tree_->GetReturns() != nullptr) {
     return parse_tree_->GetReturns()->decls.size();
   }
   // Use the value for a non native method.
@@ -57,29 +49,18 @@ const iroha::NumericWidth &Method::GetNthArgWidth(int i) {
   return parse_tree_->GetArgs()->decls[i]->GetWidth();
 }
 
-const char *Method::AlternativeImplementation() {
-  return alt_impl_;
-}
+const char *Method::AlternativeImplementation() { return alt_impl_; }
 
-void Method::SetAlternativeImplementation(const char *alt) {
-  alt_impl_ = alt;
-}
+void Method::SetAlternativeImplementation(const char *alt) { alt_impl_ = alt; }
 
-const string &Method::GetSynthName() const {
-  return synth_name_;
-}
+const string &Method::GetSynthName() const { return synth_name_; }
 
-void Method::SetSynthName(const string &s) {
-  synth_name_ = s;
-}
+void Method::SetSynthName(const string &s) { synth_name_ = s; }
 
-bool Method::IsTopLevel() const {
-  return is_toplevel_;
-}
+bool Method::IsTopLevel() const { return is_toplevel_; }
 
 Annotation *Method::GetAnnotation() const {
-  if (parse_tree_ != nullptr &&
-      parse_tree_->GetAnnotation() != nullptr) {
+  if (parse_tree_ != nullptr && parse_tree_->GetAnnotation() != nullptr) {
     return parse_tree_->GetAnnotation();
   }
   return Annotation::EmptyAnnotation();
@@ -121,13 +102,9 @@ void Method::Dump(DumpStream &ds) const {
   }
 }
 
-void Method::SetCompileFailure() {
-  compile_failed_ = true;
-}
+void Method::SetCompileFailure() { compile_failed_ = true; }
 
-bool Method::IsCompileFailure() const {
-  return compile_failed_;
-}
+bool Method::IsCompileFailure() const { return compile_failed_; }
 
 bool Method::IsThreadEntry() const {
   auto *an = GetAnnotation();

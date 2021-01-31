@@ -10,7 +10,7 @@
 namespace vm {
 
 class TlsWrapper {
-public:
+ public:
   static bool IsTls(Object *obj);
   static bool IsTlsValue(Value *value);
   static void InjectTlsWrapper(VM *vm, Value *value);

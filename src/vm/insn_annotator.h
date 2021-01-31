@@ -2,16 +2,16 @@
 #ifndef _vm_insn_annotator_h_
 #define _vm_insn_annotator_h_
 
-#include "vm/common.h"
-#include "vm/value.h"
-
 #include <map>
 #include <set>
+
+#include "vm/common.h"
+#include "vm/value.h"
 
 namespace vm {
 
 class InsnAnnotator {
-public:
+ public:
   InsnAnnotator(VM *vm, Object *obj, Method *method);
   // Called from compiler.
   static void AnnotateMethod(VM *vm, Object *obj, Method *method);
@@ -26,7 +26,7 @@ public:
 
   static Value::ValueType SymToType(sym_t sym);
 
-private:
+ private:
   void ClearType();
 
   static bool IsTyped(Insn *insn);

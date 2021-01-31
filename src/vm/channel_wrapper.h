@@ -7,7 +7,7 @@
 namespace vm {
 
 class ChannelWrapper {
-public:
+ public:
   static Object *NewChannel(VM *vm, int width, sym_t name, Annotation *an);
 
   static bool IsChannel(Object *obj);
@@ -21,7 +21,7 @@ public:
   static void WriteValue(const Value &value, Thread *thr, Object *obj);
   static bool ReadValue(Thread *thr, Object *obj, Value *value);
 
-private:
+ private:
   static void BlockOnRead(Thread *thr, Object *obj);
   static void BlockOnWrite(Thread *thr, Object *obj);
 };

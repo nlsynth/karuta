@@ -2,23 +2,23 @@
 #ifndef _vm_vm_h_
 #define _vm_vm_h_
 
+#include <set>
+
 #include "base/pool.h"
 #include "vm/common.h"
-
-#include <set>
 
 using std::set;
 
 namespace vm {
 
 class VM {
-public:
+ public:
   VM();
   ~VM();
 
   void Run();
   Thread *AddThreadFromMethod(Thread *parent, Object *object, Method *method,
-			      int index);
+                              int index);
   void Yield(Thread *thr);
   void GC();
   IntArray *GetDefaultMemory();
@@ -38,13 +38,13 @@ public:
   Object *bool_type_;
   Object *default_mem_;
 
-private:
-  set<Thread*> threads_;
-  set<Thread*> yielded_threads_;
+ private:
+  set<Thread *> threads_;
+  set<Thread *> yielded_threads_;
 
   std::unique_ptr<Pool<Method> > methods_;
   std::unique_ptr<Profile> profile_;
-  set<Object*> objects_;
+  set<Object *> objects_;
 
   unsigned int tick_count_;
 

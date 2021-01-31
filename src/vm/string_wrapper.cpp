@@ -8,7 +8,7 @@ namespace vm {
 static const char *kStringObjectKey = "string";
 
 class StringWrapperData : public ObjectSpecificData {
-public:
+ public:
   StringWrapperData(const string &str) : str_(str) {}
   string str_;
 
@@ -17,9 +17,7 @@ public:
     return str_ == od->str_;
   }
 
-  virtual const char *ObjectTypeKey() {
-    return kStringObjectKey;
-  }
+  virtual const char *ObjectTypeKey() { return kStringObjectKey; }
 };
 
 bool StringWrapper::IsString(Object *obj) {

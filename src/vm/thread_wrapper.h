@@ -9,9 +9,9 @@ namespace vm {
 class ThreadWrapperData;
 
 class ThreadWrapper {
-public:
+ public:
   static Object *NewThreadWrapper(VM *vm, sym_t method_name, bool is_soft,
-				  int index);
+                                  int index);
   static void Run(VM *vm, Object *obj);
   static void DeleteThreadByMethodName(Object *obj, const string &name);
 
@@ -23,8 +23,9 @@ public:
     int index;
   };
   static void GetThreadEntryMethods(Object *obj, vector<ThreadEntry> *methods,
-				    bool with_soft_thread);
-private:
+                                    bool with_soft_thread);
+
+ private:
   static ThreadWrapperData *GetData(Value &value);
 };
 

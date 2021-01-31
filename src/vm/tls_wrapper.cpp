@@ -12,13 +12,10 @@ namespace vm {
 static const char *kTlsObjectKey = "tls";
 
 class TlsWrapperData : public ObjectSpecificData {
-public:
-  virtual ~TlsWrapperData() {
-  }
+ public:
+  virtual ~TlsWrapperData() {}
 
-  virtual const char *ObjectTypeKey() {
-    return kTlsObjectKey;
-  }
+  virtual const char *ObjectTypeKey() { return kTlsObjectKey; }
 
   virtual void Scan(GC *gc) {
     gc->ScanObject(baseValue.object_);
@@ -36,8 +33,7 @@ bool TlsWrapper::IsTls(Object *obj) {
 }
 
 bool TlsWrapper::IsTlsValue(Value *value) {
-  if (value->type_ == Value::OBJECT &&
-      value->object_ != nullptr &&
+  if (value->type_ == Value::OBJECT && value->object_ != nullptr &&
       IsTls(value->object_)) {
     return true;
   }
@@ -45,10 +41,9 @@ bool TlsWrapper::IsTlsValue(Value *value) {
 }
 
 void TlsWrapper::InjectTlsWrapper(VM *vm, Value *value) {
-  if (value->type_ == Value::OBJECT ||
-      value->type_ == Value::OBJECT_ARRAY) {
+  if (value->type_ == Value::OBJECT || value->type_ == Value::OBJECT_ARRAY) {
     Status::os(Status::USER_ERROR)
-      << "Can't attach @ThreadLocal() to object(s).";
+        << "Can't attach @ThreadLocal() to object(s).";
     return;
   }
   Object *tls_obj = vm->root_object_->Clone();
@@ -78,9 +73,9 @@ Value *TlsWrapper::GetValue(Object *tls_obj, Thread *thr) {
   if (it == data->values.end()) {
     data->values[thr] = data->baseValue;
     if (data->baseValue.object_ != nullptr &&
-	data->baseValue.type_ == Value::INT_ARRAY) {
+        data->baseValue.type_ == Value::INT_ARRAY) {
       data->values[thr].object_ =
-	ArrayWrapper::Copy(thr->GetVM(), data->baseValue.object_);
+          ArrayWrapper::Copy(thr->GetVM(), data->baseValue.object_);
     }
   }
   return &data->values[thr];

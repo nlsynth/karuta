@@ -9,12 +9,12 @@ namespace vm {
 
 // This can be either native implementation or in Karuta language.
 class Method {
-public:
+ public:
   Method(bool is_toplevel);
   ~Method();
 
   typedef void (*method_func)(Thread *thr, Object *obj,
-			      const vector<Value> &args);
+                              const vector<Value> &args);
 
   void Dump() const;
   void Dump(DumpStream &os) const;
@@ -36,12 +36,12 @@ public:
   bool IsCompileFailure() const;
   bool IsThreadEntry() const;
 
-  vector<Insn*> insns_;
+  vector<Insn *> insns_;
   // Args. Returns. Locals.
-  vector<Register*> method_regs_;
+  vector<Register *> method_regs_;
   vector<RegisterType> return_types_;
 
-private:
+ private:
   bool is_toplevel_;
   // native
   method_func method_fn_;

@@ -7,7 +7,7 @@
 namespace vm {
 
 class MethodFrame {
-public:
+ public:
   Method *method_;
   size_t pc_;
   Object *obj_;

@@ -7,13 +7,13 @@
 namespace vm {
 
 class TickerWrapper {
-public:
+ public:
   static Object *NewTicker(VM *vm);
 
-private:
+ private:
   static void GetTickCount(Thread *thr, Object *obj, const vector<Value> &args);
   static void DecrementTick(Thread *thr, Object *obj,
-			    const vector<Value> &args);
+                            const vector<Value> &args);
 };
 
 }  // namespace vm

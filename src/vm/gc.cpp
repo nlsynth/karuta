@@ -8,9 +8,8 @@
 namespace vm {
 
 GC::GC(VM *vm, set<Thread *> *threads, set<Object *> *objs)
-  : vm_(vm), threads_(threads), objs_(objs) {
-}
-  
+    : vm_(vm), threads_(threads), objs_(objs) {}
+
 void GC::Run(VM *vm, set<Thread *> *threads, set<Object *> *objs) {
   GC gc(vm, threads, objs);
   gc.Collect();
@@ -27,7 +26,7 @@ void GC::Collect() {
     }
   }
   LOG(INFO) << "GC: Allocated size=" << objs_->size()
-	    << " Root size=" << reachables_.size();
+            << " Root size=" << reachables_.size();
   frontier_ = reachables_;
   Scan();
   LOG(INFO) << "GC: Reachables size=" << reachables_.size();
@@ -67,8 +66,8 @@ void GC::ScanObject(Object *obj) {
     if (value.object_) {
       Object *o = value.object_;
       if (reachables_.find(o) == reachables_.end()) {
-	frontier_.insert(o);
-	reachables_.insert(o);
+        frontier_.insert(o);
+        reachables_.insert(o);
       }
     }
   }

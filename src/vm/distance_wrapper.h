@@ -8,13 +8,15 @@ namespace vm {
 
 // Holds the distance to each member object if specified by an annotation.
 class DistanceWrapper {
-public:
-  static void MaySetDistanceAnnotation(sym_t name, Annotation *an, VM *vm, Object *obj);
+ public:
+  static void MaySetDistanceAnnotation(sym_t name, Annotation *an, VM *vm,
+                                       Object *obj);
   static int GetDistance(VM *vm, Object *obj, sym_t name);
 
-private:
+ private:
   // This attaches an object to each normal object.
-  static Object *GetAttachedDistanceObject(VM *vm, Object *owner_obj, bool create);
+  static Object *GetAttachedDistanceObject(VM *vm, Object *owner_obj,
+                                           bool create);
 };
 
 }  // namespace vm

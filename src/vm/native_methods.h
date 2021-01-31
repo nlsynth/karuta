@@ -8,7 +8,7 @@
 namespace vm {
 
 class NativeMethods {
-public:
+ public:
   // Kernel.
   static void Assert(Thread *thr, Object *obj, const vector<Value> &args);
   static void Clone(Thread *thr, Object *obj, const vector<Value> &args);
@@ -22,7 +22,7 @@ public:
   static void New(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetDump(Thread *thr, Object *obj, const vector<Value> &args);
   static void SetSynthParam(Thread *thr, Object *obj,
-			    const vector<Value> &args);
+                            const vector<Value> &args);
   static void Wait(Thread *thr, Object *obj, const vector<Value> &args);
   static void WidthOf(Thread *thr, Object *obj, const vector<Value> &args);
   static void WriteHdl(Thread *thr, Object *obj, const vector<Value> &args);
@@ -38,14 +38,15 @@ public:
   static void IsMain(Thread *thr, Object *obj, const vector<Value> &args);
   static void GC(Thread *thr, Object *obj, const vector<Value> &args);
   static void ClearProfile(Thread *thr, Object *obj, const vector<Value> &args);
-  static void EnableProfile(Thread *thr, Object *obj, const vector<Value> &args);
-  static void DisableProfile(Thread *thr, Object *obj, const vector<Value> &args);
+  static void EnableProfile(Thread *thr, Object *obj,
+                            const vector<Value> &args);
+  static void DisableProfile(Thread *thr, Object *obj,
+                             const vector<Value> &args);
   static void GetTicker(Thread *thr, Object *obj, const vector<Value> &args);
 
   static void SetReturnValue(Thread *thr, const Value &value);
-  static void SetMemberString(Thread *thr, const char *name,
-			      Object *obj,
-			      const vector<Value> &args);
+  static void SetMemberString(Thread *thr, const char *name, Object *obj,
+                              const vector<Value> &args);
 };
 
 }  // namespace vm

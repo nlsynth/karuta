@@ -2,17 +2,17 @@
 #ifndef _vm_object_h_
 #define _vm_object_h_
 
+#include <map>
+
 #include "vm/common.h"
 #include "vm/value.h"
-
-#include <map>
 
 using std::map;
 
 namespace vm {
 
 class ObjectSpecificData {
-public:
+ public:
   virtual ~ObjectSpecificData();
   virtual bool Compare(Object *obj) { return false; };
   virtual const char *ObjectTypeKey();
@@ -20,7 +20,7 @@ public:
 };
 
 class Object {
-public:
+ public:
   Object(VM *vm);
 
   void Dump();
@@ -45,7 +45,7 @@ public:
 
   std::unique_ptr<ObjectSpecificData> object_specific_;
 
-private:
+ private:
   VM *vm_;
 };
 
