@@ -112,6 +112,7 @@ class Annotation {
   string LookupStrParam(const string &key, const string &dflt);
   uint64_t LookupIntParam(const string &key, uint64_t dflt);
   AnnotationKeyValue *LookupParam(const string &key);
+  bool CheckAnnotation(const vector<string> &kws);
 
   std::unique_ptr<AnnotationKeyValueSet> params_;
   vector<ResourceParams_pin> pins_;

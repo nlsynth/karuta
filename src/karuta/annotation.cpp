@@ -128,21 +128,22 @@ bool Annotation::IsAxiExclusive() {
 }
 
 bool Annotation::IsSramIf() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "SramIf") || (s == "Export");
+  static vector<string> kws = {"SramIf", "Export"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExport() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "Export");
+  static vector<string> kws = {"Export"};
+  return CheckAnnotation(kws);
 }
 
 int Annotation::GetAddrWidth() {
-  string k = LookupStrParam(annotation::kAnnotationKey, "");
-  if (k == "AxiMaster64" || k == "AxiSlave64") {
+  static vector<string> kws64 = {"AxiMaster64", "AxiSlave64"};
+  static vector<string> kws32 = {"AxiMaster32", "AxiSlave32"};
+  if (CheckAnnotation(kws64)) {
     return 64;
   }
-  if (k == "AxiMaster32" || k == "AxiSlave32") {
+  if (CheckAnnotation(kws32)) {
     return 32;
   }
   uint64_t w = LookupIntParam("addrWidth", 0);
@@ -162,25 +163,25 @@ int Annotation::GetAddrWidth() {
 int Annotation::GetDepth() { return LookupIntParam("depth", 1); }
 
 bool Annotation::IsThreadEntry() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "ThreadEntry" || s == "ProcessEntry" || s == "Process");
+  static vector<string> kws = {"ThreadEntry", "ProcessEntry", "Process"};
+  return CheckAnnotation(kws);
 }
 
 int Annotation::GetDistance() { return LookupIntParam("distance", 0); }
 
 bool Annotation::IsPipeline() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "Pipeline" || s == "PipelineX");
+  static vector<string> kws = {"Pipeline", "PipelineX"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsPipelineX() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "PipelineX");
+  static vector<string> kws = {"PipelineX"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsSoftThreadEntry() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "SoftThreadEntry" || s == "SoftProcess" || s == "Soft");
+  static vector<string> kws = {"SoftThreadEntry", "SoftProcess", "Soft"};
+  return CheckAnnotation(kws);
 }
 
 string Annotation::GetName() { return LookupStrParam("name", ""); }
@@ -188,8 +189,8 @@ string Annotation::GetName() { return LookupStrParam("name", ""); }
 int Annotation::GetNum() { return LookupIntParam("num", 1); }
 
 bool Annotation::IsThreadLocal() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "ThreadLocal" || s == "ProcessLocal" || s == "Local");
+  static vector<string> kws = {"ThreadLocal", "ProcessLocal", "Local"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsNoWait() {
@@ -204,28 +205,28 @@ string Annotation::GetNotifySuffix() { return LookupStrParam("notify", ""); }
 string Annotation::GetPutSuffix() { return LookupStrParam("put", ""); }
 
 bool Annotation::IsDataFlowEntry() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "DataFlowEntry") || (s == "dataflow_entry");
+  static vector<string> kws = {"DataFlowEntry", "dataflow_entry"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExtEntry() {
-  return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtEntry");
+  static vector<string> kws = {"ExtEntry"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExtMethodStub() {
-  return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtStub");
+  static vector<string> kws = {"ExtStub"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExtFlowStub() {
-  return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtFlowStub");
+  static vector<string> kws = {"ExtFlowStub"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExtIO() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  if (s == "ExtIO") {
-    return true;
-  }
-  return false;
+  static vector<string> kws = {"ExtIO"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExtInput() {
@@ -243,11 +244,13 @@ bool Annotation::IsExtOutput() {
 }
 
 bool Annotation::IsExtCombinational() {
-  return (LookupStrParam(annotation::kAnnotationKey, "") == "ExtCombinational");
+  static vector<string> kws = {"ExtCombinational"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExternal() {
-  return (LookupStrParam(annotation::kAnnotationKey, "") == "External");
+  static vector<string> kws = {"External"};
+  return CheckAnnotation(kws);
 }
 
 string Annotation::LookupStrParam(const string &key, const string &dflt) {
@@ -345,4 +348,14 @@ void Annotation::AddIntParam(const string &key, uint64_t value) {
     param = AnnotationBuilder::BuildIntParam(sym_lookup(key.c_str()), value);
     params_->params_.push_back(param);
   }
+}
+
+bool Annotation::CheckAnnotation(const vector<string> &kws) {
+  const string &s = LookupStrParam(annotation::kAnnotationKey, "");
+  for (auto &kw : kws) {
+    if (kw == s) {
+      return true;
+    }
+  }
+  return false;
 }
