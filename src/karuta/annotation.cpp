@@ -130,12 +130,12 @@ bool Annotation::IsAxiExclusive() {
 }
 
 bool Annotation::IsSramIf() {
-  static vector<string> kws = {"SramIf", "Export"};
+  static vector<string> kws = {"SramIf", "Export", "Public"};
   return CheckAnnotation(kws);
 }
 
 bool Annotation::IsExport() {
-  static vector<string> kws = {"Export"};
+  static vector<string> kws = {"Export", "public"};
   return CheckAnnotation(kws);
 }
 
