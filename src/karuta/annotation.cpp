@@ -8,6 +8,7 @@
 
 #include "base/pool.h"
 #include "base/stl_util.h"
+#include "iroha/base/util.h"
 #include "karuta/annotation_builder.h"
 
 static const char kResource[] = "resource";
@@ -114,13 +115,13 @@ bool Annotation::ResetPolarity() {
 int Annotation::MaxDelayPs() { return LookupIntParam("maxDelayPs", -1); }
 
 bool Annotation::IsAxiMaster() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "AxiMaster") || (s == "AxiMaster64") || (s == "AxiMaster32");
+  static vector<string> kws = {"AxiMaster", "AxiMaster64", "AxiMaster32"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsAxiSlave() {
-  string s = LookupStrParam(annotation::kAnnotationKey, "");
-  return (s == "AxiSlave") || (s == "AxiSlave64") || (s == "AxiSlave32");
+  static vector<string> kws = {"AxiSlave", "AxiSlave64", "AxiSlave32"};
+  return CheckAnnotation(kws);
 }
 
 bool Annotation::IsAxiExclusive() {
@@ -354,6 +355,9 @@ bool Annotation::CheckAnnotation(const vector<string> &kws) {
   const string &s = LookupStrParam(annotation::kAnnotationKey, "");
   for (auto &kw : kws) {
     if (kw == s) {
+      return true;
+    }
+    if (iroha::Util::ToLower(kw) == s) {
       return true;
     }
   }
