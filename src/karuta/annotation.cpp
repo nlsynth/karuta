@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <list>
+#include <regex>
 
 #include "base/pool.h"
 #include "base/stl_util.h"
@@ -352,7 +353,9 @@ void Annotation::AddIntParam(const string &key, uint64_t value) {
 }
 
 bool Annotation::CheckAnnotation(const vector<string> &kws) {
-  const string &s = LookupStrParam(annotation::kAnnotationKey, "");
+  // Allows FooBar foobar foo_bar.
+  string s = LookupStrParam(annotation::kAnnotationKey, "");
+  s = regex_replace(s, regex("_"), "");
   for (auto &kw : kws) {
     if (kw == s) {
       return true;
