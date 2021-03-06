@@ -13,7 +13,11 @@ If you are using recent Ubuntu, just
 
      $ sudo snap install karuta
 
-to install the Karuta package.
+to install the Karuta package. For most of other distributions (including WSL2), your can use following script to install Karuta.
+
+     $ curl -o install-karuta.sh https://raw.githubusercontent.com/nlsynth/karuta/master/install-karuta.sh
+     # Please take a quick look what this script does. You may have to additional software packages to fix errors to build Karuta.
+     $ sh install-karuta.sh
 
 Please follow [@karutalang](https://twitter.com/karutalang) on Twitter for updates and tips.
 
