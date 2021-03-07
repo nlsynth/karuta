@@ -16,7 +16,7 @@ If you are using recent Ubuntu, just
 to install the Karuta package. For most of other distributions (including WSL2), your can use following script to install Karuta.
 
      $ curl -o install-karuta.sh https://raw.githubusercontent.com/nlsynth/karuta/master/install-karuta.sh
-     # Please take a quick look what this script does. You may have to additional software packages to fix errors to build Karuta.
+     ## Please take a quick look what this script does. You may have to additional software packages to fix errors to build Karuta.
      $ sh install-karuta.sh
 
 Please follow [@karutalang](https://twitter.com/karutalang) on Twitter for updates and tips.
@@ -82,6 +82,7 @@ Karuta is designed to describe process networks easily by using processes and co
      }
 
      process {
+       wait(1000000)  // Waits 1M clocks.
        ch.read()
        mb.get()
        r0 += 1

@@ -1,4 +1,5 @@
-0.6.5wip
+2021/03/07 0.6.5
+ allow annotations in small latter.
 2021/02/07 0.6.4
  always { ... } syntax.
 2021/01/09 0.6.3
