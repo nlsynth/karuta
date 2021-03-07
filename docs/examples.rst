@@ -39,7 +39,7 @@ Communication
      }
    }
 
-channels, regs, rams and most of member objects are accessible from multiple threads.
+channels, regs, rams and most of member objects are accessible from multiple processes.
 
 Module hierarchy
 ================

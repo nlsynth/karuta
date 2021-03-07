@@ -34,11 +34,11 @@ With above hypotheses, Karuta's design took following considerations.
 
 * Concurrency and communication
 
-Use of concurrency is an essential issue for hardware designs. A whole design is placed over the area of an FPGA and computation can happen anywhere on it. So Karuta aims to make it easy to describe such a behavior by threads.
+Use of concurrency is an essential issue for hardware designs. A whole design is placed over the area of an FPGA and computation can happen anywhere on it. So Karuta aims to make it easy to describe such a behavior by processes.
 
-A thread on software is typically a natural unit of computation from its beginning to end and can be assigned to a CPU when it is available. This also means any thread with any computation can be assigned to a CPU.
+A process on software is typically a natural unit of computation from its beginning to end and can be assigned to a CPU when it is available. This also means any process with any computation can be assigned to a CPU.
 
-On the other hand, Karuta assumes a thread is a piece of computation and corresponds to an FSM instance on an FPGA. So a whole design will consist of threads and their communications.
+On the other hand, Karuta assumes a process is a piece of computation and corresponds to an FSM instance on an FPGA. So a whole design will consist of processes and their communications.
 
 
 * Object system
@@ -51,7 +51,7 @@ Karuta assumes it is more intuitive to place code as an FSM and make member vari
 
 * Arrays
 
-Efficient use of RAM is also crucial for programs on FPGAs. While most of software runtime assumes one globally shared memory among threads, FPGAs allow to put RAMs near the place where the actual computation is done. This is important to achieve higher performance and energy efficiency.
+Efficient use of RAM is also crucial for programs on FPGAs. While most of software runtime assumes one globally shared memory among processes, FPGAs allow to put RAMs near the place where the actual computation is done. This is important to achieve higher performance and energy efficiency.
 
 Karuta allows to add arrays as member of an object and maps them to RAMs at synthesis.
 

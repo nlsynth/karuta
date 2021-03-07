@@ -11,22 +11,21 @@ Assuming that you have a design like this and save to a file my_design.karuta
 
 .. code-block:: none
 
-   process thr() {
-     // Possibly communicate with main() and other threads.
+   process p1 {
+     // Possibly communicate with process p1 and other processes.
    }
    
-   @Soft
-   process testThr() {
-     // Code to generate stimulus to other threads.
-     // (NOTE: a thread with @Soft will not be synthesized)
+   process p2 {
+     // Does interesting computation.
    }
    
    func f() {
      // Code which can be called from other methods or processes.
    }
    
-   process main() {
-     // Does interesting computation.
+   @soft process {
+     // Code to generate stimulus to other processes.
+     // (NOTE: a processes with @soft will not be synthesized)
    }
 
 Karuta generates synthesizable Verilog file, if *compile* command is specified.
@@ -39,12 +38,12 @@ Karuta generates synthesizable Verilog file, if *compile* command is specified.
 
 This is equivalent to call compile() and writeHdl("my_design.v") at the end of the code.
 
-To run the threads described in the code, *run* command can be used. The example above has 3 thread entries *thr()*, *testThr()* and *main()*, so it will make 3 threads and wait for them to finish (or timeout).
+To run the processes described in the code, *run* command can be used. The example above has 3 processes *p1*, *p2* and an unnamed soft process, so it will make 3 processes and wait for them to finish (or timeout).
 
 .. code-block:: none
 
    $ karuta run my_design.karuta
-   ... thr(), testThr() and main() will run
+   ... p1(), p2() and the unnamed soft process will run
 
 This is equivalent to call *run()* at the end of the code.
 
@@ -63,17 +62,18 @@ Process and function
     // code
   }
 
-  // Process is an entry point function starts to run from the beginning.
-  process p1() {
+  // 'process' runs from the beginning.
+  process {
     // code
   }
 
   // 'always' is a syntax sugar to denote a process to repeat indefinitely.
-  always p2() {
+  always {
     // code
   }
-  // code above is equivalent to
-  process p2() {
+
+  // the code starts with 'always' above is equivalent to
+  process {
     while true {
       // code
     }
@@ -197,10 +197,10 @@ Array images can be written to a file or read from a file.
    arr.saveImage("arr.image")
    arr.loadImage("arr.image")
 
-Threads
--------
+Processes
+---------
 
-Method can be declared as a thread entry. A thread will be created when the code is executed or synthesized.
+Method can be declared as a process entry. A process will be created when the code is executed or synthesized.
 
 .. code-block:: none
 
@@ -209,69 +209,69 @@ Method can be declared as a thread entry. A thread will be created when the code
    }
 
    func main() {
-     // main() is automatically treated as a thread entry.
+     // main() is automatically treated as a process entry.
    }
 
    process m1() {
-     // This method will run as a thread.
+     // This method will run as a process.
    }
 
    @ThreadEntry
    func m2() {
-     // @ThreadEntry annotation starts the method as a thread entry.
+     // @ThreadEntry annotation starts the method as a process entry.
    }
 
 Channel and mailbox
 -------------------
 
-Communication between threads is really important for circuit design.
-While one simple way of communication is just to use shared registers or arrays, Karuta also supports channel and mailbox to communicate between threads.
+Communication between processes is really important for circuit design.
+While one simple way of communication is just to use shared registers or arrays, Karuta also supports channel and mailbox to communicate between processes.
 
-This example this just write values and read them from other threads.
+This example this just write values and read them from other processes.
 
 .. code-block:: none
 
    channel ch int
 
-   process th1() {
+   process {
      ch.write(1)
      ch.write(1)
    }
 
-   process th2() {
+   process {
      ch.read()
    }
 
-   // channel can be written or read by arbitrary number of threads.
-   process th3() {
+   // channel can be written or read by arbitrary number of processes.
+   process {
      ch.read()
    }
 
-A mailbox is just a channel with one value.
+A mailbox is basically a channel with one value.
 
 .. code-block:: none
 
    mailbox mb int
 
-   process th1() {
+   process {
      mb.put(1)
    }
 
-   process th2() {
+   process {
      mb.get()
    }
 
-But it can notify waiting threads.
+It has ability to notify waiting process.
 
 .. code-block:: none
 
    mailbox mb int
 
-   process th1() {
+   process {
      mb.notify(10)
    }
 
-   process th2() {
+   process {
      print(mb.wait())
    }
 
@@ -479,14 +479,14 @@ Method call
    process th1() {
      // Does handshake and arbitration
      m.f()
-     // Inlined for this thread.
+     // Inlined for this process.
      g()
    }
 
    process th2() {
      // Does handshake and arbitration
      m.f()
-     // Different inlined instance for this thread.
+     // Different inlined instance for this process.
      g()
    }
 

@@ -11,7 +11,7 @@ $ karuta <command> [Files]
 
 * Commands(optional)
 
-  * run - starts runnable threads (same as --run)
+  * run - starts runnable processes (same as --run)
   * compile - compiles objects for specified files (same as --compile)
   * sim - same as ``sim`` and also with self contained shell (same as --compile and --with_shell)
 
@@ -68,7 +68,7 @@ $ karuta <command> [Files]
 
 * --run
 
-  * Runs every runnable threads in the source file.
+  * Runs every runnable processes in the source file.
   * Calls run() at the end of execution.
 
 * --timeout
@@ -416,6 +416,6 @@ Annotations
    depth=
    // object parameters
    distance=
-   // thread number
+   // number of processes
    num=
 
