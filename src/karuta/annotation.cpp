@@ -165,7 +165,7 @@ int Annotation::GetAddrWidth() {
 int Annotation::GetDepth() { return LookupIntParam("depth", 1); }
 
 bool Annotation::IsThreadEntry() {
-  static vector<string> kws = {"ThreadEntry", "ProcessEntry", "Process"};
+  static vector<string> kws = {"ThreadEntry", "ProcessEntry"};
   return CheckAnnotation(kws);
 }
 
