@@ -4,7 +4,7 @@
     ],
     'target_defaults': {
         'cflags': ['-Wall', '-Wno-sign-compare'],
-        'defines': ['PACKAGE="karuta"', 'VERSION="0.6.5"'],
+        'defines': ['PACKAGE="karuta"', 'VERSION="0.6.6wip"'],
         'xcode_settings': {
             'OTHER_CFLAGS': [
             ],
