@@ -8,7 +8,7 @@ Glossary
 
 * Bytecode
 
-  * Compiled from Karuta Light Script and can be executed or synthesized
+  * Compiled from Karuta script and can be executed or synthesized
 
 * Iroha
 
@@ -18,8 +18,8 @@ Glossary
 * Karuta
 
   * Name of Japanese playing cards.
-  * This package.
+  * This language software package.
 
-* Soft thread
+* Soft process
 
-  * Threads which will not be synthesized (used for tests).
+  * Procesess which will not be synthesized (used for tests).

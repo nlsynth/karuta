@@ -21,7 +21,7 @@ A simple Xorshift32 code in Karuta is like this:
 
 .. code-block:: none
 
-   process main() {
+   process {
      var y int = 1
      for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13)
@@ -85,7 +85,7 @@ With Karuta, you can annotate a method to make it an output port. The output val
 
    output o int
 
-   process main() {
+   process {
      var y int = 1
      for var i int = 0; i < 10; ++i {
        y = y ^ (y << 13); y = y ^ (y >> 17); y = y ^ (y << 15)
@@ -115,13 +115,13 @@ This can be tidied up a bit by factoring out update formulas.
 
    output o int
 
-   // Gets an argument t and returns an update value.
+   // Gets an argument t and returns an updated value.
    func update(t int) (int) {
      t = t ^ (t << 13); t = t ^ (t >> 17); t = t ^ (t << 15)
      return t
    }
 
-   process main() {
+   process {
      y = 1
      while true {
        y = update(y)
@@ -129,7 +129,7 @@ This can be tidied up a bit by factoring out update formulas.
      }
    }
 
-The last example here illustrates some of the most important features of Karuta such as multiple threads and channels.
+The last example here illustrates some of the most important features of Karuta such as multiple processes and channels.
 
 .. code-block:: none
 
@@ -144,8 +144,8 @@ The last example here illustrates some of the most important features of Karuta 
        return t
      }
 
-     // Thread entry method.
-     process main() {
+     // Process to generate random numbers.
+     process {
        var y int = 1
        while true {
          y = update(y)
@@ -155,8 +155,8 @@ The last example here illustrates some of the most important features of Karuta 
 
      output o #0
 
-     // Thread entry method.
-     process thr() {
+     // Process to consume random numbers and flips the value of output port 'o'.
+     process {
        var b #0 = 0
        while true {
          var v int = ch.read()
@@ -170,7 +170,7 @@ The last example here illustrates some of the most important features of Karuta 
      }
    }
 
-This code has 2 thread entry methods. One generates random numbers and the another reads the numbers via a channel.
+This code has 2 processes. One generates random numbers and the another reads the numbers via a channel.
 When the code is compiled, generated Verilog code will have 2 state machines (*'always'* blocks).
 You can deploy the code to an FPGA board, connect the output to an LED and see it flickers randomly.
 
@@ -200,7 +200,7 @@ Karuta's 10 important features you might like...
 
 * New scripting language with contemporary syntax designed primarily for hardware design
 * Prototype based OOP
-* Static thread concurrency
+* Automatic resource sharing between concurrent procesess
 * Channels and mailboxes
 * Attach AXI DMA controller to arrays
 * Distance between objects can be specified
