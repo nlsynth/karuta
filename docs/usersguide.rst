@@ -216,9 +216,9 @@ Method can be declared as a process entry. A process will be created when the co
      // This method will run as a process.
    }
 
-   @ThreadEntry
+   @process_entry
    func m2() {
-     // @ThreadEntry annotation starts the method as a process entry.
+     // @process_entry annotation starts the method as a process entry.
    }
 
 Channel and mailbox
@@ -305,16 +305,16 @@ I/Os (e.g. LEDs, DIP switches, interrputs and so on) can be accessed with member
 I/O method
 ----------
 
-Another way to access I/Os is to annotate a method with *@ExtIO* annotation.
+Another way to access I/Os is to annotate a method with *@ext_io* annotation.
 Its argument when called is taken as the output value and return value is taken from the input value.
 
 .. code-block:: none
 
-   @ExtIO(output = "o")
+   @ext_io(output = "o")
    func L.f(b bool) {
    }
 
-   @ExtIO(input = "i")
+   @ext_io(input = "i")
    func L.g() (bool) {
      return true
    }
@@ -328,14 +328,14 @@ mailbox can be configured to accept writes from an external accessor.
 
    // Signals "name", "name_wen", "name_notify", "name_put" and "name_put_ack"
    // are genrated.
-   @Export(name="name", wen="wen", notify="notify", put="put")
+   @export(name="name", wen="wen", notify="notify", put="put")
    mailbox mb int
 
-   process p1() {
+   process {
      mb.wait()
    }
 
-   process p2() {
+   process {
      print(mb.get())
    }
 
@@ -352,9 +352,9 @@ When an array is declared with AXI master annotation, we can transfer data to/fr
 
 .. code-block:: none
 
-   // @AxiMaster(addrWidth = 64) // or 32 (default) to specify the width.
-   // @AxiMaster(sramConnection = "shared") // or "exclusive" (default).
-   @AxiMaster()
+   // @axi_master(addrWidth = 64) // or 32 (default) to specify the width.
+   // @axi_master(sramConnection = "shared") // or "exclusive" (default).
+   @axi_master()
    ram m int[16]
 
    func f() {
@@ -369,7 +369,7 @@ When an array declared with AXI slave annotation, an AXI slave interface to outs
 
 .. code-block:: none
 
-   @AxiSlave()
+   @axi_slave()
    ram s int[16]
 
    func f() {
@@ -392,17 +392,17 @@ Similar to AXI slave interface, SRAM interface which can be accessed from outsid
 
 .. code-block:: none
 
-   @SramIf // or @Export
+   @sram_if // or @export
    ram s int[16]
 
 External SRAM
 ^^^^^^^^^^^^^
 
-Antoher way to declare external RAM is to use @External annotation.
+Antoher way to declare external RAM is to use @external annotation.
 
 .. code-block:: none
 
-  @External(name="sram")
+  @external(name="sram")
   ram r int[16]
 
   process main() {
@@ -427,13 +427,13 @@ Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f
 .. code-block:: none
 
    // f() will be callable outside of the design.
-   @ExtEntry(name="e")
+   @ext_entry(name="e")
    func f(x int) (int) {
      return 0
    }
 
    // Actual implementation of f() will be outside of the design.
-   @ExtStub(name="e")
+   @ext_stub(name="e")
    func f(x int) (int) {
      return 0
    }
@@ -441,11 +441,11 @@ Karuta supports the Method Interface <https://gist.github.com/ikwzm/bab67c180f2f
 Embedded combinational logic
 ----------------------------
 
-A combinational logic in a Verilog module can be embedded in a function of Karuta by specifying the file name and module name by @ExtCombinational annotation.
+A combinational logic in a Verilog module can be embedded in a function of Karuta by specifying the file name and module name by @ext_combinational annotation.
 
 .. code-block:: none
 
-   @ExtCombinational(resource = "a", verilog = "resource.v", file="copy", module="my_logic")
+   @ext_combinational(resource = "a", verilog = "resource.v", file="copy", module="my_logic")
    func f(x #32) (#32) {
      // This code is used by the interpreter, but Verilog module in resource.v
      // is used in synthesized code.
@@ -525,22 +525,22 @@ Karuta allows to implement user defined numeric types. An object describes user 
      x + x
    }		
 
-Thread local variable
----------------------
+Process local variable
+----------------------
 
-Multiple threads can be created from an entry method by specifying *num=* parameter.
+Multiple processes can be created from an entry method by specifying *num=* parameter.
 
 .. code-block:: none
 
-   @ThreadLocal()
+   @local()
    shared M.x int
 
    @(num=2)
    process M.thr(idx int) {
-     // 2 copies of this thread runs and the index is given as the method
+     // 2 copies of this process runs and the index is given as the method
      // argument. idx = 0, 1.
 
-     // x is a per thread variable.
+     // x is a per process variable.
      x = x + idx
    }
 
@@ -556,7 +556,7 @@ Type object and embedded combinational logic can be used to build a custom type 
      return add_st3(add_st2(add_st1(lhs, rhs)))
    }
 
-   @ExtCombinational(resource = "my_type", verilog = "my_type.v", file="copy", module="my_logic_st1")
+   @ext_combinational(resource = "my_type", verilog = "my_type.v", file="copy", module="my_logic_st1")
    func add_st1(lhs, rhs #32) (#32, #32) {
      return rhs, lhs
    }
@@ -645,7 +645,7 @@ WIP.
 
 .. code-block:: none
 
-   @Pipeline(num=2)
+   @pipeline(num=2)
    for var i int = 0; i < 8; ++i {
      // does computation
    }
@@ -698,7 +698,7 @@ Elements of designs are placed onto the physical area of an FPGA and there are p
 .. code-block:: none
 
    // Object distance between `self` and `m` is 10 clocks.
-   @_(distance=10)
+   @(distance=10)
    shared self.m object = new()
    reg self.m.v int
 

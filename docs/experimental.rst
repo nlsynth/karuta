@@ -13,20 +13,20 @@ Data flow
 
 .. code-block:: none
 
-   @DataFlowEntry()
+   @data_flow_entry()
    func f(x int) {
    }
 
 .. code-block:: none
 
-   @ExtFlowStub(name="e")
+   @ext_flow_stub(name="e")
    func f(x int) (int) {
    }
 
 Thread member declaration
 =========================
 
-Threads can be declared as a member object instead of @ThreadEntry().
+Threads can be declared as a member object instead of @process_entry().
 
 .. code-block:: none
 

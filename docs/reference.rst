@@ -120,7 +120,7 @@ If no object name is given in the declaration, the method will belong to the cur
    func f() {
    }
 
-   @Annotation(key1="value1", key2="value2")
+   @annotation(key1="value1", key2="value2")
    func mod.f(x, y #32) (#16, #16) {
      return (0, 0)
    }
