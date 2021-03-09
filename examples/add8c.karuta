@@ -3,7 +3,7 @@
 // This combines two instances of 8 bit + carry adder to make a 16 bit adder
 // funcion.
 
-@ExtCombinational(resource="add8c", verilog="add8c.v", module="add8c", file="copy")
+@ext_combinational(resource="add8c", verilog="add8c.v", module="add8c", file="copy")
 func add8c(x, y #8, c #1) (#1, #8) {
   // This implementation will be used only for simulation.
   var r #9

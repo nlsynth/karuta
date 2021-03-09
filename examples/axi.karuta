@@ -2,10 +2,10 @@
 // TODO: test this.
 shared M object = Kernel.clone();
 
-@AxiMaster()
+@axi_master
 shared M.a int[16]
 
-@AxiSlave()
+@axi_slave
 shared M.b int[16]
 
 func M.main() {

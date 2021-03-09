@@ -2,7 +2,7 @@
 
 shared L object = Kernel.clone();
 
-@ExtIO(output = "led")
+@ext_io(output = "led")
 func L.f(b bool) {
   // print(b);
 }

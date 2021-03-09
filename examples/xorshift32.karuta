@@ -3,12 +3,12 @@
 
 shared y int
 
-@ExtEntry()
+@ext_entry
 def setSeed(s #32) {
   y = s
 }
 
-@ExtEntry()
+@ext_entry
 def get() (#32) {
   y = y ^ (y << 13)
   y = y ^ (y >> 17)

@@ -82,7 +82,7 @@ func M.s1(x #32) (#32) {
 
 shared M.W #32[64]
 shared M.state #32[8]
-@AxiMaster()
+@axi_master
 shared M.buf #32[16]
 
 func M.init() {
@@ -141,7 +141,7 @@ func M.transform() {
   state[4] += e; state[5] += f; state[6] += g; state[7] += h;
 }
 
-@ExtEntry()
+@ext_entry
 func M.sha256(addr, blocks #32) (#256) {
   init()
   var i int

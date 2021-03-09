@@ -44,7 +44,7 @@ func div32impl(a, b int) (int) {
   return r
 }
 
-@ExtEntry()
+@ext_entry
 func div32(a, b int) (int) {
   return div32impl(a, b)
 }
