@@ -7,12 +7,12 @@
 
 shared y int
 
-@ExtEntry()
+@ext_entry()
 func setSeed(s #32) {
   y = s
 }
 
-@ExtEntry()
+@ext_entry()
 func get() (#32) {
   y = y ^ (y << 13)
   y = y ^ (y >> 17)

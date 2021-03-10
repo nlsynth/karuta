@@ -8,7 +8,7 @@ ram b int[16]
 channel ch int
 mailbox mb int
 // This one is not shared, represents a ram per each thread.
-@ThreadLocal ram c int[16]
+@local ram c int[16]
 
 process p1() {
   print(mb.put(1))

@@ -6,17 +6,17 @@
 //
 // TODO: Investigate better language design to utilize concurrency and illustrate it here. Of course, I also have to test it on real AWS F1.
 
-@AxiMaster ram ddr_a #512[16]
-@AxiMaster ram ddr_b #512[16]
-@AxiMaster ram ddr_c #512[16]
-@AxiMaster ram ddr_d #512[16]
+@axi_master ram ddr_a #512[16]
+@axi_master ram ddr_b #512[16]
+@axi_master ram ddr_c #512[16]
+@axi_master ram ddr_d #512[16]
 
-@AxiSlave ram dma_pcis #512[16]
-@AxiMaster ram dma_pcim #512[16]
+@axi_slave ram dma_pcis #512[16]
+@axi_master ram dma_pcim #512[16]
 
-@AxiSlave ram bar1 #32[16]
-@AxiSlave ram ocl #32[16]
-@AxiSlave ram sda #32[16]
+@axi_slave ram bar1 #32[16]
+@axi_slave ram ocl #32[16]
+@axi_slave ram sda #32[16]
 
 ram buf int[16]
 

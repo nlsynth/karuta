@@ -11,8 +11,8 @@ func update(t int) (int) {
   return t
 }
 
-@ExtIO(output = "o")
-func output(y #0) {
+@ext_io(output = "o")
+func do_output(y #0) {
   print(y)
 }
 
@@ -30,7 +30,7 @@ process thr() {
     var v int = ch.read()
     if v < 10000 {
       b = ~b
-      output(b)
+      do_output(b)
     }
   }
 }

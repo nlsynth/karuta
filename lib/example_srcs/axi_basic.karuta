@@ -2,10 +2,10 @@
 //# index:1
 // AXI DMA controller (master or slave) can be attached to an array.
 
-@AxiMaster
+@axi_master
 ram m int[16]
 
-@AxiSlave
+@axi_slave
 ram s int[16]
 
 process main() {
