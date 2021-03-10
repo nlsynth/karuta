@@ -1,7 +1,7 @@
 // VERILOG_OUTPUT: a.v
 // VERILOG_TB: ext_entry_tb.v
 
-@ExtEntry()
+@ext_entry()
 func f(a1, a2 #32) (#64) {
   assert(a1 == 1)
   assert(a2 == 2)

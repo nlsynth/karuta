@@ -1,11 +1,11 @@
 // VERILOG_OUTPUT: a.v
 // VERILOG_TB: ext_io_tb.v
 
-@ExtIO(output = "led")
+@ext_io(output = "led")
 func M.o(b #4) {
 }
 
-@ExtIO(input = "in")
+@ext_io(input = "in")
 func M.i() (#4) {
   return 0
 }

@@ -1,7 +1,7 @@
 // VERILOG_OUTPUT: a.v
 // VERILOG_TB: ext_stub_tb.v
 
-@ExtStub()
+@ext_stub()
 func f(a1, a2 #32) (#32) {
   return 0
 }

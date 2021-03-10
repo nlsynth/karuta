@@ -1,7 +1,7 @@
 // VERILOG_OUTPUT: a.v
 // VERILOG_TB: sram_if_tb.v
 
-@SramIf
+@sram_if
 ram s int[16]
 
 compile()

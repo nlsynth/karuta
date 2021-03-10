@@ -2,7 +2,7 @@
 // VERILOG_TB: sram_if_tb.v
 // VERILOG_EXPECTED_OUTPUT: 123
 
-@SramIf
+@sram_if
 shared s int[16]
 
 process main() {

@@ -1,9 +1,9 @@
 // SELF_SHELL:
 
-@External
+@external
 shared s int[16]
 
-@External(name="unused")
+@external(name="unused")
 shared unused int[16]
 
 process main() {
