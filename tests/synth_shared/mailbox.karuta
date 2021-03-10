@@ -3,7 +3,7 @@ mailbox M.m0 int
 mailbox M.m1 int
 mailbox M.m2 int
 
-@ThreadEntry()
+@process_entry()
 func M.f0() {
   m0.put(10)
   assert(m1.get() == 1)
@@ -11,13 +11,13 @@ func M.f0() {
   assert(m0.get() == 12)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f1() {
   m0.put(m0.get() + 1)
   m1.put(1)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f2() {
   m0.put(m0.get() + 1)
   m2.put(2)

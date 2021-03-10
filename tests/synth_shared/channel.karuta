@@ -2,13 +2,13 @@
 channel Kernel.c int
 channel Kernel.d int
 
-@ThreadEntry()
+@process_entry()
 func M.f1() {
  c.write(10)
  assert(d.read() == 10)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f2() {
  d.write(c.read());
 }

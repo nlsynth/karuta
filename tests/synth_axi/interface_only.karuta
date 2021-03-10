@@ -1,11 +1,9 @@
 // VERILOG_OUTPUT: a.v
 // VERILOG_TB: axi_ms_tb.v
 
-@AxiMaster()
-shared a int[16]
+@axi_master shared a int[16]
 
-@AxiSlave()
-shared b int[16]
+@axi_slave shared b int[16]
 
 process main() {
 }

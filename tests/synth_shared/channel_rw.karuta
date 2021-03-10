@@ -3,17 +3,17 @@
 channel ch1 int
 channel ch2 int
 
-@ThreadEntry(num=10)
+@process_entry(num=10)
 func f1(idx int) {
   ch1.write(idx)
 }
 
-@ThreadEntry(num=10)
+@process_entry(num=10)
 func f2(idx int) {
   ch2.write(ch1.read() + idx)
 }
 
-@ThreadEntry()
+@process_entry()
 func f3() {
   var t int = 0
   while true {

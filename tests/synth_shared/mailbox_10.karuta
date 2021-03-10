@@ -3,7 +3,7 @@
 
 mailbox mb int
 
-@ThreadEntry(num=10)
+@process_entry(num=10)
 func fn(idx int) {
   if (idx == 0) {
     mb.put(0)

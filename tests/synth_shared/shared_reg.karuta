@@ -3,13 +3,13 @@
 shared M.x int
 mailbox M.mu int
 
-@ThreadEntry()
+@process_entry()
 func M.f1() {
   x = 10
   mu.put(1)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f2() {
   assert(mu.get() == 1)
   assert(x == 10)

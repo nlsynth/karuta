@@ -5,7 +5,7 @@ mailbox M.m2 int
 mailbox M.n0 int
 shared M.x int
 
-@ThreadEntry()
+@process_entry()
 func M.f0() {
   // kick f2() and f3()
   m0.put(10)
@@ -16,13 +16,13 @@ func M.f0() {
   m1.put(10)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f1() {
   m1.get()
   n0.notify(11)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f2() {
   m0.get()
   print(n0.wait())
@@ -30,7 +30,7 @@ func M.f2() {
   m2.put(7)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f3() {
   m0.get()
   print(n0.wait())

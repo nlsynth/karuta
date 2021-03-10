@@ -3,14 +3,14 @@
 mailbox M.mb int
 shared M.a int[16]
 
-@ThreadEntry()
+@process_entry()
 func M.f0() {
   a[0] = 123
   mb.put(1)
   assert(a[0] == 123)
 }
 
-@ThreadEntry()
+@process_entry()
 func M.f1() {
   mb.get()
   assert(a[0] == 123)

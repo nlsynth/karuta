@@ -4,7 +4,7 @@ mailbox mb int
 
 shared a int[4]
 
-@ThreadEntry(num=10)
+@process_entry(num=10)
 func fn(idx int) {
   if (idx == 0) {
     a[1] = 0

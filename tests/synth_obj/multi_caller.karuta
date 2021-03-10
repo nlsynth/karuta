@@ -5,12 +5,12 @@ func Kernel.X.f(x int) (int) {
   return x
 }
 
-@ThreadEntry()
+@process_entry()
 func Kernel.t1() {
   assert(X.f(1) == 1)
 }
 
-@ThreadEntry()
+@process_entry()
 func Kernel.t2() {
   assert(X.f(2) == 2)
 }
