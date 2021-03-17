@@ -25,7 +25,8 @@ class DesignSynth {
 
  private:
   bool SynthObjects();
-  bool SynthObjRec(ObjectSynth *osynth);
+  bool SynthObjectsAll(ObjectSynth *root_synth);
+  void CollectObjSynthRec(ObjectSynth *osynth, vector<ObjectSynth *> *synthes);
   bool ScanObjs();
   void CollectScanRootObjRec(vm::Object *obj);
   void DeterminePrimaryThread();

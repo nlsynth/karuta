@@ -64,7 +64,7 @@ bool DesignSynth::Synth() {
 bool DesignSynth::SynthObjects() {
   obj_tree_->Build();
   // Pass 1: Scan.
-  ObjectSynth *o = GetObjectSynth(root_obj_, true);
+  ObjectSynth *root_synth = GetObjectSynth(root_obj_, true);
   CollectScanRootObjRec(root_obj_);
   if (!ScanObjs()) {
     return false;
@@ -72,7 +72,7 @@ bool DesignSynth::SynthObjects() {
   DeterminePrimaryThread();
   shared_resources_->DetermineOwnerThreadAll();
   // Pass 2: Synth.
-  if (!SynthObjRec(o)) {
+  if (!SynthObjectsAll(root_synth)) {
     return false;
   }
   shared_resources_->ResolveResourceAccessors();
@@ -80,6 +80,17 @@ bool DesignSynth::SynthObjects() {
   for (auto it : obj_synth_map_) {
     ObjectSynth *obj_synth = it.second;
     obj_synth->ResolveTableCallsAll();
+  }
+  return true;
+}
+
+bool DesignSynth::SynthObjectsAll(ObjectSynth *root_synth) {
+  vector<ObjectSynth *> synthes;
+  CollectObjSynthRec(root_synth, &synthes);
+  for (ObjectSynth *osynth : synthes) {
+    if (!osynth->Synth()) {
+      return false;
+    }
   }
   return true;
 }
@@ -189,23 +200,21 @@ void DesignSynth::SetSynthParams() {
   }
 }
 
-bool DesignSynth::SynthObjRec(ObjectSynth *osynth) {
-  if (!osynth->Synth()) {
-    return false;
-  }
+void DesignSynth::CollectObjSynthRec(ObjectSynth *osynth,
+                                     vector<ObjectSynth *> *synthes) {
+  synthes->push_back(osynth);
   auto m = obj_tree_->GetChildObjects(osynth->GetObject());
   for (auto it : m) {
     vm::Object *cobj = it.first;
     auto cit = obj_synth_map_.find(cobj);
-    if (cit != obj_synth_map_.end()) {
-      ObjectSynth *csynth = cit->second;
-      if (!SynthObjRec(csynth)) {
-        return false;
-      }
-      csynth->GetIModule()->SetParentModule(osynth->GetIModule());
+    if (cit == obj_synth_map_.end()) {
+      // Non synthesizable object member.
+      continue;
     }
+    ObjectSynth *csynth = cit->second;
+    CollectObjSynthRec(csynth, synthes);
+    csynth->GetIModule()->SetParentModule(osynth->GetIModule());
   }
-  return true;
 }
 
 }  // namespace synth
