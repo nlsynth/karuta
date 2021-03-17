@@ -151,6 +151,11 @@ void ThreadSynth::SetPrimary() { is_primary_thread_ = true; }
 bool ThreadSynth::IsPrimary() { return is_primary_thread_; }
 
 void ThreadSynth::CollectUnclaimedMembers() {
+  CollectUnclaimedMemberObjects();
+  CollectUnclaimedMemberMethods();
+}
+
+void ThreadSynth::CollectUnclaimedMemberObjects() {
   DesignSynth *ds = obj_synth_->GetDesignSynth();
   SharedResourceSet *sres = ds->GetSharedResourceSet();
   vm::Object *obj = obj_synth_->GetObject();
@@ -188,19 +193,24 @@ void ThreadSynth::CollectUnclaimedMembers() {
       resource_->GetExternalArrayResource(member_obj);
     }
   }
+}
+
+void ThreadSynth::CollectUnclaimedMemberMethods() {
+  vm::Object *obj = obj_synth_->GetObject();
   map<sym_t, vm::Method *> member_methods;
   obj->GetAllMemberMethods(&member_methods);
   for (auto it : member_methods) {
     vm::Method *method = it.second;
-    if (method->GetAnnotation()->IsExtIO()) {
+    auto *an = method->GetAnnotation();
+    if (an->IsExtIO()) {
       compiler::Compiler::CompileMethod(obj_synth_->GetVM(), obj, method);
       if (method->IsCompileFailure()) {
         continue;
       }
-      if (method->GetAnnotation()->IsExtInput()) {
+      if (an->IsExtInput()) {
         MayGenerateExtIOMethod(method, false);
       }
-      if (method->GetAnnotation()->IsExtOutput()) {
+      if (an->IsExtOutput()) {
         MayGenerateExtIOMethod(method, true);
       }
     }

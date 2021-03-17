@@ -26,6 +26,8 @@ class ThreadSynth {
   void SetPrimary();
   bool IsPrimary();
   void CollectUnclaimedMembers();
+  void CollectUnclaimedMemberObjects();
+  void CollectUnclaimedMemberMethods();
   void MayGenerateExtIOMethod(vm::Method *method, bool is_output);
   void SetIsTask(bool is_task);
   ObjectSynth *GetObjectSynth();
