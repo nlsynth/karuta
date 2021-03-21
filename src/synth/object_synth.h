@@ -2,6 +2,7 @@
 #ifndef _synth_object_synth_h_
 #define _synth_object_synth_h_
 
+#include <map>
 #include <set>
 
 #include "synth/common.h"
@@ -29,7 +30,7 @@ class ObjectSynth {
   ThreadSynth *GetThreadByName(const string &name);
   DesignSynth *GetDesignSynth();
   const vector<ThreadSynth *> &GetAllThreads() const;
-  void AddUsedStub(const string &name);
+  void AddUsedStub(ThreadSynth *thr, const string &name);
   bool IsUsedStub(const string &name);
 
  private:
@@ -46,7 +47,7 @@ class ObjectSynth {
   vector<ThreadSynth *> threads_;
   std::set<ThreadSynth *> scanned_threads_;
   std::set<string> task_entry_names_;
-  std::set<string> stub_method_names_;
+  std::map<string, ThreadSynth *> stub_method_names_;
 };
 
 }  // namespace synth

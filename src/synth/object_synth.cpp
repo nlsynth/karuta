@@ -84,8 +84,13 @@ bool ObjectSynth::Synth() {
   return true;
 }
 
-void ObjectSynth::AddUsedStub(const string &name) {
-  stub_method_names_.insert(name);
+void ObjectSynth::AddUsedStub(ThreadSynth *thr, const string &name) {
+  ThreadSynth *t = stub_method_names_[name];
+  if (t == nullptr) {
+    stub_method_names_[name] = thr;
+  } else {
+    CHECK(t == thr) << "Ext stub can't be accessed by muitiple threads.";
+  }
 }
 
 bool ObjectSynth::IsUsedStub(const string &name) {
