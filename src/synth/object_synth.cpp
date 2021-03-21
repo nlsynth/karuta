@@ -84,6 +84,14 @@ bool ObjectSynth::Synth() {
   return true;
 }
 
+void ObjectSynth::AddUsedStub(const string &name) {
+  stub_method_names_.insert(name);
+}
+
+bool ObjectSynth::IsUsedStub(const string &name) {
+  return stub_method_names_.count(name) > 0;
+}
+
 vm::VM *ObjectSynth::GetVM() const { return design_synth_->GetVM(); }
 
 vm::Object *ObjectSynth::GetObject() const { return obj_; }

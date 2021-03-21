@@ -50,6 +50,8 @@ class ThreadSynth {
                                   const string &name, bool is_flow);
 
  private:
+  void AddExtStubResource(const string &name);
+
   ObjectSynth *obj_synth_;
   const string thread_name_;
   const string entry_method_name_;

@@ -29,6 +29,8 @@ class ObjectSynth {
   ThreadSynth *GetThreadByName(const string &name);
   DesignSynth *GetDesignSynth();
   const vector<ThreadSynth *> &GetAllThreads() const;
+  void AddUsedStub(const string &name);
+  bool IsUsedStub(const string &name);
 
  private:
   void CollectThreads(IModule *mod);
@@ -44,6 +46,7 @@ class ObjectSynth {
   vector<ThreadSynth *> threads_;
   std::set<ThreadSynth *> scanned_threads_;
   std::set<string> task_entry_names_;
+  std::set<string> stub_method_names_;
 };
 
 }  // namespace synth

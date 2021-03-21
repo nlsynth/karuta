@@ -81,6 +81,7 @@ void MethodScanner::Funcall(vm::Insn *insn) {
     return;
   }
   if (IsExtStubCall(insn)) {
+    thr_synth_->GetObjectSynth()->AddUsedStub(sym_str(insn->label_));
     return;
   }
   if (IsSubObjCall(insn)) {

@@ -208,10 +208,16 @@ void ThreadSynth::CollectUnclaimedMemberMethods() {
         continue;
       }
       if (an->IsExtInput()) {
-        MayGenerateExtIOMethod(method, false);
+        MayGenerateExtIOMethod(method, /* !output */ false);
       }
       if (an->IsExtOutput()) {
-        MayGenerateExtIOMethod(method, true);
+        MayGenerateExtIOMethod(method, /* output */ true);
+      }
+    }
+    if (an->IsExtMethodStub()) {
+      string name(sym_str(it.first));
+      if (!obj_synth_->IsUsedStub(name)) {
+        AddExtStubResource(name);
       }
     }
   }
@@ -364,6 +370,11 @@ IInsn *ThreadSynth::InjectExtStubCall(IState *st, IInsn *pseudo_call_insn,
     }
   }
   return wait_insn;
+}
+
+void ThreadSynth::AddExtStubResource(const string &name) {
+  (void)Tool::FindOrCreateExtStubCallResource(tab_, name, false);
+  (void)Tool::FindOrCreateExtStubWaitResource(tab_, name, false);
 }
 
 }  // namespace synth
