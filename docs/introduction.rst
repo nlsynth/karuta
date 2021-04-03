@@ -11,7 +11,16 @@ If you are using Ubuntu, just do
 
    $ sudo snap install karuta
 
-Otherwise please see User's guide to build the binary.
+
+For most of other distributions including macOS and WSL with some conventional development environment settings, following script can install karuta into ~/.local/bin .
+
+.. code-block:: none
+
+   $ curl -o install-karuta.sh https://raw.githubusercontent.com/nlsynth/karuta/master/install-karuta.sh
+   $ sh install-karuta.sh
+   (error messages are usually obvious and you can fix them by installing additional software packages)
+
+Please refer the User's guide for more details.
 
 Tutorial
 ========

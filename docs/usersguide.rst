@@ -844,7 +844,7 @@ NOTE: gyp is a Makefile generator. Please use maintained gyp-next instead of the
 
 .. code-block:: none
 
-    $ pip install gyp-next
+    $ pip3 install gyp-next
     install pip on Debian or Ubuntu.
     $ sudo apt install python3-pip
 
