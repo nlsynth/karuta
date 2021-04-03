@@ -26,28 +26,25 @@ Please follow [@karutalang](https://twitter.com/karutalang) on Twitter for updat
 Karuta's language is an object oriented scripting language. The syntax is similar to recently popular programming languages like JavaScript, Python, Go or so on.
 Minimum code looks like as follows.
 
-     process main() {
+     output led #1
+     process {
        // Do computation, call other methods and do I/O.
+       led.write(1)
      }
 
-This defines a method 'main' of current object. It can be called like this.
+The code above defines some computation within the default object, so Karuta compiler can take a snapshot of the object and transform it into RTL.
 
-     main()
-
-Now some computation is defined within the object, so Karuta compiler can take a snapshot of this object and transform it into RTL.
-
-     compile()  // A snapshot of the object is taken.
-     writeHdl("my_module_rtl.v")  // Synthesizable verilog file is written.
-
+     $ karuta compile mod.karuta
+     (karuta writes a synthesizable Verilog file mod.v)
 ## Important features
 
 This project designed Karuta's language just to describe hardware designs instead of reusing existing languages for software.
 So, some of following features are incorporated in the language constructs to make them easy to use.
 
 * Prototype based object system to model design structures
-* Communication primitives for threads
-    * Threads, mailboxes, channels and so on
-    * AXI, RPC like handshake, GPIO, embedded verilog and so on
+* Communication primitives for processes
+    * Shared memory, mailboxe, channel and so on
+    * AXI, RPC like handshake, GPIO, embedded Verilog code and so on
 * Flexible data types
     * Integer with arbitrary width (not only typical 1, 8, 16, 32, 64 and so on)
     * Custom operators for defined data types like FP16, SIMD and so on
