@@ -179,7 +179,7 @@ Comments
 
    // Comment
    /* Comment too */
-   # is alloed at the beginning of a file. This is for #! for shells.
+   # is allowed at the beginning of a file. This is for #! for shells.
 
 Literals
 
@@ -373,14 +373,13 @@ Built in methods
 * Channel write, writeFast, read
 * Mailbox width, put, notify, get, wait
 
-* .$compiled_module
-* .$dump_file_name
-
 * setIrohaPath(p string)
 * setIROuput(p string)
 * runIroha(opts string)
 
   * e.g. runIroha("-v -S -o x.v")
+
+Names start with '$' are used to store Karuta's internal information.
 
 Synthesis parameters
 ====================
