@@ -134,7 +134,7 @@ bool Annotation::IsSramIf() {
   return CheckAnnotation(kws);
 }
 
-bool Annotation::IsExport() {
+bool Annotation::IsExportMailbox() {
   static vector<string> kws = {"Export", "public"};
   return CheckAnnotation(kws);
 }

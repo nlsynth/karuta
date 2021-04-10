@@ -89,7 +89,7 @@ class Annotation {
   // For ram.
   bool IsSramIf();
   // For mailbox.
-  bool IsExport();
+  bool IsExportMailbox();
   // For fifo.
   int GetDepth();
   bool IsNoWait();
