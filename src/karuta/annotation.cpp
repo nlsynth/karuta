@@ -129,6 +129,10 @@ bool Annotation::IsAxiExclusive() {
   return (LookupStrParam("sramConnection", "exclusive") == "exclusive");
 }
 
+bool Annotation::IsAxiMasterAndExport() {
+  return (LookupIntParam("export", 0) > 0);
+}
+
 bool Annotation::IsSramIf() {
   static vector<string> kws = {"SramIf", "Export", "Public"};
   return CheckAnnotation(kws);

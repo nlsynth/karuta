@@ -45,7 +45,10 @@ void ResourceSynth::MayAddAxiSlavePort(vm::Object *owner_obj,
 void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj,
                                      vm::Object *array_obj) {
   Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
-  if (a == nullptr || !a->IsSramIf()) {
+  if (a == nullptr) {
+    return;
+  }
+  if (!a->IsSramIf() && !a->IsAxiMasterAndExport()) {
     return;
   }
   IResource *sram_if_port = rset_->GetSramIfPort(array_obj);

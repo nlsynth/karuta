@@ -86,6 +86,7 @@ class Annotation {
   // 64 or 32.
   int GetAddrWidth();
   bool IsAxiExclusive();
+  bool IsAxiMasterAndExport();
   // For ram.
   bool IsSramIf();
   // For mailbox.
