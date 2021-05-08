@@ -116,7 +116,9 @@ bool Annotation::ResetPolarity() {
 int Annotation::MaxDelayPs() { return LookupIntParam("maxDelayPs", -1); }
 
 bool Annotation::IsAxiMaster() {
-  static vector<string> kws = {"AxiMaster", "AxiMaster64", "AxiMaster32"};
+  static vector<string> kws = {
+      "AxiMaster",           "AxiMaster64",           "AxiMaster32",
+      "ExportWithAxiMaster", "ExportWithAxiMaster64", "ExportWithAxiMaster32"};
   return CheckAnnotation(kws);
 }
 
@@ -130,6 +132,10 @@ bool Annotation::IsAxiExclusive() {
 }
 
 bool Annotation::IsAxiMasterAndExport() {
+  static vector<string> kws = {"ExportWithAxiMaster"};
+  if (CheckAnnotation(kws)) {
+    return true;
+  }
   return (LookupIntParam("export", 0) > 0);
 }
 
@@ -144,8 +150,10 @@ bool Annotation::IsExportMailbox() {
 }
 
 int Annotation::GetAddrWidth() {
-  static vector<string> kws64 = {"AxiMaster64", "AxiSlave64"};
-  static vector<string> kws32 = {"AxiMaster32", "AxiSlave32"};
+  static vector<string> kws64 = {"AxiMaster64", "ExportWithAxiMaster64",
+                                 "AxiSlave64"};
+  static vector<string> kws32 = {"AxiMaster32", "ExportWithAxiMaster32",
+                                 "AxiSlave32"};
   if (CheckAnnotation(kws64)) {
     return 64;
   }
