@@ -7,7 +7,7 @@
 #include <set>
 
 #include "base/logging.h"
-#include "iroha/base/util.h"
+#include "iroha/base/file.h"
 
 using std::set;
 
@@ -37,7 +37,7 @@ string Util::DirName(const string &fn) {
 }
 
 string Util::BaseNameWithoutSuffix(const string &fn) {
-  string bn = iroha::Util::BaseName(fn);
+  string bn = iroha::File::BaseName(fn);
   int pos = bn.rfind(".");
   if (pos == string::npos) {
     return bn;
