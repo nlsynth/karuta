@@ -87,8 +87,9 @@ class Annotation {
   int GetAddrWidth();
   bool IsAxiExclusive();
   bool IsAxiMasterAndExport();
+  bool IsAxiSlaveAndExport();
   // For ram.
-  bool IsSramIf();
+  bool IsExportSramIf();
   // For mailbox.
   bool IsExportMailbox();
   // For fifo.

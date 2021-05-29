@@ -135,7 +135,7 @@ IInsn *ObjectMethod::SynthWait(vm::Object *array_obj) {
     if (a->IsAxiSlave()) {
       return SynthAxiWait(array_obj);
     }
-    if (a->IsSramIf()) {
+    if (a->IsExportSramIf()) {
       return SynthSramWait(array_obj);
     }
   }

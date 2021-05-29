@@ -48,7 +48,7 @@ void ResourceSynth::MayAddSramIfPort(vm::Object *owner_obj,
   if (a == nullptr) {
     return;
   }
-  if (!a->IsSramIf() && !a->IsAxiMasterAndExport()) {
+  if (!a->IsExportSramIf() && !a->IsAxiMasterAndExport()) {
     return;
   }
   IResource *sram_if_port = rset_->GetSramIfPort(array_obj);

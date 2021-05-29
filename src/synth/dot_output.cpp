@@ -112,7 +112,8 @@ void DotOutput::WriteArrayObject(const string &name, vm::Object *obj,
   string label = name + " #" + Util::Itoa(vm::ArrayWrapper::GetDataWidth(obj)) +
                  "[" + Util::Itoa(len) + "]";
   Annotation *a = vm::ArrayWrapper::GetAnnotation(obj);
-  if (a != nullptr && (a->IsAxiMaster() || a->IsAxiSlave() || a->IsSramIf())) {
+  if (a != nullptr &&
+      (a->IsAxiMaster() || a->IsAxiSlave() || a->IsExportSramIf())) {
     WriteAXIorSramPortInfo(name, obj, n, a);
   }
   n->SetLabel(label);
@@ -153,7 +154,7 @@ void DotOutput::WriteDistance() {
 
 void DotOutput::WriteAXIorSramPortInfo(const string &name, vm::Object *obj,
                                        Node *n, Annotation *an) {
-  bool is_sram = an->IsSramIf();
+  bool is_sram = an->IsExportSramIf();
   string prefix = (is_sram ? "sram_" : "axi_");
   Node *nn = dot_->GetNode(prefix + n->GetName());
   string label = name;

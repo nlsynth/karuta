@@ -123,7 +123,9 @@ bool Annotation::IsAxiMaster() {
 }
 
 bool Annotation::IsAxiSlave() {
-  static vector<string> kws = {"AxiSlave", "AxiSlave64", "AxiSlave32"};
+  static vector<string> kws = {
+      "AxiSlave",           "AxiSlave64",           "AxiSlave32",
+      "ExportWithAxiSlave", "ExportWithAxiSlave64", "ExportWithAxiSlave32"};
   return CheckAnnotation(kws);
 }
 
@@ -132,16 +134,29 @@ bool Annotation::IsAxiExclusive() {
 }
 
 bool Annotation::IsAxiMasterAndExport() {
-  static vector<string> kws = {"ExportWithAxiMaster"};
+  static vector<string> kws = {"ExportWithAxiMaster", "ExportWithAxiMaster64",
+                               "ExportWithAxiMaster32"};
   if (CheckAnnotation(kws)) {
     return true;
   }
-  return (LookupIntParam("export", 0) > 0);
+  return IsAxiMaster() && (LookupIntParam("export", 0) > 0);
 }
 
-bool Annotation::IsSramIf() {
+bool Annotation::IsAxiSlaveAndExport() {
+  static vector<string> kws = {"ExportWithAxiSlave", "ExportWithAxiSlave64",
+                               "ExportWithAxiSlave32"};
+  if (CheckAnnotation(kws)) {
+    return true;
+  }
+  return IsAxiSlave() && (LookupIntParam("export", 0) > 0);
+}
+
+bool Annotation::IsExportSramIf() {
   static vector<string> kws = {"SramIf", "Export", "Public"};
-  return CheckAnnotation(kws);
+  if (CheckAnnotation(kws)) {
+    return true;
+  }
+  return IsAxiSlaveAndExport();
 }
 
 bool Annotation::IsExportMailbox() {
@@ -151,9 +166,9 @@ bool Annotation::IsExportMailbox() {
 
 int Annotation::GetAddrWidth() {
   static vector<string> kws64 = {"AxiMaster64", "ExportWithAxiMaster64",
-                                 "AxiSlave64"};
+                                 "ExportWithAxiSlave64", "AxiSlave64"};
   static vector<string> kws32 = {"AxiMaster32", "ExportWithAxiMaster32",
-                                 "AxiSlave32"};
+                                 "ExportWithAxiSlave32", "AxiSlave32"};
   if (CheckAnnotation(kws64)) {
     return 64;
   }
