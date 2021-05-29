@@ -20,6 +20,7 @@
             ],
             'sources': [
                 'main.cpp',
+                'embedded_data.h',
             ],
             'dependencies': [
                 ':libkaruta',

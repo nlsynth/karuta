@@ -19,6 +19,7 @@
 
 #include "base/arg_parser.h"
 #include "base/status.h"
+#include "embedded_data.h"
 #include "fe/fe.h"
 #include "iroha/base/util.h"
 #include "iroha/iroha.h"
@@ -159,6 +160,7 @@ int KarutaMain::main(int argc, char **argv) {
   // Actually initialize modules and params.
   ::sym_table_init();
   iroha::Iroha::Init();
+  ::init_embedded_data();
   iroha::Iroha::SetImportPaths(Env::SearchDirList());
   Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {
