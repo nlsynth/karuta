@@ -22,19 +22,27 @@ class SharedResource {
   ~SharedResource();
 
   void SetOwnerIResource(IResource *res);
+  IResource *GetOwnerIResource() const;
   void AddAccessorResource(IResource *res, ThreadSynth *acc_thr);
+  void SetOwnerThread(ThreadSynth *owner_thr);
+  ThreadSynth *GetOwnerThread() const;
+  void SetOwnerObject(vm::Object *owner_obj);
+  vm::Object *GetOwnerObject() const;
 
   set<ThreadSynth *> readers_;
   set<ThreadSynth *> writers_;
   set<ThreadSynth *> axi_ctrl_thrs_;
   vector<ThreadSynth *> ordered_accessors_;
   set<ThreadSynth *> accessors_;
+  map<IResource *, vm::Object *> accessor_resources_;
+
+ private:
+  // Actual resource for this instance.
+  IResource *i_res_;
+  // SharedResourceSet::DetermineOwnerThread() determines and sets this.
   ThreadSynth *owner_thr_;
   // Owner object of this (either object or sym) member.
   vm::Object *owner_obj_;
-  map<IResource *, vm::Object *> accessor_resources_;
-  // Actual resource for this instance.
-  IResource *i_res_;
 };
 
 // Per DesignSynth object to manage every shared resources.

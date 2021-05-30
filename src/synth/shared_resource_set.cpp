@@ -12,11 +12,25 @@
 namespace synth {
 
 SharedResource::SharedResource()
-    : owner_thr_(nullptr), owner_obj_(nullptr), i_res_(nullptr) {}
+    : i_res_(nullptr), owner_thr_(nullptr), owner_obj_(nullptr) {}
 
 SharedResource::~SharedResource() {}
 
 void SharedResource::SetOwnerIResource(IResource *res) { i_res_ = res; }
+
+IResource *SharedResource::GetOwnerIResource() const { return i_res_; }
+
+void SharedResource::SetOwnerThread(ThreadSynth *owner_thr) {
+  owner_thr_ = owner_thr;
+}
+
+ThreadSynth *SharedResource::GetOwnerThread() const { return owner_thr_; }
+
+void SharedResource::SetOwnerObject(vm::Object *owner_obj) {
+  owner_obj_ = owner_obj;
+}
+
+vm::Object *SharedResource::GetOwnerObject() const { return owner_obj_; }
 
 void SharedResource::AddAccessorResource(IResource *res, ThreadSynth *acc_thr) {
   vm::Object *object = acc_thr->GetObjectSynth()->GetObject();
@@ -60,7 +74,7 @@ void SharedResourceSet::ResolveAccessorDistance(DesignSynth *design_synth,
   for (auto it : sres->accessor_resources_) {
     IResource *res = it.first;
     int d = 0;
-    d = design_synth->GetObjectDistance(it.second, sres->owner_obj_);
+    d = design_synth->GetObjectDistance(it.second, sres->GetOwnerObject());
     if (d > 0) {
       res->GetParams()->SetDistance(d);
     }
@@ -74,7 +88,7 @@ void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
     return;
   }
   if (res->axi_ctrl_thrs_.size() == 1) {
-    res->owner_thr_ = *(res->axi_ctrl_thrs_.begin());
+    res->SetOwnerThread(*(res->axi_ctrl_thrs_.begin()));
     return;
   }
   // Prefers threads belong to the same object of the resource.
@@ -85,21 +99,21 @@ void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
       first_thr = thr;
     }
     if (first_same_owner_thr == nullptr &&
-        thr->GetObjectSynth()->GetObject() == res->owner_obj_) {
+        thr->GetObjectSynth()->GetObject() == res->GetOwnerObject()) {
       first_same_owner_thr = thr;
     }
   }
   if (first_same_owner_thr != nullptr) {
-    res->owner_thr_ = first_same_owner_thr;
+    res->SetOwnerThread(first_same_owner_thr);
   } else {
-    res->owner_thr_ = first_thr;
+    res->SetOwnerThread(first_thr);
   }
 }
 
 void SharedResourceSet::ResolveSharedResourceAccessor(SharedResource *sres) {
   for (auto it : sres->accessor_resources_) {
     IResource *res = it.first;
-    res->SetParentResource(sres->i_res_);
+    res->SetParentResource(sres->GetOwnerIResource());
   }
 }
 
@@ -111,7 +125,7 @@ void SharedResourceSet::AddMemberAccessor(ThreadSynth *thr,
     tls_thr = thr;
   }
   SharedResource *res = GetBySlotName(owner_obj, tls_thr, name);
-  res->owner_obj_ = owner_obj;
+  res->SetOwnerObject(owner_obj);
   res->ordered_accessors_.push_back(thr);
   res->accessors_.insert(thr);
   if (insn->op_ == vm::OP_MEMBER_READ) {
@@ -132,7 +146,7 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr,
     tls_thr = thr;
   }
   SharedResource *res = GetByObj(obj, tls_thr);
-  res->owner_obj_ = owner_obj;
+  res->SetOwnerObject(owner_obj);
   res->ordered_accessors_.push_back(thr);
   res->accessors_.insert(thr);
   if (insn->op_ == vm::OP_ARRAY_READ) {

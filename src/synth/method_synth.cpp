@@ -827,7 +827,7 @@ void MethodSynth::SynthMemberSharedRegAccess(vm::Insn *insn,
   SharedResource *sres =
       shared_resource_set_->GetBySlotName(owner_obj, nullptr, insn->label_);
   IResource *res;
-  if (sres->owner_thr_ == thr_synth_) {
+  if (sres->GetOwnerThread() == thr_synth_) {
     res = res_set_->GetMemberSharedReg(insn->label_, true, is_store);
     sres->SetOwnerIResource(res);
     int w = value->num_width_.GetWidth();
@@ -902,7 +902,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
       shared_resource_set_->GetByObj(array_obj, nullptr);
   IResource *res = nullptr;
   bool use_replica = false;
-  if (array_sres->owner_thr_ == thr_synth_) {
+  if (array_sres->GetOwnerThread() == thr_synth_) {
     int ridx = -1;
     if (!is_write) {
       ridx = GetArrayReplicaIndex(array_obj, insn);

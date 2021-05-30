@@ -181,7 +181,7 @@ IInsn *ObjectMethod::SynthMailboxAccess(vm::Object *mailbox_obj,
   rsynth_->MayAddSharedRegExtWriter(mailbox_obj);
   IResource *res = nullptr;
   ResourceSet *rset = synth_->GetResourceSet();
-  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
+  if (sres->GetOwnerThread() == synth_->GetThreadSynth()) {
     res = rset->GetMailbox(mailbox_obj, true, false);
     sres->SetOwnerIResource(res);
   }
@@ -225,7 +225,7 @@ IInsn *ObjectMethod::SynthChannelAccess(vm::Object *ch_obj, bool is_write) {
   SharedResource *sres =
       synth_->GetSharedResourceSet()->GetByObj(ch_obj, nullptr);
   int depth = vm::ChannelWrapper::ChannelDepth(ch_obj);
-  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
+  if (sres->GetOwnerThread() == synth_->GetThreadSynth()) {
     IResource *channel_res =
         rset->GetChannelResource(ch_obj, true, false, width, depth);
     sres->SetOwnerIResource(channel_res);
@@ -285,7 +285,7 @@ IInsn *ObjectMethod::SynthExtIO(vm::Object *obj, bool is_write) {
 }
 
 bool ObjectMethod::IsOwner(SharedResource *sres) {
-  if (sres->owner_thr_ == synth_->GetThreadSynth()) {
+  if (sres->GetOwnerThread() == synth_->GetThreadSynth()) {
     return true;
   }
   return false;
