@@ -122,7 +122,8 @@ IResource *ResourceSet::GetSharedArray(vm::Object *obj, bool is_owner,
 }
 
 IResource *ResourceSet::GetSharedArrayReplica(vm::Object *obj, int index) {
-  IResource *master = GetSharedArray(obj, true, false);
+  IResource *master =
+      GetSharedArray(obj, true /* is_owner */, false /* !is_write*/);
   auto &m = shared_array_replicas_[master];
   auto it = m.find(index);
   if (it != m.end()) {
@@ -138,21 +139,22 @@ IResource *ResourceSet::GetSharedArrayReplica(vm::Object *obj, int index) {
 }
 
 IResource *ResourceSet::GetAxiMasterPort(vm::Object *obj) {
-  return GetPortResource(obj, resource::kAxiMasterPort, &axi_master_ports_);
+  return GetRAMPortResource(obj, resource::kAxiMasterPort, &axi_master_ports_);
 }
 
 IResource *ResourceSet::GetAxiSlavePort(vm::Object *obj) {
-  return GetPortResource(obj, resource::kAxiSlavePort, &axi_slave_ports_);
+  return GetRAMPortResource(obj, resource::kAxiSlavePort, &axi_slave_ports_);
 }
 
 IResource *ResourceSet::GetSramIfPort(vm::Object *obj) {
-  return GetPortResource(obj, resource::kSramIf, &sram_if_ports_);
+  return GetRAMPortResource(obj, resource::kSramIf, &sram_if_ports_);
 }
 
-IResource *ResourceSet::GetPortResource(
+IResource *ResourceSet::GetRAMPortResource(
     vm::Object *obj, const string &name,
     map<vm::Object *, IResource *> *resources) {
-  IResource *array_res = GetSharedArray(obj, true, true);
+  IResource *array_res =
+      GetSharedArray(obj, true /* is_owner */, true /* is_write */);
   auto it = resources->find(obj);
   if (it != resources->end()) {
     return it->second;

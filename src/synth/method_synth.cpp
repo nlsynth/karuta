@@ -911,7 +911,8 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
       use_replica = true;
       res = res_set_->GetSharedArrayReplica(array_obj, ridx);
     } else {
-      res = res_set_->GetSharedArray(array_obj, true, false);
+      res = res_set_->GetSharedArray(array_obj, true /* is_owner */,
+                                     false /* !is_write */);
     }
     array_sres->SetOwnerIResource(res);
     rsynth_->MayAddAxiMasterPort(obj_, array_obj);
@@ -919,7 +920,7 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
     rsynth_->MayAddSramIfPort(obj_, array_obj);
     rsynth_->MayConfigureExternalSram(array_obj, res);
   } else {
-    res = res_set_->GetSharedArray(array_obj, false, is_write);
+    res = res_set_->GetSharedArray(array_obj, false /* is_owner */, is_write);
     array_sres->AddAccessorResource(res, thr_synth_);
   }
   IInsn *iinsn = new IInsn(res);

@@ -56,8 +56,8 @@ class ResourceSet {
   string GetResourceClassName(vm::OpCode op);
   void PopulateResourceDataType(int op, IValueType &vt, IResource *res);
   void PopulateIOTypes(fe::VarDeclSet *vds, bool is_output, IResource *res);
-  IResource *GetPortResource(vm::Object *obj, const string &name,
-                             map<vm::Object *, IResource *> *resources);
+  IResource *GetRAMPortResource(vm::Object *obj, const string &name,
+                                map<vm::Object *, IResource *> *resources);
   IResource *BuildExtIO(const string &name, bool is_output, int width,
                         int distance);
 
