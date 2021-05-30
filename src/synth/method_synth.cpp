@@ -889,7 +889,7 @@ bool MethodSynth::UseSharedArray(vm::Object *array_obj) {
     tls_thr = thr_synth_;
   }
   SharedResource *sres = shared_resource_set_->GetByObj(array_obj, tls_thr);
-  if (sres->accessors_.size() >= 2 || sres->axi_ctrl_thrs_.size() > 0) {
+  if (sres->accessors_.size() >= 2 || sres->axi_master_ctrl_thrs_.size() > 0) {
     return true;
   }
   return false;

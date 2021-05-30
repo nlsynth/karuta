@@ -82,13 +82,13 @@ void SharedResourceSet::ResolveAccessorDistance(DesignSynth *design_synth,
 }
 
 void SharedResourceSet::DetermineOwnerThread(SharedResource *res) {
-  if (res->axi_ctrl_thrs_.size() > 1) {
+  if (res->axi_master_ctrl_thrs_.size() > 1) {
     Status::os(Status::USER_ERROR)
         << "AXI memory can't have multiple accessor threads";
     return;
   }
-  if (res->axi_ctrl_thrs_.size() == 1) {
-    res->SetOwnerThread(*(res->axi_ctrl_thrs_.begin()));
+  if (res->axi_master_ctrl_thrs_.size() == 1) {
+    res->SetOwnerThread(*(res->axi_master_ctrl_thrs_.begin()));
     return;
   }
   // Prefers threads belong to the same object of the resource.
@@ -157,7 +157,7 @@ void SharedResourceSet::AddObjectAccessor(ThreadSynth *thr,
   }
   if (insn->op_ == vm::OP_FUNCALL) {
     if (synth_name == kAxiLoad || synth_name == kAxiStore) {
-      res->axi_ctrl_thrs_.insert(thr);
+      res->axi_master_ctrl_thrs_.insert(thr);
     }
     if (synth_name == kMailboxGet || synth_name == kMailboxPut) {
     }

@@ -31,7 +31,7 @@ class SharedResource {
 
   set<ThreadSynth *> readers_;
   set<ThreadSynth *> writers_;
-  set<ThreadSynth *> axi_ctrl_thrs_;
+  set<ThreadSynth *> axi_master_ctrl_thrs_;
   vector<ThreadSynth *> ordered_accessors_;
   set<ThreadSynth *> accessors_;
   map<IResource *, vm::Object *> accessor_resources_;
