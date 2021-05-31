@@ -902,7 +902,14 @@ void MethodSynth::SynthSharedArrayAccess(vm::Insn *insn, bool is_write,
       shared_resource_set_->GetByObj(array_obj, nullptr);
   IResource *res = nullptr;
   bool use_replica = false;
-  if (array_sres->GetOwnerThread() == thr_synth_) {
+  Annotation *a = vm::ArrayWrapper::GetAnnotation(array_obj);
+  bool forrceAccessor = false;
+  if (a != nullptr && (a->IsAxiMasterAndExport() || a->IsAxiSlaveAndExport())) {
+    // This array should be accessed with shared-memory-{reader, writer},
+    // because there is no available port for shared-memory.
+    forrceAccessor = true;
+  }
+  if (array_sres->GetOwnerThread() == thr_synth_ && !forrceAccessor) {
     int ridx = -1;
     if (!is_write) {
       ridx = GetArrayReplicaIndex(array_obj, insn);
