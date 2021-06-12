@@ -117,15 +117,37 @@ int Annotation::MaxDelayPs() { return LookupIntParam("maxDelayPs", -1); }
 
 bool Annotation::IsAxiMaster() {
   static vector<string> kws = {
-      "AxiMaster",           "AxiMaster64",           "AxiMaster32",
-      "ExportWithAxiMaster", "ExportWithAxiMaster64", "ExportWithAxiMaster32"};
+      "AxiMaster",
+      "AxiMaster64",
+      "AxiMaster32",
+      "AxiManager",
+      "AxiManager64",
+      "AxiManager32",
+      "ExportWithAxiMaster",
+      "ExportWithAxiMaster64",
+      "ExportWithAxiMaster32",
+      "ExportWithAxiManager",
+      "ExportWithAxiManager64",
+      "ExportWithAxiManager32",
+  };
   return CheckAnnotation(kws);
 }
 
 bool Annotation::IsAxiSlave() {
   static vector<string> kws = {
-      "AxiSlave",           "AxiSlave64",           "AxiSlave32",
-      "ExportWithAxiSlave", "ExportWithAxiSlave64", "ExportWithAxiSlave32"};
+      "AxiSlave",
+      "AxiSlave64",
+      "AxiSlave32",
+      "AxiSubordinate",
+      "AxiSubordinate64",
+      "AxiSubordinate32",
+      "ExportWithAxiSlave",
+      "ExportWithAxiSlave64",
+      "ExportWithAxiSlave32",
+      "ExportWithAxiSubordinate",
+      "ExportWithAxiSubordinate64",
+      "ExportWithAxiSubordinate32",
+  };
   return CheckAnnotation(kws);
 }
 
@@ -134,8 +156,11 @@ bool Annotation::IsAxiExclusive() {
 }
 
 bool Annotation::IsAxiMasterAndExport() {
-  static vector<string> kws = {"ExportWithAxiMaster", "ExportWithAxiMaster64",
-                               "ExportWithAxiMaster32"};
+  static vector<string> kws = {
+      "ExportWithAxiMaster",    "ExportWithAxiMaster64",
+      "ExportWithAxiMaster32",  "ExportWithAxiManager",
+      "ExportWithAxiManager64", "ExportWithAxiManager32",
+  };
   if (CheckAnnotation(kws)) {
     return true;
   }
@@ -143,8 +168,10 @@ bool Annotation::IsAxiMasterAndExport() {
 }
 
 bool Annotation::IsAxiSlaveAndExport() {
-  static vector<string> kws = {"ExportWithAxiSlave", "ExportWithAxiSlave64",
-                               "ExportWithAxiSlave32"};
+  static vector<string> kws = {
+      "ExportWithAxiSlave",         "ExportWithAxiSlave64",
+      "ExportWithAxiSlave32",       "ExportWithAxiSubordinate",
+      "ExportWithAxiSubordinate64", "ExportWithAxiSubordinate32"};
   if (CheckAnnotation(kws)) {
     return true;
   }
@@ -165,10 +192,26 @@ bool Annotation::IsExportMailbox() {
 }
 
 int Annotation::GetAddrWidth() {
-  static vector<string> kws64 = {"AxiMaster64", "ExportWithAxiMaster64",
-                                 "ExportWithAxiSlave64", "AxiSlave64"};
-  static vector<string> kws32 = {"AxiMaster32", "ExportWithAxiMaster32",
-                                 "ExportWithAxiSlave32", "AxiSlave32"};
+  static vector<string> kws64 = {
+      "AxiMaster64",
+      "ExportWithAxiMaster64",
+      "ExportWithAxiSlave64",
+      "AxiSlave64",
+      "AxiManager64",
+      "ExportWithAxiManager64",
+      "ExportWithAxiSubordinate64",
+      "AxiSubordinate64",
+  };
+  static vector<string> kws32 = {
+      "AxiMaster32",
+      "ExportWithAxiMaster32",
+      "ExportWithAxiSlave32",
+      "AxiSlave32",
+      "AxiManager32",
+      "ExportWithAxiManager32",
+      "ExportWithAxiSubordinate32",
+      "AxiSubordinate32",
+  };
   if (CheckAnnotation(kws64)) {
     return 64;
   }
