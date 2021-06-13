@@ -47,6 +47,7 @@
             'product_name': 'karuta',
             'type': 'static_library',
             'include_dirs': [
+                '../embedded_data/',
                 './',
                 '../iroha/src/',
             ],
