@@ -1,5 +1,7 @@
 #include "fe/fe.h"
 
+#include <fstream>
+
 #include "base/dump_stream.h"
 #include "base/status.h"
 #include "base/util.h"
@@ -12,10 +14,12 @@
 #include "fe/scanner.h"
 #include "fe/scanner_interface.h"
 #include "fe/scanner_pos.h"
+#include "iroha/base/file.h"
 #include "vm/method.h"
 #include "vm/object.h"
 #include "vm/thread.h"
 #include "vm/vm.h"
+
 // This should be the last.
 #include "fe/parser.h"
 
@@ -257,7 +261,7 @@ Method *FE::ReadFile(const string &file, bool import) {
 }
 
 FileImage *FE::GetFileImage(const string &fn, bool is_import) {
-  vector<string> paths;
+  std::unique_ptr<istream> is;
   if (is_import) {
     string sfn = fn;
     if (Util::HasSuffix(fn)) {
@@ -265,17 +269,15 @@ FileImage *FE::GetFileImage(const string &fn, bool is_import) {
     } else {
       sfn = fn + ".karuta";
     }
-    Env::SearchPathList(sfn.c_str(), &paths);
+    is.reset(iroha::File::OpenFile(sfn));
   } else {
-    paths.push_back(fn);
+    is.reset(new std::ifstream(fn));
+  }
+  if (is.get() == nullptr) {
+    return nullptr;
   }
   FileImage *im = nullptr;
-  for (const string &path : paths) {
-    im = Scanner::CreateFileImage(path.c_str());
-    if (im != nullptr) {
-      break;
-    }
-  }
+  im = Scanner::CreateFileImage(fn, *(is.get()));
   if (im == nullptr) {
     if (fn.substr(0, 5) == "/tmp/") {
       // We should actually detect private /tmp somehow.

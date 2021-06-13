@@ -2,25 +2,20 @@
 
 #include "fe/scanner.h"
 
-#include "base/stl_util.h"
-#include "fe/scanner_pos.h"
+#include <ctype.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <map>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include <ctype.h>
-#include <stdio.h>
-#include <string.h>
+#include "base/stl_util.h"
+#include "fe/scanner_pos.h"
 
 namespace fe {
 
 struct FilesMap {
-  ~FilesMap() {
-    STLDeleteSecondElements(&files_);
-  }
+  ~FilesMap() { STLDeleteSecondElements(&files_); }
   ScannerFile *GetScannerFile(const string &fn) {
     auto it = files_.find(fn);
     if (it != files_.end()) {
@@ -95,13 +90,9 @@ iroha::NumericLiteral Scanner::GetNum() {
   return iroha::NumericLiteral::Parse(string(token_, token_len_));
 }
 
-sym_t Scanner::GetSym() {
-  return sym_lookup(token_);
-}
+sym_t Scanner::GetSym() { return sym_lookup(token_); }
 
-const string *Scanner::GetStr() {
-  return strs_[strs_.size() - 1];
-}
+const string *Scanner::GetStr() { return strs_[strs_.size() - 1]; }
 
 void Scanner::GetPosition(ScannerPos *pos) {
   pos->pos = 0;
@@ -109,13 +100,9 @@ void Scanner::GetPosition(ScannerPos *pos) {
   pos->file = file_;
 }
 
-char Scanner::CurChar() {
-  return im_->buf[cur_pos_];
-}
+char Scanner::CurChar() { return im_->buf[cur_pos_]; }
 
-char Scanner::NextChar() {
-  return ReadAhead(1);
-}
+char Scanner::NextChar() { return ReadAhead(1); }
 
 char Scanner::ReadAhead(int a) {
   if (cur_pos_ + a < (int)im_->buf.size()) {
@@ -131,14 +118,14 @@ void Scanner::SkipNonToken() {
     } else if (IsCommentStart()) {
       SkipComment();
     } else {
-      return ;
+      return;
     }
   }
 }
 
 void Scanner::SkipComment() {
   if (!IsCommentStart()) {
-    return ;
+    return;
   }
   char c = CurChar();
   char nc = NextChar();
@@ -164,24 +151,21 @@ bool Scanner::IsCommentStart() {
     // # is allowed only at the beginning for #!
     return true;
   }
-  if (CurChar() == '/' &&
-      (NextChar() == '*' || NextChar() == '/')) {
+  if (CurChar() == '/' && (NextChar() == '*' || NextChar() == '/')) {
     return true;
   }
   return false;
 }
 
-bool Scanner::IsEof() {
-  return (cur_pos_ >= im_->buf.size());
-}
+bool Scanner::IsEof() { return (cur_pos_ >= im_->buf.size()); }
 
 void Scanner::PushChar(char c) {
   if (token_len_ > MAX_TOKEN - 2) {
     // ignore
-    return ;
+    return;
   }
   token_[token_len_] = c;
-  token_len_ ++;
+  token_len_++;
   token_[token_len_] = 0;
 }
 
@@ -196,7 +180,7 @@ int Scanner::ReadNum() {
       PushChar(CurChar());
       GoAhead();
       if (c == 'x') {
-	hex_dec_mode = true;
+        hex_dec_mode = true;
       }
     }
   }
@@ -206,11 +190,11 @@ int Scanner::ReadNum() {
       // skip.
     } else if (hex_dec_mode) {
       if (!IsHexDec(c)) {
-	break;
+        break;
       }
     } else {
       if (!IsDec(c)) {
-	break;
+        break;
       }
     }
     PushChar(CurChar());
@@ -299,8 +283,7 @@ bool Scanner::IsHexDec(char c) {
   if (IsDec(c)) {
     return true;
   }
-  if ((c >= 'a' && c <= 'f') ||
-      (c >= 'A' && c <= 'F')) {
+  if ((c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
     return true;
   }
   return false;
@@ -349,28 +332,12 @@ void Scanner::Init(const ScannerInfo *si, OperatorTableEntry *ops, bool dbg) {
   dbg_scanner = dbg;
 }
 
-FileImage *Scanner::CreateFileImage(const char *fn) {
-  struct stat st;
-  if (stat(fn, &st) != 0) {
-    return nullptr;
-  }
-  FILE *fp;
-  fp = fopen(fn, "r");
-  if (!fp) {
-    return nullptr;
-  }
+FileImage *Scanner::CreateFileImage(const string &fn, std::istream &is) {
   FileImage *im = new FileImage();
-  im->file_name = string(fn);
-  char *buf = (char *)malloc(st.st_size + 1);
-  size_t s = fread(buf, st.st_size, 1, fp);
-  buf[st.st_size] = 0;
-  im->buf = string(buf, st.st_size + 1);
-  free(buf);
-  fclose(fp);
-  if (s == 0) {
-    free(im);
-    return nullptr;
-  }
+  im->file_name = fn;
+  std::ostringstream os;
+  os << is.rdbuf();
+  im->buf = os.str() + "\0";
   return im;
 }
 
@@ -391,28 +358,16 @@ void Scanner::Reset() {
   strs_.clear();
 }
 
-bool Scanner::UseReturnAsSep() {
-  return in_semicolon_ && !in_array_elm_;
-}
+bool Scanner::UseReturnAsSep() { return in_semicolon_ && !in_array_elm_; }
 
-void Scanner::ReleaseFileImage() {
-  SetFileImage(nullptr);
-}
+void Scanner::ReleaseFileImage() { SetFileImage(nullptr); }
 
-void Scanner::InSemiColonStatement() {
-  in_semicolon_ = true;
-}
+void Scanner::InSemiColonStatement() { in_semicolon_ = true; }
 
-void Scanner::EndSemiColonStatement() {
-  in_semicolon_ = false;
-}
+void Scanner::EndSemiColonStatement() { in_semicolon_ = false; }
 
-void Scanner::InArrayElmDecl() {
-  in_array_elm_ = true;
-}
+void Scanner::InArrayElmDecl() { in_array_elm_ = true; }
 
-void Scanner::EndArrayElmDecl() {
-  in_array_elm_ = false;
-}
+void Scanner::EndArrayElmDecl() { in_array_elm_ = false; }
 
 }  // namespace fe

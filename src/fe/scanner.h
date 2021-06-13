@@ -8,7 +8,7 @@
 namespace fe {
 
 class FileImage {
-public:
+ public:
   string buf;
   string file_name;
 };
@@ -23,7 +23,7 @@ struct OperatorTableEntry {
 // Passing this on Scanner's construction time to avoid static dependency on
 // the parser from the scanner.
 class ScannerInfo {
-public:
+ public:
   int LookupKeyword(sym_t sym) const;
 
   // parser's token id.
@@ -40,11 +40,11 @@ struct ScannerToken {
 };
 
 class Scanner {
-public:
+ public:
   Scanner();
 
   static void Init(const ScannerInfo *si, OperatorTableEntry *ops, bool dbg);
-  static FileImage *CreateFileImage(const char *fn);
+  static FileImage *CreateFileImage(const string &fn, std::istream &is);
 
   void SetFileImage(FileImage *im);
   void ReleaseFileImage();
@@ -61,7 +61,7 @@ public:
 
   static Scanner *current_scanner_;
 
-private:
+ private:
   void Reset();
   bool UseReturnAsSep();
   char CurChar();
@@ -91,7 +91,7 @@ private:
   bool IsSymHead(char c);
   bool IsSymBody(char c);
 
-private:
+ private:
   static const int MAX_TOKEN = 256;
   std::unique_ptr<FileImage> im_;
   ScannerFile *file_;
@@ -105,7 +105,7 @@ private:
   // Unescaped strings in this file.
   vector<string *> strs_;
 
-public:
+ public:
   static OperatorTableEntry *op_tab;
   static const ScannerInfo *s_info;
   static bool dbg_scanner;
