@@ -21,6 +21,7 @@
 #include "base/status.h"
 #include "embedded_data.h"
 #include "fe/fe.h"
+#include "iroha/base/file.h"
 #include "iroha/base/util.h"
 #include "iroha/iroha.h"
 #include "iroha/iroha_main.h"
@@ -160,7 +161,9 @@ int KarutaMain::main(int argc, char **argv) {
   // Actually initialize modules and params.
   ::sym_table_init();
   iroha::Iroha::Init();
-  ::init_embedded_data();
+  for (auto it : ::get_embedded_file_images()) {
+    iroha::File::RegisterFile(it.first, it.second);
+  }
   iroha::Iroha::SetImportPaths(Env::SearchDirList());
   Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {

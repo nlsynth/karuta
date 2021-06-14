@@ -2,13 +2,13 @@
 #ifndef _karuta_annotation_h_
 #define _karuta_annotation_h_
 
-#include "iroha/base/file.h"
-
-void init_embedded_data() {
-  // This is a placeholder to embed data located under src/.
+map<string, string> get_embedded_file_images() {
+  // This is a placeholder to embed data located under embedded_data/.
   // Real data should be located in a directory with higher include priority.
-  iroha::File::RegisterFile("internal-placeholder.karuta",
-                            "print(\"" VERSION "\")\n");
+  map<string, string> m = {
+      {"internal-placeholder.karuta", "print(\"" PACKAGE "-" VERSION "\")\n"},
+  };
+  return m;
 }
 
 #endif  // _karuta_embedded_data_h_
