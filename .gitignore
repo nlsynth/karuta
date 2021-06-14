@@ -21,6 +21,7 @@ y.dot
 lib/karuta
 libtool
 karuta-bin
+embedded_data/
 a.out
 _build
 # by gyp
