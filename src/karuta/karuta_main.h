@@ -18,6 +18,7 @@ class KarutaMain {
   void ProcDebugArgs(vector<char *> &dbg_flags);
   void RunFiles(bool with_run, bool with_compile, vector<string> &files);
   void PrintUsage();
+  void LoadEmbeddedFiles();
 
   bool dbg_scanner_;
   bool dbg_parser_;

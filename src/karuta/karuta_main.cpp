@@ -138,9 +138,17 @@ void KarutaMain::ParseArgs(int argc, char **argv, ArgParser *parser) {
   }
 }
 
+void KarutaMain::LoadEmbeddedFiles() {
+  for (auto it : ::get_embedded_file_images()) {
+    iroha::File::RegisterFile(it.first, it.second);
+  }
+}
+
 int KarutaMain::main(int argc, char **argv) {
   ArgParser args;
   ParseArgs(argc, argv, &args);
+  // Embedded files are used for both the default mode and itohs mode.
+  LoadEmbeddedFiles();
   if (args.GetBoolFlag("iroha", false)) {
     // Run as Iroha.
     return iroha::main(argc, argv);
@@ -161,9 +169,6 @@ int KarutaMain::main(int argc, char **argv) {
   // Actually initialize modules and params.
   ::sym_table_init();
   iroha::Iroha::Init();
-  for (auto it : ::get_embedded_file_images()) {
-    iroha::File::RegisterFile(it.first, it.second);
-  }
   iroha::Iroha::SetImportPaths(Env::SearchDirList());
   Env::SetArgv0(argv[0]);
   if (args.GetFlagValue("root", &arg)) {
