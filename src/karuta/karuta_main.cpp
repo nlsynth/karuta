@@ -19,7 +19,6 @@
 
 #include "base/arg_parser.h"
 #include "base/status.h"
-#include "embedded_data.h"
 #include "fe/fe.h"
 #include "iroha/base/file.h"
 #include "iroha/base/util.h"
@@ -138,8 +137,8 @@ void KarutaMain::ParseArgs(int argc, char **argv, ArgParser *parser) {
   }
 }
 
-void KarutaMain::LoadEmbeddedFiles() {
-  for (auto it : ::get_embedded_file_images()) {
+void KarutaMain::LoadEmbeddedFiles(const map<string, string> &images) {
+  for (auto it : images) {
     iroha::File::RegisterFile(it.first, it.second);
   }
 }
@@ -147,8 +146,6 @@ void KarutaMain::LoadEmbeddedFiles() {
 int KarutaMain::main(int argc, char **argv) {
   ArgParser args;
   ParseArgs(argc, argv, &args);
-  // Embedded files are used for both the default mode and itohs mode.
-  LoadEmbeddedFiles();
   if (args.GetBoolFlag("iroha", false)) {
     // Run as Iroha.
     return iroha::main(argc, argv);

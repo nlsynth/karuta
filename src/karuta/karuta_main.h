@@ -2,6 +2,8 @@
 #ifndef _karuta_karuta_main_h_
 #define _karuta_karuta_main_h_
 
+#include <map>
+
 #include "karuta/karuta.h"
 
 class ArgParser;
@@ -11,6 +13,7 @@ class KarutaMain {
   KarutaMain();
 
   int main(int argc, char **argv);
+  void LoadEmbeddedFiles(const std::map<string, string> &images);
 
  private:
   void InstallTimeout();
@@ -18,7 +21,6 @@ class KarutaMain {
   void ProcDebugArgs(vector<char *> &dbg_flags);
   void RunFiles(bool with_run, bool with_compile, vector<string> &files);
   void PrintUsage();
-  void LoadEmbeddedFiles();
 
   bool dbg_scanner_;
   bool dbg_parser_;

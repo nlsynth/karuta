@@ -16,6 +16,8 @@
             'product_name': 'karuta',
             'type': 'executable',
             'include_dirs': [
+                '../embedded_data/',
+                './placeholder/',
                 './',
             ],
             'sources': [
@@ -47,7 +49,6 @@
             'product_name': 'karuta',
             'type': 'static_library',
             'include_dirs': [
-                '../embedded_data/',
                 './',
                 '../iroha/src/',
             ],

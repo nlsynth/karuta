@@ -14,13 +14,16 @@ ofn = "embedded_data/embedded_data.h"
 
 ofh = open(ofn, "w")
 ofh.write("""
-map<string, string> get_embedded_file_images() {
+#include <string>
+#include <map>
+
+std::map<std::string, std::string> get_embedded_file_images() {
   // This is a placeholder to embed data located under embedded_data/.
   // Real data should be located in a directory with higher include priority.
-  map<string, string> m = {
+  std::map<std::string, std::string> m = {
 """)
 ofh.write(
-    """    {\"internal-placeholder.karuta\", "print(\\"" PACKAGE "-" VERSION "\\")\\n"},
+    """    {\"internal-placeholder.karuta\", "print(\\"" PACKAGE "-" VERSION "*\\")\\n"},
 """)
 
 

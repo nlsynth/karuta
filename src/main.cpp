@@ -11,9 +11,11 @@
   GNU General Public License for more details.
 */
 
+#include "embedded_data.h"
 #include "karuta/karuta_main.h"
 
 int main(int argc, char **argv) {
   KarutaMain m;
+  m.LoadEmbeddedFiles(get_embedded_file_images());
   return m.main(argc, argv);
 }
