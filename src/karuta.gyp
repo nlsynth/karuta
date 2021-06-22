@@ -16,13 +16,28 @@
             'product_name': 'karuta',
             'type': 'executable',
             'include_dirs': [
+                './placeholder/',
+                './',
+            ],
+            'sources': [
+                'main.cpp',
+            ],
+            'dependencies': [
+                ':libkaruta',
+            ],
+        },
+        {
+            'target_name': 'karuta_static',
+            'product_name': 'karuta-static',
+            'type': 'executable',
+            'ldflags': ['-static'],
+            'include_dirs': [
                 '../embedded_data/',
                 './placeholder/',
                 './',
             ],
             'sources': [
                 'main.cpp',
-                'embedded_data.h',
             ],
             'dependencies': [
                 ':libkaruta',
