@@ -15,7 +15,7 @@ build:
 
 # duplicated basenames are vm/method.cpp and fe/method.cpp.
 src/Makefile: src/karuta.gyp
-	gyp src/karuta.gyp --depth=. -f make --generator-output=src --no-duplicate-basename-check
+	gyp src/karuta.gyp --depth=. -f make --generator-output=src
 
 src/fe/parser.cpp: src/fe/parser.ypp
 	python ./genparser.py
