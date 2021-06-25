@@ -7,7 +7,11 @@
         'defines': ['PACKAGE="karuta"', 'VERSION="0.6.8wip"'],
         'xcode_settings': {
             'OTHER_CFLAGS': [
+                "-std=c++11",
+                "-stdlib=libc++"
             ],
+            'MACOSX_DEPLOYMENT_TARGET': '10.7',
+            'CLANG_CXX_LIBRARY': 'libc++'
         },
     },
     'targets': [

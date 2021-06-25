@@ -10,7 +10,7 @@
 #include "vm/array_wrapper.h"
 #include "vm/io_wrapper.h"
 #include "vm/mailbox_wrapper.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/object.h"
 
 namespace synth {

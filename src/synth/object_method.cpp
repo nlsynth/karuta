@@ -16,7 +16,7 @@
 #include "vm/channel_wrapper.h"
 #include "vm/insn.h"
 #include "vm/mailbox_wrapper.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/object.h"
 
 namespace synth {

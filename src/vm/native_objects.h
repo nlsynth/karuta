@@ -3,7 +3,7 @@
 #define _vm_native_objects_h_
 
 #include "vm/common.h"
-#include "vm/method.h"    // for method_func
+#include "vm/vm_method.h"    // for method_func
 #include "vm/register.h"  // for RegisterType
 
 namespace vm {

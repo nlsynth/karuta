@@ -7,7 +7,7 @@
 #include "karuta/env.h"
 #include "vm/executor/executor.h"
 #include "vm/insn.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/object.h"
 #include "vm/profile.h"
 #include "vm/value.h"

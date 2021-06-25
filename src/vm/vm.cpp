@@ -9,7 +9,7 @@
 #include "vm/enum_type_wrapper.h"
 #include "vm/gc.h"
 #include "vm/int_array.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/native_objects.h"
 #include "vm/object.h"
 #include "vm/opcode.h"

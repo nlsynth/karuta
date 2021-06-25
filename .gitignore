@@ -26,3 +26,4 @@ a.out
 _build
 # by gyp
 src/out
+src/gyp-mac-tool

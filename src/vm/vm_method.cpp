@@ -1,4 +1,4 @@
-#include "vm/method.h"
+#include "vm/vm_method.h"
 
 #include "base/dump_stream.h"
 #include "base/stl_util.h"

@@ -6,7 +6,7 @@
 #include "karuta/annotation.h"
 #include "synth/design_synth.h"
 #include "synth/thread_synth.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/object.h"
 #include "vm/thread_wrapper.h"
 

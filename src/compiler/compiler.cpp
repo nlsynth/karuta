@@ -4,7 +4,7 @@
 #include "base/status.h"
 #include "compiler/method_compiler.h"
 #include "fe/method.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/vm.h"
 
 namespace compiler {
