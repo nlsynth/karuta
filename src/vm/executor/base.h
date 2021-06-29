@@ -7,7 +7,7 @@
 // Mostly for inline methods.
 #include "vm/common.h"
 #include "vm/insn.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/method_frame.h"
 #include "vm/opcode.h"
 #include "vm/value.h"

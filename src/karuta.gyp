@@ -7,7 +7,11 @@
         'defines': ['PACKAGE="karuta"', 'VERSION="0.6.8wip"'],
         'xcode_settings': {
             'OTHER_CFLAGS': [
+                "-std=c++11",
+                "-stdlib=libc++"
             ],
+            'MACOSX_DEPLOYMENT_TARGET': '10.7',
+            'CLANG_CXX_LIBRARY': 'libc++'
         },
     },
     'targets': [
@@ -192,8 +196,8 @@
                 'vm/io_wrapper.h',
                 'vm/mailbox_wrapper.cpp',
                 'vm/mailbox_wrapper.h',
-                'vm/method.cpp',
-                'vm/method.h',
+                'vm/vm_method.cpp',
+                'vm/vm_method.h',
                 'vm/method_frame.h',
                 'vm/native_methods.cpp',
                 'vm/native_methods.h',

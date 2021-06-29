@@ -3,7 +3,7 @@
 #include "base/status.h"
 #include "fe/method.h"
 #include "fe/var_decl.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/object.h"
 #include "vm/value.h"
 #include "vm/vm.h"

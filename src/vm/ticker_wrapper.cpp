@@ -1,7 +1,7 @@
 #include "vm/ticker_wrapper.h"
 
 #include "synth/object_method_names.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/native_methods.h"
 #include "vm/native_objects.h"
 #include "vm/object.h"

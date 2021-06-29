@@ -10,7 +10,7 @@
 #include "synth/object_attr_names.h"
 #include "synth/object_method_names.h"
 #include "synth/synth.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/object.h"
 #include "vm/object_util.h"
 #include "vm/profile.h"

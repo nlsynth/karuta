@@ -10,7 +10,7 @@
 #include "vm/decl_annotator.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/register.h"

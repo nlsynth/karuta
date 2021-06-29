@@ -8,7 +8,7 @@
 #include "synth/thread_synth.h"
 #include "vm/array_wrapper.h"
 #include "vm/insn.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/numeric_object.h"
 #include "vm/object.h"
 #include "vm/tls_wrapper.h"

@@ -8,7 +8,7 @@
 #include "synth/shared_resource_set.h"
 #include "synth/thread_synth.h"
 #include "vm/insn.h"
-#include "vm/method.h"
+#include "vm/vm_method.h"
 #include "vm/object.h"
 #include "vm/tls_wrapper.h"
 
