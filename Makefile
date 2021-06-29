@@ -42,7 +42,7 @@ pkg:
 	rm -rf pkg
 	mkdir pkg
 	cp karuta pkg/
-	cp karuta-bin pkg/
+	cp src/out/Default/karuta-static pkg/karuta-bin
 	mkdir pkg/lib
 	cp lib/default-isynth.karuta pkg/lib
 	cp lib/karuta_exit.v pkg/lib
