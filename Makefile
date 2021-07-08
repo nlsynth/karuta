@@ -27,14 +27,17 @@ clean:
 
 .PHONY: install
 install:
-	install -D lib/karuta $(prefix)/bin/karuta
-	install -D karuta-bin $(prefix)/bin/karuta-bin
-	install -D lib/default-isynth.karuta $(prefix)/share/karuta/default-isynth.karuta
-	install -D lib/karuta_exit.v $(prefix)/share/karuta/karuta_exit.v
-	install -D lib/karuta_wait.v $(prefix)/share/karuta/karuta_wait.v
-	install -D lib/fp/fp16r.karuta $(prefix)/share/karuta/fp/fp16r.karuta
-	install -D lib/fp/fp16rmul.v $(prefix)/share/karuta/fp/fp16rmul.v
-	install -D lib/fp/fp16raddsub.v $(prefix)/share/karuta/fp/fp16raddsub.v
+	mkdir -p $(prefix)/bin
+	mkdir -p $(prefix)/share/karuta
+	mkdir -p $(prefix)/share/karuta/fp
+	install lib/karuta $(prefix)/bin/karuta
+	install karuta-bin $(prefix)/bin/karuta-bin
+	install lib/default-isynth.karuta $(prefix)/share/karuta/default-isynth.karuta
+	install lib/karuta_exit.v $(prefix)/share/karuta/karuta_exit.v
+	install lib/karuta_wait.v $(prefix)/share/karuta/karuta_wait.v
+	install lib/fp/fp16r.karuta $(prefix)/share/karuta/fp/fp16r.karuta
+	install lib/fp/fp16rmul.v $(prefix)/share/karuta/fp/fp16rmul.v
+	install lib/fp/fp16raddsub.v $(prefix)/share/karuta/fp/fp16raddsub.v
 	make -C iroha install-data
 
 .PHONY: pkg
