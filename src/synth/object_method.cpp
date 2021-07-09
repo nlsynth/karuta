@@ -101,7 +101,7 @@ void ObjectMethod::Scan() {
       name == kMailboxPut || name == kMailboxGet || name == kMailboxNotify ||
       name == kMailboxWait || name == kChannelWrite ||
       name == kChannelNoWaitWrite || name == kChannelRead || name == kIORead ||
-      kIOWrite || kIOPeek) {
+      name == kIOWrite || name == kIOPeek) {
     vm::Object *parent_obj = walker_->GetParentObjByObj(obj);
     sres->AddObjectAccessor(walker_->GetThreadSynth(), parent_obj, obj, insn_,
                             name, false);
