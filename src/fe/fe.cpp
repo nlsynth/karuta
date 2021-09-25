@@ -147,6 +147,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
       {"string", K_STRING},
       {"switch", K_SWITCH},
       {"thread", K_THREAD},
+      {"uint", K_UINT},
       {"var", K_VAR},
       {"while", K_WHILE},
       {"with", K_WITH},

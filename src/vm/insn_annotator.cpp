@@ -380,7 +380,7 @@ void InsnAnnotator::PropagateRegWidth(Register *src1, Register *src2,
 }
 
 Value::ValueType InsnAnnotator::SymToType(sym_t sym) {
-  if (sym == sym_int || sym == sym_null) {
+  if (sym == sym_uint || sym == sym_null) {
     // Assumes width is specified instead for sym_null.
     return Value::NUM;
   } else if (sym == sym_object || sym == sym_module) {

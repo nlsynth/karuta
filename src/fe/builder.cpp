@@ -56,7 +56,7 @@ const iroha::NumericWidth WidthSpec::GetWidth(sym_t name,
   if (name == sym_bool) {
     return iroha::NumericWidth(false, 0);
   }
-  // sym_int.
+  // sym_uint.
   return iroha::NumericWidth(false, 32);
 }
 

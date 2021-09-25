@@ -621,7 +621,7 @@ IRegister *MethodSynth::FindArgRegister(vm::Method *method, int nth,
   int w = 0;
   if (arg_decl->GetType() == sym_bool) {
     w = 0;
-  } else if (arg_decl->GetType() == sym_int ||
+  } else if (arg_decl->GetType() == sym_uint ||
              arg_decl->GetType() == sym_null) {
     w = arg_decl->GetWidth().GetWidth();
   } else {

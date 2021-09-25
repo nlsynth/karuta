@@ -70,7 +70,7 @@ void Emitter::AnnotatePinNames() {
     for (size_t i = 0; i < args->decls.size(); ++i) {
       fe::VarDecl *arg = args->decls[i];
       int width = 1;
-      if (arg->GetType() == sym_int) {
+      if (arg->GetType() == sym_uint) {
         width = arg->GetWidth().GetWidth();
       } else {
         CHECK(arg->GetType() == sym_bool);

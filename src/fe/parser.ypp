@@ -66,7 +66,7 @@ extern void yyerror(const char *msg);
 %token K_ADD_SUB K_ALWAYS K_AS K_ASSIGN K_BOOL K_BREAK
 %token K_CASE K_CHANNEL K_CONST K_CONTINUE
 %token K_DEFAULT K_DO K_ELSE K_ENUM K_EQ_COMPARE K_FUNC K_FOR K_GOTO
-%token K_IF K_IMPORT K_INC_DEC K_INT K_LG_COMPARE K_MAILBOX
+%token K_IF K_IMPORT K_INC_DEC K_INT K_UINT K_LG_COMPARE K_MAILBOX
 %token K_OBJECT K_PROCESS K_RETURN K_SHARED K_SHIFT K_STRING K_SWITCH K_THREAD
 %token K_INPUT K_OUTPUT
 %token K_VAR K_WHILE K_WITH K_MODULE
@@ -309,8 +309,10 @@ VAR_DECL_STMT : VAR_DECL {
   $$ = Builder::VarDeclList(nullptr, $1->decls[0]);
 }
 
-TYPE_NAME : K_INT {
-  $$ = sym_int;
+TYPE_NAME : K_UINT {
+  $$ = sym_uint;
+} | K_INT {
+  $$ = sym_uint;
 } | K_BOOL {
   $$ = sym_bool;
 } | K_OBJECT {
