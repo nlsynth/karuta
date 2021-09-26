@@ -218,6 +218,8 @@ VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::InSemiColonStatement();} VAR_O
 
 WIDTH_SPEC : TYPE_NAME {
   $$ = WidthSpec::Name($1, true);
+} | K_UINT '#' NUM {
+  $$ = WidthSpec::Int(false, $3.value);
 } | '#' NUM {
   $$ = WidthSpec::Int(false, $2.value);
 } | '#' SYM {
