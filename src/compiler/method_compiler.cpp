@@ -1,6 +1,7 @@
 #include "compiler/method_compiler.h"
 
 #include "base/status.h"
+#include "compiler/annotation_checker.h"
 #include "compiler/compiler.h"
 #include "compiler/expr_compiler.h"
 #include "compiler/loop_marker.h"
@@ -13,10 +14,10 @@
 #include "vm/decl_annotator.h"
 #include "vm/insn.h"
 #include "vm/insn_annotator.h"
-#include "vm/vm_method.h"
 #include "vm/object.h"
 #include "vm/value.h"
 #include "vm/vm.h"
+#include "vm/vm_method.h"
 
 namespace compiler {
 
@@ -493,6 +494,7 @@ void MethodCompiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
     insn->dst_regs_.push_back(insn->src_regs_[0]);
     EmitInsn(insn);
   }
+  AnnotationChecker::Check(insn);
 }
 
 void MethodCompiler::CompileImportStmt(fe::Stmt *stmt) {
@@ -551,6 +553,7 @@ void MethodCompiler::CompileFuncDecl(fe::Stmt *stmt) {
   insn->obj_reg_ = CompilePathHead(name_expr);
   insn->insn_stmt_ = stmt;
   EmitInsn(insn);
+  AnnotationChecker::Check(insn);
 }
 
 vm::Register *MethodCompiler::CompilePathHead(fe::Expr *path_elem) {

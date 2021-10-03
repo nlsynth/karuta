@@ -86,6 +86,8 @@
                 'base/util.h',
                 'base/logging.cpp',
                 'base/logging.h',
+                'compiler/annotation_checker.cpp',
+                'compiler/annotation_checker.h',
                 'compiler/compiler.cpp',
                 'compiler/compiler.h',
                 'compiler/common.h',
