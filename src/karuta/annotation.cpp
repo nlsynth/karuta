@@ -19,6 +19,77 @@ static const char kVerilog[] = "verilog";
 static const char kModule[] = "module";
 static const char kClock[] = "clock";
 static const char kReset[] = "reset";
+static vector<string> kwsAxim = {
+    "AxiMaster",
+    "AxiMaster64",
+    "AxiMaster32",
+    "AxiManager",
+    "AxiManager64",
+    "AxiManager32",
+    "ExportWithAxiMaster",
+    "ExportWithAxiMaster64",
+    "ExportWithAxiMaster32",
+    "ExportWithAxiManager",
+    "ExportWithAxiManager64",
+    "ExportWithAxiManager32",
+};
+static vector<string> kwsAxis = {
+    "AxiSlave",
+    "AxiSlave64",
+    "AxiSlave32",
+    "AxiSubordinate",
+    "AxiSubordinate64",
+    "AxiSubordinate32",
+    "ExportWithAxiSlave",
+    "ExportWithAxiSlave64",
+    "ExportWithAxiSlave32",
+    "ExportWithAxiSubordinate",
+    "ExportWithAxiSubordinate64",
+    "ExportWithAxiSubordinate32",
+};
+static vector<string> kwsAximExport = {
+    "ExportWithAxiMaster",  "ExportWithAxiMaster64",  "ExportWithAxiMaster32",
+    "ExportWithAxiManager", "ExportWithAxiManager64", "ExportWithAxiManager32",
+};
+static vector<string> kwsAxisExport = {
+    "ExportWithAxiSlave",         "ExportWithAxiSlave64",
+    "ExportWithAxiSlave32",       "ExportWithAxiSubordinate",
+    "ExportWithAxiSubordinate64", "ExportWithAxiSubordinate32"};
+static vector<string> kws64 = {
+    "AxiMaster64",
+    "ExportWithAxiMaster64",
+    "ExportWithAxiSlave64",
+    "AxiSlave64",
+    "AxiManager64",
+    "ExportWithAxiManager64",
+    "ExportWithAxiSubordinate64",
+    "AxiSubordinate64",
+};
+static vector<string> kws32 = {
+    "AxiMaster32",
+    "ExportWithAxiMaster32",
+    "ExportWithAxiSlave32",
+    "AxiSlave32",
+    "AxiManager32",
+    "ExportWithAxiManager32",
+    "ExportWithAxiSubordinate32",
+    "AxiSubordinate32",
+};
+static vector<string> kwsExportSram = {"SramIf", "Export", "Public"};
+static vector<string> kwsExportMailbox = {"Export", "public"};
+static vector<string> kwsThreadEntry = {"ThreadEntry", "ProcessEntry"};
+static vector<string> kwsPipeline = {"Pipeline", "PipelineX"};
+static vector<string> kwsPipelineX = {"PipelineX"};
+static vector<string> kwsSoftThreadEntry = {"SoftThreadEntry", "SoftProcess",
+                                            "Soft"};
+static vector<string> kwsThreadLocal = {"ThreadLocal", "ProcessLocal", "Local"};
+static vector<string> kwsDataFlowEntry = {"DataFlowEntry", "dataflow_entry"};
+static vector<string> kwsExtEntry = {"ExtEntry"};
+static vector<string> kwsExtMethodStub = {"ExtStub"};
+static vector<string> kwsExtFlowStub = {"ExtFlowStub"};
+static vector<string> kwsExtCombinational = {"ExtCombinational"};
+static vector<string> kwsExtIO = {"ExtIO"};
+static vector<string> kwsExternal = {"External"};
 
 static Pool<Annotation> resource_params_pool;
 std::unique_ptr<Annotation> Annotation::empty_annotation_;
@@ -115,103 +186,38 @@ bool Annotation::ResetPolarity() {
 
 int Annotation::MaxDelayPs() { return LookupIntParam("maxDelayPs", -1); }
 
-bool Annotation::IsAxiMaster() {
-  static vector<string> kws = {
-      "AxiMaster",
-      "AxiMaster64",
-      "AxiMaster32",
-      "AxiManager",
-      "AxiManager64",
-      "AxiManager32",
-      "ExportWithAxiMaster",
-      "ExportWithAxiMaster64",
-      "ExportWithAxiMaster32",
-      "ExportWithAxiManager",
-      "ExportWithAxiManager64",
-      "ExportWithAxiManager32",
-  };
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsAxiMaster() { return CheckAnnotation(kwsAxim); }
 
-bool Annotation::IsAxiSlave() {
-  static vector<string> kws = {
-      "AxiSlave",
-      "AxiSlave64",
-      "AxiSlave32",
-      "AxiSubordinate",
-      "AxiSubordinate64",
-      "AxiSubordinate32",
-      "ExportWithAxiSlave",
-      "ExportWithAxiSlave64",
-      "ExportWithAxiSlave32",
-      "ExportWithAxiSubordinate",
-      "ExportWithAxiSubordinate64",
-      "ExportWithAxiSubordinate32",
-  };
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsAxiSlave() { return CheckAnnotation(kwsAxis); }
 
 bool Annotation::IsAxiExclusive() {
   return (LookupStrParam("sramConnection", "exclusive") == "exclusive");
 }
 
 bool Annotation::IsAxiMasterAndExport() {
-  static vector<string> kws = {
-      "ExportWithAxiMaster",    "ExportWithAxiMaster64",
-      "ExportWithAxiMaster32",  "ExportWithAxiManager",
-      "ExportWithAxiManager64", "ExportWithAxiManager32",
-  };
-  if (CheckAnnotation(kws)) {
+  if (CheckAnnotation(kwsAximExport)) {
     return true;
   }
   return IsAxiMaster() && (LookupIntParam("export", 0) > 0);
 }
 
 bool Annotation::IsAxiSlaveAndExport() {
-  static vector<string> kws = {
-      "ExportWithAxiSlave",         "ExportWithAxiSlave64",
-      "ExportWithAxiSlave32",       "ExportWithAxiSubordinate",
-      "ExportWithAxiSubordinate64", "ExportWithAxiSubordinate32"};
-  if (CheckAnnotation(kws)) {
+  if (CheckAnnotation(kwsAxisExport)) {
     return true;
   }
   return IsAxiSlave() && (LookupIntParam("export", 0) > 0);
 }
 
 bool Annotation::IsExportSramIf() {
-  static vector<string> kws = {"SramIf", "Export", "Public"};
-  if (CheckAnnotation(kws)) {
+  if (CheckAnnotation(kwsExportSram)) {
     return true;
   }
   return IsAxiSlaveAndExport();
 }
 
-bool Annotation::IsExportMailbox() {
-  static vector<string> kws = {"Export", "public"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsExportMailbox() { return CheckAnnotation(kwsExportMailbox); }
 
 int Annotation::GetAddrWidth() {
-  static vector<string> kws64 = {
-      "AxiMaster64",
-      "ExportWithAxiMaster64",
-      "ExportWithAxiSlave64",
-      "AxiSlave64",
-      "AxiManager64",
-      "ExportWithAxiManager64",
-      "ExportWithAxiSubordinate64",
-      "AxiSubordinate64",
-  };
-  static vector<string> kws32 = {
-      "AxiMaster32",
-      "ExportWithAxiMaster32",
-      "ExportWithAxiSlave32",
-      "AxiSlave32",
-      "AxiManager32",
-      "ExportWithAxiManager32",
-      "ExportWithAxiSubordinate32",
-      "AxiSubordinate32",
-  };
   if (CheckAnnotation(kws64)) {
     return 64;
   }
@@ -234,36 +240,23 @@ int Annotation::GetAddrWidth() {
 
 int Annotation::GetDepth() { return LookupIntParam("depth", 1); }
 
-bool Annotation::IsThreadEntry() {
-  static vector<string> kws = {"ThreadEntry", "ProcessEntry"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsThreadEntry() { return CheckAnnotation(kwsThreadEntry); }
 
 int Annotation::GetDistance() { return LookupIntParam("distance", 0); }
 
-bool Annotation::IsPipeline() {
-  static vector<string> kws = {"Pipeline", "PipelineX"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsPipeline() { return CheckAnnotation(kwsPipeline); }
 
-bool Annotation::IsPipelineX() {
-  static vector<string> kws = {"PipelineX"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsPipelineX() { return CheckAnnotation(kwsPipelineX); }
 
 bool Annotation::IsSoftThreadEntry() {
-  static vector<string> kws = {"SoftThreadEntry", "SoftProcess", "Soft"};
-  return CheckAnnotation(kws);
+  return CheckAnnotation(kwsSoftThreadEntry);
 }
 
 string Annotation::GetName() { return LookupStrParam("name", ""); }
 
 int Annotation::GetNum() { return LookupIntParam("num", 1); }
 
-bool Annotation::IsThreadLocal() {
-  static vector<string> kws = {"ThreadLocal", "ProcessLocal", "Local"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsThreadLocal() { return CheckAnnotation(kwsThreadLocal); }
 
 bool Annotation::IsNoWait() {
   int nw = LookupIntParam("noWait", 0);
@@ -276,30 +269,15 @@ string Annotation::GetNotifySuffix() { return LookupStrParam("notify", ""); }
 
 string Annotation::GetPutSuffix() { return LookupStrParam("put", ""); }
 
-bool Annotation::IsDataFlowEntry() {
-  static vector<string> kws = {"DataFlowEntry", "dataflow_entry"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsDataFlowEntry() { return CheckAnnotation(kwsDataFlowEntry); }
 
-bool Annotation::IsExtEntry() {
-  static vector<string> kws = {"ExtEntry"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsExtEntry() { return CheckAnnotation(kwsExtEntry); }
 
-bool Annotation::IsExtMethodStub() {
-  static vector<string> kws = {"ExtStub"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsExtMethodStub() { return CheckAnnotation(kwsExtMethodStub); }
 
-bool Annotation::IsExtFlowStub() {
-  static vector<string> kws = {"ExtFlowStub"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsExtFlowStub() { return CheckAnnotation(kwsExtFlowStub); }
 
-bool Annotation::IsExtIO() {
-  static vector<string> kws = {"ExtIO"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsExtIO() { return CheckAnnotation(kwsExtIO); }
 
 bool Annotation::IsExtInput() {
   if (LookupParam(sym_cstr(sym_input))) {
@@ -316,14 +294,10 @@ bool Annotation::IsExtOutput() {
 }
 
 bool Annotation::IsExtCombinational() {
-  static vector<string> kws = {"ExtCombinational"};
-  return CheckAnnotation(kws);
+  return CheckAnnotation(kwsExtCombinational);
 }
 
-bool Annotation::IsExternal() {
-  static vector<string> kws = {"External"};
-  return CheckAnnotation(kws);
-}
+bool Annotation::IsExternal() { return CheckAnnotation(kwsExternal); }
 
 string Annotation::LookupStrParam(const string &key, const string &dflt) {
   AnnotationKeyValue *p = LookupParam(key);
