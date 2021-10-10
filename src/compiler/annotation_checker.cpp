@@ -11,9 +11,6 @@ void AnnotationChecker::Check(vm::Insn *insn) {
     case vm::OP_TL_FUNCDECL:
       CheckMethodDecl(insn);
       break;
-    case vm::OP_TL_THREAD_DECL:
-      CheckThreadDecl(insn);
-      break;
     case vm::OP_TL_CHANNEL_DECL:
       CheckChannelDecl(insn);
       break;

@@ -320,9 +320,6 @@ void MethodCompiler::CompileStmt(fe::Stmt *stmt) {
     case fe::STMT_RETURN:
       CompileReturn(stmt);
       break;
-    case fe::STMT_THREAD_DECL:
-      CompileThreadDecl(stmt);
-      break;
     case fe::STMT_CHANNEL_DECL:
       CompileChannelDecl(stmt);
       break;
@@ -453,11 +450,6 @@ void MethodCompiler::CompileVarDeclStmt(fe::Stmt *stmt) {
   }
 }
 
-void MethodCompiler::CompileThreadDecl(fe::Stmt *stmt) {
-  fe::Expr *var_expr = stmt->GetExpr()->GetLhs();
-  CompileMemberDeclStmt(stmt, var_expr, vm::OP_TL_THREAD_DECL, nullptr);
-}
-
 void MethodCompiler::CompileChannelDecl(fe::Stmt *stmt) {
   fe::Expr *var_expr = stmt->GetExpr();
   CompileMemberDeclStmt(stmt, var_expr, vm::OP_TL_CHANNEL_DECL, nullptr);
@@ -478,9 +470,6 @@ void MethodCompiler::CompileMemberDeclStmt(fe::Stmt *stmt, fe::Expr *var_expr,
   insn->op_ = op;
   insn->insn_stmt_ = stmt;
   insn->obj_reg_ = obj_reg;
-  if (op == vm::OP_TL_THREAD_DECL) {
-    insn->label_ = stmt->GetExpr()->GetFunc()->GetFunc()->GetSym();
-  }
   if (op == vm::OP_TL_CHANNEL_DECL || op == vm::OP_TL_MAILBOX_DECL) {
     insn->label_ = stmt->GetExpr()->GetSym();
   }

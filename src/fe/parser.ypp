@@ -355,8 +355,7 @@ STMT : EOS {
 } | VAR_DECL_STMT EOS {
   Emitter::EmitVarDeclStmtSet($1);
 } | LABEL
-  | IMPORT_STMT
-  | THREAD_DECL_STMT EOS {
+  | IMPORT_STMT {
 } | CHANNEL_DECL_STMT EOS {
 } | MAILBOX_DECL_STMT EOS {
 }
@@ -378,10 +377,6 @@ IMPORT_SPEC_OR_EMPTY : K_AS SYM {
   $$ = $2;
 } | {
   $$ = sym_null;
-}
-
-THREAD_DECL_STMT : K_THREAD {ScannerInterface::InSemiColonStatement();} VAR K_ASSIGN FUNCALL {
-  Emitter::EmitThreadDeclStmt($3, $5);
 }
 
 CHANNEL_DECL_STMT : ANNOTATION_OR_EMPTY K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {

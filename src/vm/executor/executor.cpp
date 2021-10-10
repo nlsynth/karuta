@@ -106,9 +106,6 @@ bool Executor::ExecInsn(Insn *insn) {
     case OP_TL_VARDECL:
       ExecVardecl();
       break;
-    case OP_TL_THREAD_DECL:
-      ExecThreadDecl();
-      break;
     case OP_TL_CHANNEL_DECL:
       ExecChannelDecl();
       break;

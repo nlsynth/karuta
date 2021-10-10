@@ -37,7 +37,6 @@ class Emitter {
   static void EmitLabel(sym_t label);
   static void EmitGoto(sym_t label);
   static void EmitReturnStmt(Expr *expr);
-  static void EmitThreadDeclStmt(Expr *var, Expr *funcall);
   static void EmitChannelDeclStmt(Expr *var, bool is_primitive, sym_t type_name,
                                   const iroha::NumericWidth *width);
   static void EmitMailboxDeclStmt(Expr *var, bool is_primitive, sym_t type_name,

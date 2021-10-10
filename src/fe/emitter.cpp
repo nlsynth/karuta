@@ -219,15 +219,6 @@ void Emitter::EmitReturnStmt(Expr *expr) {
   EmitStmt(stmt);
 }
 
-void Emitter::EmitThreadDeclStmt(Expr *var, Expr *funcall) {
-  Stmt *stmt = NewStmt(STMT_THREAD_DECL);
-  Expr *expr = Builder::NewExpr(STMT_THREAD_DECL);
-  expr->SetLhs(var);
-  expr->SetFunc(funcall);
-  stmt->SetExpr(expr);
-  EmitStmt(stmt);
-}
-
 void Emitter::EmitChannelDeclStmt(Expr *var, bool is_primitive, sym_t name,
                                   const iroha::NumericWidth *width) {
   Stmt *stmt = NewStmt(STMT_CHANNEL_DECL);

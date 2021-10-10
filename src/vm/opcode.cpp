@@ -57,7 +57,6 @@ const char *OpCodeName(enum OpCode node) {
       {vm::OP_TL_FUNCDECL, "funcdecl"},
       {vm::OP_TL_VARDECL, "vardecl"},
       {vm::OP_TL_CHANNEL_DECL, "channel_decl"},
-      {vm::OP_TL_THREAD_DECL, "thread_decl"},
       {vm::OP_TL_SET_TYPE_OBJECT, "set_type_object"},
       {vm::OP_TL_PUSH_CURRENT_OBJECT, "push_current_object"},
       {vm::OP_TL_POP_CURRENT_OBJECT, "pop_current_object"},

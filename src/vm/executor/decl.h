@@ -8,13 +8,11 @@ namespace vm {
 namespace executor {
 
 class Decl : public Base {
-public:
-  Decl(Thread *thread, MethodFrame *frame) : Base(thread, frame) {
-  }
+ public:
+  Decl(Thread *thread, MethodFrame *frame) : Base(thread, frame) {}
 
-protected:
+ protected:
   void ExecVardecl();
-  void ExecThreadDecl();
   void ExecChannelDecl();
   void ExecMailboxDecl();
   void ExecFuncdecl();
@@ -26,15 +24,14 @@ protected:
   void ExecImport();
 
   Object *CreateMemoryObject(const iroha::NumericWidth &width,
-			     fe::ArrayShape *shape,
-			     fe::ArrayInitializer *array_initializer,
-			     Annotation *an);
+                             fe::ArrayShape *shape,
+                             fe::ArrayInitializer *array_initializer,
+                             Annotation *an);
   Object *CreateObjectArray(fe::ArrayShape *shape);
-  Object *CreateIOObject(fe::VarDecl *decl, sym_t member_name,
-			 bool is_output,
-			 const iroha::NumericWidth &width);
+  Object *CreateIOObject(fe::VarDecl *decl, sym_t member_name, bool is_output,
+                         const iroha::NumericWidth &width);
   void InitializeArray(IntArray *array,
-		       fe::ArrayInitializer *array_initializer);
+                       fe::ArrayInitializer *array_initializer);
 };
 
 }  // namespace executor

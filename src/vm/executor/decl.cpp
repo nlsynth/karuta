@@ -61,21 +61,6 @@ void Decl::ExecVardecl() {
   }
 }
 
-void Decl::ExecThreadDecl() {
-  Object *callee_obj;
-  Method *callee_method = LookupMethod(&callee_obj);
-  CHECK(callee_method) << "no method";
-  sym_t method_name = insn_->label_;
-  Object *thread_obj =
-      ThreadWrapper::NewThreadWrapper(thr_->GetVM(), method_name, false, 0);
-
-  CHECK(callee_obj == VAL(oreg()).object_);
-  sym_t member_name = insn_->insn_stmt_->GetExpr()->GetLhs()->GetSym();
-  Value *value = callee_obj->LookupValue(member_name, true);
-  value->type_ = Value::OBJECT;
-  value->object_ = thread_obj;
-}
-
 void Decl::ExecChannelDecl() {
   int width = insn_->insn_stmt_->GetWidth().GetWidth();
   Annotation *an = insn_->insn_stmt_->GetAnnotation();

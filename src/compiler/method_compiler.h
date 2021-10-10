@@ -56,7 +56,6 @@ class MethodCompiler {
   void CompileGoto(fe::Stmt *stmt);
   void CompileReturn(fe::Stmt *stmt);
   void CompileVarDeclStmt(fe::Stmt *stmt);
-  void CompileThreadDecl(fe::Stmt *stmt);
   void CompileChannelDecl(fe::Stmt *stmt);
   void CompileMailboxDecl(fe::Stmt *stmt);
   // var, thread, channel.

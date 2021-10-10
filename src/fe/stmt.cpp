@@ -61,12 +61,6 @@ void Stmt::Dump(DumpStream &ds) {
       decl_->Dump(ds);
       ds.pop_indent();
       break;
-    case STMT_THREAD_DECL:
-      ds.os << "thread_decl:\n";
-      ds.push_indent();
-      expr_->Dump(ds);
-      ds.pop_indent();
-      break;
     case STMT_CHANNEL_DECL:
     case STMT_MAILBOX_DECL:
       if (type_ == STMT_CHANNEL_DECL) {
