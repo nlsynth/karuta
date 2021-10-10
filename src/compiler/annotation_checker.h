@@ -7,6 +7,13 @@ namespace compiler {
 class AnnotationChecker {
  public:
   static void Check(vm::Insn *insn);
+
+ private:
+  static void CheckMethodDecl(vm::Insn *insn);
+  static void CheckThreadDecl(vm::Insn *insn);
+  static void CheckChannelDecl(vm::Insn *insn);
+  static void CheckMailboxDecl(vm::Insn *insn);
+  static void CheckVarDecl(vm::Insn *insn);
 };
 }  // namespace compiler
 

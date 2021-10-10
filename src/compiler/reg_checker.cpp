@@ -5,8 +5,8 @@
 
 #include "base/status.h"
 #include "vm/insn.h"
-#include "vm/vm_method.h"
 #include "vm/opcode.h"
+#include "vm/vm_method.h"
 using std::list;
 using std::set;
 
