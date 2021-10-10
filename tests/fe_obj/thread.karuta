@@ -3,13 +3,11 @@ shared Kernel.x int = 9
 shared M object = Kernel.clone()
 shared M.x int = 10
 
-func M.f() {
+process M.f() {
   // *this* should be M.
   assert(x == 10)
   x++
 }
-
-thread M.t = f()
 
 M.run()
 assert(Kernel.x == 9)
