@@ -23,18 +23,6 @@ Data flow
    func f(x int) (int) {
    }
 
-Thread member declaration
-=========================
-
-Threads can be declared as a member object instead of @process_entry().
-
-.. code-block:: none
-
-   func f() {
-   }
-   thread Kernel.thr1 = f()
-   run()
-
 External SRAM operations
 ========================
 
