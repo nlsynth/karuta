@@ -72,30 +72,31 @@ extern int yydebug;
     K_INC_DEC = 278,
     K_INT = 279,
     K_UINT = 280,
-    K_LG_COMPARE = 281,
-    K_MAILBOX = 282,
-    K_OBJECT = 283,
-    K_PROCESS = 284,
-    K_RETURN = 285,
-    K_SHARED = 286,
-    K_SHIFT = 287,
-    K_STRING = 288,
-    K_SWITCH = 289,
-    K_THREAD = 290,
-    K_INPUT = 291,
-    K_OUTPUT = 292,
-    K_VAR = 293,
-    K_WHILE = 294,
-    K_WITH = 295,
-    K_MODULE = 296,
-    NUM = 297,
-    SYM = 298,
-    STR = 299,
-    K_LOGIC_OR = 300,
-    K_LOGIC_AND = 301,
-    K_BIT_CONCAT = 302,
-    SIGN = 303,
-    ADDRESS = 304
+    K_TYPE = 281,
+    K_LG_COMPARE = 282,
+    K_MAILBOX = 283,
+    K_OBJECT = 284,
+    K_PROCESS = 285,
+    K_RETURN = 286,
+    K_SHARED = 287,
+    K_SHIFT = 288,
+    K_STRING = 289,
+    K_SWITCH = 290,
+    K_THREAD = 291,
+    K_INPUT = 292,
+    K_OUTPUT = 293,
+    K_VAR = 294,
+    K_WHILE = 295,
+    K_WITH = 296,
+    K_MODULE = 297,
+    NUM = 298,
+    SYM = 299,
+    STR = 300,
+    K_LOGIC_OR = 301,
+    K_LOGIC_AND = 302,
+    K_BIT_CONCAT = 303,
+    SIGN = 304,
+    ADDRESS = 305
   };
 #endif
 
@@ -124,7 +125,7 @@ union YYSTYPE
   class AnnotationKeyValue *annotation_value;
   class AnnotationKeyValueSet *annotation_value_set;
 
-#line 128 "src/fe/parser.h"
+#line 129 "src/fe/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

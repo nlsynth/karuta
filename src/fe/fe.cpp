@@ -15,10 +15,10 @@
 #include "fe/scanner_interface.h"
 #include "fe/scanner_pos.h"
 #include "iroha/base/file.h"
-#include "vm/vm_method.h"
 #include "vm/object.h"
 #include "vm/thread.h"
 #include "vm/vm.h"
+#include "vm/vm_method.h"
 
 // This should be the last.
 #include "fe/parser.h"
@@ -147,6 +147,7 @@ int ScannerInfo::LookupKeyword(sym_t sym) const {
       {"string", K_STRING},
       {"switch", K_SWITCH},
       {"thread", K_THREAD},
+      {"type", K_TYPE},
       {"uint", K_UINT},
       {"var", K_VAR},
       {"while", K_WHILE},
