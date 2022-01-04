@@ -26,7 +26,6 @@ void AnnotationChecker::Check(vm::Insn *insn) {
 }
 
 void AnnotationChecker::CheckMethodDecl(vm::Insn *insn) {}
-void AnnotationChecker::CheckThreadDecl(vm::Insn *insn) {}
 void AnnotationChecker::CheckChannelDecl(vm::Insn *insn) {}
 void AnnotationChecker::CheckMailboxDecl(vm::Insn *insn) {}
 void AnnotationChecker::CheckVarDecl(vm::Insn *insn) {}
