@@ -8,13 +8,13 @@
 namespace fe {
 
 class ArrayInitializer {
-public:
+ public:
   vector<uint64_t> num_;
   void Dump(DumpStream &ds) const;
 };
 
 class ArrayShape {
-public:
+ public:
   explicit ArrayShape(int l);
 
   // 1 dimension for now.
@@ -23,7 +23,7 @@ public:
 };
 
 class VarDecl {
-public:
+ public:
   VarDecl();
 
   void Dump();
@@ -39,6 +39,8 @@ public:
   void SetObjectName(sym_t object_name);
   void SetIsShared(bool is_shared);
   bool GetIsShared() const;
+  void SetIsConst(bool is_const);
+  bool GetIsConst() const;
   void SetIsIO(bool is_io, bool is_output);
   bool GetIsIO() const;
   bool GetIsOutput() const;
@@ -51,7 +53,7 @@ public:
   Annotation *GetAnnotation() const;
   void SetAnnotation(Annotation *an);
 
-private:
+ private:
   Expr *name_expr_;
   // int, bool, string, object and so on.
   sym_t type_;
@@ -60,6 +62,7 @@ private:
   // for numeric object.
   sym_t object_name_;
   bool is_shared_;
+  bool is_const_;
   bool is_io_;
   bool is_output_;
   Expr *initial_val_;
@@ -69,9 +72,9 @@ private:
 };
 
 class VarDeclSet {
-public:
+ public:
   void Dump(DumpStream &os);
-  vector<VarDecl*> decls;
+  vector<VarDecl *> decls;
 };
 
 }  // namespace fe

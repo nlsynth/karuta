@@ -197,18 +197,19 @@ VAR_DECL_TAIL : VAR_LIST WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
   $$ = vds;
 }
 
-VAR_OR_SHARED : K_VAR {$$ = K_VAR;} | K_SHARED {$$ = K_SHARED;} | K_INPUT {$$ = K_INPUT;} | K_OUTPUT {$$ = K_OUTPUT;}
+VAR_OR_SHARED : K_VAR {$$ = K_VAR;} | K_SHARED {$$ = K_SHARED;} | K_CONST {$$ = K_CONST;} | K_INPUT {$$ = K_INPUT;} | K_OUTPUT {$$ = K_OUTPUT;}
 
 VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::InSemiColonStatement();} VAR_OR_SHARED VAR_DECL_TAIL {
   bool is_input = ($3 == K_INPUT);
   bool is_output = ($3 == K_OUTPUT);
   bool is_io = (is_input || is_output);
-  bool is_shared = ($3 == K_SHARED) || is_io;
+  bool is_shared = ($3 == K_SHARED) || ($3 == K_CONST) || is_io;
   for (VarDecl *vd : $4->decls) {
     Builder::SetVarDeclAnnotation(vd, $1);
     if (is_shared) {
       vd->SetIsShared(true);
     }
+    vd->SetIsConst($3 == K_CONST);
     vd->SetIsIO(is_io, is_output);
   }
   $$ = $4;
