@@ -54,7 +54,7 @@ class Scanner {
   sym_t GetSym();
   const string *GetStr();
   void GetPosition(ScannerPos *pos);
-  void InSemiColonStatement();
+  void EnterSemiColonStatement();
   void EndSemiColonStatement();
   void InArrayElmDecl();
   void EndArrayElmDecl();

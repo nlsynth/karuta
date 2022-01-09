@@ -362,7 +362,7 @@ bool Scanner::UseReturnAsSep() { return in_semicolon_ && !in_array_elm_; }
 
 void Scanner::ReleaseFileImage() { SetFileImage(nullptr); }
 
-void Scanner::InSemiColonStatement() { in_semicolon_ = true; }
+void Scanner::EnterSemiColonStatement() { in_semicolon_ = true; }
 
 void Scanner::EndSemiColonStatement() { in_semicolon_ = false; }
 

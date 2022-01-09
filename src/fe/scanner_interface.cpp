@@ -4,9 +4,7 @@
 
 namespace fe {
 
-Scanner* ScannerInterface::CreateScanner() {
-  return new Scanner;
-}
+Scanner *ScannerInterface::CreateScanner() { return new Scanner; }
 
 void ScannerInterface::GetPosition(ScannerPos *pos) {
   Scanner::current_scanner_->GetPosition(pos);
@@ -39,18 +37,24 @@ int ScannerInterface::GetToken(ScannerToken *tk) {
     }
   } else {
     if (Scanner::dbg_scanner) {
-      cout << "op=(" << r << "(" << sub_op<< "))\n";
+      cout << "op=(" << r << "(" << sub_op << "))\n";
     }
     tk->sub_op = sub_op;
   }
   return r;
 }
 
-void ScannerInterface::InSemiColonStatement() {
-  Scanner::current_scanner_->InSemiColonStatement();
+void ScannerInterface::EnterSemiColonStatement() {
+  if (Scanner::dbg_scanner) {
+    cout << "enter_semicolon\n";
+  }
+  Scanner::current_scanner_->EnterSemiColonStatement();
 }
 
 void ScannerInterface::EndSemiColonStatement() {
+  if (Scanner::dbg_scanner) {
+    cout << "end_semicolon\n";
+  }
   Scanner::current_scanner_->EndSemiColonStatement();
 }
 

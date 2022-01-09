@@ -199,7 +199,7 @@ VAR_DECL_TAIL : VAR_LIST WIDTH_SPEC EMPTY_OR_ARRAY_SPEC {
 
 VAR_OR_SHARED : K_VAR {$$ = K_VAR;} | K_SHARED {$$ = K_SHARED;} | K_CONST {$$ = K_CONST;} | K_INPUT {$$ = K_INPUT;} | K_OUTPUT {$$ = K_OUTPUT;}
 
-VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::InSemiColonStatement();} VAR_OR_SHARED VAR_DECL_TAIL {
+VAR_DECL : ANNOTATION_OR_EMPTY {ScannerInterface::EnterSemiColonStatement();} VAR_OR_SHARED VAR_DECL_TAIL {
   bool is_input = ($3 == K_INPUT);
   bool is_output = ($3 == K_OUTPUT);
   bool is_io = (is_input || is_output);
@@ -290,10 +290,10 @@ ARRAY_INITIALIZER : '{' { ScannerInterface::InArrayElmDecl(); } ARRAY_ELM_LIST {
 }
 
 VAR_DECL_STMT : VAR_DECL {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   $$ = $1;
 } | VAR_DECL K_ASSIGN EXPR {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   if ($1->decls.size() > 1) {
     yyerror("More than 1 LHS to initialize");
     YYABORT;
@@ -301,7 +301,7 @@ VAR_DECL_STMT : VAR_DECL {
   $1->decls[0]->SetInitialVal($3);
   $$ = Builder::VarDeclList(nullptr, $1->decls[0]);
 } | VAR_DECL K_ASSIGN ARRAY_INITIALIZER {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   if ($1->decls.size() > 1) {
     yyerror("More than 1 LHS to initialize");
     YYABORT;
@@ -334,7 +334,7 @@ LABEL : SYM ':' {
 }
 
 RETURN : K_RETURN {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
 }
 
 STMT : EOS {
@@ -369,10 +369,10 @@ EOS : ';' {
 }
 
 GOTO_HEAD : K_GOTO {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
 }
 
-IMPORT_STMT : K_IMPORT {ScannerInterface::InSemiColonStatement();} STR IMPORT_SPEC_OR_EMPTY EOS {
+IMPORT_STMT : K_IMPORT {ScannerInterface::EnterSemiColonStatement();} STR IMPORT_SPEC_OR_EMPTY EOS {
   Emitter::EmitImportStmt($3, $4);
 }
 
@@ -382,11 +382,11 @@ IMPORT_SPEC_OR_EMPTY : K_AS SYM {
   $$ = sym_null;
 }
 
-CHANNEL_DECL_STMT : ANNOTATION_OR_EMPTY K_CHANNEL {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
+CHANNEL_DECL_STMT : ANNOTATION_OR_EMPTY K_CHANNEL {ScannerInterface::EnterSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
   Emitter::EmitChannelDeclStmt($4, $6.is_primitive, $6.name, $6.width);
 }
 
-MAILBOX_DECL_STMT : ANNOTATION_OR_EMPTY K_MAILBOX {ScannerInterface::InSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
+MAILBOX_DECL_STMT : ANNOTATION_OR_EMPTY K_MAILBOX {ScannerInterface::EnterSemiColonStatement();} VAR ASSIGN_OR_EMPTY WIDTH_SPEC {
   Emitter::EmitMailboxDeclStmt($4, $6.is_primitive, $6.name, $6.width);
 }
 
@@ -482,14 +482,15 @@ DO_WHILE_STMT : DO_WHILE_BODY K_WHILE '(' EXPR ')' {
   Emitter::EndBlock();
 }
 
-SWITCH_STMT : K_SWITCH '(' EXPR ')' CASES_LIST {
+SWITCH_STMT : K_SWITCH EXPR {ScannerInterface::EndSemiColonStatement();} '{' CASES_LIST '}' {
 }
 
-CASES_LIST : CASE {
-} | CASES_LIST CASE {
+CASES_LIST : CASE STMT_LIST {
+} | CASES_LIST CASE STMT_LIST {
 }
 
-CASE : K_DEFAULT {
+CASE : K_DEFAULT ':' {
+} | K_CASE EXPR {ScannerInterface::EndSemiColonStatement();} ':' {
 }
 
 BLOCK : BLOCK_HEAD STMT_LIST '}' {
@@ -512,10 +513,10 @@ ENUM_ITEM_LIST : SYM {
 }
 
 EXPR : SYM {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   $$ = Builder::SymExpr($1);
 } | SYM '@' NUM {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   Expr *num = Builder::NumExpr($3);
   if (num == nullptr) {
     YYABORT;
@@ -565,17 +566,17 @@ EXPR : SYM {
   $$ = Builder::BinopExpr($1, $3, BINOP_LAND);
 } | EXPR K_INC_DEC {
   $$ = Builder::IncDecExpr($1, $2, true);
-} | K_INC_DEC {ScannerInterface::InSemiColonStatement();}  EXPR {
+} | K_INC_DEC {ScannerInterface::EnterSemiColonStatement();}  EXPR {
   $$ = Builder::IncDecExpr($3, $1, false);
 } | K_ADD_SUB EXPR %prec SIGN {
   $$ = Builder::SignedExpr($1, $2);
 } | EXPR '?' EXPR ':' EXPR {
   $$ = Builder::TriTerm($1, $3, $5);
 } | STR {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   $$ = Builder::StrExpr($1);
 } | NUM_EXPR {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   $$ = Builder::NumExpr($1);
   if ($$ == nullptr) {
     YYABORT;
@@ -606,7 +607,7 @@ FUNCALL_HEAD : SYM '(' {
 }
 
 FUNCALL :  FUNCALL_HEAD ARG_LIST ')' {
-  ScannerInterface::InSemiColonStatement();
+  ScannerInterface::EnterSemiColonStatement();
   $$ = Builder::FuncallExpr($1, $2);
 }
 

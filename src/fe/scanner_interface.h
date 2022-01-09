@@ -8,11 +8,11 @@ namespace fe {
 
 // Interface to access current Scanner instance from the parser.
 class ScannerInterface {
-public:
+ public:
   static Scanner *CreateScanner();
   static int GetToken(ScannerToken *tk);
   static void GetPosition(ScannerPos *pos);
-  static void InSemiColonStatement();
+  static void EnterSemiColonStatement();
   static void EndSemiColonStatement();
   static void InArrayElmDecl();
   static void EndArrayElmDecl();
